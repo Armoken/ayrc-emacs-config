@@ -4,28 +4,34 @@
 ;; Settings only for C#
 
 ;;; Code:
-(add-hook 'csharp-mode-common-hook 'hs-minor-mode)
+(require 'hideshow)
+(add-hook 'csharp-mode-common-hook
+		  (lambda()
+			  (hs-minor-mode)
+			  (add-to-list 'write-file-functions
+						   'untabify-current-buffer)))
 
-(autoload 'csharp-mode
-		  "csharp-mode" "Major mode for editing C# code." t)
 (setq auto-mode-alist
 	  (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
+(autoload 'csharp-mode
+		  "csharp-mode" "Major mode for editing C# code." t)
 
 (load "~/.emacs.d/other/csharp-hs-forward-sexp")
 (add-hook 'csharp-mode-hook
 		  (lambda ()
-			  (hs-minor-mode 1)
-			  (setq hs-isearch-open t)
-			  (local-set-key "\C-c h"  'hs-toggle-hiding)))
+			  (local-set-key "\C-c h" 'hs-toggle-hiding)))
 
+(require 'company)
 (require 'omnisharp)
 (require 'omnisharp-utils)
 (require 'omnisharp-server-actions)
 (require 'omnisharp-auto-complete-actions)
 (setq omnisharp--curl-executable-path "/usr/bin/curl")
 (setq omnisharp-server-executable-path "~/.emacs.d/servers/OmniSharp/OmniSharp/bin/Debug/OmniSharp.exe")
-(add-hook 'csharp-mode-hook 'omnisharp-mode)
-(add-to-list 'company-backends 'company-omnisharp)
+(add-hook 'csharp-mode-hook
+		  (lambda()
+			  (omnisharp-mode)
+			  (setq company-backends '(company-omnisharp))))
 
 (defun defsln ()
 	"Interactive function.

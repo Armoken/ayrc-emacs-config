@@ -6,7 +6,7 @@
 ;;; Code:
 
 ;;; Тип шрифта
-(setq default-frame-alist '((font . "Hack :: Regular: 11:: Cyrillic")))
+(setq default-frame-alist '((font . "Hack :: Regular: 10:: Cyrillic")))
 
 ;; Ник и почта пользователя
 (setq user-full-name "Armoken")

@@ -26,9 +26,10 @@
 	(if (not indent-tabs-mode)
 		(untabify (point-min) (point-max)))
 	nil)
+
 (add-to-list 'write-file-functions 'format-current-buffer)
-;; (add-to-list 'write-file-functions 'untabify-current-buffer)
-(add-to-list 'write-file-functions 'delete-trailing-whitespace)
+(add-to-list 'write-file-functions
+			 'delete-trailing-whitespace)
 
 ;; Syntax highlight
 (require 'font-lock)
@@ -36,10 +37,6 @@
 
 ;; Automatically pairs braces and quotes
 (electric-pair-mode)
-
-;; CC Mode is a powerful package that provides modes for
-;; editing C and C-like files
-(require 'cc-mode)
 
 ;; Semantic is a package that provides language-aware
 ;; editing commands based on source code parsers.
@@ -62,7 +59,7 @@
 
 ;; Yasnippet
 (require 'yasnippet)
-(yas-global-mode 1)
+(yas-global-mode)
 (setq yas-snippet-dirs
       '("~/.emacs.d/snippets"))
 (provide 'init-yasnippet)
@@ -83,17 +80,21 @@
 (define-key company-active-map (kbd "TAB") 'company-complete-selection)
 
 ;; Language modes
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-xml.el")
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-org.el")
 (load "~/.emacs.d/rc/dev/emacs-rc-dev-short.el")
+(load "~/.emacs.d/rc/dev/emacs-rc-dev-org.el")
+
 (load "~/.emacs.d/rc/dev/emacs-rc-dev-csharp.el")
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-python.el")
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-lisp.el")
 (load "~/.emacs.d/rc/dev/emacs-rc-dev-cpp.el")
+
+(load "~/.emacs.d/rc/dev/emacs-rc-dev-python.el")
 (load "~/.emacs.d/rc/dev/emacs-rc-dev-latex.el")
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-html-css.el")
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-js.el")
+(load "~/.emacs.d/rc/dev/emacs-rc-dev-lisp.el")
 (load "~/.emacs.d/rc/dev/emacs-rc-dev-sql.el")
+
+;; Web modes
+(load "~/.emacs.d/rc/dev/emacs-rc-dev-html-css.el")
+(load "~/.emacs.d/rc/dev/emacs-rc-dev-xml.el")
+(load "~/.emacs.d/rc/dev/emacs-rc-dev-js.el")
 
 (provide 'emacs-rc-dev)
 ;;; emacs-rc-dev.el ends here
