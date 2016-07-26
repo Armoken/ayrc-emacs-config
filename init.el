@@ -69,9 +69,8 @@
 (load "~/.emacs.d/rc/emacs-rc-text.el")
 ;; Development
 (load "~/.emacs.d/rc/emacs-rc-dev.el")
-
-;; Theme
-(load-theme 'spacemacs-dark t)
+;; Helm (So very cool for separate config)
+;; (load "~/.emacs.d/rc/emacs-rc-helm.el")
 
 (provide 'init.el)
 ;;; init.el ends here

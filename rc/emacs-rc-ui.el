@@ -6,7 +6,8 @@
 ;;; Code:
 
 ;;; Тип шрифта
-(setq default-frame-alist '((font . "Hack :: Regular: 10:: Cyrillic")))
+;; (setq default-frame-alist '((font . "Hack :: Regular: 10:: Cyrillic")))
+(setq default-frame-alist '((font . "Hack-11")))
 
 ;; Ник и почта пользователя
 (setq user-full-name "Armoken")
@@ -76,6 +77,7 @@
                 "  " mode-line-modes))
 
 (defun my-mode-line-count-lines ()
+	"Total lines count."
 	(setq my-mode-line-buffer-line-count (int-to-string (count-lines (point-min) (point-max)))))
 
 (add-hook 'find-file-hook 'my-mode-line-count-lines)
@@ -104,6 +106,10 @@
 (defalias 'list-buffers 'ibuffer) ;; отдельный список буферов при нажатии C-x C-b
 (global-set-key (kbd "<f2>") 'bs-show) ;; запуск buffer selection кнопкой F2
 
+;; Show-paren-mode settings
+(show-paren-mode t) ;; включить выделение выражений между {},[],()
+;; (setq show-paren-style 'expression) ;; выделить цветом выражения между {},[],()
+
 ;; Imenu
 (require 'imenu)
 (setq imenu-auto-rescan t) ;; автоматически обновлять список функций в буфере
@@ -125,6 +131,20 @@
           (lambda ()
               (speedbar-change-initial-expansion-list "quick buffers")))
 (setq sr-speedbar-width 40)
+(global-set-key (kbd "<f5>") 'sr-speedbar-open)
+
+;; Theme
+(load-theme 'spacemacs-dark t)
+
+(require 'powerline)
+;; Themes: arrow, arrow-fade, bar, box, brace,
+;; butt, chamfer, contour, curve,
+;; rounded, roundstub, slant, wave, zigzag, nil,
+(setq powerline-default-separator 'contour)
+
+(require 'spaceline-config)
+(spaceline-emacs-theme)
+(setq powerline-height 20)
 
 (provide 'emacs-rc-ui)
 ;;; emacs-rc-ui.el ends here

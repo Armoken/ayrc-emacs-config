@@ -4,7 +4,11 @@
 ;; Settings only for Lisp
 
 ;;; Code:
-(add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
+(add-hook 'emacs-lisp-mode-hook '(lambda ()
+								  (hs-minor-mode)
+								  (setq company-backends
+								   '(company-elisp))))
+
 (define-key emacs-lisp-mode-map
 	(kbd "C-c h")'hs-toggle-hiding)
 

@@ -83,6 +83,7 @@
 (load "~/.emacs.d/rc/dev/emacs-rc-dev-short.el")
 (load "~/.emacs.d/rc/dev/emacs-rc-dev-org.el")
 
+;; C-like modes
 (load "~/.emacs.d/rc/dev/emacs-rc-dev-csharp.el")
 (load "~/.emacs.d/rc/dev/emacs-rc-dev-cpp.el")
 
