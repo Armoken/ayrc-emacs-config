@@ -4,14 +4,18 @@
 ;; Settings only for Lisp
 
 ;;; Code:
-(add-hook 'emacs-lisp-mode-hook '(lambda ()
-								  (hs-minor-mode)
-								  (setq company-backends
-								   '(company-elisp))))
+(require 'company)
+(defun elisp-hook()
+	(hs-minor-mode)
+	(setq company-backends '(company-elisp
+							 company-semantic
+							 company-yasnippet
+							 company-capf :with company-dabbrev)))
+(add-hook 'emacs-lisp-mode-hook 'elisp-hook)
 
-(define-key emacs-lisp-mode-map
-	(kbd "C-c h")'hs-toggle-hiding)
+(define-key emacs-lisp-mode-map (kbd "C-c h") 'hs-toggle-hiding)
 
+(require 'helm)
 (require 'slime)
 (require 'slime-company)
 (require 'slime-autoloads)

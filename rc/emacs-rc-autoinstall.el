@@ -1,7 +1,7 @@
-;;; init.el --- Summary
+;;; emacs-rc-autoinstall.el --- Summary
 
 ;;; Commentary:
-;; Init settings
+;; Package auto install
 
 ;; About all installed packages:
 ;; assync - Asynchronous processing in Emacs
@@ -53,24 +53,93 @@
 
 ;;; Code:
 
-;; ELPA - Package manager
-(require 'package)
-(setq package-archives
-	  '(
-		("gnu" . "http://elpa.gnu.org/packages/")
-		("marmalade" . "https://marmalade-repo.org/packages/")
-		("melpa" . "http://melpa.milkbox.net/packages/")))
-(package-initialize)
+(defvar my-packages-list
+  '(
+	async
+	auctex
+	auto-complete
+	cmake-ide
+	cmake-mode
+	company
+	company-auctex
+	company-flx
+	company-irony
+	company-irony-c-headers
+	company-math
+	company-tern
+	company-web
+	csharp-mode
+	dash
+	dash-functional
+	ecb
+	elpy
+	emmet-mode
+	emms
+	emms-info-mediainfo
+	emms-mode-line-cycle
+	emms-state
+	epl
+	f
+	find-file-in-project
+	flx
+	flycheck
+	flycheck-irony
+	google
+	helm
+	helm-core
+	helm-css-scss
+	helm-emmet
+	helm-emms
+	helm-firefox
+	helm-flycheck
+	helm-flyspell
+	helm-projectile
+	highlight-indentation
+	irony
+	ivy
+	js2-mode
+	json-mode
+	json-reformat
+	json-snatcher
+	let-alist
+	levenshtein
+	macrostep
+	markdown-mode
+	math-symbol-lists
+	matlab-mode
+	omnisharp
+	org
+	pkg-info
+	popup
+	powerline
+	projectile
+	pyvenv
+	rtags
+	s
+	seq
+	slime
+	slime-company
+	spaceline
+	spacemacs-theme
+	sqlup-mode
+	sr-speedbar
+	swiper
+	tern
+	undo-tree
+	wcheck-mode
+	web-completion-data
+	web-mode
+	yasnippet
+	))
 
-(load "~/.emacs.d/rc/emacs-rc-autoinstall.el")
-;; (my-auto-install-packages) ;; Uncomment on first start!
+(defun my-auto-install-packages ()
+	"Function for package auto installation."
+	(package-refresh-contents)
+	(mapc #'(lambda (package)
+				(unless (package-installed-p package)
+					(package-install package)))
+		  my-packages-list)
+	(save-buffers-kill-emacs))
 
-(load "~/.emacs.d/rc/emacs-rc-ui.el")
-(load "~/.emacs.d/rc/emacs-rc-dev.el")
-(load "~/.emacs.d/rc/emacs-rc-helm.el")
-(load "~/.emacs.d/rc/emacs-rc-emms.el")
-(load "~/.emacs.d/rc/emacs-rc-text.el")
-(load "~/.emacs.d/rc/emacs-rc-eshell.el")
-
-(provide 'init.el)
-;;; init.el ends here
+(provide 'emacs-rc-autoinstall.el)
+;;; emacs-rc-autoinstall.el ends here

@@ -4,22 +4,11 @@
 ;; Settings only for C#
 
 ;;; Code:
-(require 'hideshow)
-(add-hook 'csharp-mode-common-hook
-		  (lambda()
-			  (hs-minor-mode)
-			  (add-to-list 'write-file-functions
-						   'untabify-current-buffer)))
 
 (setq auto-mode-alist
 	  (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
 (autoload 'csharp-mode
 		  "csharp-mode" "Major mode for editing C# code." t)
-
-(load "~/.emacs.d/other/csharp-hs-forward-sexp")
-(add-hook 'csharp-mode-hook
-		  (lambda ()
-			  (local-set-key "\C-c h" 'hs-toggle-hiding)))
 
 (require 'company)
 (require 'omnisharp)
@@ -42,6 +31,13 @@ nearest sln file"
 	(interactive)
 	(omnisharp-start-omnisharp-server "~/.emacs.d/servers/OmniSharp/OmniSharp.sln")
 	(message "Trying to start omnisharp server"))
+
+(require 'hideshow)
+(add-hook 'csharp-mode-common-hook
+		  (lambda()
+			  (hs-minor-mode)
+			  (add-to-list 'write-file-functions
+						   'untabify-current-buffer)))
 
 (provide 'emacs-rc-dev-csharp)
 ;;; emacs-rc-dev-csharp.el ends here

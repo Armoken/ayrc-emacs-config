@@ -18,6 +18,7 @@
 
 
 (defun sql-save-history-hook ()
+	"Save history."
 	(let ((lval 'sql-input-ring-file-name)
 		  (rval 'sql-product))
 		(if (symbol-value rval)

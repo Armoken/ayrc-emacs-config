@@ -19,7 +19,8 @@
 (setq-default indent-tabs-mode t)
 (global-set-key (kbd "RET") 'newline-and-indent)
 
-;; Remove excesses spaces in the string end, replace tabs by spaces and align the intendation automaticaly before file saving
+;; Remove excesses spaces in the string end, replace tabs by
+;; spaces and align the intendation automaticaly before file saving
 (defun format-current-buffer()
 	(indent-region (point-min) (point-max)))
 (defun untabify-current-buffer()
@@ -30,6 +31,19 @@
 (add-to-list 'write-file-functions 'format-current-buffer)
 (add-to-list 'write-file-functions
 			 'delete-trailing-whitespace)
+
+(require 'cc-mode)
+(c-add-style "microsoft"
+			 '("stroustrup"
+			   (c-offsets-alist
+				(innamespace . -)
+				(inline-open . 0)
+				(inher-cont . c-lineup-multi-inher)
+				(arglist-cont-nonempty . +)
+				(template-args-cont . +))))
+(setq c-default-style "microsoft"
+	  c-basic-offset 4)
+
 
 ;; Syntax highlight
 (require 'font-lock)
@@ -59,10 +73,10 @@
 
 ;; Yasnippet
 (require 'yasnippet)
-(yas-global-mode)
 (setq yas-snippet-dirs
-      '("~/.emacs.d/snippets"))
-(provide 'init-yasnippet)
+      '("~/.emacs.d/other/yasnippet/yasmate/snippets"
+        "~/.emacs.d/other/yasnippet/snippets"))
+(yas-global-mode)
 
 ;; Project management with EDE
 (require 'ede)
@@ -74,28 +88,50 @@
 (setq flycheck-idle-change-delay 1)
 
 ;; Company-mode (Autocomplete)
+;; Fuzzy complete
 (require 'company)
-(add-hook 'after-init-hook 'global-company-mode)
-(setq company-idle-delay 0)
+(with-eval-after-load 'company (company-flx-mode +1))
 (define-key company-active-map (kbd "TAB") 'company-complete-selection)
+(setq company-idle-delay 0)
+(add-hook 'after-init-hook 'global-company-mode)
+
+(defun company-yasnippet-or-completion ()
+	"Solve company yasnippet conflicts."
+	(interactive)
+	(let ((yas-fallback-behavior
+			(apply 'company-complete-common nil)))
+		(yas-expand)))
+
+(add-hook 'company-mode-hook (lambda ()
+								 (setq c-default-style "microsoft"
+									   c-basic-offset 4)
+								 (substitute-key-definition
+								  'company-complete-common
+								  'company-yasnippet-or-completion
+								  company-active-map)))
+
+;; Add yasnippet support for all company backends
+;; https://github.com/syl20bnr/spacemacs/pull/179
+(defvar company-mode/enable-yas t
+  "Enable yasnippet for all backends.")
 
 ;; Language modes
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-short.el")
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-org.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-short.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-org.el")
 
 ;; C-like modes
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-csharp.el")
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-cpp.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-csharp.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-cpp.el")
 
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-python.el")
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-latex.el")
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-lisp.el")
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-sql.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-python.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-latex.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-lisp.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-sql.el")
 
 ;; Web modes
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-html-css.el")
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-xml.el")
-(load "~/.emacs.d/rc/dev/emacs-rc-dev-js.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-html-css.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-xml.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-js.el")
 
 (provide 'emacs-rc-dev)
 ;;; emacs-rc-dev.el ends here

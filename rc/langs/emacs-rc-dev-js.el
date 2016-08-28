@@ -7,7 +7,6 @@
 (require 'company)
 (require 'js2-mode)
 (require 'json-mode)
-(require 'coffee-mode)
 
 ;;(Need dash-functional)
 (require 'tern)

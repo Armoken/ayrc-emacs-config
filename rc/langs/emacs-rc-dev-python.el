@@ -13,9 +13,8 @@
 
 (require 'elpy)
 (elpy-enable)
-(setq python-shell-interpreter "ipython"
-	  python-shell-interpreter-args "-i")
-
+(setq python-shell-interpreter "ipython3"
+    python-shell-interpreter-args "--simple-prompt --pprint")
 
 (provide 'emacs-rc-dev-python)
 ;;; emacs-rc-dev-python.el ends here

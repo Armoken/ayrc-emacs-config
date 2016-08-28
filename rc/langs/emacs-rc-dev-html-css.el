@@ -40,6 +40,7 @@
 	;; 1=auto-close with </
 	;; 2=auto-close with > and </
 	(setq web-mode-auto-close-style 1)
+
 	(setq indent-tabs-mode nil)
 	(setq web-mode-indent-style 4)
 	(setq web-mode-enable-current-element-highlight t)
