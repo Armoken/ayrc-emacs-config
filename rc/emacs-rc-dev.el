@@ -21,16 +21,32 @@
 
 ;; Remove excesses spaces in the string end, replace tabs by
 ;; spaces and align the intendation automaticaly before file saving
-(defun format-current-buffer()
+(defun untabify-buffer ()
+	"Remove tabs from buffer."
+	(interactive)
+	(untabify (point-min) (point-max)))
+
+(defun indent-buffer ()
+	"Indent region."
+	(interactive)
 	(indent-region (point-min) (point-max)))
-(defun untabify-current-buffer()
-	(if (not indent-tabs-mode)
-		(untabify (point-min) (point-max)))
+
+(defun cleanup-buffer-notabs ()
+	"Perform a bunch of operations on the whitespace content of a buffer.
+Remove tabs."
+	(interactive)
+	(indent-buffer)
+	(untabify-buffer)
+	(delete-trailing-whitespace)
 	nil)
 
-(add-to-list 'write-file-functions 'format-current-buffer)
-(add-to-list 'write-file-functions
-			 'delete-trailing-whitespace)
+(defun cleanup-buffer-tabs ()
+	"Perform a bunch of operations on the whitespace content of a buffer.
+Dont remove tabs."
+	(interactive)
+	(indent-buffer)
+	(delete-trailing-whitespace)
+	nil)
 
 (require 'cc-mode)
 (c-add-style "microsoft"
@@ -41,8 +57,7 @@
 				(inher-cont . c-lineup-multi-inher)
 				(arglist-cont-nonempty . +)
 				(template-args-cont . +))))
-(setq c-default-style "microsoft"
-	  c-basic-offset 4)
+(setq c-default-style "microsoft" c-basic-offset 4)
 
 
 ;; Syntax highlight
@@ -102,13 +117,13 @@
 			(apply 'company-complete-common nil)))
 		(yas-expand)))
 
-(add-hook 'company-mode-hook (lambda ()
-								 (setq c-default-style "microsoft"
-									   c-basic-offset 4)
-								 (substitute-key-definition
-								  'company-complete-common
-								  'company-yasnippet-or-completion
-								  company-active-map)))
+(add-hook 'company-mode-hook
+		  (lambda ()
+			  (setq c-default-style "microsoft"	c-basic-offset 4)
+			  (substitute-key-definition
+			   'company-complete-common
+			   'company-yasnippet-or-completion
+			   company-active-map)))
 
 ;; Add yasnippet support for all company backends
 ;; https://github.com/syl20bnr/spacemacs/pull/179
@@ -118,6 +133,7 @@
 ;; Language modes
 (load "~/.emacs.d/rc/langs/emacs-rc-dev-short.el")
 (load "~/.emacs.d/rc/langs/emacs-rc-dev-org.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-nasm.el")
 
 ;; C-like modes
 (load "~/.emacs.d/rc/langs/emacs-rc-dev-csharp.el")

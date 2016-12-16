@@ -34,11 +34,26 @@
 (add-hook 'sql-interactive-mode-hook
 		  'sql-save-history-hook)
 
+
 ;; SQL Upcase
 (when (require 'sql-upcase nil :noerror)
 	(add-hook 'sql-mode-hook 'sql-upcase-mode)
 	(add-hook 'sql-interactive-mode-hook 'sql-upcase-mode))
 (setq sql-upcase-mixed-case t)
+
+
+;; Beautify SQL
+(defun sql-beautify-region (beg end)
+	"Beautify SQL in region between BEG and END."
+	(interactive "r")
+	(save-excursion
+	 (shell-command-on-region beg end "sqlbeautify" nil t)))
+
+(defun sql-beautify-buffer ()
+	"Beautify SQL in buffer."
+	(interactive)
+	(sql-beautify-region (point-min) (point-max)))
+
 
 (provide 'emacs-rc-dev-sql)
 ;;; emacs-rc-dev-sql.el ends here
