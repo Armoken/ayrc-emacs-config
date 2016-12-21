@@ -67,6 +67,7 @@
 	company-irony-c-headers
 	company-math
 	company-tern
+	company-quickhelp
 	company-web
 	csharp-mode
 	dash
@@ -107,6 +108,7 @@
 	markdown-mode
 	math-symbol-lists
 	matlab-mode
+	nasm-mode
 	omnisharp
 	org
 	pkg-info

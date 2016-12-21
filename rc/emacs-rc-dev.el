@@ -9,6 +9,11 @@
 (global-set-key (kbd "C-c c") 'comment-region)
 (global-set-key (kbd "C-c u") 'uncomment-region)
 
+;; Next error - F7
+(global-set-key [f7] 'next-error)
+;; Previous error - F8
+(global-set-key [f8] 'previous-error)
+
 ;; Compile - F9
 (global-set-key [(f9)] 'compile)
 
@@ -22,43 +27,31 @@
 ;; Remove excesses spaces in the string end, replace tabs by
 ;; spaces and align the intendation automaticaly before file saving
 (defun untabify-buffer ()
-	"Remove tabs from buffer."
-	(interactive)
-	(untabify (point-min) (point-max)))
+    "Remove tabs from buffer."
+    (interactive)
+    (untabify (point-min) (point-max)))
 
 (defun indent-buffer ()
-	"Indent region."
-	(interactive)
-	(indent-region (point-min) (point-max)))
+    "Indent region."
+    (interactive)
+    (indent-region (point-min) (point-max)))
 
 (defun cleanup-buffer-notabs ()
-	"Perform a bunch of operations on the whitespace content of a buffer.
+    "Perform a bunch of operations on the whitespace content of a buffer.
 Remove tabs."
-	(interactive)
-	(indent-buffer)
-	(untabify-buffer)
-	(delete-trailing-whitespace)
-	nil)
+    (interactive)
+    (indent-buffer)
+    (untabify-buffer)
+    (delete-trailing-whitespace)
+    nil)
 
 (defun cleanup-buffer-tabs ()
-	"Perform a bunch of operations on the whitespace content of a buffer.
+    "Perform a bunch of operations on the whitespace content of a buffer.
 Dont remove tabs."
-	(interactive)
-	(indent-buffer)
-	(delete-trailing-whitespace)
-	nil)
-
-(require 'cc-mode)
-(c-add-style "microsoft"
-			 '("stroustrup"
-			   (c-offsets-alist
-				(innamespace . -)
-				(inline-open . 0)
-				(inher-cont . c-lineup-multi-inher)
-				(arglist-cont-nonempty . +)
-				(template-args-cont . +))))
-(setq c-default-style "microsoft" c-basic-offset 4)
-
+    (interactive)
+    (indent-buffer)
+    (delete-trailing-whitespace)
+    nil)
 
 ;; Syntax highlight
 (require 'font-lock)
@@ -80,11 +73,11 @@ Dont remove tabs."
 (require 'hideshow)
 (defvar hs-special-modes-alist
   (mapcar 'purecopy
-		  '((c-mode "{" "}" "/[*/]" nil nil)
-			(c++-mode "{" "}" "/[*/]" nil nil)
-			(csharp-mode "{" "}" "/[*/]" nil nil)
-			(java-mode "{" "}" "/[*/]" nil nil)
-			(js-mode "{" "}" "/[*/]" nil))))
+          '((c-mode "{" "}" "/[*/]" nil nil)
+            (c++-mode "{" "}" "/[*/]" nil nil)
+            (csharp-mode "{" "}" "/[*/]" nil nil)
+            (java-mode "{" "}" "/[*/]" nil nil)
+            (js-mode "{" "}" "/[*/]" nil))))
 
 ;; Yasnippet
 (require 'yasnippet)
@@ -93,9 +86,6 @@ Dont remove tabs."
         "~/.emacs.d/other/yasnippet/snippets"))
 (yas-global-mode)
 
-;; Project management with EDE
-(require 'ede)
-(global-ede-mode)
 
 ;; Flycheck (Check code errors)
 (require 'flycheck)
@@ -107,33 +97,39 @@ Dont remove tabs."
 (require 'company)
 (with-eval-after-load 'company (company-flx-mode +1))
 (define-key company-active-map (kbd "TAB") 'company-complete-selection)
-(setq company-idle-delay 0)
+(setq company-idle-delay 0.0)
+(setq company-minimum-prefix-length 2)
 (add-hook 'after-init-hook 'global-company-mode)
 
 (defun company-yasnippet-or-completion ()
-	"Solve company yasnippet conflicts."
-	(interactive)
-	(let ((yas-fallback-behavior
-			(apply 'company-complete-common nil)))
-		(yas-expand)))
+    "Solve company yasnippet conflicts."
+    (interactive)
+    (let ((yas-fallback-behavior
+            (apply 'company-complete-common nil)))
+        (yas-expand)))
 
 (add-hook 'company-mode-hook
-		  (lambda ()
-			  (setq c-default-style "microsoft"	c-basic-offset 4)
-			  (substitute-key-definition
-			   'company-complete-common
-			   'company-yasnippet-or-completion
-			   company-active-map)))
+          (lambda ()
+              (substitute-key-definition 'company-complete-common
+                                         'company-yasnippet-or-completion
+                                         company-active-map)))
+
+(require 'company-quickhelp)
+(company-quickhelp-mode 1)
+(eval-after-load 'company
+                 '(define-key company-active-map (kbd "M-h")
+                   #'company-quickhelp-manual-begin))
+
 
 ;; Add yasnippet support for all company backends
 ;; https://github.com/syl20bnr/spacemacs/pull/179
-(defvar company-mode/enable-yas t
-  "Enable yasnippet for all backends.")
+(defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
 
 ;; Language modes
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-short.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-matlab.el")
 (load "~/.emacs.d/rc/langs/emacs-rc-dev-org.el")
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-nasm.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-make.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-asm.el")
 
 ;; C-like modes
 (load "~/.emacs.d/rc/langs/emacs-rc-dev-csharp.el")
@@ -141,6 +137,7 @@ Dont remove tabs."
 
 (load "~/.emacs.d/rc/langs/emacs-rc-dev-python.el")
 (load "~/.emacs.d/rc/langs/emacs-rc-dev-latex.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-elisp.el")
 (load "~/.emacs.d/rc/langs/emacs-rc-dev-lisp.el")
 (load "~/.emacs.d/rc/langs/emacs-rc-dev-sql.el")
 
