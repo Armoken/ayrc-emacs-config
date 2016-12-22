@@ -5,6 +5,7 @@
 
 ;;; Code:
 (require 'sql)
+(require 'company)
 
 (setq sql-postgres-login-params
       '((user :default "noser")
@@ -31,15 +32,20 @@
 
 (add-hook 'sql-interactive-mode-hook 'sql-save-history-hook)
 
-
 ;; SQL Upcase
 (require 'sqlup-mode)
 ;; Capitalize keywords in SQL mode
-(add-hook 'sql-mode-hook 'sqlup-mode)
+(add-hook 'sql-mode-hook
+          (lambda ()
+              (add-hook 'write-contents-functions 'cleanup-buffer-tabs nil t)
+              (set (make-local-variable 'company-backends)
+                   '(company-semantic))
+              (sqlup-mode)))
+
 ;; Capitalize keywords in an interactive session (e.g. psql)
 (add-hook 'sql-interactive-mode-hook 'sqlup-mode)
 ;; Set a global keyword to use sqlup on a region
-(global-set-key (kbd "C-c u") 'sqlup-capitalize-keywords-in-region)
+;; (global-set-key (kbd "C-c u") 'sqlup-capitalize-keywords-in-region)
 
 (provide 'emacs-rc-dev-sql)
 ;;; emacs-rc-dev-sql.el ends here

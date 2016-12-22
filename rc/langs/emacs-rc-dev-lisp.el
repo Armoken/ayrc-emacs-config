@@ -4,25 +4,28 @@
 ;; Settings only for Lisp
 
 ;;; Code:
+(require 'helm)
+(require 'slime)
 (require 'company)
+(require 'slime-company)
+(require 'slime-autoloads)
+
 (defun elisp-hook()
-	(hs-minor-mode)
-	(setq company-backends '(company-elisp
-							 company-semantic
-							 company-yasnippet
-							 company-capf :with company-dabbrev)))
+    (hs-minor-mode)
+    (setq company-backends '(company-elisp
+                             company-semantic
+                             company-yasnippet
+                             company-capf :with company-dabbrev))
+    (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t))
+
 (add-hook 'emacs-lisp-mode-hook 'elisp-hook)
 
 (define-key emacs-lisp-mode-map (kbd "C-c h") 'hs-toggle-hiding)
 
-(require 'helm)
-(require 'slime)
-(require 'slime-company)
-(require 'slime-autoloads)
 (setq slime-net-coding-system 'utf-8-unix)
 (setq inferior-lisp-program  "/usr/bin/sbcl")
 (slime-setup '(slime-fancy slime-asdf
-			   slime-indentation slime-company))
+               slime-indentation slime-company))
 (add-to-list 'auto-mode-alist '("\\.cl\\'" . lisp-mode))
 (add-to-list 'auto-mode-alist '("\\.lisp\\'" . lisp-mode))
 

@@ -129,7 +129,7 @@ Dont remove tabs."
 (load "~/.emacs.d/rc/langs/emacs-rc-dev-matlab.el")
 (load "~/.emacs.d/rc/langs/emacs-rc-dev-org.el")
 (load "~/.emacs.d/rc/langs/emacs-rc-dev-make.el")
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-asm.el")
+(load "~/.emacs.d/rc/langs/emacs-rc-dev-nasm.el")
 
 ;; C-like modes
 (load "~/.emacs.d/rc/langs/emacs-rc-dev-csharp.el")

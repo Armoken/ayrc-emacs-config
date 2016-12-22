@@ -7,7 +7,10 @@
 (require 'irony)
 (require 'cc-mode)
 (require 'company)
+(require 'flycheck)
 (require 'cmake-ide)
+(require 'clang-format)
+(require 'google-c-style)
 (require 'company-irony-c-headers)
 
 ;; Open headers for C in c-mode
@@ -33,14 +36,16 @@
 (eval-after-load 'flycheck '(add-hook 'flycheck-mode-hook
                              #'flycheck-irony-setup))
 
-(defun cc-hook()
+(defun cc-hook ()
+    "Settings common for C and C++ modes."
+    (irony-mode)
+    (google-set-c-style)
     (setq c-basic-offset 4)
-    (setq company-backends '(company-irony
-                             company-irony-c-headers
-                             company-semantic
-                             company-yasnippet))
-    (hs-minor-mode)
-    (irony-mode))
+    (set (make-local-variable 'company-backends) '(company-yasnippet
+                                                   company-irony-c-headers
+                                                   company-irony))
+    (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t)
+    (hs-minor-mode))
 
 (add-hook 'c-mode-hook
           (lambda ()
@@ -50,9 +55,13 @@
 (add-hook 'c++-mode-hook
           (lambda ()
               (cc-hook)
+              (setq flycheck-clang-language-standard "c++11")
               (define-key c++-mode-map (kbd "C-c h") 'hs-toggle-hiding)))
 
 (cmake-ide-setup)
+(setq cmake-ide-flags-c++ (append '("-std=c++11")))
+;; Compile with a keyboard shortcut
+(global-set-key (kbd "C-c m") 'cmake-ide-compile)
 
 (provide 'emacs-rc-dev-cpp)
 ;;; emacs-rc-dev-cpp.el ends here
