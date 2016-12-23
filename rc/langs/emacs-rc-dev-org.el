@@ -18,9 +18,8 @@
 
 (add-hook 'org-mode-hook
           (lambda ()
-              (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t)
-              (set (make-local-variable 'company-backends)
-                   '(company-semantic))))
+              (add-hook 'write-contents-functions
+                        'cleanup-buffer-notabs nil t)))
 
 (provide 'emacs-rc-dev-org)
 ;;; emacs-rc-dev-org.el ends here

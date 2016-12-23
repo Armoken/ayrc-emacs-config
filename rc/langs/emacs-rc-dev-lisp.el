@@ -12,10 +12,8 @@
 
 (defun elisp-hook()
     (hs-minor-mode)
-    (setq company-backends '(company-elisp
-                             company-semantic
-                             company-yasnippet
-                             company-capf :with company-dabbrev))
+    (add-to-list (make-local-variable 'company-backends) '(company-elisp
+                                                           company-yasnippet))
     (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t))
 
 (add-hook 'emacs-lisp-mode-hook 'elisp-hook)

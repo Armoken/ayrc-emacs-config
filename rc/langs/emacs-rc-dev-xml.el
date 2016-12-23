@@ -23,8 +23,6 @@
 (add-hook 'nxml-mode-hook
           (lambda ()
               (add-hook 'write-contents-functions 'cleanup-buffer-tabs nil t)
-              (set (make-local-variable 'company-backends)
-                   '(company-semantic))
               (hs-minor-mode)))
 (define-key nxml-mode-map (kbd "C-c h") 'hs-toggle-hiding)
 

@@ -14,11 +14,11 @@
 
 (add-hook 'LaTeX-mode-hook
           '(lambda ()
-            (set (make-local-variable 'company-backends)
+            (add-to-list (make-local-variable 'company-backends)
              '(company-math-symbols-latex company-latex-commands
                company-auctex-labels company-auctex-bibs
                company-auctex-macros company-auctex-symbols
-               company-auctex-environments))
+               company-auctex-environments company-yasnippet))
 
             (define-key LaTeX-mode-map (kbd "$") 'self-insert-command)
             (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t)))

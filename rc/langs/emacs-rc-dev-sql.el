@@ -38,8 +38,6 @@
 (add-hook 'sql-mode-hook
           (lambda ()
               (add-hook 'write-contents-functions 'cleanup-buffer-tabs nil t)
-              (set (make-local-variable 'company-backends)
-                   '(company-semantic))
               (sqlup-mode)))
 
 ;; Capitalize keywords in an interactive session (e.g. psql)

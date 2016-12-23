@@ -45,7 +45,8 @@
     (setq indent-tabs-mode nil)
     (setq web-mode-indent-style 4)
     (setq web-mode-enable-current-element-highlight t)
-    (setq company-backends '(company-web-html))
+    (add-to-list (make-local-variable 'company-backends)
+                 '(company-web-html company-yasnippet))
     (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t))
 (add-hook 'web-mode-hook 'my-web-mode-hook)
 

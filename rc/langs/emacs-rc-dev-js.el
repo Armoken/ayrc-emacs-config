@@ -13,7 +13,8 @@
 (add-hook 'js-mode-hook
           (lambda ()
               (tern-mode t)
-              (setq company-backends '(company-tern))
+              (add-to-list (make-local-variable 'company-backends)
+                           '(company-tern company-yasnippet))
               (add-hook 'write-contents-functions
                         'cleanup-buffer-notabs nil t)))
 

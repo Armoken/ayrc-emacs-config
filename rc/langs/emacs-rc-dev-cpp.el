@@ -41,9 +41,8 @@
     (irony-mode)
     (google-set-c-style)
     (setq c-basic-offset 4)
-    (set (make-local-variable 'company-backends) '(company-yasnippet
-                                                   company-irony-c-headers
-                                                   company-irony))
+    (add-to-list (make-local-variable 'company-backends)
+                 '(company-irony-c-headers company-irony company-yasnippet))
     (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t)
     (hs-minor-mode))
 
@@ -58,10 +57,10 @@
               (setq flycheck-clang-language-standard "c++11")
               (define-key c++-mode-map (kbd "C-c h") 'hs-toggle-hiding)))
 
-(cmake-ide-setup)
 (setq cmake-ide-flags-c++ (append '("-std=c++11")))
 ;; Compile with a keyboard shortcut
 (global-set-key (kbd "C-c m") 'cmake-ide-compile)
+(cmake-ide-setup)
 
 (provide 'emacs-rc-dev-cpp)
 ;;; emacs-rc-dev-cpp.el ends here

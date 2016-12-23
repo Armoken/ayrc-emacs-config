@@ -12,7 +12,6 @@
 (setq matlab-shell-command "matlab")
 (add-hook 'matlab-mode-hook
           (lambda()
-              (set (make-local-variable 'company-backends) '(company-semantic))
               (add-hook 'write-contents-functions
                         'cleanup-buffer-notabs nil t)))
 

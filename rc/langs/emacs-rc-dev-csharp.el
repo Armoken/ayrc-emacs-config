@@ -36,7 +36,8 @@ nearest sln file"
               (setq hs-isearch-open t)
               (define-key csharp-mode-map (kbd "C-c h") 'hs-toggle-hiding)
               (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t)
-              (setq company-backends '(company-omnisharp))))
+              (add-to-list (make-local-variable 'company-backends)
+                           '(company-omnisharp company-yasnippet))))
 
 (provide 'emacs-rc-dev-csharp)
 ;;; emacs-rc-dev-csharp.el ends here

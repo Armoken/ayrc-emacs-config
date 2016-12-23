@@ -12,7 +12,8 @@
               (hs-minor-mode)
               (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t)
               (define-key emacs-lisp-mode-map (kbd "C-c h") 'hs-toggle-hiding)
-              (set (make-local-variable 'company-backends) '(company-elisp))))
+              (add-to-list (make-local-variable 'company-backends)
+                           '(company-elisp company-yasnippet))))
 
 (provide 'emacs-rc-dev-elisp)
 ;;; emacs-rc-dev-elisp.el ends here

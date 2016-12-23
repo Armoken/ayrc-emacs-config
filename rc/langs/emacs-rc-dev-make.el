@@ -18,7 +18,6 @@
 
 (defun my-make-hook ()
     "Func that set options for all make modes."
-    (set (make-local-variable 'company-backends) '(company-semantic))
     (add-hook 'write-contents-functions
               '(lambda () (delete-trailing-whitespace) nil) nil t))
 

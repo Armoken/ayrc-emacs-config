@@ -14,8 +14,8 @@
               (hs-minor-mode)
               (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t)
               (define-key python-mode-map (kbd "C-c h") 'hs-toggle-hiding)
-              (set (make-local-variable 'company-backends)
-                   '(company-mode/backend-with-yas 'elpy-company-backend))))
+              (add-to-list (make-local-variable 'company-backends)
+                           '(elpy-company-backend company-yasnippet))))
 
 (setq elpy-rpc-backend "jedi")
 (setq python-shell-interpreter "ipython3"

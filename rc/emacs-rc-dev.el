@@ -93,26 +93,18 @@ Dont remove tabs."
 (setq flycheck-idle-change-delay 1)
 
 ;; Company-mode (Autocomplete)
-;; Fuzzy complete
 (require 'company)
 (with-eval-after-load 'company (company-flx-mode +1))
 (define-key company-active-map (kbd "TAB") 'company-complete-selection)
 (setq company-idle-delay 0.0)
-(setq company-minimum-prefix-length 2)
+(setq company-minimum-prefix-length 1)
 (add-hook 'after-init-hook 'global-company-mode)
 
-(defun company-yasnippet-or-completion ()
-    "Solve company yasnippet conflicts."
-    (interactive)
-    (let ((yas-fallback-behavior
-            (apply 'company-complete-common nil)))
-        (yas-expand)))
-
-(add-hook 'company-mode-hook
-          (lambda ()
-              (substitute-key-definition 'company-complete-common
-                                         'company-yasnippet-or-completion
-                                         company-active-map)))
+;; set default `company-backends'
+(setq company-backends '((company-files          ; files & directory
+                          company-keywords       ; keywords
+                          company-capf)
+                         (company-abbrev company-dabbrev)))
 
 (require 'company-quickhelp)
 (company-quickhelp-mode 1)
