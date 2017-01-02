@@ -1,4 +1,4 @@
-;;; emacs-rc-ui --- Summary
+;;; ui-common-conf.el --- Summary
 
 ;;; Commentary:
 ;;; UI settings common for all modes
@@ -42,13 +42,13 @@
 (size-indication-mode nil)
 
 ;; Fullscreen at startup
-(defun fullscreen (&optional f)
-	"Make Emacs fullscreen at the start.  F necessary for this."
-	(interactive)
- 	(x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-						   '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
-	(x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-						   '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
+(defun fullscreen ()
+    "Make Emacs fullscreen at the start."
+    (interactive)
+    (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+                           '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
+    (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+                           '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
 (when (window-system) (fullscreen))
 
 ;; Smooth scroll
@@ -93,5 +93,5 @@
 (spaceline-toggle-buffer-size-off)
 (setq powerline-height 20)
 
-(provide 'emacs-rc-ui)
-;;; emacs-rc-ui.el ends here
+(provide 'ui-common-conf)
+;;; ui-common-conf.el ends here

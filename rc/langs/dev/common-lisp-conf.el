@@ -1,4 +1,4 @@
-;;; emacs-rc-dev-lisp --- Summary
+;;; common-lisp-conf.el --- Summary
 
 ;;; Commentary:
 ;; Settings only for Lisp
@@ -30,6 +30,5 @@
 ;; Indents
 (setq-default lisp-body-indent 4)
 (setq lisp-indent-function 'common-lisp-indent-function)
-
-(provide 'emacs-rc-dev-lisp)
-;;; emacs-rc-dev-lisp.el ends here
+(provide 'common-lisp-conf)
+;;; common-lisp-conf.el ends here

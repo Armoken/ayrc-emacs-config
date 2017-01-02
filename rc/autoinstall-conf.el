@@ -1,4 +1,4 @@
-;;; emacs-rc-autoinstall.el --- Summary
+;;; autoinstall-conf.el --- Summary
 
 ;;; Commentary:
 ;; Package auto install
@@ -148,5 +148,5 @@
           my-packages-list)
     (save-buffers-kill-emacs))
 
-(provide 'emacs-rc-autoinstall.el)
-;;; emacs-rc-autoinstall.el ends here
+(provide 'autoinstall-conf.el)
+;;; autoinstall-conf.el ends here

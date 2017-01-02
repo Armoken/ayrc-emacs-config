@@ -1,28 +1,15 @@
-;;; emacs-rc-dev --- Summary
+;;; langs-common-conf.el --- Summary
 
 ;;; Commentary:
-;; Here you can find settings that common for all modes that relating with development
+;; Here you can find settings that common for all langs
 
 ;;; Code:
-
-;; Comment/uncomment code block
-(global-set-key (kbd "C-c c") 'comment-region)
-(global-set-key (kbd "C-c u") 'uncomment-region)
-
-;; Next error - F7
-(global-set-key [f7] 'next-error)
-;; Previous error - F8
-(global-set-key [f8] 'previous-error)
-
-;; Compile - F9
-(global-set-key [(f9)] 'compile)
 
 ;; Indents (Some languages need custom settings)
 (setq-default tab-width 4)
 (setq-default pc-basic-offset 4)
 (setq-default standart-indent 4)
 (setq-default indent-tabs-mode t)
-(global-set-key (kbd "RET") 'newline-and-indent)
 
 ;; Remove excesses spaces in the string end, replace tabs by
 ;; spaces and align the intendation automaticaly before file saving
@@ -117,26 +104,23 @@ Dont remove tabs."
 ;; https://github.com/syl20bnr/spacemacs/pull/179
 (defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
 
-;; Language modes
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-matlab.el")
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-org.el")
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-make.el")
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-nasm.el")
+;; Dev langs
+(load "~/.emacs.d/rc/langs/dev/cc-conf.el")
+(load "~/.emacs.d/rc/langs/dev/common-lisp-conf.el")
+(load "~/.emacs.d/rc/langs/dev/csharp-conf.el")
+(load "~/.emacs.d/rc/langs/dev/css-conf.el")
+(load "~/.emacs.d/rc/langs/dev/elisp-conf.el")
+(load "~/.emacs.d/rc/langs/dev/html-conf.el")
+(load "~/.emacs.d/rc/langs/dev/js-conf.el")
+(load "~/.emacs.d/rc/langs/dev/make-conf.el")
+(load "~/.emacs.d/rc/langs/dev/matlab-conf.el")
+(load "~/.emacs.d/rc/langs/dev/nasm-conf.el")
+(load "~/.emacs.d/rc/langs/dev/python-conf.el")
+(load "~/.emacs.d/rc/langs/dev/sql-conf.el")
 
-;; C-like modes
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-csharp.el")
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-cpp.el")
+;; Other langs
+(load "~/.emacs.d/rc/langs/other/org-conf.el")
+(load "~/.emacs.d/rc/langs/other/latex-conf.el")
 
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-python.el")
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-latex.el")
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-elisp.el")
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-lisp.el")
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-sql.el")
-
-;; Web modes
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-html-css.el")
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-xml.el")
-(load "~/.emacs.d/rc/langs/emacs-rc-dev-js.el")
-
-(provide 'emacs-rc-dev)
-;;; emacs-rc-dev.el ends here
+(provide 'langs-common-conf)
+;;; langs-common-conf.el ends here

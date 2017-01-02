@@ -1,4 +1,4 @@
-;;; emacs-rc-dev-csharp --- Summary
+;;; csharp-conf.el --- Summary
 
 ;;; Commentary:
 ;; Settings only for C#
@@ -6,8 +6,8 @@
 ;;; Code:
 (require 'company)
 (require 'hideshow)
-(require 'omnisharp)
 (require 'csharp-mode)
+(require 'omnisharp)
 (require 'omnisharp-utils)
 (require 'omnisharp-server-actions)
 (require 'omnisharp-auto-complete-actions)
@@ -39,5 +39,5 @@ nearest sln file"
               (add-to-list (make-local-variable 'company-backends)
                            '(company-omnisharp company-yasnippet))))
 
-(provide 'emacs-rc-dev-csharp)
-;;; emacs-rc-dev-csharp.el ends here
+(provide 'csharp-conf)
+;;; csharp-conf.el ends here

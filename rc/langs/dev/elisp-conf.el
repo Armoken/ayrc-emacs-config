@@ -1,4 +1,4 @@
-;;; emacs-rc-dev-elisp --- Summary
+;;; elisp-conf.el --- Summary
 
 ;;; Commentary:
 ;; Settings only for Emacs Lisp
@@ -15,5 +15,5 @@
               (add-to-list (make-local-variable 'company-backends)
                            '(company-elisp company-yasnippet))))
 
-(provide 'emacs-rc-dev-elisp)
-;;; emacs-rc-dev-elisp.el ends here
+(provide 'elisp-conf)
+;;; elisp-conf.el ends here

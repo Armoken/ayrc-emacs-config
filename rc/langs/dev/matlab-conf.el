@@ -1,4 +1,4 @@
-;;; emacs-rc-dev-matlab --- Summary
+;;; matlab-conf.el --- Summary
 
 ;;; Commentary:
 ;; Settings only for Matlab
@@ -15,5 +15,5 @@
               (add-hook 'write-contents-functions
                         'cleanup-buffer-notabs nil t)))
 
-(provide 'emacs-rc-dev-matlab)
-;;; emacs-rc-dev-matlab.el ends here
+(provide 'matlab-conf)
+;;; matlab-conf.el ends here

@@ -1,4 +1,4 @@
-;;; emacs-rc-emms --- Summary
+;;; emms-conf.el --- Summary
 
 ;;; Commentary:
 ;; Settings only for EMMS
@@ -55,5 +55,5 @@
                    "m3u" "ogg" "flac" "mp3" "wav"))))
 (emms-player-set emms-player-mpd 'regex emms-player-mpd-supported-regexp)
 
-(provide 'emacs-rc-emms)
-;;; emacs-rc-emms.el ends here
+(provide 'emms-conf.el)
+;;; emms-conf.el ends here

@@ -1,4 +1,4 @@
-;;; emacs-rc-dev-xml --- Summary
+;;; xml-conf.el --- Summary
 
 ;;; Commentary:
 ;; Settings only for XML
@@ -26,5 +26,5 @@
               (hs-minor-mode)))
 (define-key nxml-mode-map (kbd "C-c h") 'hs-toggle-hiding)
 
-(provide 'emacs-rc-dev-xml)
-;;; emacs-rc-dev-xml.el ends here
+(provide 'xml-conf)
+;;; xml-conf.el ends here

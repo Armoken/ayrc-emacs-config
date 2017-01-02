@@ -1,14 +1,13 @@
-;;; emacs-rc-dev-html-css --- Summary
+;;; html-conf.el --- Summary
 
 ;;; Commentary:
-;; Settings only for HTML and CSS
+;; Settings only for HTML
 
 ;;; Code:
 (require 'company)
 (require 'hideshow)
 (require 'web-mode)
 (require 'emmet-mode)
-;; load company mode html backend
 (require 'company-web-html)
 
 (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
@@ -61,6 +60,5 @@
 (add-hook 'web-mode-hook 'hs-minor-mode)
 (define-key web-mode-map (kbd "C-c h") 'hs-toggle-hiding)
 
-
-(provide 'emacs-rc-dev-html-css)
-;;; emacs-rc-dev-html-css.el ends here
+(provide 'html-conf)
+;;; html-conf.el ends here

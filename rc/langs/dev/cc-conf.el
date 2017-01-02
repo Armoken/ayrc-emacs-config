@@ -1,4 +1,4 @@
-;;; emacs-rc-dev-cpp --- Summary
+;;; cc-conf.el --- Summary
 
 ;;; Commentary:
 ;; Settings only for C/C++
@@ -62,5 +62,5 @@
 (global-set-key (kbd "C-c m") 'cmake-ide-compile)
 (cmake-ide-setup)
 
-(provide 'emacs-rc-dev-cpp)
-;;; emacs-rc-dev-cpp.el ends here
+(provide 'cc-conf)
+;;; cc-conf.el ends here

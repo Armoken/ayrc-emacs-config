@@ -1,4 +1,4 @@
-;;; emacs-rc-dev-make --- Summary
+;;; make-conf.el --- Summary
 
 ;;; Commentary:
 ;; Settings for CMake and Makefile modes
@@ -29,5 +29,5 @@
             'makefile-automake-mode-hook
             'makefile-mode-hook))
 
-(provide 'emacs-rc-dev-make)
-;;; emacs-rc-dev-make.el ends here
+(provide 'make-conf)
+;;; make-conf.el ends here

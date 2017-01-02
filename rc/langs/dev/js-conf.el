@@ -1,10 +1,10 @@
-;;; emacs-rc-dev-js --- Summary
+;;; js-conf.el --- Summary
 
 ;;; Commentary:
 ;; Settings only for Javascript
 
 ;;; Code:
-;;(Need dash-functional)
+;; Need dash-functional
 (require 'tern)
 (require 'company)
 (require 'js2-mode)
@@ -18,5 +18,5 @@
               (add-hook 'write-contents-functions
                         'cleanup-buffer-notabs nil t)))
 
-(provide 'emacs-rc-dev-js)
-;;; emacs-rc-dev-js.el ends here
+(provide 'js-conf)
+;;; js-conf.el ends here

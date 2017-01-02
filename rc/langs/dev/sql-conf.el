@@ -1,4 +1,4 @@
-;;; emacs-rc-dev-sql --- Summary
+;;; sql-conf.el --- Summary
 
 ;;; Commentary:
 ;; Settings only for SQL
@@ -45,5 +45,5 @@
 ;; Set a global keyword to use sqlup on a region
 ;; (global-set-key (kbd "C-c u") 'sqlup-capitalize-keywords-in-region)
 
-(provide 'emacs-rc-dev-sql)
-;;; emacs-rc-dev-sql.el ends here
+(provide 'sql-conf)
+;;; sql-conf.el ends here

@@ -1,4 +1,4 @@
-;;; emacs-rc-dev-python --- Summary
+;;; python-conf.el --- Summary
 
 ;;; Commentary:
 ;; Settings only for Python
@@ -21,5 +21,5 @@
 (setq python-shell-interpreter "ipython3"
       python-shell-interpreter-args "--simple-prompt --pprint")
 
-(provide 'emacs-rc-dev-python)
-;;; emacs-rc-dev-python.el ends here
+(provide 'python-conf)
+;;; python-conf.el ends here
