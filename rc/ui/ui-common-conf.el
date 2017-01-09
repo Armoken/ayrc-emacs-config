@@ -7,7 +7,7 @@
 
 ;;; Font
 ;; Work when emacs running as server
-(setq default-frame-alist '((font . "Hack-10")))
+(setq default-frame-alist '((font . "Hack-8")))
 ;; Not work when emacs running as server, but will work if previous version bad
 ;; (setq default-frame-alist '((font . "Hack :: Regular: 10:: Cyrillic")))
 
@@ -34,9 +34,9 @@
 
 ;; Frienge settings
 ;; The fringe is a thin strip down the left and/or right edge of a window.
-(fringe-mode '(8 . 0)) ;; limited just to the left of the text
-(setq-default indicate-empty-lines t)
-(setq-default indicate-buffer-boundaries 'left)
+;; (fringe-mode '(8 . 0)) ;; limited just to the left of the text
+;; (setq-default indicate-empty-lines t)
+;; (setq-default indicate-buffer-boundaries 'left)
 
 ;; Current buffer size
 (size-indication-mode nil)
