@@ -34,7 +34,7 @@
 (line-number-mode t) ;; show line number in mode-line
 (global-linum-mode t) ;; show line number in all buffers
 (column-number-mode t) ;; show column number in mode-line
-(setq linum-format " %d ") ;; format of line numbers
+(setq linum-format " %3d ") ;; format of line numbers
 
 ;; Undo tree
 (require 'undo-tree)

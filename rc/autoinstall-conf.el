@@ -132,6 +132,7 @@
     sqlup-mode
     sr-speedbar
     swiper
+    sublimity
     tern
     undo-tree
     wcheck-mode

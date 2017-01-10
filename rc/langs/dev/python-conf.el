@@ -7,6 +7,7 @@
 (require 'elpy)
 (require 'python)
 (require 'company)
+(require 'flycheck)
 
 (elpy-enable)
 (add-hook 'python-mode-hook
@@ -14,10 +15,12 @@
               (hs-minor-mode)
               (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t)
               (define-key python-mode-map (kbd "C-c h") 'hs-toggle-hiding)
+              (setq flycheck-checker-error-threshold 1000)
               (add-to-list (make-local-variable 'company-backends)
                            '(elpy-company-backend company-yasnippet))))
 
 (setq elpy-rpc-backend "jedi")
+(add-to-list 'python-shell-completion-native-disabled-interpreters "ipython3")
 (setq python-shell-interpreter "ipython3"
       python-shell-interpreter-args "--simple-prompt --pprint")
 

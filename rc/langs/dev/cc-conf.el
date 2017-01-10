@@ -55,6 +55,7 @@
           (lambda ()
               (cc-hook)
               (setq flycheck-clang-language-standard "c++11")
+              (setq irony-additional-clang-options '("-std=c++11"))
               (define-key c++-mode-map (kbd "C-c h") 'hs-toggle-hiding)))
 
 (setq cmake-ide-flags-c++ (append '("-std=c++11")))

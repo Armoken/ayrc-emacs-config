@@ -34,7 +34,7 @@
 
 ;; Frienge settings
 ;; The fringe is a thin strip down the left and/or right edge of a window.
-(fringe-mode '(8 . 0)) ;; limited just to the left of the text
+(fringe-mode '(0 . 0)) ;; limited just to the left of the text
 (setq-default indicate-empty-lines t)
 (setq-default indicate-buffer-boundaries 'left)
 
@@ -52,11 +52,17 @@
 (when (window-system) (fullscreen))
 
 ;; Smooth scroll
-(setq scroll-margin 1)
-(setq scroll-conservatively 10000)
+(require 'sublimity)
+(require 'sublimity-scroll)
+(setq sublimity-scroll-weight 10
+      sublimity-scroll-drift-length 1)
+(sublimity-mode 1)
+
+(setq scroll-step 1)
+
 (setq mouse-wheel-follow-mouse 't)
 (setq mouse-wheel-progressive-speed nil)
-(setq mouse-wheel-scroll-amount '(2 ((shift) . 1)))
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
 
 ;; Disable cursor blink
 (blink-cursor-mode 0)

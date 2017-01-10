@@ -5,12 +5,13 @@
 
 ;;; Code:
 (require 'diminish)
-(diminish 'abbrev-mode "ⓐ")
-(diminish 'visual-line-mode "Ⓦ")
-(eval-after-load "helm-mode" '(diminish 'helm-mode "Ⓗ"))
+(diminish 'helm-mode)
+(diminish 'abbrev-mode)
+(diminish 'visual-line-mode)
+
+(eval-after-load "undo-tree" '(diminish 'undo-tree-mode))
 (eval-after-load "flycheck" '(diminish 'flycheck-mode "Ⓕ"))
 (eval-after-load "hideshow" '(diminish 'hs-minor-mode "ⓗ"))
-(eval-after-load "undo-tree" '(diminish 'undo-tree-mode "Ⓤ"))
 (eval-after-load "highlight-indentation"
                  '(diminish 'highlight-indentation-mode))
 
