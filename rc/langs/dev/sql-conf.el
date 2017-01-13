@@ -6,6 +6,7 @@
 ;;; Code:
 (require 'sql)
 (require 'company)
+(require 'sqlup-mode) ;; Capitalize keywords in SQL mode
 
 (setq sql-postgres-login-params
       '((user :default "noser")
@@ -32,13 +33,10 @@
 
 (add-hook 'sql-interactive-mode-hook 'sql-save-history-hook)
 
-;; SQL Upcase
-(require 'sqlup-mode)
-;; Capitalize keywords in SQL mode
-(add-hook 'sql-mode-hook
-          (lambda ()
-              (add-hook 'write-contents-functions 'cleanup-buffer-tabs nil t)
-              (sqlup-mode)))
+(defun my-sql-mode-hook()
+    (add-hook 'write-contents-functions 'cleanup-buffer-tabs nil t)
+    (sqlup-mode))
+(add-hook 'sql-mode-hook 'my-sql-mode-hook)
 
 ;; Capitalize keywords in an interactive session (e.g. psql)
 (add-hook 'sql-interactive-mode-hook 'sqlup-mode)

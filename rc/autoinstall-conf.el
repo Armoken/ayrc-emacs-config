@@ -114,6 +114,7 @@
     matlab-mode
     mpg123
     nasm-mode
+    nlinum
     omnisharp
     org
     pkg-info

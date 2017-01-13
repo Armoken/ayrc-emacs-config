@@ -15,7 +15,7 @@
 (global-hl-line-mode 1)
 
 ;; Common clipboard with X Server
-(setq x-select-enable-clipboard t)
+(setq select-enable-clipboard t)
 
 ;; Show-paren-mode settings
 (require 'paren)
@@ -30,11 +30,14 @@
 (show-paren-mode) ;; enable global minor mode
 
 ;; Line numbers
-(require 'linum)
 (line-number-mode t) ;; show line number in mode-line
-(global-linum-mode t) ;; show line number in all buffers
 (column-number-mode t) ;; show column number in mode-line
-(setq linum-format " %3d ") ;; format of line numbers
+(require 'nlinum)
+(setq nlinum-format "%4d  ")
+;;; show line number in all except generated buffers
+(add-hook 'text-mode-hook '(lambda () (nlinum-mode t)))
+(add-hook 'prog-mode-hook '(lambda () (nlinum-mode t)))
+
 
 ;; Undo tree
 (require 'undo-tree)

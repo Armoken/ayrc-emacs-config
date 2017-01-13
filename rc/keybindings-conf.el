@@ -31,6 +31,7 @@
 
 ;; Compile - F9
 (global-set-key [(f9)] 'compile)
+(global-set-key (kbd "C-c m") 'cmake-ide-compile)
 
 (global-set-key (kbd "RET") 'newline-and-indent)
 

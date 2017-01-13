@@ -20,10 +20,11 @@
                    'nxml-forward-element
                    nil))
 
-(add-hook 'nxml-mode-hook
-          (lambda ()
-              (add-hook 'write-contents-functions 'cleanup-buffer-tabs nil t)
-              (hs-minor-mode)))
+(defun my-nxml-mode-hook()
+    (add-hook 'write-contents-functions 'cleanup-buffer-tabs nil t)
+    (hs-minor-mode))
+(add-hook 'nxml-mode-hook 'my-nxml-mode-hook)
+
 (define-key nxml-mode-map (kbd "C-c h") 'hs-toggle-hiding)
 
 (provide 'xml-conf)

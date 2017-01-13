@@ -31,6 +31,7 @@
 
             "~/.emacs.d/rc/keybindings-conf.el"
 
+            "~/.emacs.d/rc/eshell-conf.el"
             "~/.emacs.d/rc/emms-conf.el"))
 
 (provide 'init)
@@ -42,7 +43,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (sublimity web-mode wcheck-mode undo-tree swiper sr-speedbar sqlup-mode spacemacs-theme spaceline slime-company rtags omnisharp nasm-mode mpg123 matlab-mode markdown-mode json-mode js2-mode helm-projectile helm-flyspell helm-flycheck helm-firefox helm-emms helm-emmet helm-css-scss google-c-style google flycheck-irony f emms-state emms-player-mpv emms-mode-line-cycle emms-info-mediainfo elpy ecb diminish company-web company-tern company-quickhelp company-math company-irony-c-headers company-irony company-flx company-auctex cmake-mode cmake-ide clang-format))))
+    (web-mode wcheck-mode undo-tree swiper sublimity sr-speedbar sqlup-mode spacemacs-theme spaceline slime-company rtags omnisharp nlinum-relative nasm-mode mpg123 matlab-mode markdown-mode json-mode js2-mode helm-projectile helm-flyspell helm-flycheck helm-firefox helm-emms helm-emmet helm-css-scss google-c-style google flycheck-irony f emms-state emms-player-mpv emms-mode-line-cycle emms-info-mediainfo elpy ecb diminish company-web company-tern company-quickhelp company-math company-irony-c-headers company-irony company-flx company-auctex cmake-mode cmake-ide clang-format))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
