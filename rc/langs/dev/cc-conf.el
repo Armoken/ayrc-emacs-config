@@ -53,13 +53,13 @@
 
 (defun my-c++-mode-hook()
     (my-cc-hook)
-    (setq flycheck-clang-language-standard "c++11")
-    (setq irony-additional-clang-options '("-std=c++11"))
+    (setq flycheck-clang-language-standard "c++14")
+    (setq irony-additional-clang-options '("-std=c++14"))
     (define-key c++-mode-map (kbd "C-c h") 'hs-toggle-hiding))
 (add-hook 'c++-mode-hook 'my-c++-mode-hook)
 
 (cmake-ide-setup)
-(setq cmake-ide-flags-c++ (append '("-std=c++11")))
+(setq cmake-ide-flags-c++ (append '("-std=c++14")))
 
 (provide 'cc-conf)
 ;;; cc-conf.el ends here

@@ -68,7 +68,8 @@ git command is not found)."
           (let* ((directory (split-directory-prompt (pwd-shorten-dirs (pwd-replace-home (eshell/pwd)))))
                  (parent (car directory))
                  (name (cadr directory))
-                 (branch (or (curr-dir-git-branch-string (eshell/pwd)) "")))
+                 ;; (branch (or (curr-dir-git-branch-string (eshell/pwd)) "")) ;; Uncomment to see current git brunch
+                 (branch ""))
 
               (if (eq 'dark (frame-parameter nil 'background-mode))
                   (concat   ;; Prompt for Dark Themes

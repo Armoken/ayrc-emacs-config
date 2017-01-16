@@ -18,6 +18,9 @@
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 
+;; Scroll
+(global-set-key (kbd "M-n") (lambda () (interactive) (scroll-up 1)))
+(global-set-key (kbd "M-p") (lambda () (interactive) (scroll-down 1)))
 
 ;; Langs
 ;; Comment/uncomment code block
@@ -37,7 +40,8 @@
 
 
 ;; UI
-(global-set-key (kbd "<f5>") 'sr-speedbar-open)
+(global-set-key (kbd "<f5>") 'sr-speedbar-toggle)
+(global-set-key (kbd "<f6>") 'neotree-toggle)
 
 ;; Helm
 (global-unset-key (kbd "C-x c"))
