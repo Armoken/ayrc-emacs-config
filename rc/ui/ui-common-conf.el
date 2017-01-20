@@ -5,11 +5,12 @@
 
 ;;; Code:
 
-;;; Font
-;; Work when emacs running as server
-(setq default-frame-alist '((font . "Hack-8")))
-;; Not work when emacs running as server, but will work if previous version bad
-;; (setq default-frame-alist '((font . "Hack :: Regular: 10:: Cyrillic")))
+(require 'dired)
+(require 'neotree)
+(require 'powerline)
+(require 'sr-speedbar)
+(require 'all-the-icons)
+(require 'smooth-scroll)
 
 ;; Disable welcom screen
 (setq inhibit-splash-screen   t)
@@ -34,9 +35,9 @@
 
 ;; Frienge settings
 ;; The fringe is a thin strip down the left and/or right edge of a window.
-;; (fringe-mode '(8 . 0)) ;; limited just to the left of the text
-;; (setq-default indicate-empty-lines t)
-;; (setq-default indicate-buffer-boundaries 'left)
+(fringe-mode '(0 . 0)) ;; limited just to the left of the text
+(setq-default indicate-empty-lines t)
+(setq-default indicate-buffer-boundaries 'left)
 
 ;; Current buffer size
 (size-indication-mode nil)
@@ -52,11 +53,15 @@
 (when (window-system) (fullscreen))
 
 ;; Smooth scroll
+(smooth-scroll-mode t)
+
+(setq scroll-step 1)
 (setq scroll-margin 1)
 (setq scroll-conservatively 10000)
-(setq mouse-wheel-follow-mouse 't)
-(setq mouse-wheel-progressive-speed nil)
-(setq mouse-wheel-scroll-amount '(2 ((shift) . 1)))
+;; (setq mouse-wheel-follow-mouse 't)
+;; (setq scroll-preserve-screen-position t)
+;; (setq mouse-wheel-progressive-speed nil)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
 
 ;; Disable cursor blink
 (blink-cursor-mode 0)
@@ -68,30 +73,18 @@
 ;; Dired (C-x D)
 ;; Dired makes an Emacs buffer containing a listing of a directory,
 ;; and optionally some of its subdirectories as well.
-(require 'dired)
 (setq dired-recursive-deletes 'top) ;; for deleting of empty dirs
 
 ;; Speedbar
-(require 'sr-speedbar)
 (add-hook 'speedbar-mode-hook
           (lambda ()
               (speedbar-change-initial-expansion-list "quick buffers")))
 (setq sr-speedbar-width 40)
 (global-set-key (kbd "<f5>") 'sr-speedbar-open)
 
-;; Theme
-(load-theme 'spacemacs-dark t)
-
-(require 'powerline)
-;; Themes: arrow, arrow-fade, bar, box, brace,
-;; butt, chamfer, contour, curve,
-;; rounded, roundstub, slant, wave, zigzag, nil,
-(setq powerline-default-separator 'contour)
-
-(require 'spaceline-config)
-(spaceline-emacs-theme)
-(spaceline-toggle-buffer-size-off)
-(setq powerline-height 20)
+;; NeoTree
+(setq neo-window-width 40)
+(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
 
 (provide 'ui-common-conf)
 ;;; ui-common-conf.el ends here

@@ -19,24 +19,24 @@
 (add-to-list 'auto-mode-alist '("\\.hpp\\'" . c++-mode))
 
 (setq irony-server-install-prefix "~/.emacs.d/servers/Irony")
-(add-hook 'irony-mode-hook
-          (lambda ()
-              (define-key irony-mode-map [remap completion-at-point]
-                  'irony-completion-at-point-async)
-              (define-key irony-mode-map [remap complete-symbol]
-                  'irony-completion-at-point-async)
-              (irony-cdb-autosetup-compile-options)
+(defun my-irony-mode-hook()
+    (define-key irony-mode-map [remap completion-at-point]
+        'irony-completion-at-point-async)
+    (define-key irony-mode-map [remap complete-symbol]
+        'irony-completion-at-point-async)
+    (irony-cdb-autosetup-compile-options)
 
-              ;; (optional) adds CC special commands to
-              ;; `company-begin-commands' in order to
-              ;; trigger completion at interesting places, such as after
-              ;; scope operator std::|
-              (company-irony-setup-begin-commands)))
+    ;; (optional) adds CC special commands to
+    ;; `company-begin-commands' in order to
+    ;; trigger completion at interesting places, such as after
+    ;; scope operator std::|
+    (company-irony-setup-begin-commands))
+(add-hook 'irony-mode-hook 'my-irony-mode-hook)
 
 (eval-after-load 'flycheck '(add-hook 'flycheck-mode-hook
                              #'flycheck-irony-setup))
 
-(defun cc-hook ()
+(defun my-cc-hook ()
     "Settings common for C and C++ modes."
     (irony-mode)
     (google-set-c-style)
@@ -46,21 +46,20 @@
     (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t)
     (hs-minor-mode))
 
-(add-hook 'c-mode-hook
-          (lambda ()
-              (cc-hook)
-              (define-key c-mode-map (kbd "C-c h") 'hs-toggle-hiding)))
+(defun my-c-mode-hook()
+    (my-cc-hook)
+    (define-key c-mode-map (kbd "C-c h") 'hs-toggle-hiding))
+(add-hook 'c-mode-hook 'my-c-mode-hook)
 
-(add-hook 'c++-mode-hook
-          (lambda ()
-              (cc-hook)
-              (setq flycheck-clang-language-standard "c++11")
-              (define-key c++-mode-map (kbd "C-c h") 'hs-toggle-hiding)))
+(defun my-c++-mode-hook()
+    (my-cc-hook)
+    (setq flycheck-clang-language-standard "c++14")
+    (setq irony-additional-clang-options '("-std=c++14"))
+    (define-key c++-mode-map (kbd "C-c h") 'hs-toggle-hiding))
+(add-hook 'c++-mode-hook 'my-c++-mode-hook)
 
-(setq cmake-ide-flags-c++ (append '("-std=c++11")))
-;; Compile with a keyboard shortcut
-(global-set-key (kbd "C-c m") 'cmake-ide-compile)
 (cmake-ide-setup)
+(setq cmake-ide-flags-c++ (append '("-std=c++14")))
 
 (provide 'cc-conf)
 ;;; cc-conf.el ends here

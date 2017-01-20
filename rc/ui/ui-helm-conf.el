@@ -48,6 +48,11 @@
 
 (setq helm-ff-file-name-history-use-recentf t)
 
+;; Helm documentation
+(eval-after-load
+ "helm-dash"
+ '(defun helm-dash-actions (actions doc-item) `(("Go to doc" . eww))))
+
 ;; Helm-flycheck
 (require 'helm-flycheck) ;; Not necessary if using ELPA package
 (eval-after-load 'flycheck

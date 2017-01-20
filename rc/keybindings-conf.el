@@ -18,6 +18,9 @@
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 
+;; Scroll
+(global-set-key (kbd "M-n") (lambda () (interactive) (scroll-up 1)))
+(global-set-key (kbd "M-p") (lambda () (interactive) (scroll-down 1)))
 
 ;; Langs
 ;; Comment/uncomment code block
@@ -31,12 +34,14 @@
 
 ;; Compile - F9
 (global-set-key [(f9)] 'compile)
+(global-set-key (kbd "C-c m") 'cmake-ide-compile)
 
 (global-set-key (kbd "RET") 'newline-and-indent)
 
 
 ;; UI
-(global-set-key (kbd "<f5>") 'sr-speedbar-open)
+(global-set-key (kbd "<f5>") 'sr-speedbar-toggle)
+(global-set-key (kbd "<f6>") 'neotree-toggle)
 
 ;; Helm
 (global-unset-key (kbd "C-x c"))

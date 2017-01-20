@@ -55,6 +55,7 @@
 
 (defvar my-packages-list
   '(
+    all-the-icons
     async
     auctex
     auto-complete
@@ -99,6 +100,7 @@
     helm-flycheck
     helm-flyspell
     helm-projectile
+    help-fns+
     highlight-indentation
     irony
     ivy
@@ -114,6 +116,8 @@
     matlab-mode
     mpg123
     nasm-mode
+    neotree
+    nlinum
     omnisharp
     org
     pkg-info
@@ -127,6 +131,7 @@
     seq
     slime
     slime-company
+    smooth-scroll
     spaceline
     spacemacs-theme
     sqlup-mode
