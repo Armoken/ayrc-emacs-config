@@ -16,6 +16,10 @@
 (setq eshell-scroll-to-bottom-on-input 'all
       eshell-prefer-lisp-functions nil)
 
+(setq explicit-shell-file-name "/bin/bash")
+(setq shell-file-name "bash")
+(setenv "SHELL" shell-file-name)
+
 (defun curr-dir-git-branch-string (pwd)
     "Return current git branch as a string.
 Or the empty string if PWD is not in a git repo (or the
