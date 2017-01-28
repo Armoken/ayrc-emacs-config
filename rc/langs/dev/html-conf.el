@@ -57,7 +57,6 @@
     (hs-minor-mode)
     (define-key web-mode-map (kbd "RET") 'newline)
     (define-key web-mode-map (kbd "C-j") 'newline)
-    (define-key web-mode-map (kbd "C-c h") 'hs-toggle-hiding)
     (define-key web-mode-map (kbd "<tab>") (lambda () (interactive)
                                                (web-mode-indent-line)))
     (add-to-list (make-local-variable 'company-backends)

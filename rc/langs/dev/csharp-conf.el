@@ -33,7 +33,6 @@
 (defun my-csharp-mode-hook()
     (hs-minor-mode)
     (setq hs-isearch-open t)
-    (define-key csharp-mode-map (kbd "C-c h") 'hs-toggle-hiding)
     (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t)
     (add-to-list (make-local-variable 'company-backends)
                  '(company-omnisharp company-yasnippet)))

@@ -25,7 +25,6 @@
     (hs-minor-mode))
 (add-hook 'nxml-mode-hook 'my-nxml-mode-hook)
 
-(define-key nxml-mode-map (kbd "C-c h") 'hs-toggle-hiding)
 
 (provide 'xml-conf)
 ;;; xml-conf.el ends here

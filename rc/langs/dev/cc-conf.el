@@ -47,15 +47,13 @@
     (hs-minor-mode))
 
 (defun my-c-mode-hook()
-    (my-cc-hook)
-    (define-key c-mode-map (kbd "C-c h") 'hs-toggle-hiding))
+    (my-cc-hook))
 (add-hook 'c-mode-hook 'my-c-mode-hook)
 
 (defun my-c++-mode-hook()
     (my-cc-hook)
     (setq flycheck-clang-language-standard "c++14")
-    (setq irony-additional-clang-options '("-std=c++14"))
-    (define-key c++-mode-map (kbd "C-c h") 'hs-toggle-hiding))
+    (setq irony-additional-clang-options '("-std=c++14")))
 (add-hook 'c++-mode-hook 'my-c++-mode-hook)
 
 (cmake-ide-setup)
