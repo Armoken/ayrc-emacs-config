@@ -21,10 +21,6 @@
 (global-set-key (kbd "M-p") (lambda () (interactive) (scroll-down 1)))
 
 ;; Langs
-;; Comment/uncomment code block
-(global-set-key (kbd "C-c c") 'comment-region)
-(global-set-key (kbd "C-c u") 'uncomment-region)
-
 ;; Next error - F7
 (global-set-key [f7] 'next-error)
 ;; Previous error - F8
@@ -44,11 +40,9 @@
 ;; Helm
 (global-unset-key (kbd "C-x c"))
 (global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x b") 'helm-mini)
 (global-set-key (kbd "C-x C-b") 'helm-mini)
-(global-set-key (kbd "C-c o") 'helm-occur)
-(global-set-key (kbd "C-c x") 'helm-register)
-(global-set-key (kbd "C-x f") 'helm-find-files)
+(global-set-key (kbd "C-c h o") 'helm-occur)
+(global-set-key (kbd "C-c h x") 'helm-register)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
 (define-key helm-map (kbd "C-q") 'helm-execute-persistent-action)

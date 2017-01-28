@@ -8,6 +8,9 @@
 (require 'helm)
 (require 'helm-config)
 
+;; Enable helm prefix
+(global-set-key (kbd "C-c h") 'helm-command-prefix)
+
 ;; Fuzzy helm (approximate search)
 (require 'helm-dabbrev)
 (require 'helm-command)
@@ -21,10 +24,6 @@
       helm-lisp-fuzzy-completion t
       helm-buffers-fuzzy-matching t
       helm-completion-in-region-fuzzy-match t)
-
-;; Need for helm-google-suggest
-(when (executable-find "curl")
-    (setq helm-net-prefer-curl t))
 
 (when (executable-find "ack-grep")
     (setq helm-grep-default-command
