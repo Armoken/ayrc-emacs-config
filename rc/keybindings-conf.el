@@ -9,8 +9,6 @@
 ;; Go to the line --- Alt-g transition line number
 (global-set-key (kbd "M-g") 'goto-line)
 
-;; Backspace on C-h
-(global-set-key (kbd "C-h") 'delete-backward-char)
 
 (global-set-key (kbd "<backspace>") 'cfg:backward-delete-tab-whitespace)
 
