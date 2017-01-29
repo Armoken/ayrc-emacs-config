@@ -36,6 +36,7 @@
 
        "~/.emacs.d/rc/eshell-conf.el"
        "~/.emacs.d/rc/magit-conf.el"
+       "~/.emacs.d/rc/projectile-conf.el"
        "~/.emacs.d/rc/emms-conf.el"))
 
 (provide 'init)
