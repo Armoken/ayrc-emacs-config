@@ -11,6 +11,9 @@
 ;; Enable helm prefix
 (global-set-key (kbd "C-c h") 'helm-command-prefix)
 
+;; Listing available actions
+(define-key helm-map (kbd "C-z") 'helm-select-action)
+
 ;; Fuzzy helm (approximate search)
 (require 'helm-dabbrev)
 (require 'helm-command)
