@@ -142,6 +142,7 @@
     wcheck-mode
     web-completion-data
     web-mode
+    magit
     yasnippet))
 
 (defun my-auto-install-packages ()

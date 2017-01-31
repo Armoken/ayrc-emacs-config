@@ -4,6 +4,7 @@
 ;;; UI settings common for all modes
 
 ;;; Code:
+
 (require 'dired)
 (require 'neotree)
 (require 'powerline)

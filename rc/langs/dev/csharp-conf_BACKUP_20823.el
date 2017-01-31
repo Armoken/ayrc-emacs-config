@@ -30,13 +30,25 @@
 ;;      "~/.emacs.d/servers/OmniSharp/OmniSharp.sln")
 ;;     (message "Trying to start omnisharp server"))
 
+<<<<<<< HEAD
+;; (add-hook 'csharp-mode-hook
+;;           (lambda()
+;;               (hs-minor-mode)
+;;               (setq hs-isearch-open t)
+;;               (define-key csharp-mode-map (kbd "C-c h") 'hs-toggle-hiding)
+;;               (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t)
+;;               (add-to-list (make-local-variable 'company-backends)
+;;                            '(company-omnisharp company-yasnippet))))
+=======
 (defun my-csharp-mode-hook()
     (hs-minor-mode)
     (setq hs-isearch-open t)
+    (define-key csharp-mode-map (kbd "C-c h") 'hs-toggle-hiding)
     (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t)
     (add-to-list (make-local-variable 'company-backends)
                  '(company-omnisharp company-yasnippet)))
 (add-hook 'csharp-mode-hook 'my-csharp-mode-hook)
+>>>>>>> upstream/master
 
 ;; (provide 'csharp-conf)
 ;;; csharp-conf.el ends here

@@ -14,7 +14,6 @@
 (defun my-python-mode-hook()
     (hs-minor-mode)
     (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t)
-    (define-key python-mode-map (kbd "C-c h") 'hs-toggle-hiding)
     (setq flycheck-checker-error-threshold 1000)
     (add-to-list (make-local-variable 'company-backends)
                  '(elpy-company-backend company-yasnippet)))
