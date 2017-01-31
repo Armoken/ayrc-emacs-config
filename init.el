@@ -28,6 +28,7 @@
        "~/.emacs.d/rc/ui/ui-common-conf.el"
        "~/.emacs.d/rc/ui/ui-helm-conf.el"
        "~/.emacs.d/rc/ui/ui-diminish-conf.el"
+       "~/.emacs.d/rc/ui/ui-gdb-conf.el"
 
        "~/.emacs.d/rc/text-common-conf.el"
        "~/.emacs.d/rc/langs/langs-common-conf.el"
