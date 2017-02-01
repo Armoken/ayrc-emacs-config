@@ -49,7 +49,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (projectile magit web-mode wcheck-mode undo-tree swiper sublimity sr-speedbar sqlup-mode spacemacs-theme spaceline smooth-scrolling smooth-scroll slime-company rtags omnisharp nlinum-relative neotree nasm-mode mpg123 modern-cpp-font-lock matlab-mode markdown-mode json-mode js2-mode help-fns+ helm-projectile helm-flyspell helm-flycheck helm-firefox helm-emms helm-emmet helm-dash helm-css-scss google-c-style google flycheck-ycmd flycheck-irony emms-state emms-player-mpv emms-mode-line-cycle emms-info-mediainfo elpy ecb diminish company-ycmd company-web company-tern company-quickhelp company-math company-irony-c-headers company-irony company-flx company-auctex cmake-mode cmake-ide clang-format all-the-icons))))
+    (projectile magit web-mode wcheck-mode undo-tree swiper sublimity sr-speedbar sqlup-mode spacemacs-theme spaceline smooth-scrolling smooth-scroll slime-company rtags omnisharp nlinum-relative neotree nasm-mode mpg123 modern-cpp-font-lock matlab-mode markdown-mode json-mode js2-mode help-fns+ helm-projectile helm-flyspell helm-flycheck helm-firefox helm-emms helm-emmet helm-dash helm-css-scss google flycheck-ycmd flycheck-irony emms-state emms-player-mpv emms-mode-line-cycle emms-info-mediainfo elpy ecb diminish company-ycmd company-web company-tern company-quickhelp company-math company-irony-c-headers company-irony company-flx company-auctex cmake-mode cmake-ide clang-format all-the-icons))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
