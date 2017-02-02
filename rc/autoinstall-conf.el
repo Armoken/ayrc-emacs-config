@@ -143,6 +143,8 @@
     web-completion-data
     web-mode
     magit
+    projectile
+    helm-projectile
     yasnippet))
 
 (defun my-auto-install-packages ()
