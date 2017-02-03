@@ -144,6 +144,7 @@
     web-mode
     magit
     projectile
+    platformio
     helm-projectile
     yasnippet))
 

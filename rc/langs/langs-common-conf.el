@@ -121,6 +121,7 @@ Dont remove tabs."
 ;; Other langs
 (load "~/.emacs.d/rc/langs/other/org-conf.el")
 (load "~/.emacs.d/rc/langs/other/latex-conf.el")
+(load "~/.emacs.d/rc/langs/other/embedded-conf.el")
 
 (provide 'langs-common-conf)
 ;;; langs-common-conf.el ends here
