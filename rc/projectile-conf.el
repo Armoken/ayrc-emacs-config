@@ -14,7 +14,8 @@
 
 (setq projectile-enable-caching t)
 
-
+(add-to-list 'projectile-globally-ignored-file-suffixes "~")
+(add-to-list 'projectile-globally-ignored-files "#")
 
 (provide 'projectile-conf.el)
 ;;; projectile-conf.el ends here
