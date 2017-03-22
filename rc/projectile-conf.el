@@ -5,8 +5,8 @@
 
 ;;; Code:
 
+(require 'projectile)
 
-(projectile-global-mode)
 (setq projectile-completion-system 'helm)
 (helm-projectile-on)
 
@@ -14,7 +14,9 @@
 
 (setq projectile-enable-caching t)
 
-
+;; Sepparate buffers for different projectile projects
+(require 'perspective)
+(persp-mode)
 
 (provide 'projectile-conf.el)
 ;;; projectile-conf.el ends here

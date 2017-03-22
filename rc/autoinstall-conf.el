@@ -122,6 +122,7 @@
     org
     pkg-info
     popup
+    perspective
     pos-tip
     powerline
     projectile

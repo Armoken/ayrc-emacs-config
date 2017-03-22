@@ -84,7 +84,7 @@
 
 ;; NeoTree
 (setq neo-window-width 40)
-(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+(setq neo-theme 'icons) ;; arrow
 
 (provide 'ui-common-conf)
 ;;; ui-common-conf.el ends here

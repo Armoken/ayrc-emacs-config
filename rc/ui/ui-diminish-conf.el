@@ -8,6 +8,7 @@
 (diminish 'helm-mode)
 (diminish 'abbrev-mode)
 (diminish 'visual-line-mode)
+(diminish 'smooth-scroll-mode)
 
 (eval-after-load "undo-tree" '(diminish 'undo-tree-mode))
 (eval-after-load "flycheck" '(diminish 'flycheck-mode "Ⓕ"))

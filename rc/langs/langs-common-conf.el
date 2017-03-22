@@ -32,6 +32,14 @@ Remove tabs."
     (delete-trailing-whitespace)
     nil)
 
+(defun cleanup-buffer-no-indent-notabs ()
+    "Perform a bunch of operations on the whitespace content of a buffer.
+Remove tabs."
+    (interactive)
+    (untabify-buffer)
+    (delete-trailing-whitespace)
+    nil)
+
 (defun cleanup-buffer-tabs ()
     "Perform a bunch of operations on the whitespace content of a buffer.
 Dont remove tabs."
@@ -121,6 +129,8 @@ Dont remove tabs."
 ;; Other langs
 (load "~/.emacs.d/rc/langs/other/org-conf.el")
 (load "~/.emacs.d/rc/langs/other/latex-conf.el")
+(load "~/.emacs.d/rc/langs/other/rst-conf.el")
+(load "~/.emacs.d/rc/langs/other/docker-conf.el")
 
 (provide 'langs-common-conf)
 ;;; langs-common-conf.el ends here

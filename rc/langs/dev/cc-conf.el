@@ -38,27 +38,30 @@
 (defun my-cc-hook ()
     "Settings common for C and C++ modes."
     (irony-mode)
+    (hs-minor-mode)
+    (projectile-mode)
     (setq c-basic-offset 4)
     (add-to-list (make-local-variable 'company-backends)
                  '(company-irony-c-headers company-irony company-yasnippet))
     (add-hook 'write-contents-functions 'cleanup-buffer-notabs nil t)
-    (hs-minor-mode)
     (local-set-key (kbd "C-c C-r") 'clang-format-region))
 
 (defun my-c-mode-hook()
     (my-cc-hook)
     (setq c-default-style "linux")
-    (setq c-basic-offset 8)
-    (setq tab-width 8)
+    (setq c-basic-offset 4)
+    (setq tab-width 4)
     (setq indent-tabs-mode t)
     (setq linux-kernel-style "\
 {BasedOnStyle: LLVM, \
- IndentWidth: 8, \
+ IndentWidth: 4, \
  UseTab: Always, \
  BreakBeforeBraces: Linux, \
  AllowShortIfStatementsOnASingleLine: false,\
  IndentCaseLabels: false}")
-    (setq clang-format-style linux-kernel-style))
+    (setq clang-format-style linux-kernel-style)
+    (setq flycheck-clang-language-standard "c11")
+    (setq irony-additional-clang-options '("-std=gnu++11")))
 
 (add-hook 'c-mode-hook 'my-c-mode-hook)
 

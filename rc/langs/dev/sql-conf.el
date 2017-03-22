@@ -34,7 +34,7 @@
 (add-hook 'sql-interactive-mode-hook 'sql-save-history-hook)
 
 (defun my-sql-mode-hook()
-    (add-hook 'write-contents-functions 'cleanup-buffer-tabs nil t)
+    (add-hook 'write-contents-functions 'cleanup-buffer-no-indent-notabs nil t)
     (sqlup-mode))
 (add-hook 'sql-mode-hook 'my-sql-mode-hook)
 

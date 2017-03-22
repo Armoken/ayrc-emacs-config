@@ -7,12 +7,18 @@
 
 ;; ELPA - Package manager
 (require 'package)
+
+(add-to-list 'load-path "/home/armoken/.emacs.d/elpa/benchmark-init-20150905.238")
+(require 'benchmark-init)
+(benchmark-init/activate)
+
 (setq package-archives
       '(
         ("gnu" . "http://elpa.gnu.org/packages/")
         ("marmalade" . "https://marmalade-repo.org/packages/")
         ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
+
 
 (load "~/.emacs.d/rc/autoinstall-conf.el")
 ;; (my-auto-install-packages) ;; Uncomment on first start!
@@ -37,11 +43,14 @@
 
        "~/.emacs.d/rc/eshell-conf.el"
        "~/.emacs.d/rc/magit-conf.el"
+       "~/.emacs.d/rc/tramp-conf.el"
        "~/.emacs.d/rc/projectile-conf.el"
-       "~/.emacs.d/rc/emms-conf.el"))
+       "~/.emacs.d/rc/grep-conf.el"
+       ))
 
 (provide 'init)
 ;;; init.el ends here
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -49,7 +58,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (projectile magit web-mode wcheck-mode undo-tree swiper sublimity sr-speedbar sqlup-mode spacemacs-theme spaceline smooth-scrolling smooth-scroll slime-company rtags omnisharp nlinum-relative neotree nasm-mode mpg123 modern-cpp-font-lock matlab-mode markdown-mode json-mode js2-mode help-fns+ helm-projectile helm-flyspell helm-flycheck helm-firefox helm-emms helm-emmet helm-dash helm-css-scss google flycheck-ycmd flycheck-irony emms-state emms-player-mpv emms-mode-line-cycle emms-info-mediainfo elpy ecb diminish company-ycmd company-web company-tern company-quickhelp company-math company-irony-c-headers company-irony company-flx company-auctex cmake-mode cmake-ide clang-format all-the-icons))))
+    (ag helm-ag ack projectile yaml-mode web-mode wcheck-mode use-package undo-tree swiper sublimity sr-speedbar sqlup-mode sqlplus spacemacs-theme spaceline smooth-scrolling smooth-scroll slime-company rtags omnisharp nlinum-relative neotree nasm-mode modern-cpp-font-lock matlab-mode markdown-mode magit json-mode js2-mode help-fns+ helm-tramp helm-projectile helm-flycheck helm-emmet helm-dash flycheck-irony elpy editorconfig ecb dockerfile-mode company-ycmd company-web company-tern company-quickhelp company-math company-irony-c-headers company-irony company-flx company-auctex cmake-mode cmake-ide clang-format benchmark-init all-the-icons))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
