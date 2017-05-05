@@ -8,10 +8,6 @@
 ;; ELPA - Package manager
 (require 'package)
 
-(add-to-list 'load-path "/home/armoken/.emacs.d/elpa/benchmark-init-20150905.238")
-(require 'benchmark-init)
-(benchmark-init/activate)
-
 (setq package-archives
       '(
         ("gnu" . "http://elpa.gnu.org/packages/")

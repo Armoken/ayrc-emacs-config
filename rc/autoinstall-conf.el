@@ -74,6 +74,7 @@
     csharp-mode
     dash
     dash-functional
+    dockerfile-mode
     diminish
     ecb
     elpy
