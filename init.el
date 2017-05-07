@@ -23,6 +23,14 @@
 (if (file-exists-p "~/.emacs.d/rc/user-conf.el")
     (load "~/.emacs.d/rc/user-conf.el"))
 
+
+(make-directory "/tmp/emacs/autosaves/" t)
+(make-directory "/tmp/emacs/backups/" t)
+(custom-set-variables
+ '(auto-save-file-name-transforms '((".*" "/tmp/emacs/autosaves/\\1" t)))
+ '(backup-directory-alist '((".*" . "/tmp/emacs/backups/"))))
+
+
 (mapc (lambda (path) (load path))
       (list
        "~/.emacs.d/rc/ui/ui-common-conf.el"
