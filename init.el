@@ -54,7 +54,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (ag helm-ag ack projectile yaml-mode web-mode wcheck-mode use-package undo-tree swiper sublimity sr-speedbar sqlup-mode sqlplus spacemacs-theme spaceline smooth-scrolling smooth-scroll slime-company rtags omnisharp nlinum-relative neotree nasm-mode modern-cpp-font-lock matlab-mode markdown-mode magit json-mode js2-mode help-fns+ helm-tramp helm-projectile helm-flycheck helm-emmet helm-dash flycheck-irony elpy editorconfig ecb dockerfile-mode company-ycmd company-web company-tern company-quickhelp company-math company-irony-c-headers company-irony company-flx company-auctex cmake-mode cmake-ide clang-format benchmark-init all-the-icons))))
+    (bison-mode company-cmake cpputils-cmake irony-eldoc sed-mode ag helm-ag ack projectile yaml-mode web-mode wcheck-mode use-package undo-tree swiper sublimity sr-speedbar sqlup-mode sqlplus spacemacs-theme spaceline smooth-scrolling smooth-scroll slime-company omnisharp nlinum-relative neotree nasm-mode modern-cpp-font-lock matlab-mode markdown-mode magit json-mode js2-mode help-fns+ helm-tramp helm-projectile helm-flycheck helm-emmet helm-dash flycheck-irony elpy editorconfig ecb dockerfile-mode company-ycmd company-web company-tern company-quickhelp company-math company-irony-c-headers company-irony company-flx company-auctex cmake-mode cmake-ide clang-format benchmark-init all-the-icons))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

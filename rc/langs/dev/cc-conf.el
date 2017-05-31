@@ -8,8 +8,9 @@
 (require 'cc-mode)
 (require 'company)
 (require 'flycheck)
-(require 'cmake-ide)
+;; (require 'cmake-ide)
 (require 'clang-format)
+(require 'cpputils-cmake)
 (require 'company-irony-c-headers)
 
 ;; Open headers for C in c-mode
@@ -53,28 +54,30 @@
     (setq tab-width 4)
     (setq indent-tabs-mode t)
     (setq linux-kernel-style "\
-{BasedOnStyle: LLVM, \
- IndentWidth: 4, \
- UseTab: Always, \
- BreakBeforeBraces: Linux, \
- AllowShortIfStatementsOnASingleLine: false,\
- IndentCaseLabels: false}")
+          { \
+             BasedOnStyle: LLVM, \
+             IndentWidth: 4, \
+             UseTab: Always, \
+             BreakBeforeBraces: Linux, \
+             AllowShortIfStatementsOnASingleLine: false,\
+             IndentCaseLabels: false \
+          }")
     (setq clang-format-style linux-kernel-style)
-    (setq flycheck-clang-language-standard "c11")
-    (setq irony-additional-clang-options '("-std=gnu++11")))
+    (setq flycheck-clang-language-standard "c11"))
 
 (add-hook 'c-mode-hook 'my-c-mode-hook)
 
 (defun my-c++-mode-hook()
     (my-cc-hook)
+    (setq clang-format-executable "/usr/lib/llvm/4/bin/clang-format")
     (setq clang-format-style "webkit")
     (setq flycheck-clang-language-standard "c++14")
     (setq irony-additional-clang-options '("-std=c++14")))
 
 (add-hook 'c++-mode-hook 'my-c++-mode-hook)
 
-(cmake-ide-setup)
-(setq cmake-ide-flags-c++ (append '("-std=c++14")))
+;; (cmake-ide-setup)
+;; (setq cmake-ide-flags-c++ (append '("-std=c++14")))
 
 (provide 'cc-conf)
 ;;; cc-conf.el ends here
