@@ -143,3 +143,10 @@
         (setq show-paren-style 'expression)
         (show-paren-mode)))
   #+END_SRC
+
+* Ag
+  #+BEGIN_SRC emacs-lisp
+    (use-package ag
+      :ensure t
+      :commands ag ag-files ag-regexp ag-project ag-project-files ag-project-regexp)
+  #+END_SRC
