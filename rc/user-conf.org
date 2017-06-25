@@ -70,12 +70,12 @@
    #+END_SRC
 
 * Font
-  #+BEGIN_SRC elisp
+  #+BEGIN_SRC emacs-lisp
     (setq default-frame-alist '((font . "Hack-10")))
   #+END_SRC
 
 * User personal info
-  #+BEGIN_SRC elisp
+  #+BEGIN_SRC emacs-lisp
   (setq user-full-name "Armoken")
   (setq user-mail-address "Alex.Armoken@gmail.com")
   #+END_SRC
