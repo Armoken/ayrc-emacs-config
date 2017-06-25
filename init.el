@@ -5,9 +5,6 @@
 
 ;;; Code:
 
-;; Save your eyes at start
-(set-background-color "black")
-
 (require 'package)
 
 ;; Without that line, (package-initialize) is executed twice
@@ -47,7 +44,7 @@
                     "./rc/keybindings.org"
                     "./rc/development.org"
                     "./rc/langs/lisp.org"
-                    "./rc/langs/config.org"
+                    "./rc/langs/other.org"
                     "./rc/langs/python.org"
                     "./rc/langs/shell.org"
                     "./rc/langs/build.org"
