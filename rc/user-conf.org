@@ -1,0 +1,81 @@
+* Theme
+** Global theme
+   #+BEGIN_SRC emacs-lisp
+     (use-package spacemacs-common
+       :ensure spacemacs-theme
+       :config
+       (progn
+         (load-theme 'spacemacs-dark t)))
+   #+END_SRC
+
+** Modeline theme
+   #+BEGIN_SRC emacs-lisp
+     (use-package spaceline
+       :ensure t
+       :config
+       (progn
+         (require 'spaceline-config)
+
+         ;; Spaceline themes: arrow, arrow-fade, bar, box, brace,
+         ;; butt, chamfer, contour, curve,
+         ;; rounded, roundstub, slant, wave, zigzag, nil,
+         (setq powerline-default-separator 'arrow-fade)
+
+         (spaceline-toggle-buffer-size-off)
+         (setq powerline-height 21)
+
+         ;; Hide anzu mode, because with spaceline it will desplayed twice
+         (setq anzu-cons-mode-line-p nil)
+
+         ;; HUD: shows the currently visible part of the buffer.
+         (spaceline-toggle-hud-off)
+
+         ;; buffer-position: shows the current position in the buffer
+         ;; as a percentage.
+         (spaceline-toggle-buffer-position-off)
+
+         (spaceline-define-segment my-current-line
+           "The current line number."
+           (if (eq major-mode 'pdf-view-mode)
+               (spaceline--pdfview-page-number)
+             (concat
+              "%l/"
+              (int-to-string (count-lines (point-min) (point-max)))
+              ":%2c")))
+
+         (spaceline-toggle-line-column-off)
+         (spaceline-toggle-buffer-encoding-abbrev-off)
+         (spaceline-spacemacs-theme 'my-current-line)))
+
+     (use-package spaceline-all-the-icons
+       :ensure t
+       :after spaceline)
+   #+END_SRC
+
+** Paren hightlighting
+   #+BEGIN_SRC emacs-lisp
+     (custom-set-faces
+      '(show-paren-match ((t (:background "purple4"))))
+      '(show-paren-mismatch
+     ((((class color)) (:background "red" :foreground "white")))))
+   #+END_SRC
+
+** Highlighting indentation
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'highlight-indentation-mode
+               (lambda ()
+                 (set-face-background 'highlight-indentation-face "#e3e3d3")
+                 (set-face-background
+                  'highlight-indentation-current-column-face "#c3b3b3")))
+   #+END_SRC
+
+* Font
+  #+BEGIN_SRC elisp
+    (setq default-frame-alist '((font . "Hack-10")))
+  #+END_SRC
+
+* User personal info
+  #+BEGIN_SRC elisp
+  (setq user-full-name "Armoken")
+  (setq user-mail-address "Alex.Armoken@gmail.com")
+  #+END_SRC

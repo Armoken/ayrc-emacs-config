@@ -1,0 +1,15 @@
+* Shell
+  #+BEGIN_SRC emacs-lisp
+    (use-package shell-mode
+      :init
+      (progn
+        (use-package company-shell
+          :ensure t))
+      :config
+      (progn
+        (defun python-hook()
+          (hs-minor-mode)
+          (add-to-list (make-local-variable 'company-backends)
+                       '(company-shell company-yasnippet)))
+        (add-hook 'python-mode-hook 'python-hook)))
+  #+END_SRC

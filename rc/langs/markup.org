@@ -1,0 +1,77 @@
+* JSON
+  Install demjson python package
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package json-mode
+      :ensure t
+      :init
+      (progn
+        (use-package json-reformat
+          :ensure t
+          :commands (json-reformat-region)
+          :bind (("C-c r" . json-reformat-region)))
+
+        (use-package flycheck-demjsonlint
+          :ensure t)
+
+        (add-hook 'json-mode-hook 'hs-minor-mode))
+      :mode (("\\.json\\'" . json-mode))
+      :config
+      (progn
+        (setq js-indent-level 4)))
+  #+END_SRC
+
+* Yaml
+  #+BEGIN_SRC emacs-lisp
+    (use-package yaml-mode
+      :ensure t
+      :mode (("\\.yml\\'"  . yaml-mode)
+             ("\\.yaml\\'" . yaml-mode))
+      :bind (:map yaml-mode-map
+                  ("C-c f TAB" . indenation-toggle-fold))
+      :init
+      (progn
+        (use-package flycheck-yamllint
+          :ensure t
+          :init (progn
+                  (eval-after-load 'flycheck
+                    '(add-hook 'flycheck-mode-hook
+                               'flycheck-yamllint-setup))))
+
+        (add-hook 'yaml-mode-hook 'prog-mode-hook)
+        (add-hook 'yaml-mode-hook 'highlight-indentation-mode)
+        (add-hook 'yaml-mode-hook 'smart-shift-mode))
+      :config
+      (progn
+        (setq yaml-indent-offset 2)))
+  #+END_SRC
+
+* XML
+  #+BEGIN_SRC emacs-lisp
+    (use-package nxml
+      :ensure t
+      :commands nxml-mode
+      :mode ("\\.\\(xml\\|axml\\|xsl|xaml\\)$" . nxml-mode)
+      :init
+      (progn
+        (defun xml-hook()
+          (hs-minor-mode)
+          (add-to-list (make-local-variable 'company-backends)
+                       '(company-nxml company-yasnippet)))
+        (add-hook 'nxml-mode-hook 'xml-hook)))
+  #+END_SRC
+
+* Jinja2
+  #+BEGIN_SRC emacs-lisp
+    (use-package jinja2-mode
+      :ensure t
+      :commands jinja2-mode
+      :mode (("\\.j2\\'" . jinja2-mode)))
+  #+END_SRC
+
+* RST
+  #+BEGIN_SRC emacs-lisp
+    (use-package rst
+      :mode (("\\.txt$" . rst-mode)
+             ("\\.rst$" . rst-mode)))
+  #+END_SRC
