@@ -105,8 +105,8 @@
              ("C-c h /"   . helm-find)
              ("C-c h h"   . helm-info)
              ("C-c h o"   . helm-occur)
-             ("C-c h i"   . helm-imenu)
              ("C-c h c"   . helm-semantic)
+             ("C-c h i"   . helm-semantic-or-imenu)
 
              ;; Pre-configured helm to build regexps.
              ("C-c h r"   . helm-regexp)

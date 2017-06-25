@@ -53,6 +53,18 @@
               '(flycheck-display-errors-function
                 #'flycheck-pos-tip-error-messages))))))
   #+END_SRC
+
+* CEDET
+** Semantic
+   #+BEGIN_SRC emacs-lisp
+     (use-package semantic
+       :diminish semantic-mode "Ⓢ"
+       :config (progn
+                 (global-semanticdb-minor-mode 1)
+                 (global-semantic-idle-scheduler-mode 1)
+                 (semantic-mode 1)))
+   #+END_SRC
+
 * Complete anything
   #+BEGIN_SRC emacs-lisp
     (use-package company
