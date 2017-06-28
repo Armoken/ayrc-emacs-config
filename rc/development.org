@@ -2,31 +2,31 @@
   #+BEGIN_SRC emacs-lisp
     (use-package projectile
       :ensure t
-      :bind (:map projectile-mode-map
-                  ("C-x p o" . projectile-switch-open-project)
-                  ("C-x p s" . projectile-switch-project)
-                  ("<f9>"    . projectile-compile-project)
-                  ("C-c p h" . helm-projectile)
-                  ("C-c p p" . helm-projectile-switch-project)
-                  ("C-c p f" . helm-projectile-find-file)
-                  ("C-c p F" . helm-projectile-find-file-in-known-projects)
-                  ("C-c p g" . helm-projectile-find-file-dwim)
-                  ("C-c p d" . helm-projectile-find-dir)
-                  ("C-c p e" . helm-projectile-recentf)
-                  ("C-c p a" . helm-projectile-find-other-file)
-                  ("C-c p i" . projectile-invalidate-cache)
-                  ("C-c p z" . projectile-cache-current-file)
-                  ("C-c p b" . helm-projectile-switch-to-buffer)
-                  ("C-c p s" . helm-projectile-ag))
-
-      :commands (projectile-global-mode
-                 projectile-ignored-projects
-                 projectile-compile-project)
-
-      :init (progn
-              (use-package helm-projectile
-                :ensure t))
-
+      :commands
+      (projectile-global-mode
+       projectile-ignored-projects
+       projectile-compile-project)
+      :bind
+      (:map projectile-mode-map
+            ("C-x p o" . projectile-switch-open-project)
+            ("C-x p s" . projectile-switch-project)
+            ("<f9>"    . projectile-compile-project)
+            ("C-c p h" . helm-projectile)
+            ("C-c p p" . helm-projectile-switch-project)
+            ("C-c p f" . helm-projectile-find-file)
+            ("C-c p F" . helm-projectile-find-file-in-known-projects)
+            ("C-c p g" . helm-projectile-find-file-dwim)
+            ("C-c p d" . helm-projectile-find-dir)
+            ("C-c p e" . helm-projectile-recentf)
+            ("C-c p a" . helm-projectile-find-other-file)
+            ("C-c p i" . projectile-invalidate-cache)
+            ("C-c p z" . projectile-cache-current-file)
+            ("C-c p b" . helm-projectile-switch-to-buffer)
+            ("C-c p s" . helm-projectile-ag))
+      :init
+      (progn
+        (use-package helm-projectile
+          :ensure t))
       :config
       (progn
         (projectile-global-mode)
@@ -51,7 +51,7 @@
     (use-package flycheck
       :ensure t
       :diminish flycheck-mode "Ⓕ"
-      :commands global-flycheck-mode
+      :commands (global-flycheck-mode)
       :init
       (progn
         ;; Show errors under point in pos-tip popups.
@@ -161,19 +161,20 @@
       :ensure t
       :diminish hs-minor-mode
       :commands (hs-minor-mode)
-      :bind (:map hs-minor-mode-map
-                  ("C-c f TAB" . hs-toggle-hiding)
-                  ("C-c f h"   . hs-hide-all)
-                  ("C-c f s"   . hs-show-all))
+      :bind
+      (:map hs-minor-mode-map
+            ("C-c f TAB" . hs-toggle-hiding)
+            ("C-c f h"   . hs-hide-all)
+            ("C-c f s"   . hs-show-all))
       :config
       (progn
-                (add-to-list 'hs-special-modes-alist
-                             (list 'nxml-mode
-                                   "<!--\\|<[^/>]*[^/]>"
-                                   "-->\\|</[^/>]*[^/]>"
-                                   "<!--"
-                                   'nxml-forward-element
-                                   nil))))
+        (add-to-list 'hs-special-modes-alist
+                     (list 'nxml-mode
+                           "<!--\\|<[^/>]*[^/]>"
+                           "-->\\|</[^/>]*[^/]>"
+                           "<!--"
+                           'nxml-forward-element
+                           nil))))
 
     ;; For yaml mode and others
     (defun indenation-toggle-fold ()
@@ -275,11 +276,12 @@
     (use-package smart-shift
       :ensure t
       :diminish smart-shift-mode
-      :bind (:map smart-shift-mode-map
-                  ("<C-up>" . smart-shift-up)
-                  ("<C-down>" . smart-shift-down)
-                  ("<C-left>" . smart-shift-left)
-                  ("<C-right>" . smart-shift-right)))
+      :bind
+      (:map smart-shift-mode-map
+            ("<C-up>" . smart-shift-up)
+            ("<C-down>" . smart-shift-down)
+            ("<C-left>" . smart-shift-left)
+            ("<C-right>" . smart-shift-right)))
   #+END_SRC
 * Aggressive Indent
   Emacs minor mode that keeps your code always indented.
@@ -300,4 +302,8 @@
       :ensure t
       :commands er/expand-region
       :bind ("C-=" . er/expand-region))
+  #+END_SRC
+* Git
+  #+BEGIN_SRC emacs-lisp
+
   #+END_SRC

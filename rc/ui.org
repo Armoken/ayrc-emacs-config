@@ -99,24 +99,25 @@
     (use-package helm
       :ensure t
       :diminish helm-mode
-      :bind (("M-x"       . helm-M-x)
-             ("C-x C-b"   . helm-mini)
-             ("C-x b"     . helm-mini)
-             ("C-c h /"   . helm-find)
-             ("C-c h h"   . helm-info)
-             ("C-c h o"   . helm-occur)
-             ("C-c h c"   . helm-semantic)
-             ("C-c h i"   . helm-semantic-or-imenu)
+      :bind
+      (("M-x"       . helm-M-x)
+       ("C-x C-b"   . helm-mini)
+       ("C-x b"     . helm-mini)
+       ("C-c h /"   . helm-find)
+       ("C-c h h"   . helm-info)
+       ("C-c h o"   . helm-occur)
+       ("C-c h c"   . helm-semantic)
+       ("C-c h i"   . helm-semantic-or-imenu)
 
-             ;; Pre-configured helm to build regexps.
-             ("C-c h r"   . helm-regexp)
+       ;; Pre-configured helm to build regexps.
+       ("C-c h r"   . helm-regexp)
 
-             ("C-c h l"   . helm-bookmarks)
-             ("C-c h a"   . helm-apropos)
-             ("C-c h x"   . helm-register)
-             ("C-c h m"   . helm-man-woman)
-             ("C-x C-f"   . helm-find-files)
-             ("M-y"       . helm-show-kill-ring))
+       ("C-c h l"   . helm-bookmarks)
+       ("C-c h a"   . helm-apropos)
+       ("C-c h x"   . helm-register)
+       ("C-c h m"   . helm-man-woman)
+       ("C-x C-f"   . helm-find-files)
+       ("M-y"       . helm-show-kill-ring))
 
       :init
       (progn

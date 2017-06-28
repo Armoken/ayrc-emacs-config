@@ -48,6 +48,7 @@
                     "./rc/langs/python.org"
                     "./rc/langs/shell.org"
                     "./rc/langs/build.org"
+                    "./rc/langs/tex.org"
                     "./rc/langs/markup.org")))
 
 (provide 'init)
