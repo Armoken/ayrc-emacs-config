@@ -31,7 +31,9 @@
       (progn
         (projectile-global-mode)
         (setq projectile-completion-system 'helm)
-        (setq projectile-switch-project-action 'helm-projectile)))
+        (setq projectile-switch-project-action 'helm-projectile)
+        (setq-default projectile-mode-line
+                      '(:eval (format "Ⓟ[%s]" (projectile-project-name))))))
   #+END_SRC
 
 * Static code analysis

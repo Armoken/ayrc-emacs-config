@@ -10,28 +10,28 @@
           :ensure t
           :commands (company-auctex-init))
 
-        (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
-        (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
-        (setq TeX-auto-save t
-              TeX-parse-self t
-              TeX-save-query nil
-              TeX-PDF-mode t)
-        (setq-default TeX-master nil))
+        (defun auctex-hook()
+          (hs-minor-mode)
+          (LaTeX-preview-setup)
+          (add-to-list (make-local-variable 'company-backends)
+                       '(elpy-company-backend company-auctex)))
+        (add-hook 'LaTeX-mode-hook 'auctex-hook))
       :config (progn
                 (company-auctex-init)
-                (defun auctex-hook()
-                  (hs-minor-mode)
-                  (add-to-list (make-local-variable 'company-backends)
-                               '(elpy-company-backend company-auctex)))))
+                (setq TeX-auto-save  t
+                      TeX-parse-self t
+                      TeX-save-query nil
+                      TeX-PDF-mode   t)
+                (setq-default TeX-master nil)))
   #+END_SRC
 
 * Preview
   #+BEGIN_SRC emacs-lisp
     (use-package preview
-      :commands LaTeX-preview-setup
+      :commands (LaTeX-preview-setup)
       :init
       (progn
         (setq-default preview-scale 1.4
-                      preview-scale-function '(lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))))
-
+                      preview-scale-function '(lambda ()
+                                                (* (/ 10.0 (preview-document-pt)) preview-scale)))))
   #+END_SRC
