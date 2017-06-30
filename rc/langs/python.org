@@ -6,7 +6,7 @@
         (use-package elpy
           :ensure t
           :diminish elpy-mode "Ⓔ"
-          :commands elpy-mode
+          :commands (elpy-mode)
           :config (progn
                     (elpy-use-ipython)
                     (setq elpy-rpc-backend "jedi")))

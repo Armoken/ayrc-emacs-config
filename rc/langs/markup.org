@@ -4,6 +4,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package json-mode
       :ensure t
+      :mode (("\\.json\\'" . json-mode))
       :init
       (progn
         (use-package json-reformat
@@ -15,7 +16,6 @@
           :ensure t)
 
         (add-hook 'json-mode-hook 'hs-minor-mode))
-      :mode (("\\.json\\'" . json-mode))
       :config
       (progn
         (setq js-indent-level 4)))
@@ -50,7 +50,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package nxml
       :ensure t
-      :commands nxml-mode
+      :commands (nxml-mode)
       :mode ("\\.\\(xml\\|axml\\|xsl|xaml\\)$" . nxml-mode)
       :init
       (progn
@@ -65,7 +65,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package jinja2-mode
       :ensure t
-      :commands jinja2-mode
+      :commands (jinja2-mode)
       :mode (("\\.j2\\'" . jinja2-mode)))
   #+END_SRC
 

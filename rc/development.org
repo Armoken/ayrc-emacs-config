@@ -2,10 +2,9 @@
   #+BEGIN_SRC emacs-lisp
     (use-package projectile
       :ensure t
-      :commands
-      (projectile-global-mode
-       projectile-ignored-projects
-       projectile-compile-project)
+      :commands (projectile-global-mode
+                 projectile-ignored-projects
+                 projectile-compile-project)
       :bind
       (:map projectile-mode-map
             ("C-x p o" . projectile-switch-open-project)
@@ -40,7 +39,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package flycheck-pos-tip
       :ensure t
-      :commands flycheck-pos-tip-error-messages
+      :commands (flycheck-pos-tip-error-messages)
       :init
       (progn
         (eval-after-load 'flycheck
@@ -233,24 +232,12 @@
         (setq font-lock-maximum-decoration t)))
   #+END_SRC
 
-* Eldoc
-  MinorMode which shows you, in the echo area, the argument
-  list of the function call you are currently writing.
-
-  #+BEGIN_SRC emacs-lisp
-    (use-package eldoc
-      :diminish eldoc-mode
-      :config
-      (progn
-        (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)))
-  #+END_SRC
-
 * Highlighting indentation
   #+BEGIN_SRC emacs-lisp
     (use-package highlight-indentation
       :ensure t
       :diminish highlight-indentation-mode
-      :commands highlight-indentation-mode)
+      :commands (highlight-indentation-mode))
   #+END_SRC
 
 * EditorConfig
@@ -292,7 +279,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package aggressive-indent
       :ensure t
-      :commands aggressive-indent-mode
+      :commands (aggressive-indent-mode)
       :diminish aggressive-indent-mode "Ⓘ")
   #+END_SRC
 * Expand region
@@ -302,10 +289,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package expand-region
       :ensure t
-      :commands er/expand-region
+      :commands (er/expand-region)
       :bind ("C-=" . er/expand-region))
   #+END_SRC
-* Git
-  #+BEGIN_SRC emacs-lisp
 
-  #+END_SRC

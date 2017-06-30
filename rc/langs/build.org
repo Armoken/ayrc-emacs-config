@@ -24,7 +24,7 @@
       (progn
         (use-package cmake-font-lock
           :ensure t
-          :commands cmake-font-lock-activate)
+          :commands (cmake-font-lock-activate))
         (defun cmake-hook()
           (set (make-local-variable 'company-backends)
                '(company-cmake))

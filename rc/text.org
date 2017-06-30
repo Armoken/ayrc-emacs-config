@@ -128,7 +128,7 @@
     (use-package ws-butler
       :diminish ws-butler-mode
       :ensure t
-      :commands ws-butler-mode
+      :commands (ws-butler-mode)
       :init
       (progn
         (add-hook 'text-mode-hook 'ws-butler-mode)))
@@ -148,5 +148,10 @@
   #+BEGIN_SRC emacs-lisp
     (use-package ag
       :ensure t
-      :commands ag ag-files ag-regexp ag-project ag-project-files ag-project-regexp)
+      :commands (ag
+                 ag-files
+                 ag-regexp
+                 ag-project
+                 ag-project-files
+                 ag-project-regexp))
   #+END_SRC
