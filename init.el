@@ -43,6 +43,7 @@
                     "./rc/user-conf.org"
                     "./rc/keybindings.org"
                     "./rc/development.org"
+                    "./rc/misc-interactive-functions.org"
                     "./rc/langs/lisp.org"
                     "./rc/langs/other.org"
                     "./rc/langs/python.org"
