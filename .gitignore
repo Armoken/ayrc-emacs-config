@@ -1,4 +1,5 @@
 *~
+*.el
 auto-save-list
 ede-projects.el
 elpa/
