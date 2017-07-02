@@ -16,3 +16,12 @@
       :ensure t
       :mode (("nginx\.conf\.?.*$" . nginx-mode)))
   #+END_SRC
+
+* Systemd
+  #+BEGIN_SRC emacs-lisp
+    (use-package systemd
+      :ensure t
+      :mode (("\\.service\\'"  . systemd-mode)
+             ("\\.target\\'"  . systemd-mode)
+             ("\\.socket\\'" . systemd-mode)))
+  #+END_SRC
