@@ -71,7 +71,7 @@
 
 * Font
   #+BEGIN_SRC emacs-lisp
-    (setq default-frame-alist '((font . "Hack-10")))
+    ;; (setq default-frame-alist '((font . "Hack-10")))
   #+END_SRC
 
 * User personal info
