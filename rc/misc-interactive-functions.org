@@ -29,3 +29,26 @@
         (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
   #+END_SRC
+
+* Copy the current buffer file name to the clipboard
+  #+BEGIN_SRC emacs-lisp
+    (defun copy-file-name-to-clipboard ()
+      "Copy the current buffer file name to the clipboard."
+      (interactive)
+      (let ((filename (if (equal major-mode 'dired-mode)
+                          default-directory
+                        (buffer-file-name))))
+        (when filename
+          (kill-new filename)
+          (message "Copied buffer file name '%s' to the clipboard." filename))))
+  #+END_SRC
+* CRLF to LF
+  #+BEGIN_SRC emacs-lisp
+    (defun dos2unix (buffer)
+      "Automate M-% C-q C-m RET C-q C-j RET"
+      (interactive "*b")
+      (save-excursion
+        (goto-char (point-min))
+        (while (search-forward (string ?\C-m) nil t)
+          (replace-match (string ?\C-j) nil t))))
+  #+END_SRC
