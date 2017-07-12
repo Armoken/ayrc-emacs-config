@@ -21,11 +21,17 @@
             ("C-c p i" . projectile-invalidate-cache)
             ("C-c p z" . projectile-cache-current-file)
             ("C-c p b" . helm-projectile-switch-to-buffer)
-            ("C-c p s" . helm-projectile-ag))
+            ("C-c p s" . helm-projectile-grep-or-ag))
       :init
       (progn
         (use-package helm-projectile
-          :ensure t))
+          :ensure t)
+        (defun helm-projectile-grep-or-ag ()
+          "Uses helm-projectile-grep, if ag doesn't present"
+          (interactive)
+          (if (executable-find "ag") (helm-projectile-ag)
+        	(helm-projectile-grep)))
+      )
       :config
       (progn
         (projectile-global-mode)
