@@ -21,7 +21,16 @@
   #+BEGIN_SRC emacs-lisp
     (use-package systemd
       :ensure t
-      :mode (("\\.service\\'"  . systemd-mode)
-             ("\\.target\\'"  . systemd-mode)
-             ("\\.socket\\'" . systemd-mode)))
+      :mode (("\\.service\\'"   . systemd-mode)
+             ("\\.target\\'"    . systemd-mode)
+             ("\\.socket\\'"    . systemd-mode)
+             ("\\.service\\'"   . systemd-mode)
+             ("\\.timer\\'"     . systemd-mode)
+             ("\\.mount\\'"     . systemd-mode)
+             ("\\.automount\\'" . systemd-mode)
+             ("\\.slice\\'"     . systemd-mode)
+             ("\\.path\\'"      . systemd-mode)
+             ("\\.netdev\\'"    . systemd-mode)
+             ("\\.network\\'"   . systemd-mode)
+             ("\\.link\\'"      . systemd-mode)))
   #+END_SRC
