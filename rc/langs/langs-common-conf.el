@@ -115,6 +115,7 @@ Dont remove tabs."
 (load "~/.emacs.d/rc/langs/dev/make-conf.el")
 (load "~/.emacs.d/rc/langs/dev/matlab-conf.el")
 (load "~/.emacs.d/rc/langs/dev/nasm-conf.el")
+(load "~/.emacs.d/rc/langs/dev/haskell-conf.el")
 (load "~/.emacs.d/rc/langs/dev/python-conf.el")
 (load "~/.emacs.d/rc/langs/dev/sql-conf.el")
 
