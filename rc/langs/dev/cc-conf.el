@@ -16,6 +16,8 @@
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c-mode))
 ;; Open headers for C++ in c++-mode
 (add-to-list 'auto-mode-alist '("\\.hpp\\'" . c++-mode))
+;; CUDA
+(add-to-list 'auto-mode-alist '("\\.cu\\'" . c-mode))
 
 (setq irony-server-install-prefix "~/.emacs.d/servers/Irony")
 (defun my-irony-mode-hook()
@@ -72,6 +74,8 @@
 
 (cmake-ide-setup)
 (setq cmake-ide-flags-c++ (append '("-std=c++14")))
+
+
 
 (provide 'cc-conf)
 ;;; cc-conf.el ends here
