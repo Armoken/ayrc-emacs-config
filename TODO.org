@@ -1,0 +1,29 @@
+* Use package tasks [0/16]
+:PROPERTIES:
+:COOKIE_DATA: todo recursive
+:END:
+** Languages
+*** C/C++
+**** TODO [#A] Basic support
+**** TODO Rtags
+**** TODO Documentation lookup
+*** Python
+**** TODO Flycheck backends
+*** Haskell
+**** TODO Choose minimal core packages
+*** TODO Rust
+*** TODO Golang
+*** TODO HTML
+*** TODO CSS
+*** TODO JS
+** Utils
+*** TODO GDB
+*** TODO Gnus
+** Performance
+*** Test startup time
+** UI
+*** TODO [#A] Fonts
+** Other
+*** TODO Plugin switching for syntax checkers
+*** TODO Ag or grep for helm project search
+*** TODO User config file
