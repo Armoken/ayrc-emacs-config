@@ -266,6 +266,14 @@
               '("~/.emacs.d/other/yasnippet/yasmate/snippets"
                 "~/.emacs.d/other/yasnippet/snippets"))
 
+        (let ((yasmate (car yas-snippet-dirs))
+              (yas (cadr yas-snippet-dirs)))
+
+          (unless (file-exists-p yasmate)
+            (async-shell-command (concat "git clone https://github.com/joaotavora/yasmate.git " yasmate)))
+          (unless (file-exists-p yas)
+            (async-shell-command (concat "git clone https://github.com/AndreaCrotti/yasnippet-snippets.git " yas))))
+
         ;; Add yasnippet support for all company backends
         (defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
 
