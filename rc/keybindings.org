@@ -33,12 +33,6 @@
     (global-set-key (kbd "RET") 'newline-and-indent)
   #+END_SRC 
 
-* Text size manipulations
-  #+BEGIN_SRC emacs-lisp
-    (global-set-key (kbd "C-+") 'text-scale-increase)
-    (global-set-key (kbd "C--") 'text-scale-decrease)
-  #+END_SRC
-
 * Scroll screen without changing cursor position
   #+BEGIN_SRC emacs-lisp
    (global-set-key (kbd "M-n") (lambda () (interactive) (scroll-up 1)))

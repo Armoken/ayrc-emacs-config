@@ -1,4 +1,4 @@
-* Use package tasks [3/24]
+* Use package tasks [4/24]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
@@ -27,7 +27,7 @@
 ** Performance
 *** Test startup time
 ** UI
-*** TODO [#A] Disable font scale on C-- and S-C-+
+*** DONE [#A] Disable font scale on C-- and S-C-+
 *** TODO [#A] Fonts
 ** Other
 *** TODO Plugin switching for syntax checkers
