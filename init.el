@@ -40,6 +40,7 @@
                  path user-emacs-directory))
               (list "./rc/ui.org"
                     "./rc/text.org"
+                    "./rc/utils.org"
                     "./rc/user-conf.org"
                     "./rc/keybindings.org"
                     "./rc/development.org"

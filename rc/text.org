@@ -131,7 +131,8 @@
       :commands (ws-butler-mode)
       :init
       (progn
-        (add-hook 'text-mode-hook 'ws-butler-mode)))
+        (add-hook 'text-mode-hook 'ws-butler-mode)
+        (add-hook 'prog-mode-hook 'ws-butler-mode)))
   #+END_SRC
 
 * Highlight expressions between {},[],()

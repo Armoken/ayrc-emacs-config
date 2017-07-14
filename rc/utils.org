@@ -1,0 +1,6 @@
+* Copy hooks
+  #+BEGIN_SRC emacs-lisp
+    (defun copy-hooks-to (from-hook to-hook)
+      (dolist (hook from-hook)
+        (add-hook to-hook hook)))
+  #+END_SRC

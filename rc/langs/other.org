@@ -3,7 +3,10 @@
     (use-package dockerfile-mode
       :ensure t
       :mode (("Dockerfile'"       . dockerfile-mode)
-             ("\\.Dockerfile\\'"  . dockerfile-mode)))
+             ("\\.Dockerfile\\'"  . dockerfile-mode))
+      :init
+      (progn
+        (copy-hooks-to text-mode-hook 'dockerfile-mode-hook)))
 
     ;; Emacs interface to docker
     (use-package docker
@@ -14,7 +17,10 @@
   #+BEGIN_SRC emacs-lisp
     (use-package nginx-mode
       :ensure t
-      :mode (("nginx\.conf\.?.*$" . nginx-mode)))
+      :mode (("nginx\.conf\.?.*$" . nginx-mode))
+      :init
+      (progn
+        (copy-hooks-to text-mode-hook 'nginx-mode-hook)))
   #+END_SRC
 
 * Systemd
@@ -32,5 +38,12 @@
              ("\\.path\\'"      . systemd-mode)
              ("\\.netdev\\'"    . systemd-mode)
              ("\\.network\\'"   . systemd-mode)
-             ("\\.link\\'"      . systemd-mode)))
+             ("\\.link\\'"      . systemd-mode))
+      :init
+      (progn
+        (defun copy-hooks-to (from-hook to-hook)
+          (dolist (hook from-hook)
+            (add-hook to-hook hook)))
+        (copy-hooks-to text-mode-hook 'systemd-mode-hook)))
+
   #+END_SRC

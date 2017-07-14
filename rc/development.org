@@ -286,7 +286,7 @@
     (setq-default tab-width 4)
     (setq-default pc-basic-offset 4)
     (setq-default standart-indent 4)
-    (setq-default indent-tabs-mode t)
+    (setq-default indent-tabs-mode nil)
   #+END_SRC
 
 * Automatically pairs braces and quotes

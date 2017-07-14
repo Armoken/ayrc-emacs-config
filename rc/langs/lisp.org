@@ -1,3 +1,8 @@
+* Indent size
+  #+BEGIN_SRC emacs-lisp
+    (setq lisp-body-indent 4)
+  #+END_SRC
+
 * Emacs Lisp
   #+BEGIN_SRC emacs-lisp
     (use-package emacs-lisp-mode
