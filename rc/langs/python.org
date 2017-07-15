@@ -5,7 +5,7 @@
         (progn
             (use-package elpy
                 :ensure t
-                :diminish elpy-mode "Ⓔ"
+                :diminish elpy-mode "[E]"
                 :commands (elpy-mode)
                 :config (progn
                             (elpy-use-ipython)

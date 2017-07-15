@@ -42,5 +42,4 @@
       :init
       (progn
         (copy-hooks-to text-mode-hook 'systemd-mode-hook)))
-
   #+END_SRC

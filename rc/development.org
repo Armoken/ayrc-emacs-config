@@ -30,7 +30,7 @@
           "Uses helm-projectile-grep, if ag doesn't present"
           (interactive)
           (if (executable-find "ag") (helm-projectile-ag)
-        	(helm-projectile-grep)))
+            (helm-projectile-grep)))
       )
       :config
       (progn
@@ -38,7 +38,7 @@
         (setq projectile-completion-system 'helm)
         (setq projectile-switch-project-action 'helm-projectile)
         (setq-default projectile-mode-line
-                      '(:eval (format "Ⓟ[%s]" (projectile-project-name))))))
+                      '(:eval (format "[P<%s>]" (projectile-project-name))))))
   #+END_SRC
 
 * Static code analysis
@@ -57,7 +57,7 @@
 
     (use-package flycheck
         :ensure t
-        :diminish flycheck-mode "Ⓕ"
+        :diminish flycheck-mode "[F]"
         :commands (flycheck-mode)
         :config
         (progn
@@ -77,7 +77,7 @@
 ** Semantic
    #+BEGIN_SRC emacs-lisp
      (use-package semantic
-         :diminish semantic-mode "Ⓢ"
+         :diminish semantic-mode "[S]"
          :commands (semantic-mode)
          :config (progn
                      (global-semanticdb-minor-mode 1)
@@ -345,7 +345,7 @@
     (use-package aggressive-indent
       :ensure t
       :commands (aggressive-indent-mode)
-      :diminish aggressive-indent-mode "Ⓘ")
+      :diminish aggressive-indent-mode "[I]")
   #+END_SRC
 * Expand region
   Expand region increases the selected region by semantic units.
