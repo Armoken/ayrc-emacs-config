@@ -1,34 +1,42 @@
 * Elpy
   #+BEGIN_SRC emacs-lisp
     (use-package python-mode
-      :init
-      (progn
-        (use-package elpy
-          :ensure t
-          :diminish elpy-mode "Ⓔ"
-          :commands (elpy-mode)
-          :config (progn
-                    (elpy-use-ipython)
-                    (setq elpy-rpc-backend "jedi")))
+        :init
+        (progn
+            (use-package elpy
+                :ensure t
+                :diminish elpy-mode "[E]"
+                :commands (elpy-mode)
+                :config (progn
+                            (elpy-use-ipython)
+                            (setq elpy-rpc-backend "jedi")))
 
 
-        (defun python-hook()
-          (elpy-mode)
-          (hs-minor-mode)
-          (add-to-list (make-local-variable 'company-backends)
-                       '(elpy-company-backend company-yasnippet)))
-        (add-hook 'python-mode-hook 'python-hook))
-      :config
-      (progn
-        (setq python-shell-interpreter "ipython3"
-              python-shell-interpreter-args "--simple-prompt --pprint")
-        (add-to-list 'python-shell-completion-native-disabled-interpreters
-                     "ipython3")))
+            (defun python-hook ()
+                (elpy-mode)
+                (flycheck-mode)
+                (semantic-mode)
+                (hs-minor-mode)
+                (setq flycheck-checker 'python-pylint
+                      flycheck-checker-error-threshold 400
+                      flycheck-pylintrc "~/.pylintrc")
+                (add-to-list (make-local-variable 'company-backends)
+                             '(elpy-company-backend company-yasnippet)))
+            (add-hook 'python-mode-hook 'python-hook))
+        :config
+        (progn
+            (setq python-shell-interpreter "ipython3"
+                  python-shell-interpreter-args "--simple-prompt --pprint")
+            (add-to-list 'python-shell-completion-native-disabled-interpreters
+                         "ipython3")))
   #+END_SRC
 
 * Pip requirments
   #+BEGIN_SRC emacs-lisp
     (use-package pip-requirements
-      :ensure t
-      :mode (("requirements.txt$" . pip-requirements-mode)))
+        :ensure t
+        :mode (("requirements.txt$" . pip-requirements-mode))
+        :init
+        (progn
+            (copy-hooks-to text-mode-hook 'pip-requirements-mode)))
   #+END_SRC

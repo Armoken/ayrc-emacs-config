@@ -12,9 +12,9 @@ Short file description
 
 #+NAME: config-prerequisites
 #+CAPTION: Prerequisites for config's packages
-| Name | Windows | Ubuntu/Debian/Mint  | ArchLinux           | Fedora              | Mac OS X            | Optional |
-|------+---------+---------------------+---------------------+---------------------+---------------------+----------|
-| [[https://github.com/ggreer/the_silver_searcher][ag]]   |         | the_silver_searcher | the_silver_searcher | the_silver_searcher | the_silver_searcher | Yes      |
+| Name | Windows | Ubuntu/Debian/Mint  | ArchLinux           | Gentoo                       | Fedora              | Mac OS X            | Optional |
+|------+---------+---------------------+---------------------+------------------------------+---------------------+---------------------+----------|
+| [[https://github.com/ggreer/the_silver_searcher][ag]]   |         | the_silver_searcher | the_silver_searcher | sys-apps/the_silver_searcher | the_silver_searcher | the_silver_searcher | Yes      |
 
 # Optional
 Prerequisites notes section

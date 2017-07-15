@@ -1,20 +1,27 @@
+* Indent size
+  #+BEGIN_SRC emacs-lisp
+    (setq lisp-body-indent 4)
+  #+END_SRC
+
 * Emacs Lisp
   #+BEGIN_SRC emacs-lisp
     (use-package emacs-lisp-mode
-      :init
-      (progn
-        (use-package eldoc
-          :ensure t
-          :diminish eldoc-mode
-          :init (progn
-                  (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)))
+        :init
+        (progn
+            (use-package eldoc
+                :ensure t
+                :diminish eldoc-mode
+                :init (progn
+                          (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)))
 
-        (add-hook 'emacs-lisp-mode-hook
-                  (lambda ()
-                    (hs-minor-mode)
-                    (aggressive-indent-mode)
-                    (add-hook 'write-contents-functions
-                              'cleanup-buffer-notabs nil t)
-                    (add-to-list (make-local-variable 'company-backends)
-                                 '(company-elisp company-yasnippet))))))
+            (defun emacs-lisp-hook ()
+                (hs-minor-mode)
+                (semantic-mode)
+                (flycheck-mode)
+                (aggressive-indent-mode)
+                (add-hook 'write-contents-functions
+                          'cleanup-buffer-notabs nil t)
+                (add-to-list (make-local-variable 'company-backends)
+                             '(company-elisp company-yasnippet)))
+            (add-hook 'emacs-lisp-mode-hook 'emacs-lisp-hook)))
   #+END_SRC
