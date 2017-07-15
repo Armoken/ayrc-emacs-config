@@ -41,9 +41,6 @@
              ("\\.link\\'"      . systemd-mode))
       :init
       (progn
-        (defun copy-hooks-to (from-hook to-hook)
-          (dolist (hook from-hook)
-            (add-hook to-hook hook)))
         (copy-hooks-to text-mode-hook 'systemd-mode-hook)))
 
   #+END_SRC

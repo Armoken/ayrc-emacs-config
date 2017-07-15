@@ -1,38 +1,44 @@
 * Make
   #+BEGIN_SRC emacs-lisp
     (use-package make-mode
-      :mode (("[Mm]akefile\\'" . makefile-gmake-mode))
-      :config
-      (progn
-        (defun make-hook ())
-        (mapc (lambda (hook) (add-hook hook 'make-hook))
-              (list 'makefile-mode-hook
-                    'makefile-gmake-mode-hook
-                    'makefile-imake-mode-hook
-                    'makefile-bsdmake-mode-hook
-                    'makefile-automake-mode-hook
-                    'makefile-mode-hook))))
+        :mode (("[Mm]akefile\\'" . makefile-gmake-mode))
+        :config
+        (progn
+            (defun make-hook ()
+                (flymake-mode)
+                (semantic-mode))
+
+            (mapc (lambda (hook) (add-hook hook 'make-hook))
+                  (list 'makefile-mode-hook
+                        'makefile-gmake-mode-hook
+                        'makefile-imake-mode-hook
+                        'makefile-bsdmake-mode-hook
+                        'makefile-automake-mode-hook
+                        'makefile-mode-hook))))
   #+END_SRC
 
 * CMake
   #+BEGIN_SRC emacs-lisp
     (use-package cmake-mode
-      :ensure t
-      :mode (("/CMakeLists\\.txt\\'" . cmake-mode)
-             ("\\.cmake\\'" . cmake-mode))
-      :init
-      (progn
-        (use-package cmake-font-lock
-          :ensure t
-          :commands (cmake-font-lock-activate))
-        (defun cmake-hook()
-          (set (make-local-variable 'company-backends)
-               '(company-cmake))
-          (cmake-font-lock-activate)
-          (hs-minor-mode))
+        :ensure t
+        :mode (("/CMakeLists\\.txt\\'" . cmake-mode)
+               ("\\.cmake\\'" . cmake-mode))
+        :init
+        (progn
+            (use-package cmake-font-lock
+                :ensure t
+                :commands (cmake-font-lock-activate))
 
-        (add-hook 'cmake-mode-hook 'cmake-hook))
-      :config
-      (progn
-        (setq cmake-tab-width 4)))
+            (defun cmake-hook()
+                (hs-minor-mode)
+                (flycheck-mode)
+                (semantic-mode)
+                (cmake-font-lock-activate)
+                (set (make-local-variable 'company-backends)
+                     '(company-cmake)))
+
+            (add-hook 'cmake-mode-hook 'cmake-hook))
+        :config
+        (progn
+            (setq cmake-tab-width 4)))
   #+END_SRC

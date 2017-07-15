@@ -18,17 +18,18 @@
         ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
+
 ;; Bootstrap 'use-package'
 (unless (or (package-installed-p 'use-package)
             (package-installed-p 'diminish)
             (package-installed-p 'bind-key))
-  (package-refresh-contents)
-  (package-install 'use-package)
-  (package-install 'diminish)
-  (package-install 'bind-key))
+    (package-refresh-contents)
+    (package-install 'use-package)
+    (package-install 'diminish)
+    (package-install 'bind-key))
 
 (eval-when-compile
-  (require 'use-package))
+    (require 'use-package))
 (require 'diminish) ;; Used to reduce size of the mode name in modeline
 (require 'bind-key)
 
@@ -36,8 +37,8 @@
 (require 'org)
 (mapc 'org-babel-load-file
       (mapcar (lambda (path)
-                (expand-file-name
-                 path user-emacs-directory))
+                  (expand-file-name
+                   path user-emacs-directory))
               (list "./rc/ui.org"
                     "./rc/text.org"
                     "./rc/utils.org"

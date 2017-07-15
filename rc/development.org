@@ -44,122 +44,117 @@
 * Static code analysis
   #+BEGIN_SRC emacs-lisp
     (use-package flycheck-pos-tip
-      :ensure t
-      :commands (flycheck-pos-tip-error-messages)
-      :init
-      (progn
-        (eval-after-load 'flycheck
-          '(setq flycheck-display-error-messages
-                 #'flycheck-pos-tip-error-messages)))
-      :config
-      (progn
-        (setq flycheck-pos-tip-timeout 1)))
+        :ensure t
+        :commands (flycheck-pos-tip-error-messages)
+        :init
+        (progn
+            (eval-after-load 'flycheck
+                '(setq flycheck-display-error-messages
+                       #'flycheck-pos-tip-error-messages)))
+        :config
+        (progn
+            (setq flycheck-pos-tip-timeout 1)))
 
     (use-package flycheck
-      :ensure t
-      :diminish flycheck-mode "Ⓕ"
-      :commands (global-flycheck-mode)
-      :init
-      (progn
-        ;; Show errors under point in pos-tip popups.
-        (global-flycheck-mode))
-      :config
-      (progn
-        (setq flycheck-standard-error-navigation nil)
-        (setq flycheck-idle-change-delay 0)
-        (setq flycheck-check-syntax-automatically '(save mode-enabled))
+        :ensure t
+        :diminish flycheck-mode "Ⓕ"
+        :commands (flycheck-mode)
+        :config
+        (progn
+            (setq flycheck-standard-error-navigation nil)
+            (setq flycheck-idle-change-delay 0)
+            (setq flycheck-check-syntax-automatically '(save mode-enabled))
 
-        ;; Flycheck errors on a tooltip (doesnt work on console)
-        (when (display-graphic-p (selected-frame))
-          (eval-after-load 'flycheck
-            '(custom-set-variables
-              '(flycheck-display-errors-function
-                #'flycheck-pos-tip-error-messages))))))
+            ;; Flycheck errors on a tooltip (doesnt work on console)
+            (when (display-graphic-p (selected-frame))
+                (eval-after-load 'flycheck
+                    '(custom-set-variables
+                      '(flycheck-display-errors-function
+                        #'flycheck-pos-tip-error-messages))))))
   #+END_SRC
 
 * CEDET
 ** Semantic
    #+BEGIN_SRC emacs-lisp
      (use-package semantic
-       :diminish semantic-mode "Ⓢ"
-       :config (progn
-                 (global-semanticdb-minor-mode 1)
-                 (global-semantic-idle-scheduler-mode 1)
-                 (semantic-mode 1)))
+         :diminish semantic-mode "Ⓢ"
+         :commands (semantic-mode)
+         :config (progn
+                     (global-semanticdb-minor-mode 1)
+                     (global-semantic-idle-scheduler-mode 1)))
    #+END_SRC
 
 * Complete anything
   #+BEGIN_SRC emacs-lisp
     (use-package company
-      :ensure t
-      :diminish company-mode
-      :init
-      (progn
-        ;; This package adds fuzzy matching to Company
-        (use-package company-flx
-          :commands (company-flx-mode)
-          :ensure t)
+        :ensure t
+        :diminish company-mode
+        :init
+        (progn
+            ;; This package adds fuzzy matching to Company
+            (use-package company-flx
+                :commands (company-flx-mode)
+                :ensure t)
 
-        ;; Documentation popup for Company
-        (use-package company-quickhelp
-          :ensure t
-          ;; :commands (company-quickhelp-manual-begin)
-          :init
-          ;; (progn
-          ;;   (eval-after-load 'company
-          ;;     '(define-key company-active-map (kbd "M-h")
-          ;;        #'company-quickhelp-manual-begin)))
-          :config
-          (progn
-            (company-quickhelp-mode 1)))
+            ;; Documentation popup for Company
+            (use-package company-quickhelp
+                :ensure t
+                :commands (company-quickhelp-mode)
+                :init
+                (progn
+                    (eval-after-load 'company
+                        '(progn
+                             (define-key company-active-map (kbd "M-h")
+                                 #'company-quickhelp-manual-begin)
+                             (company-quickhelp-mode)))))
 
-        ;; Sort completion candidates by previous completion choices
-        (use-package company-statistics
-          :ensure t
-          :commands (company-statistics-mode)
-          :init
-          (progn
-            (eval-after-load 'company
-              '(company-statistics-mode))))
+            ;; Sort completion candidates by previous completion choices
+            (use-package company-statistics
+                :ensure t
+                :commands (company-statistics-mode)
+                :init
+                (progn
+                    (eval-after-load 'company
+                        '(company-statistics-mode))))
 
-        (global-company-mode))
-      :config
-      (progn
-        (setq company-tooltip-align-annotations t
+            (global-company-mode))
+        :config
+        (progn
+            (setq company-tooltip-align-annotations t
 
-              ;; Easy navigation to candidates with M-<n>
-              company-idle-delay                0.0
+                  ;; Easy navigation to candidates with M-<n>
+                  company-idle-delay                0.0
 
-              company-show-numbers              t
-              company-minimum-prefix-length     1)
+                  company-show-numbers              t
+                  company-minimum-prefix-length     1)
 
-        (setq company-backends
-              '((company-files      ;; files & directory
-                 company-keywords   ;; keywords
-                 company-capf)      ;; completion-at-point-functions function
-                (company-abbrev     ;; abbreviations
-                 company-dabbrev))) ;; dynamic abbreviations
+            (setq company-backends
+                  '((company-files      ;; files & directory
+                     company-keywords   ;; keywords
+                     company-capf)      ;; completion-at-point-functions function
+                    (company-abbrev     ;; abbreviations
+                     company-dabbrev))) ;; dynamic abbreviations
 
-        ;; Add yasnippet support for all company backends
-        (defvar company-mode/enable-yas t
-          "Enable yasnippet for all backends.")
+            ;; Add yasnippet support for all company backends
+            (defvar company-mode/enable-yas t
+                "Enable yasnippet for all backends.")
 
-        (defun company-mode/backend-with-yas (backend)
-          (if (or (not company-mode/enable-yas)
-                  (and (listp backend)
-                       (member 'company-yasnippet backend)))
-              backend
-            (append (if (consp backend)
+            (defun company-mode/backend-with-yas (backend)
+                (if (or (not company-mode/enable-yas)
+                        (and (listp backend)
+                             (member 'company-yasnippet backend)))
                         backend
-                      (list backend))
-                    '(:with company-yasnippet))))
+                    (append (if (consp backend)
+                                    backend
+                                (list backend))
+                            '(:with company-yasnippet))))
 
-        (setq company-backends
-              (mapcar #'company-mode/backend-with-yas company-backends))
+            (setq company-backends
+                  (mapcar #'company-mode/backend-with-yas company-backends))
 
-        (company-flx-mode)
-        (define-key company-active-map (kbd "TAB")
-          'company-complete-selection)))
+            (company-flx-mode)
+            (define-key company-active-map (kbd "TAB")
+                'company-complete-selection)))
   #+END_SRC
 
 * VCS
