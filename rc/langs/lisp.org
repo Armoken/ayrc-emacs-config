@@ -23,6 +23,5 @@
                           'cleanup-buffer-notabs nil t)
                 (add-to-list (make-local-variable 'company-backends)
                              '(company-elisp company-yasnippet)))
-
-            (add-hook 'emacs-lisp-mode-hook emacs-lisp-hook)))
+            (add-hook 'emacs-lisp-mode-hook 'emacs-lisp-hook)))
   #+END_SRC

@@ -53,7 +53,7 @@
                        #'flycheck-pos-tip-error-messages)))
         :config
         (progn
-            (setq flycheck-pos-tip-timeout 1)))
+            (setq flycheck-pos-tip-timeout 3)))
 
     (use-package flycheck
         :ensure t
