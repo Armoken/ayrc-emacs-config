@@ -25,7 +25,7 @@
 
 * Goto to line with specific number
   #+BEGIN_SRC emacs-lisp
-    (global-set-key (kbd "M-g") 'goto-line)
+    (global-set-key (kbd "M-g g") 'goto-line)
   #+END_SRC
 
 * Add newline and indent on enter press
