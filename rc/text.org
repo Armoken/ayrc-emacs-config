@@ -40,6 +40,26 @@
 
   #+END_SRC
 
+* Jump to things in Emacs tree-style
+  #+BEGIN_SRC emacs-lisp
+    (use-package avy
+        :ensure t
+        :bind (("C-;"   . avy-goto-char-2)      ;; I use this most frequently
+               ("C-'"   . avy-goto-line)        ;; Consistent with ivy-avy
+               ("M-g c" . avy-goto-char)
+               ("M-g e" . avy-goto-word-0)      ;; lots of candidates
+               ("M-g g" . avy-goto-line)        ;; digits behave like goto-line
+               ("M-g w" . avy-goto-word-1)      ;; first character of the word
+               ("M-g (" . avy-goto-open-paren)
+               ("M-g )" . avy-goto-close-paren)
+               ("M-g P" . avy-pop-mark))
+        :config
+        ;; case sensitive makes selection easier
+        (setq avy-case-fold-search nil)
+
+        (avy-setup-default))
+  #+END_SRC
+
 * Current line hightlight
   #+BEGIN_SRC emacs-lisp
     (global-hl-line-mode 1)

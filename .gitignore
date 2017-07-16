@@ -64,3 +64,5 @@ flycheck_*.el
 .dir-locals.el
 *.cache
 *.eld
+
+other/yasnippet
