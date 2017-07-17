@@ -32,8 +32,9 @@ Prerequisites notes section
 | [[https://github.com/bbatsov/projectile][projectile]]    | Project managment in Emacs                             |
 | [[https://github.com/magit/magit][maigt]]         | Git support for Emacs                                  |
 
+
 * Package or section name
   Short description
   #+BEGIN_SRC emacs-lisp
 
-  #+END_SRC emacs
+  #+END_SRC
