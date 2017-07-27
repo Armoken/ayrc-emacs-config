@@ -1,6 +1,8 @@
 * Shell
   #+BEGIN_SRC emacs-lisp
-    (use-package shell-mode
+    (use-package shell-script-mode
+        :mode (("\\.ebuild\\'" . shell-script-mode)
+               ("\\.sh\\'"     . shell-script-mode))
         :init
         (progn
             (use-package company-shell
