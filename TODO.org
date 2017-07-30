@@ -1,4 +1,4 @@
-* Use package tasks [4/24]
+* Use package tasks [5/25]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
@@ -10,7 +10,8 @@
 *** Python
 **** TODO Flycheck backends
 *** Haskell
-**** TODO Choose minimal core packages
+**** DONE Choose minimal core packages
+**** TODO hlint apply refact
 *** TODO Rust
 *** TODO Golang
 *** TODO HTML

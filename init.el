@@ -61,6 +61,7 @@
                                          "./rc/orgmode.org"
                                          "./rc/langs/markup.org"
                                          "./rc/langs/lisp.org"
+                                         "./rc/langs/haskell.org"
                                          "./rc/langs/other.org"
                                          "./rc/langs/python.org"
                                          "./rc/langs/shell.org"

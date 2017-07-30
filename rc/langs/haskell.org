@@ -1,0 +1,77 @@
+#+TITLE: Haskell
+#+OPTIONS: toc:nil num:nil ^:nil
+
+Haskell configuration for Emacs
+
+* Prerequisites
+  :PROPERTIES:
+  :CUSTOM_ID: haskell-prerequisites
+  :END:
+
+#+NAME: haskell-prerequisites
+#+CAPTION: Prerequisites for haskell packages
+
+| Name    | Archlinux | Gentoo            | Optional |
+|---------+-----------+-------------------+----------|
+| [[https://github.com/DanielG/ghc-mod][ghc-mod]] | ghc-mod   | app-emacs/ghc-mod | No       |
+| [[https://github.com/ndmitchell/hlint][hlint]]   | hlint     | dev-haskell/hlint | No       |
+
+
+
+* Packages
+:PROPERTIES:
+:CUSTOM_ID: haskell-packages
+:END:
+
+#+NAME: haskell-packages
+#+CAPTION: Packages for haskell
+
+| Package          | Description                                                        |
+|------------------+--------------------------------------------------------------------|
+| [[https://github.com/haskell/haskell-mode][haskell-mode]]     | Emacs mode for editing, debugging and developing Haskell programs. |
+| [[https://github.com/DanielG/ghc-mod][ghc-mod]]          | Haskell completion and keybindings                                 |
+| [[https://github.com/flycheck/flycheck-haskell][flycheck-haskell]] | Flycheck mode for haskell                                          |
+
+
+* Haskell
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package haskell-mode
+        :ensure t
+        :defer t
+        :commands haskell-mode
+        :mode ("\\.hs\\'" . haskell-mode)
+
+        :init
+        (progn
+
+            (setq
+             haskell-interactive-popup-errors nil
+             haskell-process-suggest-remove-import-lines t
+             haskell-process-auto-import-loaded-modules t
+             haskell-stylish-on-save t)
+
+            (use-package ghc
+                :ensure t
+                :commands ghc-init
+                :init
+                (setq ghc-debug t))
+
+            (use-package company-ghc
+                :ensure t
+                :defer t)
+
+            (use-package flycheck-haskell
+                :ensure t
+                :after flycheck
+                :init (add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
+
+            (defun haskell-hook ()
+                (ghc-init)
+                (semantic-mode)
+                (flycheck-mode)
+                (add-to-list (make-local-variable 'company-backends)
+                             '(company-ghc company-dabbrev-code company-yasnippet)))
+
+            (add-hook 'haskell-mode-hook 'haskell-hook)))
+  #+END_SRC
