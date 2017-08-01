@@ -11,10 +11,11 @@ Haskell configuration for Emacs
 #+NAME: haskell-prerequisites
 #+CAPTION: Prerequisites for haskell packages
 
-| Name    | Archlinux | Gentoo            | Optional |
-|---------+-----------+-------------------+----------|
-| [[https://github.com/DanielG/ghc-mod][ghc-mod]] | ghc-mod   | app-emacs/ghc-mod | No       |
-| [[https://github.com/ndmitchell/hlint][hlint]]   | hlint     | dev-haskell/hlint | No       |
+| Name    | Archlinux | Gentoo                       | Ubuntu  | Optional |
+|---------+-----------+------------------------------+---------+----------|
+| [[https://github.com/DanielG/ghc-mod][ghc-mod]] | ghc-mod   | app-emacs/ghc-mod            | ghc-mod | No       |
+| [[https://github.com/ndmitchell/hlint][hlint]]   | hlint     | dev-haskell/hlint            | hlint   | No       |
+| [[https://github.com/ndmitchell/hoogle][hoogle]]  | hoogle    | dev-haskell/hoogle [haskell] | hoogle  | No       |
 
 
 
