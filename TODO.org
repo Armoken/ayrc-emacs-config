@@ -1,4 +1,4 @@
-* Use package tasks [5/25]
+* Use package tasks [6/26]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
@@ -18,6 +18,11 @@
 *** TODO CSS
 *** TODO JS
 *** TODO VHDL
+*** DONE Ruby
+**** RVM
+**** Robe
+**** Rubocop
+**** Inf-ruby
 ** Utils
 *** TODO GDB
 *** DONE Magit

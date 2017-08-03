@@ -64,6 +64,7 @@
                                          "./rc/langs/haskell.org"
                                          "./rc/langs/other.org"
                                          "./rc/langs/python.org"
+                                         "./rc/langs/ruby.org"
                                          "./rc/langs/shell.org"
                                          "./rc/langs/build.org"
                                          "./rc/langs/tex.org"
