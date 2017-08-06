@@ -52,22 +52,22 @@
 
 
 (mapc 'org-babel-load-file
-      (mapcar 'expand-config-path  (list "./rc/ui.org"
-                                         "./rc/text.org"
-                                         "./rc/utils.org"
-                                         "./rc/keybindings.org"
-                                         "./rc/development.org"
-                                         "./rc/misc-interactive-functions.org"
-                                         "./rc/orgmode.org"
-                                         "./rc/langs/markup.org"
-                                         "./rc/langs/lisp.org"
-                                         "./rc/langs/haskell.org"
-                                         "./rc/langs/other.org"
-                                         "./rc/langs/python.org"
-                                         "./rc/langs/shell.org"
-                                         "./rc/langs/build.org"
-                                         "./rc/langs/tex.org"
-                                         )))
+      (mapcar 'expand-config-path (list "./rc/ui.org"
+                                        "./rc/text.org"
+                                        "./rc/utils.org"
+                                        "./rc/keybindings.org"
+                                        "./rc/development.org"
+                                        "./rc/misc-interactive-functions.org"
+                                        "./rc/langs/markup.org"
+                                        "./rc/langs/lisp.org"
+                                        "./rc/langs/other.org"
+                                        "./rc/langs/haskell.org"
+                                        "./rc/langs/cc.org"
+                                        "./rc/langs/python.org"
+                                        "./rc/langs/shell.org"
+                                        "./rc/langs/build.org"
+                                        "./rc/langs/tex.org"
+                                        )))
 
 (provide 'init)
 ;;; init.el ends here
