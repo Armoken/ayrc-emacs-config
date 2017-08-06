@@ -150,8 +150,8 @@
 
             (setq company-backends
                   '((company-files      ;; files & directory
-                     company-keywords   ;; keywords
-                     company-capf)      ;; completion-at-point-functions function
+                     company-keywords)   ;; keywords
+
                     (company-abbrev     ;; abbreviations
                      company-dabbrev))) ;; dynamic abbreviations
 
@@ -365,7 +365,7 @@
     (use-package aggressive-indent
       :ensure t
       :commands (aggressive-indent-mode)
-      :diminish aggressive-indent-mode "[I]")
+      :diminish aggressive-indent-mode "[A]")
   #+END_SRC
 * Expand region
   Expand region increases the selected region by semantic units.

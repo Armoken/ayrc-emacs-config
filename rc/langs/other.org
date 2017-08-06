@@ -52,3 +52,13 @@
         (progn
             (copy-hooks-to text-mode-hook 'systemd-mode-hook)))
   #+END_SRC
+
+* Ini
+  #+BEGIN_SRC emacs-lisp
+    (use-package ini-mode
+        :ensure t
+        :mode (("\\.ini\\'" . ini-mode))
+        :init
+        (progn
+            (copy-hooks-to text-mode-hook 'ini-mode-hook)))
+  #+END_SRC

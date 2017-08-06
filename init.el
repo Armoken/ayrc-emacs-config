@@ -52,6 +52,7 @@
 
 
 (mapc 'org-babel-load-file
+
       (mapcar 'expand-config-path  (list "./rc/ui.org"
                                          "./rc/text.org"
                                          "./rc/utils.org"
@@ -65,10 +66,13 @@
                                          "./rc/langs/other.org"
                                          "./rc/langs/python.org"
                                          "./rc/langs/ruby.org"
+                                         "./rc/langs/cc.org"
                                          "./rc/langs/shell.org"
                                          "./rc/langs/build.org"
                                          "./rc/langs/tex.org"
                                          )))
+
+
 
 (provide 'init)
 ;;; init.el ends here
