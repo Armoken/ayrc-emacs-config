@@ -64,16 +64,23 @@ Installation path: rvm -> ruby -> gem install all packages above
             (setq ruby-indent-level 2
                   ruby-indent-tabs-mode nil)
 
-
             (use-package rvm
                 :ensure t
                 :defer t
                 :config
                 (rvm-use-default))
 
+            (use-package company-inf-ruby
+                :ensure t)
+
             (use-package inf-ruby
                 :ensure t
-                :defer t)
+                :defer t
+                :init
+                (progn
+                    (setq inf-ruby-default-implementation "pry")
+                    (add-to-list (make-local-variable 'company-backends)
+                                 '(company-inf-ruby company-yasnippet))))
 
             (use-package rubocop
                 :ensure t
@@ -91,7 +98,9 @@ Installation path: rvm -> ruby -> gem install all packages above
             (defun ruby-hook ()
                 (robe-mode)
                 (rubocop-mode)
+                (auto-revert-mode)
                 (flycheck-mode)
+                (inf-ruby-minor-mode)
                 (add-to-list (make-local-variable 'company-backends)
                              '(company-robe company-dabbrev-code company-yasnippet)))
 
