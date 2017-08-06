@@ -5,7 +5,12 @@
        :ensure spacemacs-theme
        :config
        (progn
-         (load-theme 'spacemacs-dark t)))
+           (if (daemonp)
+         (add-hook 'after-make-frame-functions
+             (lambda (frame)
+                 (select-frame frame)
+                 (load-theme 'spacemacs-dark t)))
+         (load-theme 'spacemacs-dark t))))
    #+END_SRC
 
 ** Modeline theme
@@ -59,14 +64,13 @@
       '(show-paren-mismatch
      ((((class color)) (:background "red" :foreground "white")))))
    #+END_SRC
-
 ** Highlighting indentation
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'highlight-indentation-mode
-               (lambda ()
-                 (set-face-background 'highlight-indentation-face "#e3e3d3")
-                 (set-face-background
-                  'highlight-indentation-current-column-face "#c3b3b3")))
+      #+BEGIN_SRC emacs-lisp
+        (add-hook 'highlight-indentation-mode
+              (lambda ()
+                (set-face-background 'highlight-indentation-face "#e3e3d3")
+                (set-face-background
+                 'highlight-indentation-current-column-face "#c3b3b3")))
    #+END_SRC
 
 * Font
