@@ -50,6 +50,11 @@
   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref rtags-use-package
     (use-package rtags
         :ensure t
+        :bind
+        (("M-."  . rtags-find-symbol-at-point)
+        ("M-,"   . rtags-find-references-at-point)
+        ("C-c r" . rtags-rename-symbol))
+
         :init
         (progn
             (use-package company-rtags
