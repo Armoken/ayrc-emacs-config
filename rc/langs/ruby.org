@@ -40,7 +40,7 @@ Installation path: rvm -> ruby -> gem install all packages above
   Ruby mode for Emacs
   #+BEGIN_SRC emacs-lisp
     (use-package ruby-mode
-
+        :defer t
         :mode ("\\.rb\\'"
                "\\.rake\\'"
                "\\.builder\\'"
@@ -95,12 +95,31 @@ Installation path: rvm -> ruby -> gem install all packages above
                 (defadvice inf-ruby-console-auto (before activate-rvm-for-robe activate)
                     (rvm-activate-corresponding-ruby)))
 
+            (use-package projectile-rails
+                :ensure t
+                :commands projectile-rails-global-mode)
+
+            (use-package rinari
+                :ensure t
+                :config
+                (setq ruby-insert-encoding-magic-comment nil))
+
+            (use-package bundler
+                :ensure t
+                :commands (bundle-check
+                           bundle-console
+                           bundle-install
+                           bundle-open
+                           bundle-update))
+
             (defun ruby-hook ()
                 (robe-mode)
                 (rubocop-mode)
                 (auto-revert-mode)
                 (flycheck-mode)
                 (inf-ruby-minor-mode)
+                (projectile-rails-mode)
+                (global-rinari-mode)
                 (add-to-list (make-local-variable 'company-backends)
                              '(company-robe company-dabbrev-code company-yasnippet)))
 
