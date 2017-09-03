@@ -4,3 +4,10 @@
       (dolist (hook from-hook)
         (add-hook to-hook hook)))
   #+END_SRC
+* Backups in /tmp
+  #+BEGIN_SRC emacs-lisp
+    (setq backup-directory-alist
+          `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
+  #+END_SRC
