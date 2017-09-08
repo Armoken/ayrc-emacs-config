@@ -112,16 +112,32 @@ Installation path: rvm -> ruby -> gem install all packages above
                            bundle-open
                            bundle-update))
 
+            (use-package web-mode
+                :ensure t
+                :mode (("\\.html\\'" . web-mode)
+                       ("\\.html\\.erb\\'" . web-mode))
+                :init
+                (progn
+                    (setq web-mode-markup-indent-offset 2)
+                    (setq web-mode-code-indent-offset 2)
+                    (setq web-mode-css-indent-offset 2)
+
+                    (setq web-mode-enable-auto-pairing t)
+                    (setq web-mode-enable-auto-expanding t)
+                    (setq web-mode-enable-css-colorization t)))
+
             (defun ruby-hook ()
                 (robe-mode)
                 (rubocop-mode)
                 (auto-revert-mode)
                 (flycheck-mode)
+                (rvm-activate-corresponding-ruby)
                 (inf-ruby-minor-mode)
                 (projectile-rails-mode)
                 (global-rinari-mode)
                 (add-to-list (make-local-variable 'company-backends)
                              '(company-robe company-dabbrev-code company-yasnippet)))
+
 
             (add-hook 'ruby-mode-hook 'ruby-hook)))
   #+END_SRC
