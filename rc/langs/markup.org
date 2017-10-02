@@ -1,3 +1,21 @@
+* Packages
+:PROPERTIES:
+:CUSTOM_ID: development-packages
+:END:
+
+#+NAME: development-packages
+#+CAPTION: Packages for development
+| Package       | Description                                            |
+|---------------+--------------------------------------------------------|
+| [[https://github.com/bbatsov/projectile][projectile]]    | Project managment in Emacs                             |
+| [[https://github.com/magit/magit][magit]]         | Git support for Emacs                                  |
+| [[https://github.com/flycheck/flycheck][flycheck]]      | Modern on-the-fly syntax checking extension for  Emacs |
+| [[http://cedet.sourceforge.net/semantic.shtml][semantic]]      | Languages parser for static analysis and navigation    |
+| [[https://github.com/company-mode/company-mode][company]]       | Modular in-buffer completion framework for Emacs       |
+| [[https://github.com/joaotavora/yasnippet][yasnippet]]     | Template system for Emacs                              |
+| [[https://github.com/hbin/smart-shift][smart-shift]]   | Shift region using arrows                              |
+| [[https://github.com/magnars/expand-region.el][expand-region]] | Expand current region using lexems' semantic           |
+
 * JSON
   Install demjson python package
 

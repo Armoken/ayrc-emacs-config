@@ -1,10 +1,45 @@
+#+TITLE: Python
+#+OPTIONS: toc:nil num:nil ^:nil
+
+Python configuration for Emacs
+
+* Prerequisites
+  :PROPERTIES:
+  :CUSTOM_ID: python-prerequisites
+  :END:
+
+#+NAME: python-prerequisites
+#+CAPTION: Prerequisites for python packages
+
+| Name     | Archlinux        | Gentoo                               | Ubuntu           | Optional |
+|----------+------------------+--------------------------------------+------------------+----------|
+| [[https://www.pylint.org/][Pylint]]   | pylint           | dev-python/pylint                    | pylint           | No       |
+|          |                  | PYTHON_TARGETS="python2_7 python3_5" | pylint3          |          |
+|----------+------------------+--------------------------------------+------------------+----------|
+| [[https://github.com/python-rope/rope][Rope]]     | python2-rope     | dev-python/rope                      | hlint            | Yes      |
+|          | python-rope      | dev-python/rope_py3k                 |                  |          |
+|----------+------------------+--------------------------------------+------------------+----------|
+| [[https://github.com/davidhalter/jedi][Jedi]]     | python2-jedi     | dev-python/jedi                      | python-jedi      | No       |
+|          | python-jedi      | PYTHON_TARGETS="python2_7 python3_5" | python3-jedi     |          |
+|----------+------------------+--------------------------------------+------------------+----------|
+| [[https://gitlab.com/pycqa/flake8][Flake8]]   | python2-flake8   | dev-python/flake8                    | python-flake8    | No       |
+|          | flake8           | PYTHON_TARGETS="python2_7 python3_5" | python3-flake8   |          |
+|----------+------------------+--------------------------------------+------------------+----------|
+| [[https://github.com/hhatto/autopep8][Autopep8]] | python2-autopep8 | dev-python/autopep8                  | python-autopep8  | No       |
+|          | autopep8         | PYTHON_TARGETS="python2_7 python3_5" | python3-autopep8 |          |
+|----------+------------------+--------------------------------------+------------------+----------|
+| [[https://github.com/google/yapf][Yapf]]     | python2-yapf     | dev-python/yapf                      | yapf             | Yes      |
+|          | yapf             | PYTHON_TARGETS="python2_7 python3_5" | yapf3            |          |
+
 * Elpy
   #+BEGIN_SRC emacs-lisp
     (use-package python-mode
+        :bind ("C-C TAB" . hs-toggle-hiding)
         :init
         (progn
             (use-package elpy
                 :ensure t
+                :bind ("M-," . pop-tag-mark)
                 :diminish elpy-mode "[E]"
                 :commands (elpy-mode)
                 :config (progn
@@ -17,18 +52,31 @@
                 (flycheck-mode)
                 (semantic-mode)
                 (hs-minor-mode)
+
                 (setq flycheck-checker 'python-pylint
                       flycheck-checker-error-threshold 400
-                      flycheck-pylintrc "~/.pylintrc")
+                      flycheck-pylintrc "~/.pylintrc"
+
+                      py-python-command "python3"
+                      elpy-rpc-python-command "python3"
+                      python-shell-interpreter "ipython3"
+                      python-shell-interpreter-args "--simple-prompt --pprint")
+                (add-to-list 'python-shell-completion-native-disabled-interpreters
+                             "ipython3")
+
                 (add-to-list (make-local-variable 'company-backends)
                              '(elpy-company-backend company-yasnippet)))
-            (add-hook 'python-mode-hook 'python-hook))
-        :config
+            (add-hook 'python-mode-hook 'python-hook)))
+  #+END_SRC
+
+* Virtualenv
+  #+BEGIN_SRC emacs-lisp
+    (use-package pyenv-mode
+        :ensure t
+        :diminish "[V]"
+        :init
         (progn
-            (setq python-shell-interpreter "ipython3"
-                  python-shell-interpreter-args "--simple-prompt --pprint")
-            (add-to-list 'python-shell-completion-native-disabled-interpreters
-                         "ipython3")))
+            (add-hook 'python-mode-hook 'pyenv-mode)))
   #+END_SRC
 
 * Pip requirments

@@ -50,9 +50,7 @@
                              (expand-config-path user-conf-filename)
                          (expand-config-path user-conf-template-filename)))
 
-
 (mapc 'org-babel-load-file
-
       (mapcar 'expand-config-path  (list "./rc/ui.org"
                                          "./rc/text.org"
                                          "./rc/utils.org"
@@ -76,19 +74,3 @@
 
 (provide 'init)
 ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(flycheck-display-errors-function (function flycheck-pos-tip-error-messages))
- '(package-selected-packages
-   (quote
-    (org-cliplink org-present ox-ioslide org-ioslide org-bullets lisp-extra-font-lock paredit yaml-mode ws-butler use-package undo-tree systemd spacemacs-theme spaceline-all-the-icons smart-shift pip-requirements nlinum nginx-mode neotree magit jinja2-mode helm-projectile helm-flycheck helm-ag flycheck-yamllint flycheck-pos-tip flycheck-demjsonlint expand-region elpy editorconfig dockerfile-mode docker company-statistics company-shell company-quickhelp company-flx company-auctex cmake-font-lock anzu aggressive-indent ag adaptive-wrap))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(show-paren-match ((t (:background "purple4"))))
- '(show-paren-mismatch ((((class color)) (:background "red" :foreground "white")))))
