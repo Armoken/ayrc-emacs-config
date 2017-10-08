@@ -26,17 +26,17 @@
         :diminish undo-tree-mode
         :config
         (progn
-            (setq undo-tree-visualizer-timestamps t)
-            (setq undo-tree-visualizer-diff t))
+            (setq undo-tree-visualizer-timestamps nil
+                  undo-tree-visualizer-diff       nil)
 
-        (defadvice undo-tree-visualize
-                (around undo-tree-split-side-by-side activate)
-            "Split undo-tree side-by-side."
-            (let ((split-height-threshold nil)
-                  (split-width-threshold 0))
-                ad-do-it))
+            (defadvice undo-tree-visualize
+                    (around undo-tree-split-side-by-side activate)
+                "Split undo-tree side-by-side."
+                (let ((split-height-threshold nil)
+                      (split-width-threshold 0))
+                    ad-do-it))
 
-        (global-undo-tree-mode))
+            (global-undo-tree-mode)))
 
   #+END_SRC
 
