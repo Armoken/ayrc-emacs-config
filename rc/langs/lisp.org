@@ -23,7 +23,7 @@ Set indent to 4 spaces.
     (setq lisp-body-indent 4)
   #+END_SRC
 
-* Emacs Lisp
+* COMMENT Emacs Lisp
   #+BEGIN_SRC emacs-lisp
     (use-package emacs-lisp-mode
         :init
@@ -36,19 +36,22 @@ Set indent to 4 spaces.
 
             (use-package elisp-slime-nav
                 :ensure t
-                :defer t
+                :diminish elisp-slime-nav "[N]"
                 :commands (turn-on-elisp-slime-nav-mode)
-                :init (add-hook 'emacs-lisp-mode-hook #'turn-on-elisp-slime-nav-mode))
+                :init (progn
+                          (add-hook 'emacs-lisp-mode-hook
+                                    #'turn-on-elisp-slime-nav-mode)))
+
             (use-package paredit
                 :ensure t
                 :diminish paredit-mode
-                :init (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode))
+                :init (progn
+                          (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)))
 
             (use-package lisp-extra-font-lock
                 :ensure t
-                :defer t
-                :after lisp
-                :config (lisp-extra-font-lock-global-mode 1))
+                :config (progn
+                            (lisp-extra-font-lock-global-mode 1)))
 
             (defun emacs-lisp-hook ()
                 (hs-minor-mode)
