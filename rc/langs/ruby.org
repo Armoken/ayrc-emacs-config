@@ -90,7 +90,8 @@ Installation path: rvm -> ruby -> gem install all packages above
             (use-package robe
                 :ensure t
                 :commands robe-mode
-                :bind ("C-M-." . robe-jump)
+                :bind (:map ruby-mode-map
+                            ("C-M-." . robe-jump))
                 :config
                 (defadvice inf-ruby-console-auto (before activate-rvm-for-robe activate)
                     (rvm-activate-corresponding-ruby)))
