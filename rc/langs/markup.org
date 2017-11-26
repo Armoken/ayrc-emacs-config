@@ -1,0 +1,95 @@
+* Packages
+:PROPERTIES:
+:CUSTOM_ID: development-packages
+:END:
+
+#+NAME: development-packages
+#+CAPTION: Packages for development
+| Package       | Description                                            |
+|---------------+--------------------------------------------------------|
+| [[https://github.com/bbatsov/projectile][projectile]]    | Project managment in Emacs                             |
+| [[https://github.com/magit/magit][magit]]         | Git support for Emacs                                  |
+| [[https://github.com/flycheck/flycheck][flycheck]]      | Modern on-the-fly syntax checking extension for  Emacs |
+| [[http://cedet.sourceforge.net/semantic.shtml][semantic]]      | Languages parser for static analysis and navigation    |
+| [[https://github.com/company-mode/company-mode][company]]       | Modular in-buffer completion framework for Emacs       |
+| [[https://github.com/joaotavora/yasnippet][yasnippet]]     | Template system for Emacs                              |
+| [[https://github.com/hbin/smart-shift][smart-shift]]   | Shift region using arrows                              |
+| [[https://github.com/magnars/expand-region.el][expand-region]] | Expand current region using lexems' semantic           |
+
+* JSON
+  Install demjson python package
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package json-mode
+      :ensure t
+      :mode (("\\.json\\'" . json-mode))
+      :init
+      (progn
+        (use-package json-reformat
+          :ensure t
+          :commands (json-reformat-region)
+          :bind (("C-c r" . json-reformat-region)))
+
+        (use-package flycheck-demjsonlint
+          :ensure t)
+
+        (add-hook 'json-mode-hook 'hs-minor-mode))
+      :config
+      (progn
+        (setq js-indent-level 4)))
+  #+END_SRC
+
+* Yaml
+  #+BEGIN_SRC emacs-lisp
+    (use-package yaml-mode
+      :ensure t
+      :mode (("\\.yml\\'"  . yaml-mode)
+             ("\\.yaml\\'" . yaml-mode))
+      :bind (:map yaml-mode-map
+                  ("C-c f TAB" . indenation-toggle-fold))
+      :init
+      (progn
+        (use-package flycheck-yamllint
+          :ensure t
+          :init (progn
+                  (eval-after-load 'flycheck
+                    '(add-hook 'flycheck-mode-hook
+                               'flycheck-yamllint-setup))))
+
+        (add-hook 'yaml-mode-hook 'prog-mode-hook)
+        (add-hook 'yaml-mode-hook 'highlight-indentation-mode)
+        (add-hook 'yaml-mode-hook 'smart-shift-mode))
+      :config
+      (progn
+        (setq yaml-indent-offset 2)))
+  #+END_SRC
+
+* XML
+  #+BEGIN_SRC emacs-lisp
+    (use-package nxml
+      :ensure t
+      :commands (nxml-mode)
+      :mode ("\\.\\(xml\\|axml\\|xsl|xaml\\)$" . nxml-mode)
+      :init
+      (progn
+        (defun xml-hook()
+          (hs-minor-mode)
+          (add-to-list (make-local-variable 'company-backends)
+                       '(company-nxml company-yasnippet)))
+        (add-hook 'nxml-mode-hook 'xml-hook)))
+  #+END_SRC
+
+* Jinja2
+  #+BEGIN_SRC emacs-lisp
+    (use-package jinja2-mode
+      :ensure t
+      :commands (jinja2-mode)
+      :mode (("\\.j2\\'" . jinja2-mode)))
+  #+END_SRC
+
+* RST
+  #+BEGIN_SRC emacs-lisp
+    (use-package rst
+      :mode (("\\.txt$" . rst-mode)
+             ("\\.rst$" . rst-mode)))
+  #+END_SRC

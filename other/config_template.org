@@ -1,0 +1,43 @@
+# Replace config with its name
+#+TITLE: Config title
+#+OPTIONS: toc:nil num:nil ^:nil
+
+Short file description
+
+# Optional
+* Prerequisites
+  :PROPERTIES:
+  :CUSTOM_ID: advanced-prerequisites
+  :END:
+
+#+NAME: config-prerequisites
+#+CAPTION: Prerequisites for config's packages
+| Name    | Archlinux | Gentoo                       | Ubuntu  | Optional |
+|---------+-----------+------------------------------+---------+----------|
+| [[https://github.com/DanielG/ghc-mod][ghc-mod]] | ghc-mod   | app-emacs/ghc-mod            | ghc-mod | No       |
+| [[https://github.com/ndmitchell/hlint][hlint]]   | hlint     | dev-haskell/hlint            | hlint   | No       |
+| [[https://github.com/ndmitchell/hoogle][hoogle]]  | hoogle    | dev-haskell/hoogle [haskell] | hoogle  | No       |
+
+
+# Optional
+Prerequisites notes section
+
+* Packages
+:PROPERTIES:
+:CUSTOM_ID: config-packages
+:END:
+
+#+NAME: config-packages
+#+CAPTION: Packages for config
+# Table with all external packages
+| Package       | Description                                            |
+|---------------+--------------------------------------------------------|
+| [[https://github.com/bbatsov/projectile][projectile]]    | Project managment in Emacs                             |
+| [[https://github.com/magit/magit][maigt]]         | Git support for Emacs                                  |
+
+
+* Package or section name
+  Short description
+  #+BEGIN_SRC emacs-lisp
+
+  #+END_SRC

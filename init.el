@@ -5,63 +5,73 @@
 
 ;;; Code:
 
-;; ELPA - Package manager
 (require 'package)
+
+;; Without that line, (package-initialize) is executed twice
+;; (once during evaluation of the init file, and another after
+;; Emacs finishes reading the init file).
+(setq package-enable-at-startup nil)
+
 (setq package-archives
-      '(
-        ("gnu" . "http://elpa.gnu.org/packages/")
+      '(("gnu" . "http://elpa.gnu.org/packages/")
         ("marmalade" . "https://marmalade-repo.org/packages/")
         ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
-(load "~/.emacs.d/rc/autoinstall-conf.el")
-;; (my-auto-install-packages) ;; Uncomment on first start!
 
-;; File that keep the following settings: user full name,
-;; user mail address, font settings, theme settings,
-;; modeline settings
-(if (file-exists-p "~/.emacs.d/rc/user-conf.el")
-    (load "~/.emacs.d/rc/user-conf.el"))
+;; Bootstrap 'use-package'
+(unless (or (package-installed-p 'use-package)
+            (package-installed-p 'diminish)
+            (package-installed-p 'bind-key))
+    (package-refresh-contents)
+    (package-install 'use-package)
+    (package-install 'diminish)
+    (package-install 'bind-key))
+
+(eval-when-compile
+    (require 'use-package))
+(require 'diminish) ;; Used to reduce size of the mode name in modeline
+(require 'bind-key)
+
+;; Loading orgmode plugin, that used for notes, plaining and literate programming
+(require 'org)
+
+(defun expand-config-path (path)
+    "Expand passed path relative to the EMACS user directory.
+`PATH' - passed path"
+    (expand-file-name
+     path user-emacs-directory))
+
+;; Load example use-conf if
+(defvar user-conf-template-filename "./other/user-conf-template.org")
+(defvar user-conf-filename "./rc/user-conf.org")
+(org-babel-load-file (if (file-exists-p (expand-config-path
+                                         user-conf-filename))
+                             (expand-config-path user-conf-filename)
+                         (expand-config-path user-conf-template-filename)))
+
+(mapc 'org-babel-load-file
+      (mapcar 'expand-config-path  (list "./rc/ui.org"
+                                         "./rc/text.org"
+                                         "./rc/utils.org"
+                                         "./rc/keybindings.org"
+                                         "./rc/development.org"
+                                         "./rc/misc-interactive-functions.org"
+                                         "./rc/orgmode.org"
+                                         "./rc/langs/markup.org"
+                                         "./rc/langs/lisp.org"
+                                         "./rc/langs/haskell.org"
+                                         "./rc/langs/other.org"
+                                         "./rc/langs/python.org"
+                                         "./rc/langs/ruby.org"
+                                         "./rc/langs/cc.org"
+                                         "./rc/langs/go.org"
+                                         "./rc/langs/shell.org"
+                                         "./rc/langs/build.org"
+                                         "./rc/langs/tex.org"
+                                         )))
 
 
-(make-directory "/tmp/emacs/autosaves/" t)
-(make-directory "/tmp/emacs/backups/" t)
-(custom-set-variables
- '(auto-save-file-name-transforms '((".*" "/tmp/emacs/autosaves/\\1" t)))
- '(backup-directory-alist '((".*" . "/tmp/emacs/backups/"))))
-
-
-(mapc (lambda (path) (load path))
-      (list
-       "~/.emacs.d/rc/ui/ui-common-conf.el"
-       "~/.emacs.d/rc/ui/ui-helm-conf.el"
-       "~/.emacs.d/rc/ui/ui-diminish-conf.el"
-       "~/.emacs.d/rc/ui/ui-gdb-conf.el"
-
-       "~/.emacs.d/rc/text-common-conf.el"
-       "~/.emacs.d/rc/langs/langs-common-conf.el"
-
-       "~/.emacs.d/rc/keybindings-conf.el"
-
-       "~/.emacs.d/rc/eshell-conf.el"
-       "~/.emacs.d/rc/magit-conf.el"
-       "~/.emacs.d/rc/projectile-conf.el"
-       "~/.emacs.d/rc/emms-conf.el"))
 
 (provide 'init)
 ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (platformio-mode projectile magit web-mode wcheck-mode undo-tree swiper sublimity sr-speedbar sqlup-mode spacemacs-theme spaceline smooth-scrolling smooth-scroll slime-company rtags omnisharp nlinum-relative neotree nasm-mode mpg123 modern-cpp-font-lock matlab-mode markdown-mode json-mode js2-mode help-fns+ helm-projectile helm-flyspell helm-flycheck helm-firefox helm-emms helm-emmet helm-dash helm-css-scss google flycheck-ycmd flycheck-irony emms-state emms-player-mpv emms-mode-line-cycle emms-info-mediainfo elpy ecb diminish company-ycmd company-web company-tern company-quickhelp company-math company-irony-c-headers company-irony company-flx company-auctex cmake-mode cmake-ide clang-format all-the-icons))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(show-paren-match ((t (:background "purple4"))))
- '(show-paren-mismatch ((((class color)) (:background "red" :foreground "white")))))

@@ -1,0 +1,32 @@
+#+TITLE: VHDL
+#+OPTIONS: toc:nil num:nil ^:nil
+
+VHDL configuration for Emacs
+
+* Prerequisites
+  :PROPERTIES:
+  :CUSTOM_ID: vhdl-prerequisites
+  :END:
+
+#+NAME: vhdl-prerequisites
+#+CAPTION: Prerequisites for vhdl packages
+
+| Name    | Archlinux | Gentoo    | Ubuntu | Optional |
+|---------+-----------+-----------+--------+----------|
+
+* Packages
+:PROPERTIES:
+:CUSTOM_ID: vhdl-packages
+:END:
+
+#+NAME: vhdl-packages
+#+CAPTION: Packages for vhdl
+| Package  | Description                                                   |
+|----------+---------------------------------------------------------------|
+
+* VHDL mode
+  VHDL mode for Emacs
+  #+BEGIN_SRC emacs-lisp
+    (use-package vhdl-mode
+        :defer t)
+  #+END_SRC
