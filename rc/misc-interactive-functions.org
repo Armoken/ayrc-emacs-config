@@ -52,3 +52,8 @@
         (while (search-forward (string ?\C-m) nil t)
           (replace-match (string ?\C-j) nil t))))
   #+END_SRC
+* Hook Run When Current Buffer Changed
+  #+BEGIN_SRC emacs-lisp
+    (use-package switch-buffer-functions
+        :ensure t)
+  #+END_SRC

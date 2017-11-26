@@ -4,6 +4,9 @@
 Python configuration for Emacs
 
 * Prerequisites
+  Installation path: pyenv -> python
+                           -> virtualenv
+                           -> install all packages by running function above
 ** System
    :PROPERTIES:
    :CUSTOM_ID: python-system-prerequisites
@@ -38,19 +41,25 @@ Python configuration for Emacs
                     (y-or-n-p (format "Save file %s? " (buffer-file-name))))
              (save-buffer))
 
-         (let ((temporary-buffer-name "*python-language-prerequisites-installation*"))
-             (with-output-to-temp-buffer temporary-buffer-name
-                 (shell-command (format "%s install %s"
-                                        (format "pip%s" default-python-version)
-                                        (string-join python-language-prerequisites " "))
-                                temporary-buffer-name
-                                "*Messages*")
-                 (pop-to-buffer temporary-buffer-name))))
-   #+END_SRC
+         (let ((buf
+                (generate-new-buffer
+                 "*python-language-prerequisites-installation*"))
+               (command
+                (format "import pip; pip.main([\'install\', %s])"
+                        (string-join
+                         (mapcar '(lambda (str)
+                                      (format "\'%s\'" str))
+                                 python-language-prerequisites)
+                         ", "))))
 
-   Installation path: pyenv -> python
-                            -> virtualenv
-                            -> install all packages by running function above
+             (call-pythonic
+              :args (list "-c" command)
+              :buffer buf)
+             (display-buffer buf)
+             (switch-to-buffer-other-frame buf)
+             (read-only-mode)
+             (setq buffer-offer-save t)))
+   #+END_SRC
 
    Prerequisites:
 *** [[https://www.pylint.org/][Pylint]]
@@ -81,6 +90,14 @@ Python configuration for Emacs
    #+BEGIN_SRC emacs-lisp
    (add-to-list 'python-language-prerequisites "isort")
    #+END_SRC
+*** [[https://github.com/alecthomas/importmagic][importmagic]]
+   #+BEGIN_SRC emacs-lisp
+   (add-to-list 'python-language-prerequisites "importmagic")
+   #+END_SRC
+*** [[https://github.com/ipython/ipython][ipython]]
+   #+BEGIN_SRC emacs-lisp
+   (add-to-list 'python-language-prerequisites "ipython")
+   #+END_SRC
 * Packages
   :PROPERTIES:
   :CUSTOM_ID: python-packages
@@ -91,11 +108,13 @@ Python configuration for Emacs
   - [[https://github.com/jorgenschaefer/elpy][elpy]] :: Elpy is the Emacs Python Development Environmen
   - [[https://github.com/paetzke/py-yapf.el][py-yapf]] :: Use yapf to beautify a Python buffer
   - [[https://github.com/proofit404/pyenv-mode][pyenv-mode]] :: Integrate pyenv with python-mode
+  - [[https://github.com/ssbb/pyenv-mode-auto][pyenv-mode-auto]] :: Automatically activates pyenv version
   - [[https://github.com/Wilfred/pip-requirements.el][pip-requirements]] :: Major mode for editing pip requirements files
   - [[https://github.com/paetzke/py-isort.el][py-isort.el]] :: Integrates isort into Emacs.
   - [[https://github.com/Wilfred/pyimport][pyimport]] :: Manage Python imports from Emacs
 * Python mode
     Python mode settings for Emacs
+
   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref elpy
     (use-package elpy
         :ensure t
@@ -104,6 +123,13 @@ Python configuration for Emacs
         :commands (elpy-mode)
         :config (progn
                     (elpy-use-ipython)
+
+                    (defun switch-to-jedi-flycheck-backend ()
+                        (interactive)
+                        (setq elpy-rpc-backend "jedi"))
+                    (defun switch-to-rope-flycheck-backend ()
+                        (interactive)
+                        (setq elpy-rpc-backend "rope"))
                     (setq elpy-rpc-backend "jedi")))
   #+END_SRC
 
@@ -111,38 +137,66 @@ Python configuration for Emacs
     (use-package py-yapf
         :ensure t
         :commands (py-yapf-buffer py-yapf-enable-on-save))
-      #+END_SRC
+  #+END_SRC
 
   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyenv-mode
-    (use-package pyenv-mode
-        :ensure t
-        :diminish "[V]"
-        :init
-        (progn
-            (use-package pyenv-mode-auto
-                :ensure t
-                :init
-                (progn
-                    (add-hook 'find-file-hook 'pyenv-mode-auto-hook)))
+        (use-package pyenv-mode
+            :ensure t
+            :diminish "[V]"
+            :init
+            (progn
+                (use-package pyenv-mode-auto
+                    :ensure t
+                    :init
+                    (progn
+                        (add-hook 'switch-buffer-functions
+                                  (lambda (prev cur) (pyenv-mode-auto-hook)))
+                        (add-hook 'find-file-hook 'pyenv-mode-auto-hook)))
 
-            (setq pyenv-show-active-python-in-modeline t)))
-      #+END_SRC
+                (setq pyenv-show-active-python-in-modeline t)))
+  #+END_SRC
 
   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyimport
     (use-package pyimport
         :ensure t
         :commands (pyimport-insert-missing pyimport-insert-missing))
-      #+END_SRC
+  #+END_SRC
 
   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref py-isort
     (use-package py-isort
         :ensure t
         :commands (py-isort-before-save py-isort-buffer py-isort-region))
-      #+END_SRC
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-hook
+    (defun python-hook ()
+        (elpy-mode)
+        (pyenv-mode)
+        (flycheck-mode)
+        (semantic-mode)
+        (hs-minor-mode)
+        (pyenv-mode-auto-hook)
+
+        (setq flycheck-checker 'python-pylint
+              flycheck-checker-error-threshold 400
+
+              py-python-command "python"
+              elpy-rpc-python-command "python"
+              python-shell-interpreter "ipython"
+              python-shell-interpreter-args "--simple-prompt --pprint")
+
+        (add-to-list
+         'python-shell-completion-native-disabled-interpreters "python")
+
+        (add-to-list (make-local-variable 'company-backends)
+                     '(elpy-company-backend company-yasnippet)))
+  #+END_SRC
 
   #+BEGIN_SRC emacs-lisp :noweb tangle
     (use-package python-mode
-        :bind ("C-C TAB" . hs-toggle-hiding)
+        :ensure t
+        :bind (:map elpy-mode-map
+                    ("C-C TAB" . hs-toggle-hiding))
         :init
         (progn
             <<elpy>>
@@ -151,34 +205,7 @@ Python configuration for Emacs
             <<py-isort>>
             <<pyimport>>
 
-            (defun python-hook ()
-                (elpy-mode)
-                (pyenv-mode)
-                (flycheck-mode)
-                (semantic-mode)
-                (hs-minor-mode)
-                (pyenv-mode-auto-hook)
-
-                (setq flycheck-checker 'python-pylint
-                      flycheck-checker-error-threshold 400
-                      flycheck-pylintrc "~/.pylintrc"
-
-                      py-python-command (format-spec
-                                         "python%a"
-                                         default-python-version)
-                      elpy-rpc-python-command (format-spec
-                                               "python%a"
-                                               default-python-version)
-                      python-shell-interpreter (format-spec
-                                                "ipython%a"
-                                                default-python-version)
-                      python-shell-interpreter-args "--simple-prompt --pprint")
-
-                (add-to-list 'python-shell-completion-native-disabled-interpreters
-                             (format-spec "ipython%a" default-python-version))
-
-                (add-to-list (make-local-variable 'company-backends)
-                             '(elpy-company-backend company-yasnippet)))
+            <<python-hook>>
             (add-hook 'python-mode-hook 'python-hook)))
   #+END_SRC
 
