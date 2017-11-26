@@ -32,8 +32,7 @@
                 (company-irony-setup-begin-commands)
 
                 ;; Returns company backends
-                '(company-irony
-                  company-irony-c-headers))
+                '(company-irony-c-headers company-irony))
 
             (defun irony-eldoc-setup ()
                 (eldoc-mode)
