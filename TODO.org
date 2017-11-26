@@ -1,28 +1,31 @@
-* Use package tasks [6/26]
+* Use package tasks [17/36]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
 ** Languages
-*** C/C++
-**** TODO [#A] Basic support
+*** TODO C/C++
+**** DONE [#A] Basic support
 **** TODO Rtags
 **** TODO Documentation lookup
-*** Python
-**** TODO Flycheck backends
-*** Haskell
+*** TODO Python
+**** DONE Flycheck backends
+**** DONE Pyenv support
+**** TODO Try traad
+*** TODO Haskell
 **** DONE Choose minimal core packages
 **** TODO hlint apply refact
+*** TODO Basic Java support
 *** TODO Rust
-*** TODO Golang
+*** DONE Golang
 *** TODO HTML
 *** TODO CSS
 *** TODO JS
-*** TODO VHDL
+*** DONE VHDL
 *** DONE Ruby
-**** RVM
-**** Robe
-**** Rubocop
-**** Inf-ruby
+**** DONE RVM
+**** DONE Robe
+**** DONE Rubocop
+**** DONE Inf-ruby
 ** Utils
 *** TODO GDB
 *** DONE Magit
@@ -36,9 +39,9 @@
 *** DONE [#A] Disable font scale on C-- and S-C-+
 *** TODO [#A] Fonts
 ** Other
-*** TODO Plugin switching for syntax checkers
+*** DONE Plugin switching for syntax checkers
 *** DONE Yasnippet snippets autodownload
 *** DONE Ag or grep for helm project search
-*** TODO User config file
+*** DONE User config file
 *** TODO Set opening links in default browser
 *** TODO Update prerequisites header in config's template

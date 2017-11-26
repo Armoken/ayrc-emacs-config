@@ -93,9 +93,3 @@
     (setq cc-autocompletion-plugin                "irony")
   #+END_SRC
 
-* Python
-  Select default python version, just a number
-
-  #+BEGIN_SRC emacs-lisp
-    (setq default-python-version "3")
-  #+END_SRC
