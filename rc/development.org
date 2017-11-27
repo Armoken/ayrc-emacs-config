@@ -63,34 +63,22 @@
 
 * Static code analysis
   #+BEGIN_SRC emacs-lisp
-    (use-package flycheck-pos-tip
+    (use-package flycheck-popup-tip
         :ensure t
-        :commands (flycheck-pos-tip-error-messages)
-        :init
-        (progn
-            (eval-after-load 'flycheck
-                '(setq flycheck-display-error-messages
-                       #'flycheck-pos-tip-error-messages)))
-        :config
-        (progn
-            (setq flycheck-pos-tip-timeout 3)))
+        :commands (flycheck-popup-tip-mode))
 
     (use-package flycheck
         :ensure t
         :diminish flycheck-mode "[F]"
         :commands (flycheck-mode)
+        :init
+        (progn
+            (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode))
         :config
         (progn
             (setq flycheck-standard-error-navigation nil)
             (setq flycheck-idle-change-delay 0)
-            (setq flycheck-check-syntax-automatically '(save mode-enabled))
-
-            ;; Flycheck errors on a tooltip (doesnt work on console)
-            (when (display-graphic-p (selected-frame))
-                (eval-after-load 'flycheck
-                    '(custom-set-variables
-                      '(flycheck-display-errors-function
-                        #'flycheck-pos-tip-error-messages))))))
+            (setq flycheck-check-syntax-automatically '(save mode-enabled))))
   #+END_SRC
 
 * CEDET
