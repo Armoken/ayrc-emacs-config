@@ -41,24 +41,21 @@ Python configuration for Emacs
                     (y-or-n-p (format "Save file %s? " (buffer-file-name))))
              (save-buffer))
 
-         (let ((buf
-                (generate-new-buffer
-                 "*python-language-prerequisites-installation*"))
-               (command
-                (format "import pip; pip.main([\'install\', %s])"
-                        (string-join
-                         (mapcar '(lambda (str)
-                                      (format "\'%s\'" str))
-                                 python-language-prerequisites)
-                         ", "))))
-
-             (call-pythonic
-              :args (list "-c" command)
-              :buffer buf)
-             (display-buffer buf)
-             (switch-to-buffer-other-frame buf)
-             (read-only-mode)
-             (setq buffer-offer-save t)))
+         (let ((default-directory (pythonic-default-directory))
+               (process-environment (copy-sequence process-environment)))
+             (pythonic-set-process-environment)
+             (let ((command
+                    (format "%s -c \"import pip; pip.main([\'install\', %s])\""
+                            (pythonic-executable)
+                            (string-join
+                             (mapcar '(lambda (str)
+                                          (format "\'%s\'" str))
+                                     python-language-prerequisites)
+                             ", ")))
+                   (buffer-name-function
+                    #'(lambda (maj-mode)
+                          "*python-language-prerequisites-installation*")))
+                 (compilation-start command nil buffer-name-function))))
    #+END_SRC
 
    Prerequisites:
