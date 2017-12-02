@@ -108,7 +108,8 @@ Python configuration for Emacs
   - [[https://github.com/ssbb/pyenv-mode-auto][pyenv-mode-auto]] :: Automatically activates pyenv version
   - [[https://github.com/Wilfred/pip-requirements.el][pip-requirements]] :: Major mode for editing pip requirements files
   - [[https://github.com/paetzke/py-isort.el][py-isort.el]] :: Integrates isort into Emacs.
-  - [[https://github.com/Wilfred/pyimport][pyimport]] :: Manage Python imports from Emacs
+  - [[https://github.com/Wilfred/pyimport][pyimport]] :: Manage Python imports from Emac
+  - [[https://github.com/naiquevin/sphinx-doc.el][sphinx-doc]] ::  Generate Sphinx friendly docstrings for Python functions
 * Python mode
     Python mode settings for Emacs
 
@@ -153,6 +154,12 @@ Python configuration for Emacs
                 (setq pyenv-show-active-python-in-modeline t)))
   #+END_SRC
 
+  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref sphinx-doc
+    (use-package sphinx-doc
+        :ensure t
+        :commands (sphinx-doc-mode))
+  #+END_SRC
+
   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyimport
     (use-package pyimport
         :ensure t
@@ -172,6 +179,7 @@ Python configuration for Emacs
         (flycheck-mode)
         (semantic-mode)
         (hs-minor-mode)
+        (sphinx-doc-mode)
         (pyenv-mode-auto-hook)
 
         (setq flycheck-checker 'python-pylint
@@ -201,6 +209,7 @@ Python configuration for Emacs
             <<pyenv-mode>>
             <<py-isort>>
             <<pyimport>>
+            <<sphinx-doc>>
 
             <<python-hook>>
             (add-hook 'python-mode-hook 'python-hook)))
