@@ -1,4 +1,5 @@
 *~
+*.el
 auto-save-list
 ede-projects.el
 elpa/
@@ -63,3 +64,7 @@ flycheck_*.el
 .dir-locals.el
 *.cache
 *.eld
+
+other/yasnippet
+bin/
+contrib/

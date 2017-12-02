@@ -1,0 +1,47 @@
+* Use package tasks [17/36]
+:PROPERTIES:
+:COOKIE_DATA: todo recursive
+:END:
+** Languages
+*** TODO C/C++
+**** DONE [#A] Basic support
+**** TODO Rtags
+**** TODO Documentation lookup
+*** TODO Python
+**** DONE Flycheck backends
+**** DONE Pyenv support
+**** TODO Try traad
+*** TODO Haskell
+**** DONE Choose minimal core packages
+**** TODO hlint apply refact
+*** TODO Basic Java support
+*** TODO Rust
+*** DONE Golang
+*** TODO HTML
+*** TODO CSS
+*** TODO JS
+*** DONE VHDL
+*** DONE Ruby
+**** DONE RVM
+**** DONE Robe
+**** DONE Rubocop
+**** DONE Inf-ruby
+** Utils
+*** TODO GDB
+*** DONE Magit
+*** TODO Gnus
+** Refactoring
+*** TODO Move region of code using arrows like in elpy
+*** TODO [[https://github.com/tuhdo/semantic-refactor][semantic-refactor ]]
+** Performance
+*** Test startup time
+** UI
+*** DONE [#A] Disable font scale on C-- and S-C-+
+*** TODO [#A] Fonts
+** Other
+*** DONE Plugin switching for syntax checkers
+*** DONE Yasnippet snippets autodownload
+*** DONE Ag or grep for helm project search
+*** DONE User config file
+*** TODO Set opening links in default browser
+*** TODO Update prerequisites header in config's template

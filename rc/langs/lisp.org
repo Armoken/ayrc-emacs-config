@@ -1,0 +1,66 @@
+#+TITLE: Lisp
+#+OPTIONS: toc:nil num:nil ^:nil
+
+Lisp family languages configuration.
+
+* Packages
+:PROPERTIES:
+:CUSTOM_ID: config-packages
+:END:
+
+#+NAME: config-packages
+#+CAPTION: Packages for config
+# Table with all external packages
+| Package              | Description                                                             |
+|----------------------+-------------------------------------------------------------------------|
+| [[https://www.emacswiki.org/emacs/ElDoc][eldoc]]                | Shows the argument list of the function call you are currently writing. |
+| [[https://github.com/purcell/elisp-slime-nav][emacs-slime-nav]]      | Slime-style navigation of Emacs Lisp source with M-. & M-,              |
+| [[https://github.com/Lindydancer/lisp-extra-font-lock][lisp-extra-font-lock]] | Highlight bound variables and quoted expressions in lisp                |
+
+* Indent size
+Set indent to 4 spaces.
+  #+BEGIN_SRC emacs-lisp
+    (setq lisp-body-indent 4)
+  #+END_SRC
+
+* COMMENT Emacs Lisp
+  #+BEGIN_SRC emacs-lisp
+    (use-package emacs-lisp-mode
+        :init
+        (progn
+            (use-package eldoc
+                :ensure t
+                :diminish eldoc-mode
+                :init (progn
+                          (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)))
+
+            (use-package elisp-slime-nav
+                :ensure t
+                :diminish elisp-slime-nav "[N]"
+                :commands (turn-on-elisp-slime-nav-mode)
+                :init (progn
+                          (add-hook 'emacs-lisp-mode-hook
+                                    #'turn-on-elisp-slime-nav-mode)))
+
+            (use-package paredit
+                :ensure t
+                :diminish paredit-mode
+                :init (progn
+                          (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)))
+
+            (use-package lisp-extra-font-lock
+                :ensure t
+                :config (progn
+                            (lisp-extra-font-lock-global-mode 1)))
+
+            (defun emacs-lisp-hook ()
+                (hs-minor-mode)
+                (semantic-mode)
+                (flycheck-mode)
+                (aggressive-indent-mode)
+                (add-hook 'write-contents-functions
+                          'cleanup-buffer-notabs nil t)
+                (add-to-list (make-local-variable 'company-backends)
+                             '(company-elisp company-yasnippet)))
+            (add-hook 'emacs-lisp-mode-hook 'emacs-lisp-hook)))
+  #+END_SRC

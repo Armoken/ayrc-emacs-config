@@ -1,0 +1,64 @@
+* Virtualization
+** Containers
+*** Docker
+   #+BEGIN_SRC emacs-lisp
+     (use-package dockerfile-mode
+       :ensure t
+       :mode (("Dockerfile'"       . dockerfile-mode)
+              ("\\.Dockerfile\\'"  . dockerfile-mode))
+       :init
+       (progn
+         (copy-hooks-to text-mode-hook 'dockerfile-mode-hook)))
+
+     ;; Emacs interface to docker
+     (use-package docker
+       :ensure t)
+   #+END_SRC
+
+*** Kubernetes
+    #+BEGIN_SRC emacs-lisp
+      (use-package kubernetes
+          :ensure t
+          :commands (kubernetes-overview))
+    #+END_SRC
+
+* Nginx
+  #+BEGIN_SRC emacs-lisp
+    (use-package nginx-mode
+        :ensure t
+        :mode (("nginx\.conf\.?.*$" . nginx-mode))
+        :init
+        (progn
+            (copy-hooks-to text-mode-hook 'nginx-mode-hook)))
+  #+END_SRC
+
+* Systemd
+  #+BEGIN_SRC emacs-lisp
+    (use-package systemd
+        :ensure t
+        :mode (("\\.service\\'"   . systemd-mode)
+               ("\\.target\\'"    . systemd-mode)
+               ("\\.socket\\'"    . systemd-mode)
+               ("\\.service\\'"   . systemd-mode)
+               ("\\.timer\\'"     . systemd-mode)
+               ("\\.mount\\'"     . systemd-mode)
+               ("\\.automount\\'" . systemd-mode)
+               ("\\.slice\\'"     . systemd-mode)
+               ("\\.path\\'"      . systemd-mode)
+               ("\\.netdev\\'"    . systemd-mode)
+               ("\\.network\\'"   . systemd-mode)
+               ("\\.link\\'"      . systemd-mode))
+        :init
+        (progn
+            (copy-hooks-to text-mode-hook 'systemd-mode-hook)))
+  #+END_SRC
+
+* Ini
+  #+BEGIN_SRC emacs-lisp
+    (use-package ini-mode
+        :ensure t
+        :mode (("\\.ini\\'" . ini-mode))
+        :init
+        (progn
+            (copy-hooks-to text-mode-hook 'ini-mode-hook)))
+  #+END_SRC

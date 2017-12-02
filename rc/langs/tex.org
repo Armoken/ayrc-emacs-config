@@ -1,0 +1,39 @@
+* Latex
+  #+BEGIN_SRC emacs-lisp
+    (use-package auctex
+        :ensure t
+        :commands (latex-mode LaTeX-mode plain-tex-mode)
+        :mode ("\\.tex\\'" . latex-mode)
+        :init
+        (progn
+            (use-package company-auctex
+                :ensure t
+                :commands (company-auctex-init))
+
+            (defun auctex-hook()
+                (hs-minor-mode)
+                (flycheck-mode)
+                (semantic-mode)
+                (LaTeX-preview-setup)
+                (add-to-list (make-local-variable 'company-backends)
+                             '(elpy-company-backend company-auctex)))
+            (add-hook 'LaTeX-mode-hook 'auctex-hook))
+        :config (progn
+                    (company-auctex-init)
+                    (setq TeX-auto-save  t
+                          TeX-parse-self t
+                          TeX-save-query nil
+                          TeX-PDF-mode   t)
+                    (setq-default TeX-master nil)))
+  #+END_SRC
+
+* Preview
+  #+BEGIN_SRC emacs-lisp
+    (use-package preview
+      :commands (LaTeX-preview-setup)
+      :init
+      (progn
+        (setq-default preview-scale 1.4
+                      preview-scale-function '(lambda ()
+                                                (* (/ 10.0 (preview-document-pt)) preview-scale)))))
+  #+END_SRC

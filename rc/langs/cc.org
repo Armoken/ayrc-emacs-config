@@ -1,0 +1,206 @@
+* Irony
+  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref irony-use-package
+    (use-package irony
+        :ensure t
+        :diminish irony-mode "[I]"
+        :init
+        (progn
+            (use-package irony-eldoc
+                :ensure t)
+            (use-package company-irony
+                :ensure t)
+            (use-package company-irony-c-headers
+                :ensure t)
+            (use-package flycheck-irony
+                :ensure t)
+
+            (defun irony-syntax-check-setup ()
+                (flycheck-mode)
+                (flycheck-irony-setup))
+
+            (defun irony-autocompletion-setup ()
+                (define-key irony-mode-map [remap completion-at-point]
+                    'irony-completion-at-point-async)
+                (define-key irony-mode-map [remap complete-symbol]
+                    'irony-completion-at-point-async)
+                (irony-cdb-autosetup-compile-options)
+
+                ;; (optional) adds CC special commands to
+                ;; `company-begin-commands' in order to
+                ;; trigger completion at interesting places, such as after
+                ;; scope operator std::|
+                (company-irony-setup-begin-commands)
+
+                ;; Returns company backends
+                '(company-irony-c-headers company-irony))
+
+            (defun irony-eldoc-setup ()
+                (eldoc-mode)
+                (irony-eldoc))
+
+            (defun irony-setup ()
+                (irony-mode)
+                (setq irony-server-install-prefix
+                      (concat user-emacs-directory
+                              "/contrib/Irony")))))
+  #+END_SRC
+
+* Rtags
+  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref rtags-use-package
+    (use-package rtags
+        :ensure t
+        :bind (:map c-mode-map
+                    (("M-."  . rtags-find-symbol-at-point)
+                     ("M-,"   . rtags-find-references-at-point)
+                     ("C-c r" . rtags-rename-symbol)))
+
+        :init
+        (progn
+            (use-package company-rtags
+                :ensure t)
+            (use-package flycheck-rtags
+                :ensure t)
+            (use-package helm-rtags
+                :ensure t)
+
+            (defun rtags-autocompletion-setup ()
+                (setq rtags-autostart-diagnostics t)
+                (rtags-diagnostics)
+                (setq rtags-completions-enabled t)
+
+                ;; Returns company backends
+                '(company-rtags))
+
+            (defun rtags-syntax-check-setup ()
+                (flycheck-mode)
+                (flycheck-select-checker 'rtags)
+                (setq-local flycheck-highlighting-mode nil)
+                (setq-local flycheck-check-syntax-automatically nil))
+
+            (defun rtags-eldoc-setup ()
+                (eldoc-mode)
+
+                (defun fontify-string (str mode)
+                    "Return STR fontified according to MODE."
+                    (with-temp-buffer
+                        (insert str)
+                        (delay-mode-hooks (funcall mode))
+                        (font-lock-default-function mode)
+                        (font-lock-default-fontify-region
+                         (point-min) (point-max) nil)
+                        (buffer-string)))
+
+                (defun rtags-eldoc-function ()
+                    (let ((summary (rtags-get-summary-text)))
+                        (and summary
+                             (fontify-string
+                              (replace-regexp-in-string
+                               "{[^}]*$" ""
+                               (mapconcat
+                                (lambda (str) (if (= 0 (length str)) "//" (string-trim str)))
+                                (split-string summary "\r?\n")
+                                " "))
+                              major-mode))))
+
+
+                (setq-local eldoc-documentation-function #'rtags-eldoc-function))
+
+            (defun rtags-setup ()
+                (rtags-start-process-unless-running)
+                (setq rtags-display-result-backend 'helm))))
+  #+END_SRC
+
+* CC
+  #+BEGIN_SRC emacs-lisp :noweb tangle
+    (use-package cc-mode
+        :mode (("\\.h\\'"   . c-mode)
+               ("\\.c\\'"   . c-mode)
+               ("\\.hpp\\'" . c++-mode)
+               ("\\.cpp\\'" . c++-mode))
+        :bind (:map c-mode-map
+                    ("C-C TAB" . hs-toggle-hiding)
+                    :map c++-mode-map
+                    ("C-C TAB" . hs-toggle-hiding))
+        :init
+        (progn
+            (use-package clang-format
+                :ensure t
+                :commands (clang-format))
+
+            (setq conf-variable-for-cc '(cc-eldoc-plugin
+                                         cc-syntat-check-plugin
+                                         cc-autocompletion-plugin))
+
+            <<irony-use-package>>
+            <<rtags-use-package>>
+
+            (defun cc-hook ()
+                (setq c-basic-offset 4)
+                (hs-minor-mode)
+                (local-set-key (kbd "C-c C-r") 'clang-format-region)
+
+                ;; Setup mode if need it
+                (defun enable-cc-mode-if-you-need-it (variables mode-name hook)
+                    (if (not (null variables))
+                            (if (string-equal (symbol-value (car variables))
+                                              mode-name)
+                                    (funcall hook)
+                                (enable-cc-mode-if-you-need-it (cdr variables)
+                                                               mode-name
+                                                               hook))))
+                (enable-cc-mode-if-you-need-it conf-variable-for-cc
+                                               "irony"
+                                               'irony-setup)
+                (enable-cc-mode-if-you-need-it conf-variable-for-cc
+                                               "rtags"
+                                               'rtags-setup)
+
+                ;; Autocompletion setup
+                (defun get-autocompletion-backends ()
+                    (if (string-equal cc-autocompletion-plugin "rtags")
+                            (rtags-autocompletion-setup)
+                        (irony-autocompletion-setup)))
+                (add-to-list (make-local-variable 'company-backends)
+                             (append (get-autocompletion-backends)
+                                     '(company-yasnippet)))
+
+                ;; Syntax check setup
+                (if (string-equal cc-syntat-check-plugin "rtags")
+                        (rtags-syntax-check-setup)
+                    (irony-syntax-check-setup))
+
+                ;; Eldoc setup
+                (if (string-equal cc-eldoc-plugin "rtags")
+                        (rtags-irony-setup)
+                    (irony-eldoc-setup)))
+
+            (defun c-hook()
+                (cc-hook)
+                ;; (setq c-basic-offset 8)
+                ;; (setq tab-width 8)
+                ;; (setq indent-tabs-mode t)
+                (setq indent-tabs-mode nil)
+                (setq c-basic-offset 4)
+                (setq tab-width 4)
+                (setq c-default-style "k&r")
+                (defvar clang-format-style
+                    (concat "{ "
+                            (combine-and-quote-strings
+                             (list
+                              "BasedOnStyle: LLVM"
+                              "IndentWidth: 8"
+                              "UseTab: Always"
+                              "BreakBeforeBraces: Linux"
+                              ;; "AllowShortBlocksOnASingleLine: false"
+                              "IndentCaseLabels: false")
+                             ", ")
+                            " }")))
+            (add-hook 'c-mode-hook 'c-hook)
+
+            (defun c++-hook()
+                (cc-hook)
+                (setq clang-format-style               "webkit")
+                (setq flycheck-clang-language-standard "c++14")
+                (setq irony-additional-clang-options   '("-std=c++14")))
+            (add-hook 'c++-mode-hook 'c++-hook)))
+  #+END_SRC

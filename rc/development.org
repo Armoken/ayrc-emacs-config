@@ -1,0 +1,368 @@
+#+TITLE: Development
+#+OPTIONS: toc:nil num:nil ^:nil
+* Packages
+:PROPERTIES:
+:CUSTOM_ID: development-packages
+:END:
+
+#+NAME: development-packages
+#+CAPTION: Packages for development
+| Package       | Description                                            |
+|---------------+--------------------------------------------------------|
+| [[https://github.com/bbatsov/projectile][projectile]]    | Project managment in Emacs                             |
+| [[https://github.com/magit/magit][maigt]]         | Git support for Emacs                                  |
+| [[https://github.com/flycheck/flycheck][flycheck]]      | Modern on-the-fly syntax checking extension for  Emacs |
+| [[http://cedet.sourceforge.net/semantic.shtml][semantic]]      | Languages parser for static analysis and navigation    |
+| [[https://github.com/company-mode/company-mode][company]]       | Modular in-buffer completion framework for Emacs       |
+| [[https://github.com/joaotavora/yasnippet][yasnippet]]     | Template system for Emacs                              |
+| [[https://github.com/hbin/smart-shift][smart-shift]]   | Shift region using arrows                              |
+| [[https://github.com/magnars/expand-region.el][expand-region]] | Expand current region using lexems' semantic           |
+
+* Project managment
+  #+BEGIN_SRC emacs-lisp
+    (use-package projectile
+      :ensure t
+      :commands (projectile-global-mode
+                 projectile-ignored-projects
+                 projectile-compile-project)
+      :bind
+      (:map projectile-mode-map
+            ("C-x p o" . projectile-switch-open-project)
+            ("C-x p s" . projectile-switch-project)
+            ("<f9>"    . projectile-compile-project)
+            ("C-c p h" . helm-projectile)
+            ("C-c p p" . helm-projectile-switch-project)
+            ("C-c p f" . helm-projectile-find-file)
+            ("C-c p F" . helm-projectile-find-file-in-known-projects)
+            ("C-c p g" . helm-projectile-find-file-dwim)
+            ("C-c p d" . helm-projectile-find-dir)
+            ("C-c p e" . helm-projectile-recentf)
+            ("C-c p a" . helm-projectile-find-other-file)
+            ("C-c p i" . projectile-invalidate-cache)
+            ("C-c p z" . projectile-cache-current-file)
+            ("C-c p b" . helm-projectile-switch-to-buffer)
+            ("C-c p s" . helm-projectile-grep-or-ag))
+      :init
+      (progn
+        (use-package helm-projectile
+          :ensure t)
+        (defun helm-projectile-grep-or-ag ()
+          "Uses helm-projectile-grep, if ag doesn't present"
+          (interactive)
+          (if (executable-find "ag") (helm-projectile-ag)
+            (helm-projectile-grep)))
+      )
+      :config
+      (progn
+        (projectile-global-mode)
+        (setq projectile-completion-system 'helm)
+        (setq projectile-switch-project-action 'helm-projectile)
+        (setq-default projectile-mode-line
+                      '(:eval (format "[P<%s>]" (projectile-project-name))))))
+  #+END_SRC
+
+* Static code analysis
+  #+BEGIN_SRC emacs-lisp
+    (use-package flycheck-popup-tip
+        :ensure t
+        :commands (flycheck-popup-tip-mode))
+
+    (use-package flycheck
+        :ensure t
+        :diminish flycheck-mode "[F]"
+        :commands (flycheck-mode)
+        :init
+        (progn
+            (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode))
+        :config
+        (progn
+            (setq flycheck-standard-error-navigation nil)
+            (setq flycheck-idle-change-delay 0)
+            (setq flycheck-check-syntax-automatically '(save mode-enabled))))
+  #+END_SRC
+
+* CEDET
+** Semantic
+   #+BEGIN_SRC emacs-lisp
+     (use-package semantic
+         :diminish semantic-mode "[S]"
+         :commands (semantic-mode)
+         :config (progn
+                     (global-semanticdb-minor-mode 1)
+                     (global-semantic-idle-scheduler-mode 1)))
+   #+END_SRC
+
+* Complete anything
+  #+BEGIN_SRC emacs-lisp
+    (use-package company
+        :ensure t
+        :diminish company-mode
+        :init
+        (progn
+            ;; This package adds fuzzy matching to Company
+            (use-package company-flx
+                :commands (company-flx-mode)
+                :ensure t)
+
+            ;; Documentation popup for Company
+            (use-package company-quickhelp
+                :ensure t
+                :commands (company-quickhelp-mode)
+                :init
+                (progn
+                    (eval-after-load 'company
+                        '(progn
+                             (define-key company-active-map (kbd "M-h")
+                                 #'company-quickhelp-manual-begin)
+                             (company-quickhelp-mode)))))
+
+            ;; Sort completion candidates by previous completion choices
+            (use-package company-statistics
+                :ensure t
+                :commands (company-statistics-mode)
+                :init
+                (progn
+                    (eval-after-load 'company
+                        '(company-statistics-mode))))
+
+            (global-company-mode))
+        :config
+        (progn
+            (setq company-tooltip-align-annotations t
+
+                  ;; Easy navigation to candidates with M-<n>
+                  company-idle-delay                0.0
+
+                  company-show-numbers              t
+                  company-minimum-prefix-length     1)
+
+            (setq company-backends
+                  '((company-files      ;; files & directory
+                     company-keywords)   ;; keywords
+
+                    (company-abbrev     ;; abbreviations
+                     company-dabbrev))) ;; dynamic abbreviations
+
+            ;; Add yasnippet support for all company backends
+            (defvar company-mode/enable-yas t
+                "Enable yasnippet for all backends.")
+
+            (defun company-mode/backend-with-yas (backend)
+                (if (or (not company-mode/enable-yas)
+                        (and (listp backend)
+                             (member 'company-yasnippet backend)))
+                        backend
+                    (append (if (consp backend)
+                                    backend
+                                (list backend))
+                            '(:with company-yasnippet))))
+
+            (setq company-backends
+                  (mapcar #'company-mode/backend-with-yas company-backends))
+
+            (company-flx-mode)
+            (define-key company-active-map (kbd "TAB")
+                'company-complete-selection)))
+  #+END_SRC
+
+* VCS
+** Magit
+    #+BEGIN_SRC emacs-lisp
+      (use-package magit
+        :ensure t
+
+        :commands magit-get-top-dir
+        :bind (("C-x g" . magit-status))
+
+        :init
+        (progn
+          (delete 'Git vc-handled-backends)
+          ;; Close popup when commiting - this stops the commit window
+          ;; hanging around
+          ;; From: http://git.io/rPBE0Q
+          (defadvice git-commit-commit (after delete-window activate)
+            (delete-window))
+
+          (defadvice git-commit-abort (after delete-window activate)
+            (delete-window))
+
+          ;; these two force a new line to be inserted into a commit window,
+          ;; which stops the invalid style showing up.
+          ;; From: http://git.io/rPBE0Q
+          (defun magit-commit-mode-init ()
+            (when (looking-at "\n")
+              (open-line 1)))
+
+          (add-hook 'git-commit-mode-hook 'magit-commit-mode-init))
+
+        :config
+        (progn
+          ;; restore previously hidden windows
+          (defadvice magit-quit-window (around magit-restore-screen activate)
+            (let ((current-mode major-mode))
+              ad-do-it
+              (when (eq 'magit-status-mode current-mode)
+                (jump-to-register :magit-fullscreen))))
+
+          ;; major mode for editing `git rebase -i` files
+          (use-package rebase-mode)
+
+          ;; magit settings
+          (setq
+           magit-default-tracking-name-function 'magit-default-tracking-name-branch-only
+           ;; open magit status in same window as current buffer
+           magit-status-buffer-switch-function 'switch-to-buffer
+           ;; highlight word/letter changes in hunk diffs
+           magit-diff-refine-hunk t
+           ;; ask me to save buffers
+           magit-save-some-buffers t
+           ;; ask me if I want a tracking upstream
+           magit-set-upstream-on-push 'askifnotset
+           )))
+	 #+END_SRC
+
+* Add folding
+  #+BEGIN_SRC emacs-lisp
+    (use-package hideshow
+      :ensure t
+      :diminish hs-minor-mode
+      :commands (hs-minor-mode)
+      :bind
+      (:map hs-minor-mode-map
+            ("C-c f TAB" . hs-toggle-hiding)
+            ("C-c f h"   . hs-hide-all)
+            ("C-c f s"   . hs-show-all))
+      :config
+      (progn
+        (add-to-list 'hs-special-modes-alist
+                     (list 'nxml-mode
+                           "<!--\\|<[^/>]*[^/]>"
+                           "-->\\|</[^/>]*[^/]>"
+                           "<!--"
+                           'nxml-forward-element
+                           nil))))
+
+    ;; For yaml mode and others
+    (defun indenation-toggle-fold ()
+      "Toggle fold all lines larger than indentation on current line"
+      (interactive)
+      (let ((col 1))
+        (save-excursion
+          (back-to-indentation)
+          (setq col (+ 1 (current-column)))
+          (set-selective-display
+           (if selective-display nil (or col 1))))))
+  #+END_SRC
+
+* Add snippets
+  #+BEGIN_SRC emacs-lisp
+    (use-package yasnippet
+      :ensure t
+      :diminish yas-minor-mode
+      :commands (yas-global-mode)
+      :init
+      (progn
+        (yas-global-mode))
+      :config
+      (progn
+        (setq yas-snippet-dirs
+              '("~/.emacs.d/other/yasnippet/yasmate/snippets"
+                "~/.emacs.d/other/yasnippet/snippets"))
+
+        (let ((yasmate (car yas-snippet-dirs))
+              (yas (cadr yas-snippet-dirs)))
+
+          (unless (file-exists-p yasmate)
+            (async-shell-command (concat "git clone https://github.com/joaotavora/yasmate.git " yasmate)))
+          (unless (file-exists-p yas)
+            (async-shell-command (concat "git clone https://github.com/AndreaCrotti/yasnippet-snippets.git " yas))))
+
+        ;; Add yasnippet support for all company backends
+        (defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
+
+        (yas-reload-all)))
+
+  #+END_SRC
+
+* Indents
+  #+BEGIN_SRC emacs-lisp
+    (setq-default tab-width 4)
+    (setq-default pc-basic-offset 4)
+    (setq-default standart-indent 4)
+    (setq-default indent-tabs-mode nil)
+  #+END_SRC
+
+* Automatically pairs braces and quotes
+  #+BEGIN_SRC emacs-lisp
+    (electric-pair-mode)
+  #+END_SRC
+
+* Syntax highlight
+  #+BEGIN_SRC emacs-lisp
+    (use-package font-lock
+      :config
+      (progn
+        (setq font-lock-maximum-decoration t)))
+  #+END_SRC
+
+* Highlighting indentation
+  #+BEGIN_SRC emacs-lisp
+    (use-package highlight-indentation
+      :ensure t
+      :diminish highlight-indentation-mode
+      :commands (highlight-indentation-mode))
+  #+END_SRC
+
+* EditorConfig
+  EditorConfig helps developers define and maintain consistent
+  coding styles between different editors and IDEs. The EditorConfig
+  project consists of a file format for defining coding styles and a
+  collection of text editor plugins that enable editors to read the
+  file format and adhere to defined styles. EditorConfig files are
+  easily readable and they work nicely with version control systems.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package editorconfig
+      :ensure t
+      :diminish editorconfig-mode
+      :config
+      (progn
+        (editorconfig-mode)))
+  #+END_SRC
+* Smart Shift
+  Smart Shift is a minor mode for conveniently shift the
+  line/region to the left/right by the current major mode
+  indentation width or shift line/region backwardly/forwardly by lines.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package smart-shift
+      :ensure t
+      :diminish smart-shift-mode
+      :bind
+      (:map smart-shift-mode-map
+            ("<C-up>" . smart-shift-up)
+            ("<C-down>" . smart-shift-down)
+            ("<C-left>" . smart-shift-left)
+            ("<C-right>" . smart-shift-right)))
+  #+END_SRC
+* Aggressive Indent
+  Emacs minor mode that keeps your code always indented.
+  More reliable than electric-indent-mode.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package aggressive-indent
+      :ensure t
+      :commands (aggressive-indent-mode)
+      :diminish aggressive-indent-mode "[A]")
+  #+END_SRC
+* Expand region
+  Expand region increases the selected region by semantic units.
+  Just keep pressing the key until it selects what you want.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package expand-region
+      :ensure t
+      :commands (er/expand-region)
+      :bind ("C-=" . er/expand-region))
+  #+END_SRC
+
