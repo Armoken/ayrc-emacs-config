@@ -117,6 +117,10 @@
                ("\\.c\\'"   . c-mode)
                ("\\.hpp\\'" . c++-mode)
                ("\\.cpp\\'" . c++-mode))
+        :bind (:map c-mode-map
+                    ("C-C TAB" . hs-toggle-hiding)
+                    :map c++-mode-map
+                    ("C-C TAB" . hs-toggle-hiding))
         :init
         (progn
             (use-package clang-format
