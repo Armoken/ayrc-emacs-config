@@ -1,21 +1,5 @@
-* Packages
-:PROPERTIES:
-:CUSTOM_ID: development-packages
-:END:
-
-#+NAME: development-packages
-#+CAPTION: Packages for development
-| Package       | Description                                            |
-|---------------+--------------------------------------------------------|
-| [[https://github.com/bbatsov/projectile][projectile]]    | Project managment in Emacs                             |
-| [[https://github.com/magit/magit][magit]]         | Git support for Emacs                                  |
-| [[https://github.com/flycheck/flycheck][flycheck]]      | Modern on-the-fly syntax checking extension for  Emacs |
-| [[http://cedet.sourceforge.net/semantic.shtml][semantic]]      | Languages parser for static analysis and navigation    |
-| [[https://github.com/company-mode/company-mode][company]]       | Modular in-buffer completion framework for Emacs       |
-| [[https://github.com/joaotavora/yasnippet][yasnippet]]     | Template system for Emacs                              |
-| [[https://github.com/hbin/smart-shift][smart-shift]]   | Shift region using arrows                              |
-| [[https://github.com/magnars/expand-region.el][expand-region]] | Expand current region using lexems' semantic           |
-
+#+TITLE: Markup
+#+OPTIONS: toc:nil num:nil ^:nil
 * JSON
   Install demjson python package
 
@@ -88,8 +72,69 @@
   #+END_SRC
 
 * RST
-  #+BEGIN_SRC emacs-lisp
-    (use-package rst
-      :mode (("\\.txt$" . rst-mode)
-             ("\\.rst$" . rst-mode)))
-  #+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (use-package rst
+       :mode (("\\.txt$" . rst-mode)
+              ("\\.rst$" . rst-mode)))
+   #+END_SRC
+* Markdown
+** Prerequisites
+   :PROPERTIES:
+   :CUSTOM_ID: markdown-system-prerequisites
+   :END:
+
+   #+NAME: markdown-system-prerequisites
+   #+CAPTION: System prerequisites for markdown packages
+
+   - [[https://github.com/trentm/python-markdown2][python-markdown2]] :: A fast and complete implementation of Markdown
+** Packages
+   :PROPERTIES:
+   :CUSTOM_ID: markdown-packages
+   :END:
+
+   #+NAME: markdown-packages
+   #+CAPTION: Packages for markdown
+   - [[https://jblevins.org/projects/markdown-mode/][markdown-mode]] :: Emacs Markdown mode
+   - [[https://github.com/milkypostman/markdown-mode-plus][markdown-mode-plus]] :: Additional functions for Emacs [markdown-mode]
+   - [[https://github.com/ancane/markdown-preview-mode][markdown-preview-mode]] :: Minor mode to preview markdown output as you save
+** Conf
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref markdown-plus
+     (use-package markdown-mode+
+         :ensure t
+         :commands (markdown-cleanup-list-numbers
+                    markdown-export-latex
+                    markdown-copy-html
+                    markdown-copy-rtf))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref markdown-preview
+     (use-package markdown-preview-mode
+         :ensure t
+         :commands (markdown-preview-mode
+                    markdown-preview-open-browser
+                    markdown-preview-cleanup)
+         :config
+         (progn
+             (add-to-list 'markdown-preview-stylesheets
+                          "https://raw.githubusercontent.com/richleland/pygments-css/master/emacs.css")
+             (add-to-list 'markdown-preview-javascript
+                          "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML")
+             (add-to-list 'markdown-preview-javascript
+                          '("http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" . async))))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :noweb tangle
+     (use-package markdown-mode
+         :ensure t
+         :commands (markdown-mode gfm-mode)
+         :mode (("README\\.md\\'" . gfm-mode)
+                ("\\.md\\'"       . markdown-mode)
+                ("\\.markdown\\'" . markdown-mode))
+         :init
+         (progn
+             <<markdown-plus>>
+             <<markdown-preview>>)
+         :config
+         (progn
+             (setq markdown-command "markdown2")))
+   #+END_SRC
