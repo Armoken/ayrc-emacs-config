@@ -1,0 +1,62 @@
+#+TITLE: JS
+#+OPTIONS: toc:nil num:nil ^:nil
+
+JS configuration for Emacs
+
+* Prerequisites
+
+   Prerequisites:
+
+* Packages
+  :PROPERTIES:
+  :CUSTOM_ID: JS-packages
+  :END:
+
+  #+NAME: python-packages
+  #+CAPTION: Packages for JS
+* JS mode
+    JS mode settings for Emacs
+
+  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref j2-mode
+    (use-package js2-mode
+        :mode (("\\.js$" . js2-mode)
+               ("Jakefile$" . js2-mode))
+        :interpreter ("node" . js2-mode)
+        :ensure t
+        :diminish js2-mode "[JS2]")
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref tern
+    (use-package tern
+            :ensure t
+            :diminish tern-mode "[T]")
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-tern
+    (use-package company-tern
+        :ensure t)
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-tern
+    (use-package indium
+        :ensure t
+        :diminish indium-interaction-mode)
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref js-hook
+    (defun js-hook ()
+        (tern-mode)
+        (indium-mode)
+        (flycheck-mode)
+
+        (add-to-list (make-local-variable 'company-backends)
+                     '(company-tern company-yasnippet)))
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp :noweb tangle
+    (use-package js
+        :init
+        (progn
+            <<js-hook>>
+            (add-hook 'js-mode-hook 'js-hook)))
+  #+END_SRC
