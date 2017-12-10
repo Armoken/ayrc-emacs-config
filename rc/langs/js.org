@@ -5,15 +5,20 @@ JS configuration for Emacs
 
 * Prerequisites
 
-   Prerequisites:
-
+  Installation path: nvm -> node
+                         -> install all packages by running function below
 * Packages
   :PROPERTIES:
   :CUSTOM_ID: JS-packages
   :END:
 
-  #+NAME: python-packages
+  #+NAME: js-packages
   #+CAPTION: Packages for JS
+  - [[https://github.com/creationix/nvm][nvm]] :: Node version manager for local-install nodejs
+  - [[https://github.com/mooz/js2-mode][js2-mode]] :: Improved JavaScript editing mode
+  - [[http://ternjs.net/doc/manual.html#emacs][tern]] :: Stand-alone code-analysis engine with autocompletion, goto defenition, e.t.c.
+  - [[https://github.com/proofit404/company-tern][company-tern]] :: Company backend for tern
+  - [[https://github.com/NicolasPetton/Indium][indium]] :: REPL, inspector, scratch-buffer, edebug for JS. [[https://indium.readthedocs.io/en/latest/][Configuration doc]]
 * JS mode
     JS mode settings for Emacs
 
@@ -45,18 +50,23 @@ JS configuration for Emacs
 
   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref js-hook
     (defun js-hook ()
+        (js2-mode)
         (tern-mode)
-        (indium-mode)
+        (indium-interaction-mode)
         (flycheck-mode)
-
         (add-to-list (make-local-variable 'company-backends)
                      '(company-tern company-yasnippet)))
   #+END_SRC
 
   #+BEGIN_SRC emacs-lisp :noweb tangle
     (use-package js
+        :ensure t
         :init
         (progn
+            <<js2-mode>>
+            <<tern>>
+            <<company-tern>>
+            <<indium>>
             <<js-hook>>
             (add-hook 'js-mode-hook 'js-hook)))
   #+END_SRC
