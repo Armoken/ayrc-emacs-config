@@ -15,7 +15,7 @@ Python configuration for Emacs
    #+NAME: python-system-prerequisites
    #+CAPTION: System prerequisites for python packages
 
- - [[https://github.com/pyenv/pyenv][Pyenv]] :: [[https://github.com/pyenv/pyenv-installer][pyenv-installer]] and watch [[https://github.com/pyenv/pyenv/wiki/Common-build-problems][common build problems]]
+ - [[https://github.com/pyenv/pyenv][Pyenv]] :: [[https://github.com/pyenv/pyenv-installer][pyenv-installer]] and take a look at [[https://github.com/pyenv/pyenv/wiki/Common-build-problems][common build problems]]
 ** Language
    :PROPERTIES:
    :CUSTOM_ID: python-language-prerequisites
