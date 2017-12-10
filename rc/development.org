@@ -365,4 +365,12 @@
       :commands (er/expand-region)
       :bind ("C-=" . er/expand-region))
   #+END_SRC
-
+* Add user PATH to emacs
+  #+BEGIN_SRC emacs-lisp
+    (use-package exec-path-from-shell
+        :ensure t
+        :config
+        (progn
+            (when (memq window-system '(mac ns x))
+                (exec-path-from-shell-initialize))))
+  #+END_SRC
