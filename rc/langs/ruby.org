@@ -56,7 +56,9 @@ Installation path: rvm -> ruby -> gem install all packages above
 
         :interpreter "ruby"
 
-        :bind ("C-C C-e" . ruby-send-region)
+
+        :bind (:map ruby-mode-map
+                    ("C-C C-e" . ruby-send-region))
 
         :init
         (progn
