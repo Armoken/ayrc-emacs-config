@@ -23,9 +23,9 @@ Set indent to 4 spaces.
     (setq lisp-body-indent 4)
   #+END_SRC
 
-* COMMENT Emacs Lisp
+* Emacs Lisp
   #+BEGIN_SRC emacs-lisp
-    (use-package emacs-lisp-mode
+    (use-package lisp-mode
         :init
         (progn
             (use-package eldoc
