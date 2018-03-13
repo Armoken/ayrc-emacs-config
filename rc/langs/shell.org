@@ -9,11 +9,11 @@
                 :ensure t))
         :config
         (progn
-            (defun python-hook()
+            (defun shell-hook()
                 (hs-minor-mode)
                 (flycheck-mode)
                 (semantic-mode)
                 (add-to-list (make-local-variable 'company-backends)
                              '(company-shell company-yasnippet)))
-            (add-hook 'python-mode-hook 'python-hook)))
+            (add-hook sh-mode-hook shell-hook)))
   #+END_SRC
