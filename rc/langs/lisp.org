@@ -4,63 +4,143 @@
 Lisp family languages configuration.
 
 * Packages
-:PROPERTIES:
-:CUSTOM_ID: config-packages
-:END:
+  :PROPERTIES:
+  :CUSTOM_ID: lisp-packages
+  :END:
 
-#+NAME: config-packages
-#+CAPTION: Packages for config
-# Table with all external packages
-| Package              | Description                                                             |
-|----------------------+-------------------------------------------------------------------------|
-| [[https://www.emacswiki.org/emacs/ElDoc][eldoc]]                | Shows the argument list of the function call you are currently writing. |
-| [[https://github.com/purcell/elisp-slime-nav][emacs-slime-nav]]      | Slime-style navigation of Emacs Lisp source with M-. & M-,              |
-| [[https://github.com/Lindydancer/lisp-extra-font-lock][lisp-extra-font-lock]] | Highlight bound variables and quoted expressions in lisp                |
+  #+NAME: config-packages
+  #+CAPTION: Packages for config
+  - [[https://www.emacswiki.org/emacs/ElDoc][eldoc]] :: Shows the argument list of the function call you are currently writing.
+  - [[https://github.com/purcell/elisp-slime-nav][emacs-slime-nav]] :: Slime-style navigation of Emacs Lisp source with M-. & M-
+  - [[https://github.com/Lindydancer/lisp-extra-font-lock][lisp-extra-font-lock]] :: Highlight bound variables and quoted expressions in lisp
+  - [[https://www.emacswiki.org/emacs/ParEdit][paredit]] :: Minor mode for performing structured editing of S-expression data
+  - [[https://github.com/Fuco1/smartparens][smartparens]] :: Minor mode for dealing with pairs in Emacs
+  - [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] :: Mode which highlights delimiters such as parentheses,
+    brackets or braces according to their depth.
+* Lisp
+   #+BEGIN_SRC emacs-lisp :noweb tangle
+     (use-package lisp-mode
+         :mode (("\\.el\\'"   .  emacs-lisp-mode)
+                ("\\.rkt\\'"   . scheme-mode)
+                ("\\.ss\\'"    . scheme-mode)
+                ("\\.scm\\'"   . scheme-mode)
+                ("\\.sch\\'"   . scheme-mode))
+         :init
+         (progn
+             ;; Lisp configuration
+             <<paredit>>
+             <<smartparens>>
+             <<rainbow-delimiters>>
+             <<lisp-extra-font-lock>>
 
-* Indent size
-Set indent to 4 spaces.
-  #+BEGIN_SRC emacs-lisp
-    (setq lisp-body-indent 4)
-  #+END_SRC
+             <<lisp-hook>>
+             (add-hook 'lisp-mode-hook                        'lisp-hook)
 
-* Emacs Lisp
-  #+BEGIN_SRC emacs-lisp
-    (use-package lisp-mode
-        :init
-        (progn
-            (use-package eldoc
-                :ensure t
-                :diminish eldoc-mode
-                :init (progn
-                          (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)))
+             ;; Emacs Lisp configuration
+             <<elisp-slime-nav>>
 
-            (use-package elisp-slime-nav
-                :ensure t
-                :diminish elisp-slime-nav "[N]"
-                :commands (turn-on-elisp-slime-nav-mode)
-                :init (progn
-                          (add-hook 'emacs-lisp-mode-hook
-                                    #'turn-on-elisp-slime-nav-mode)))
+             <<emacs-lisp-hook>>
+             (add-hook 'eval-expression-minibuffer-setup-hook 'lisp-hook)
+             (add-hook 'ielm-mode-hook                        'lisp-hook)
+             (add-hook 'lisp-interaction-mode-hook            'lisp-hook)
+             (add-hook 'emacs-lisp-mode-hook                  'lisp-hook)
 
-            (use-package paredit
-                :ensure t
-                :diminish paredit-mode
-                :init (progn
-                          (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)))
+             (add-hook 'eval-expression-minibuffer-setup-hook 'emacs-lisp-hook)
+             (add-hook 'ielm-mode-hook                        'emacs-lisp-hook)
+             (add-hook 'lisp-interaction-mode-hook            'emacs-lisp-hook)
+             (add-hook 'emacs-lisp-mode-hook                  'emacs-lisp-hook)
 
-            (use-package lisp-extra-font-lock
-                :ensure t
-                :config (progn
-                            (lisp-extra-font-lock-global-mode 1)))
+             ;; Scheme configuration
+             <<geiser>>
 
-            (defun emacs-lisp-hook ()
-                (hs-minor-mode)
-                (semantic-mode)
-                (flycheck-mode)
-                (aggressive-indent-mode)
-                (add-hook 'write-contents-functions
-                          'cleanup-buffer-notabs nil t)
-                (add-to-list (make-local-variable 'company-backends)
-                             '(company-elisp company-yasnippet)))
-            (add-hook 'emacs-lisp-mode-hook 'emacs-lisp-hook)))
-  #+END_SRC
+             <<scheme-hook>>
+             (add-hook 'scheme-mode-hook 'lisp-hook)
+             (add-hook 'scheme-mode-hook 'scheme-hook)))
+   #+END_SRC
+
+** Common configuration for all lisp dialects
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref paredit
+     (use-package paredit
+         :ensure t
+         :diminish paredit-mode "[pe]"
+         :config
+         (progn
+             ;; Whenever the listed commands are used, ElDoc will automatically
+             ;; refresh the minibuffer.
+             (eldoc-add-command
+              'paredit-backward-delete
+              'paredit-close-round)))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref smartparens
+     (use-package smartparens
+         :ensure t)
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-reg rainbow-delimiters
+     (use-package rainbow-delimiters
+         :ensure t)
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref lisp-extra-font-lock
+     (use-package lisp-extra-font-lock
+         :ensure t
+         :diminish lisp-extra-font-lock-mode "[lefl]")
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref lisp-hook
+     (defun lisp-hook ()
+         (flycheck-mode)
+         (hs-minor-mode)
+         (semantic-mode)
+
+         (aggressive-indent-mode)
+         (eldoc-mode)
+         (lisp-extra-font-lock-global-mode)
+
+         (paredit-mode)
+         (rainbow-delimiters-mode)
+         (smartparens-mode)
+
+         (prettify-symbols-mode)
+         (setq prettify-symbols-unprettify-at-point 'right-edge)
+         (push '(">=" . ?≥) prettify-symbols-alist)
+         (push '("<=" . ?≤) prettify-symbols-alist)
+         (push '("lambda"  . ?λ) prettify-symbols-alist)
+
+         (setq lisp-body-indent 4)
+
+         (add-hook 'write-contents-functions
+                   'cleanup-buffer-notabs nil t))
+   #+END_SRC
+** Emacs Lisp
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref elisp-slime-nav
+     (use-package elisp-slime-nav
+         :ensure t
+         :diminish elisp-slime-nav-mode "[sn]"
+         :commands (turn-on-elisp-slime-nav-mode))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref emacs-lisp-hook
+     (defun emacs-lisp-hook ()
+         (turn-on-elisp-slime-nav-mode)
+
+         (add-to-list (make-local-variable 'company-backends)
+                      '(company-elisp company-yasnippet)))
+   #+END_SRC
+** Scheme
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref geiser
+     (use-package geiser
+         :ensure t
+         :config
+         (progn
+             (setq geiser-active-implementations '(racket guile))))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref scheme-hook
+     (defun scheme-hook ()
+         (geiser-mode)
+
+         (add-to-list (make-local-variable 'company-backends)
+                      '(company-capf company-dabbrev-code)))
+   #+END_SRC

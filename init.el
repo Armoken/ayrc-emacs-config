@@ -71,9 +71,6 @@
                                          "./rc/langs/tex.org"
                                          "./rc/langs/js.org"
                                          )))
-
-
-
 (provide 'init)
 ;;; init.el ends here
 (custom-set-variables
@@ -83,7 +80,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (sphinx-doc python-mode markdown-preview-mode markdown-mode+ switch-buffer-functions flycheck-popup-tip yaml-mode ws-butler web-mode use-package undo-tree systemd spacemacs-theme spaceline-all-the-icons smart-shift rvm rubocop robe rinari pyimport pyenv-mode-auto py-yapf py-isort projectile-rails pip-requirements paredit org-present org-cliplink org-bullets nlinum nginx-mode neotree markdown-mode lisp-extra-font-lock kubernetes jinja2-mode irony-eldoc ini-mode helm-rtags helm-projectile helm-flycheck helm-ag graphviz-dot-mode go-projectile go-gopath flycheck-yamllint flycheck-rtags flycheck-pos-tip flycheck-irony flycheck-haskell flycheck-demjsonlint expand-region elpy elisp-slime-nav editorconfig dockerfile-mode docker company-statistics company-shell company-rtags company-quickhelp company-irony-c-headers company-irony company-inf-ruby company-go company-ghc company-flx company-auctex cmake-font-lock clang-format bundler avy anzu aggressive-indent ag adaptive-wrap))))
+    (geiser rainbow-delimiters smartparens racket-mode sphinx-doc markdown-edit-indirect markdown-mode markdown-mode+ markdown-preview-mode yaml-mode ws-butler web-mode use-package undo-tree systemd switch-buffer-functions spacemacs-theme spaceline-all-the-icons smart-shift rvm rubocop robe rinari python-mode pyimport pyenv-mode-auto py-yapf py-isort projectile-rails pip-requirements paredit org-present org-cliplink org-bullets nlinum nginx-mode neotree lisp-extra-font-lock kubernetes jinja2-mode irony-eldoc ini-mode helm-rtags helm-projectile helm-flycheck helm-ag go-gopath go-eldoc flycheck-yamllint flycheck-rtags flycheck-pos-tip flycheck-popup-tip flycheck-irony flycheck-haskell flycheck-demjsonlint expand-region elpy elisp-slime-nav editorconfig dockerfile-mode docker company-statistics company-shell company-rtags company-quickhelp company-irony-c-headers company-irony company-inf-ruby company-go company-ghc company-flx company-auctex cmake-font-lock clang-format bundler avy anzu aggressive-indent ag adaptive-wrap))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
