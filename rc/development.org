@@ -372,3 +372,17 @@
         :ensure t
         :diminish eldoc-mode "[e]")
   #+END_SRC
+* Tags
+  Using helm-gtags and ggtags
+  #+BEGIN_SRC emacs-lisp
+    (use-package helm-gtags
+      :ensure t
+      :commands (helm-gtags-mode)
+      :config
+      (progn
+        (setq helm-gtags-path-style 'relative)))
+
+    (use-package ggtags
+      :ensure t
+      :commands (ggtags-mode))
+  #+END_SRC
