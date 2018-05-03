@@ -27,8 +27,7 @@ JS configuration for Emacs
         :mode (("\\.js$" . js2-mode)
                ("Jakefile$" . js2-mode))
         :interpreter ("node" . js2-mode)
-        :ensure t
-        :diminish js2-mode "[JS2]")
+        :ensure t)
   #+END_SRC
 
   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref tern
@@ -50,7 +49,6 @@ JS configuration for Emacs
 
   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref js-hook
     (defun js-hook ()
-        (js2-mode)
         (tern-mode)
         (indium-interaction-mode)
         (flycheck-mode)

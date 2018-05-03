@@ -57,8 +57,8 @@ Installation path: rvm -> ruby -> gem install all packages above
         :interpreter "ruby"
 
 
-        :bind (:map ruby-mode-map
-                    ("C-C C-e" . ruby-send-region))
+        :bind  (:map ruby-mode-map
+                     ("C-C C-e" . ruby-send-region))
 
         :init
         (progn
@@ -92,11 +92,11 @@ Installation path: rvm -> ruby -> gem install all packages above
             (use-package robe
                 :ensure t
                 :commands robe-mode
-                :bind (:map ruby-mode-map
-                            ("C-M-." . robe-jump))
                 :config
-                (defadvice inf-ruby-console-auto (before activate-rvm-for-robe activate)
-                    (rvm-activate-corresponding-ruby)))
+                (progn
+                    (unbind-key "M-." robe-mode-map)
+                    (defadvice inf-ruby-console-auto (before activate-rvm-for-robe activate)
+                        (rvm-activate-corresponding-ruby))))
 
             (use-package projectile-rails
                 :ensure t
@@ -114,6 +114,13 @@ Installation path: rvm -> ruby -> gem install all packages above
                            bundle-install
                            bundle-open
                            bundle-update))
+
+
+            (use-package rspec-mode
+                :ensure t
+                :init
+                (progn
+                    (setq rspec-use-rvm t)))
 
             (use-package web-mode
                 :ensure t
@@ -137,9 +144,10 @@ Installation path: rvm -> ruby -> gem install all packages above
                 (rvm-activate-corresponding-ruby)
                 (inf-ruby-minor-mode)
                 (projectile-rails-mode)
+
                 (global-rinari-mode)
                 (add-to-list (make-local-variable 'company-backends)
-                             '(company-robe company-dabbrev-code company-yasnippet)))
+                             '(company-robe company-etags company-dabbrev-code company-yasnippet)))
 
 
             (add-hook 'ruby-mode-hook 'ruby-hook)))
