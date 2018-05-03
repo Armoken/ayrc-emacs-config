@@ -33,5 +33,7 @@ Orgmode configuration for Emacs
               (use-package org-cliplink
                   :ensure t
                   :commands org-cliplink
-                  :bind ("C-c M-l" . org-cliplink))))
+                  :bind ("C-c M-l" . org-cliplink))
+
+              (setq org-src-tab-acts-natively t)))
     #+END_SRC

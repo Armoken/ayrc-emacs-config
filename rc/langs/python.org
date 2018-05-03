@@ -110,7 +110,7 @@ Python configuration for Emacs
   - [[https://github.com/paetzke/py-isort.el][py-isort.el]] :: Integrates isort into Emacs.
   - [[https://github.com/Wilfred/pyimport][pyimport]] :: Manage Python imports from Emac
   - [[https://github.com/naiquevin/sphinx-doc.el][sphinx-doc]] ::  Generate Sphinx friendly docstrings for Python functions
-* Python mode
+* Python
     Python mode settings for Emacs
 
   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref elpy
@@ -120,8 +120,6 @@ Python configuration for Emacs
         :diminish elpy-mode "[E]"
         :commands (elpy-mode)
         :config (progn
-                    (elpy-use-ipython)
-
                     (defun switch-to-jedi-flycheck-backend ()
                         (interactive)
                         (setq elpy-rpc-backend "jedi"))
@@ -188,7 +186,7 @@ Python configuration for Emacs
               py-python-command "python"
               elpy-rpc-python-command "python"
               python-shell-interpreter "ipython"
-              python-shell-interpreter-args "--simple-prompt --pprint")
+              python-shell-interpreter-args "-i --simple-prompt")
 
         (add-to-list
          'python-shell-completion-native-disabled-interpreters "python")

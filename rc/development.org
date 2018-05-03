@@ -298,7 +298,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package highlight-indentation
       :ensure t
-      :diminish highlight-indentation-mode
+      :diminish "[hi]"
       :commands (highlight-indentation-mode))
   #+END_SRC
 
@@ -313,7 +313,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package editorconfig
       :ensure t
-      :diminish editorconfig-mode
+      :diminish "[ec]"
       :config
       (progn
         (editorconfig-mode)))
@@ -342,7 +342,7 @@
     (use-package aggressive-indent
       :ensure t
       :commands (aggressive-indent-mode)
-      :diminish aggressive-indent-mode "[A]")
+      :diminish aggressive-indent-mode "[a]")
   #+END_SRC
 * Expand region
   Expand region increases the selected region by semantic units.
@@ -362,4 +362,13 @@
         (progn
             (when (memq window-system '(mac ns x))
                 (exec-path-from-shell-initialize))))
+  #+END_SRC
+* Eldoc
+  Shows you, in the echo area, the argument list of the function call you are
+  currently writing
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package eldoc
+        :ensure t
+        :diminish eldoc-mode "[e]")
   #+END_SRC
