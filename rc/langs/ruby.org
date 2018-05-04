@@ -40,117 +40,123 @@ Installation path: rvm -> ruby -> gem install all packages above
   Ruby mode for Emacs
   #+BEGIN_SRC emacs-lisp
     (use-package ruby-mode
-      :defer t
-      :mode ("\\.rb\\'"
-             "\\.rake\\'"
-             "\\.builder\\'"
-             "\\.ru\\'"
-             "\\.rabl\\'"
-             "\\.gemspec\\'"
-             "^\\.pryrc\\'"
-             "^\\.irbrc\\'"
-             "^Rakefile\\'"
-             "^Guardfile\\'"
-             "^Gemfile\\'"
-             "^config.ru\\'")
+        :defer t
+        :mode ("\\.rb\\'"
+               "\\.rake\\'"
+               "\\.builder\\'"
+               "\\.ru\\'"
+               "\\.rabl\\'"
+               "\\.gemspec\\'"
+               "^\\.pryrc\\'"
+               "^\\.irbrc\\'"
+               "^Rakefile\\'"
+               "^Guardfile\\'"
+               "^Gemfile\\'"
+               "^config.ru\\'")
 
-      :interpreter "ruby"
-
-
-      :bind  (:map ruby-mode-map
-                   ("C-C C-e" . ruby-send-region))
-
-      :init
-      (progn
-
-        (setq ruby-indent-level 2
-              ruby-indent-tabs-mode nil)
-
-        (use-package rvm
-          :ensure t
-          :defer t
-          :config
-          (rvm-use-default))
-
-        (use-package company-inf-ruby
-          :ensure t)
-
-        (use-package inf-ruby
-          :ensure t
-          :defer t
-          :init
-          (progn
-            (setq inf-ruby-default-implementation "pry")
-            (add-to-list (make-local-variable 'company-backends)
-                         '(company-inf-ruby company-yasnippet))))
-
-        (use-package rubocop
-          :ensure t
-          :commands rubocop-mode
-          :diminish rubocop-mode)
-
-        (use-package robe
-          :ensure t
-          :commands robe-mode
-          :config
-          (progn
-            (unbind-key "M-." robe-mode-map)
-            ;; (defadvice inf-ruby-console-auto (before activate-rvm-for-robe activate)
-            ;;     (rvm-activate-corresponding-ruby))
-            ))
-
-        (use-package projectile-rails
-          :ensure t
-          :commands projectile-rails-global-mode)
-
-        (use-package rinari
-          :ensure t
-          :config
-          (setq ruby-insert-encoding-magic-comment nil))
-
-        (use-package bundler
-          :ensure t
-          :commands (bundle-check
-                     bundle-console
-                     bundle-install
-                     bundle-open
-                     bundle-update))
+        :interpreter "ruby"
 
 
-        (use-package rspec-mode
-          :ensure t
-          :init
-          (progn
-            (setq rspec-use-rvm t)))
+        :bind  (:map ruby-mode-map
+                     ("C-C C-e" . ruby-send-region))
 
-        (use-package web-mode
-          :ensure t
-          :mode (("\\.html\\'" . web-mode)
-                 ("\\.html\\.erb\\'" . web-mode))
-          :init
-          (progn
-            (setq web-mode-markup-indent-offset 2)
-            (setq web-mode-code-indent-offset 2)
-            (setq web-mode-css-indent-offset 2)
+        :init
+        (progn
 
-            (setq web-mode-enable-auto-pairing t)
-            (setq web-mode-enable-auto-expanding t)
-            (setq web-mode-enable-css-colorization t)))
+            (setq ruby-indent-level 2
+                  ruby-indent-tabs-mode nil)
 
-        (defun ruby-hook ()
-          (robe-mode)
-          (rubocop-mode)
-          (auto-revert-mode)
-          (flycheck-mode)
-          (rvm-activate-corresponding-ruby)
-          (inf-ruby-minor-mode)
-          (projectile-rails-mode)
-          (helm-gtags-mode)
-          (ggtags-mode 1)
-          (global-rinari-mode)
-          (add-to-list (make-local-variable 'company-backends)
-                       '(company-robe company-gtags company-dabbrev-code company-yasnippet)))
+            (use-package rvm
+                :ensure t
+                :defer t
+                :config
+                (rvm-use-default))
+
+            (use-package company-inf-ruby
+                :ensure t)
+
+            (use-package inf-ruby
+                :ensure t
+                :defer t
+                :init
+                (progn
+                    (setq inf-ruby-default-implementation "pry")
+                    (add-to-list (make-local-variable 'company-backends)
+                                 '(company-inf-ruby company-yasnippet))))
+
+            (use-package rubocop
+                :ensure t
+                :commands rubocop-mode
+                :diminish rubocop-mode)
+
+            (use-package robe
+                :ensure t
+                :commands robe-mode
+                :config
+                (progn
+                    (unbind-key "M-." robe-mode-map)
+                    ;; (defadvice inf-ruby-console-auto (before activate-rvm-for-robe activate)
+                    ;;     (rvm-activate-corresponding-ruby))
+                    ))
+
+            (use-package projectile-rails
+                :ensure t
+                :commands projectile-rails-global-mode)
+
+            (use-package rinari
+                :ensure t
+                :config
+                (setq ruby-insert-encoding-magic-comment nil))
+
+            (use-package bundler
+                :ensure t
+                :commands (bundle-check
+                           bundle-console
+                           bundle-install
+                           bundle-open
+                           bundle-update))
 
 
-        (add-hook 'ruby-mode-hook 'ruby-hook)))
+            (use-package rspec-mode
+                :ensure t
+                :init
+                (progn
+                    (setq rspec-use-rvm t)))
+
+            (use-package web-mode
+                :ensure t
+                :mode (("\\.html\\'" . web-mode)
+                       ("\\.html\\.erb\\'" . web-mode))
+                :init
+                (progn
+                    (setq web-mode-markup-indent-offset 2)
+                    (setq web-mode-code-indent-offset 2)
+                    (setq web-mode-css-indent-offset 2)
+
+                    (setq web-mode-enable-auto-pairing t)
+                    (setq web-mode-enable-auto-expanding t)
+                    (setq web-mode-enable-css-colorization t)))
+
+            (use-package projectile-direnv
+                :ensure t
+                :commands (projectile-direnv-export-variables)
+                :init
+                (add-hook 'projectile-mode-hook' 'projectile-direnv-export-variables))
+
+            (defun ruby-hook ()
+                (robe-mode)
+                (rubocop-mode)
+                (auto-revert-mode)
+                (flycheck-mode)
+                (rvm-activate-corresponding-ruby)
+                (inf-ruby-minor-mode)
+                (projectile-rails-mode)
+                (helm-gtags-mode)
+                (ggtags-mode 1)
+                (global-rinari-mode)
+                (add-to-list (make-local-variable 'company-backends)
+                             '(company-robe company-gtags company-dabbrev-code company-yasnippet)))
+
+
+            (add-hook 'ruby-mode-hook 'ruby-hook)))
   #+END_SRC
