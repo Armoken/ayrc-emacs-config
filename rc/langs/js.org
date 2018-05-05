@@ -66,5 +66,8 @@ JS configuration for Emacs
             <<company-tern>>
             <<indium>>
             <<js-hook>>
-            (add-hook 'js-mode-hook 'js-hook)))
+            (add-hook 'js-mode-hook 'js-hook))
+        :config
+        (progn
+            (exec-path-from-shell-copy-env "PATH")))
   #+END_SRC
