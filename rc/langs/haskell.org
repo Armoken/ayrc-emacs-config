@@ -45,20 +45,13 @@ Haskell configuration for Emacs
 
         :init
         (progn
-
             (setq
              haskell-interactive-popup-errors nil
              haskell-process-suggest-remove-import-lines t
              haskell-process-auto-import-loaded-modules t
              haskell-stylish-on-save t)
 
-            (use-package ghc
-                :ensure t
-                :commands ghc-init
-                :init
-                (setq ghc-debug t))
-
-            (use-package company-ghc
+            (use-package company-ghci
                 :ensure t
                 :defer t)
 
@@ -67,12 +60,16 @@ Haskell configuration for Emacs
                 :after flycheck
                 :init (add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
 
+            (use-package intero
+                :defer t
+                :ensure t)
+
             (defun haskell-hook ()
-                (ghc-init)
                 (semantic-mode)
                 (flycheck-mode)
+                (intero-global-mode)
                 (add-to-list (make-local-variable 'company-backends)
-                             '(company-ghc company-dabbrev-code company-yasnippet)))
+                             '(company-intero company-ghci company-dabbrev-code company-yasnippet)))
 
             (add-hook 'haskell-mode-hook 'haskell-hook)))
   #+END_SRC
