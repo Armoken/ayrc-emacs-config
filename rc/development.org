@@ -389,13 +389,27 @@
   Using helm-gtags and ggtags
   #+BEGIN_SRC emacs-lisp
     (use-package helm-gtags
-      :ensure t
-      :commands (helm-gtags-mode)
-      :config
-      (progn
-        (setq helm-gtags-path-style 'relative)))
+        :ensure t
+        :commands (helm-gtags-select helm-gtags-find-tag)
+        :init
+        (progn
+            (setq helm-gtags-fuzzy-match t)
+            (setq helm-gtags-preselect t)
+            (setq helm-gtags-prefix-key "\C-cg")
+            (setq helm-gtags-path-style 'relative))
+        :config
+        (progn
+            (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+            (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
 
     (use-package ggtags
-      :ensure t
-      :commands (ggtags-mode))
+        :ensure t
+        :commands (ggtags-mode)
+        :config
+        (progn
+            (setq ggtags-update-on-save nil)
+            (setq ggtags-use-idutils t)
+            (setq ggtags-sort-by-nearness t)
+            (unbind-key "M-<" ggtags-mode-map)
+            (unbind-key "M->" ggtags-mode-map)))
   #+END_SRC

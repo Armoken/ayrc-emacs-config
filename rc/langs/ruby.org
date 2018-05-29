@@ -152,7 +152,7 @@ Installation path: rvm -> ruby -> gem install all packages above
                 (inf-ruby-minor-mode)
                 (projectile-rails-mode)
                 (helm-gtags-mode)
-                (ggtags-mode 1)
+                ;; (ggtags-mode 1)
                 (global-rinari-mode)
                 (add-to-list (make-local-variable 'company-backends)
                              '(company-robe company-gtags company-dabbrev-code company-yasnippet)))
