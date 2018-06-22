@@ -58,7 +58,7 @@ Installation path: rvm -> ruby -> gem install all packages above
 
 
         :bind  (:map ruby-mode-map
-                     ("C-C C-e" . ruby-send-region))
+                     ("C-c C-e" . ruby-send-region))
 
         :init
         (progn
@@ -140,8 +140,7 @@ Installation path: rvm -> ruby -> gem install all packages above
             (use-package projectile-direnv
                 :ensure t
                 :commands (projectile-direnv-export-variables)
-                :init
-                (add-hook 'projectile-mode-hook' 'projectile-direnv-export-variables))
+                )
 
             (defun ruby-hook ()
                 (robe-mode)

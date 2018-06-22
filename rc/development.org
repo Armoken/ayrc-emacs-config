@@ -217,9 +217,6 @@
               (when (eq 'magit-status-mode current-mode)
                 (jump-to-register :magit-fullscreen))))
 
-          ;; major mode for editing `git rebase -i` files
-          (use-package rebase-mode)
-
           ;; magit settings
           (setq
            magit-default-tracking-name-function 'magit-default-tracking-name-branch-only

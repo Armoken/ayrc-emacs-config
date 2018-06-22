@@ -62,12 +62,22 @@ Haskell configuration for Emacs
 
             (use-package intero
                 :defer t
-                :ensure t)
+                :ensure t
+                :init
+                (progn
+                    (setq intero-extra-ghci-options '("-fno-defer-type-errors"))))
+
+            (use-package hindent
+                :ensure t
+                :commands (hindent-mode)
+                :bind (:map hindent-mode-map
+                            ("C-c R" . hindent-reformat-buffer)))
 
             (defun haskell-hook ()
                 (semantic-mode)
                 (flycheck-mode)
                 (intero-global-mode)
+                (hindent-mode)
                 (add-to-list (make-local-variable 'company-backends)
                              '(company-intero company-ghci company-dabbrev-code company-yasnippet)))
 
