@@ -138,6 +138,7 @@
                 (setq c-basic-offset 4)
                 (hs-minor-mode)
                 (local-set-key (kbd "C-c C-r") 'clang-format-region)
+                (helm-gtags-mode)
 
                 ;; Setup mode if need it
                 (defun enable-cc-mode-if-you-need-it (variables mode-name hook)
