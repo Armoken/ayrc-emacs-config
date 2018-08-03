@@ -85,11 +85,11 @@
   #+END_SRC
 
 * C/C++
-  Select "irony", "rtags" for some editor part.
+  Select "irony", "rtags", "cquery" for some editor part.
 
   #+BEGIN_SRC emacs-lisp
-    (setq cc-eldoc-plugin                         "irony")
-    (setq cc-syntat-check-plugin                  "irony")
-    (setq cc-autocompletion-plugin                "irony")
+    (setq cc-eldoc-plugin                         "cquery")
+    (setq cc-syntat-check-plugin                  "cquery")
+    (setq cc-autocompletion-plugin                "cquery")
   #+END_SRC
 

@@ -1,178 +1,233 @@
-* Line numbering
-** Left panel
+#+TITLE: Text
+#+OPTIONS: toc:nil num:nil ^:nil
+
+Common settings for almost all text modes
+
+* Packages
+  :PROPERTIES:
+  :CUSTOM_ID: text-packages
+  :END:
+
+  #+NAME: text-packages
+  #+CAPTION: Packages for text editing
+  - [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Autorevert.html][autorevert-mode]] :: Revert buffer on external changes
+  - [[https://www.emacswiki.org/emacs/AbbrevMode][abbrev]] :: Mode for expanding abbreviations
+  - [[https://github.com/emacsmirror/nlinum][nlinum]] :: Show line numbers in the margin
+  - [[https://elpa.gnu.org/packages/undo-tree.html][undo-tree]] :: Undo tree
+  - [[https://github.com/abo-abo/avy][avy]] :: Jump to things in Emacs tree-style
+  - [[https://elpa.gnu.org/packages/adaptive-wrap.html][adaptive-wrap]] :: mode which sets the wrap-prefix property on the fly
+                       so that single-long-line paragraphs get word-wrapped
+                       in a way similar to what you'd get with M-q using
+                       adaptive-fill-mode, but without actually changing the
+                       buffer's text
+  - [[https://github.com/syohex/emacs-anzu][anzu]] :: minor mode which displays current match and total matches
+              information in the mode-line in various search modes
+  - [[https://github.com/lewang/ws-butler][ws-buttler]] :: Unobtrusively trim extraneous white-space *ONLY* in
+                    lines edited
+  - [[https://www.emacswiki.org/emacs/ShowParenMode][paren]] :: Provide mode which allows one to see matching pairs of
+               parentheses and other characters. When point is on the
+               opening character of one of the paired characters, the other
+               is highlighted
+  - [[https://github.com/hbin/smart-shift][smart-shift]] :: Shift region using arrows
+  - [[https://github.com/Wilfred/ag.el][ag]] :: Frontend to The Silver Searcher
+  - [[https://github.com/syohex/emacs-helm-ag][helm-ag]] :: The silver searcher with helm interface
+* Configuration
+** Auto revert mode
+ #+BEGIN_SRC emacs-lisp
+   (use-package autorevert
+       :diminish auto-revert-mode)
+ #+END_SRC
+** Abbrev mode
    #+BEGIN_SRC emacs-lisp
-     (use-package nlinum
+     (use-package abbrev
+         :diminish abbrev-mode)
+   #+END_SRC
+** Line numbering
+*** Left panel
+    #+BEGIN_SRC emacs-lisp
+      (use-package nlinum
+        :ensure t
+        :commands (nlinum-mode)
+        :init (progn
+                (add-hook 'text-mode-hook '(lambda () (nlinum-mode t)))
+                (add-hook 'prog-mode-hook '(lambda () (nlinum-mode t))))
+        :config (progn
+                  (setq nlinum-format "%4d  ")
+                  (setq nlinum-highlight-current-line t)))
+    #+END_SRC
+*** Modeline
+    #+BEGIN_SRC emacs-lisp
+      (line-number-mode t)
+      (column-number-mode t)
+    #+END_SRC
+** Undo tree
+   #+BEGIN_SRC emacs-lisp
+     (use-package undo-tree
+         :ensure t
+         :bind (("C-x u" . undo-tree-visualize))
+         :diminish undo-tree-mode
+         :config
+         (progn
+             (global-undo-tree-mode)))
+   #+END_SRC
+** Jump to things in Emacs tree-style
+   #+BEGIN_SRC emacs-lisp
+     (use-package avy
+         :ensure t
+         :bind (("C-;"   . avy-goto-char-2)
+                ("C-'"   . avy-goto-line)
+                ("M-g c" . avy-goto-char)
+                ("M-g e" . avy-goto-word-0)
+                ("M-g g" . avy-goto-line)
+                ("M-g w" . avy-goto-word-1)
+                ("M-g (" . avy-goto-open-paren)
+                ("M-g )" . avy-goto-close-paren)
+                ("M-g P" . avy-pop-mark))
+         :config
+         ;; case sensitive makes selection easier
+         (setq avy-case-fold-search nil)
+
+         (avy-setup-default))
+   #+END_SRC
+** Current line hightlight
+   #+BEGIN_SRC emacs-lisp
+     (global-hl-line-mode 1)
+   #+END_SRC
+** Common clipboard with X Server
+   #+BEGIN_SRC emacs-lisp
+     (setq select-enable-clipboard t)
+   #+END_SRC
+** Region shifting
+   #+BEGIN_SRC emacs-lisp
+     (use-package smart-shift
        :ensure t
-       :commands (nlinum-mode)
-       :init (progn
-               (add-hook 'text-mode-hook '(lambda () (nlinum-mode t)))
-               (add-hook 'prog-mode-hook '(lambda () (nlinum-mode t))))
-       :config (progn
-                 (setq nlinum-format "%4d  ")
-                 (setq nlinum-highlight-current-line t)))
+       :diminish smart-shift-mode
+       :bind
+       (:map smart-shift-mode-map
+             ("<C-up>" . smart-shift-up)
+             ("<C-down>" . smart-shift-down)
+             ("<C-left>" . smart-shift-left)
+             ("<C-right>" . smart-shift-right)))
    #+END_SRC
-
-** Modeline
-   #+BEGIN_SRC emacs-lisp
-     (line-number-mode t)
-     (column-number-mode t)
-   #+END_SRC
-
-* Undo tree
+** Visual line mode
   #+BEGIN_SRC emacs-lisp
-    (use-package undo-tree
-        :ensure t
-        :bind (("C-x u" . undo-tree-visualize))
-        :diminish undo-tree-mode
-        :config
-        (progn
-            (setq undo-tree-visualizer-timestamps nil
-                  undo-tree-visualizer-diff       nil)
-
-            (defadvice undo-tree-visualize
-                    (around undo-tree-split-side-by-side activate)
-                "Split undo-tree side-by-side."
-                (let ((split-height-threshold nil)
-                      (split-width-threshold 0))
-                    ad-do-it))
-
-            (global-undo-tree-mode)))
-
-  #+END_SRC
-
-* Jump to things in Emacs tree-style
-  #+BEGIN_SRC emacs-lisp
-    (use-package avy
-        :ensure t
-        :bind (("C-;"   . avy-goto-char-2)      ;; I use this most frequently
-               ("C-'"   . avy-goto-line)        ;; Consistent with ivy-avy
-               ("M-g c" . avy-goto-char)
-               ("M-g e" . avy-goto-word-0)      ;; lots of candidates
-               ("M-g g" . avy-goto-line)        ;; digits behave like goto-line
-               ("M-g w" . avy-goto-word-1)      ;; first character of the word
-               ("M-g (" . avy-goto-open-paren)
-               ("M-g )" . avy-goto-close-paren)
-               ("M-g P" . avy-pop-mark))
-        :config
-        ;; case sensitive makes selection easier
-        (setq avy-case-fold-search nil)
-
-        (avy-setup-default))
-  #+END_SRC
-
-* Current line hightlight
-  #+BEGIN_SRC emacs-lisp
-    (global-hl-line-mode 1)
-  #+END_SRC
-
-* Common clipboard with X Server
-  #+BEGIN_SRC emacs-lisp
-    (setq select-enable-clipboard t)
-  #+END_SRC
-
-* Automatic line wrapping
-  This package provides the `adaptive-wrap-prefix-mode' minor mode which sets
-  the wrap-prefix property on the fly so that single-long-line paragraphs get
-  word-wrapped in a way similar to what you'd get with M-q using
-  adaptive-fill-mode, but without actually changing the buffer's text.
-
-  #+BEGIN_SRC emacs-lisp
-    (use-package adaptive-wrap
-      :ensure t
-      :commands (adaptive-wrap-prefix-mode)
-      :init
-      (progn
-        (add-hook 'visual-line-mode-hook #'adaptive-wrap-prefix-mode))
-      :config
-      (progn
-        (setq-default adaptive-wrap-extra-indent 2)))
-
     (setq word-wrap t)
     (diminish 'visual-line-mode)
     (add-hook 'text-mode-hook #'visual-line-mode)
     (add-hook 'prog-mode-hook #'visual-line-mode)
-
   #+END_SRC
+** Automatic line wrapping
+   This package provides the `adaptive-wrap-prefix-mode' minor mode which sets
+   the wrap-prefix property on the fly so that single-long-line paragraphs get
+   word-wrapped in a way similar to what you'd get with M-q using
+   adaptive-fill-mode, but without actually changing the buffer's text.
 
-* Delete Selection mode
-  From Emacs manual: If you enable Delete Selection mode, a minor mode,
-  then inserting text while the mark is active causes the selected text
-  to be deleted first. This also deactivates the mark. Many graphical
-  applications follow this convention, but Emacs does not.
+   #+BEGIN_SRC emacs-lisp
+     (use-package adaptive-wrap
+         :ensure t
+         :commands (adaptive-wrap-prefix-mode)
+         :init
+         (progn
+             (add-hook 'visual-line-mode-hook #'adaptive-wrap-prefix-mode))
+         :config
+         (progn
+             (setq-default adaptive-wrap-extra-indent 2)))
+   #+END_SRC
+** Delete Selection mode
+   If you enable Delete Selection mode, a minor mode,
+   then inserting text while the mark is active causes the selected text
+   to be deleted first. This also deactivates the mark. Many graphical
+   applications follow this convention, but Emacs does not.
 
-  #+BEGIN_SRC emacs-lisp
-    (delete-selection-mode t)
-  #+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (delete-selection-mode t)
+   #+END_SRC
+** Display in the modeline search information
+   #+BEGIN_SRC emacs-lisp
+     (use-package anzu
+       :ensure t
+       :diminish anzu-mode
+       :init (progn
+               (global-anzu-mode)))
+   #+END_SRC
+** Functions for making text pretty
+   #+BEGIN_SRC emacs-lisp
+     (defun untabify-buffer ()
+       "Remove tabs from buffer."
+       (interactive)
+       (untabify (point-min) (point-max)))
 
-* Display in the modeline search information
-  #+BEGIN_SRC emacs-lisp
-    (use-package anzu
-      :ensure t
-      :diminish anzu-mode
-      :init (progn
-              (global-anzu-mode)))
-  #+END_SRC
+     (defun indent-buffer ()
+       "Indent region."
+       (interactive)
+       (indent-region (point-min) (point-max)))
 
-* Functions for making text pretty
-  #+BEGIN_SRC emacs-lisp
-    (defun untabify-buffer ()
-      "Remove tabs from buffer."
-      (interactive)
-      (untabify (point-min) (point-max)))
+     (defun cleanup-buffer-notabs ()
+       "Perform a bunch of operations on the whitespace content of a buffer.
+     Remove tabs."
+       (interactive)
+       (indent-buffer)
+       (untabify-buffer)
+       (delete-trailing-whitespace)
+       nil)
 
-    (defun indent-buffer ()
-      "Indent region."
-      (interactive)
-      (indent-region (point-min) (point-max)))
+     (defun cleanup-buffer-tabs ()
+       "Perform a bunch of operations on the whitespace content of a buffer.
+     Dont remove tabs."
+       (interactive)
+       (indent-buffer)
+       (delete-trailing-whitespace)
+       nil)
+   #+END_SRC
+** Fixing up whitespaces only for touched lines
+   #+BEGIN_SRC emacs-lisp
+     (use-package ws-butler
+       :diminish ws-butler-mode
+       :ensure t
+       :commands (ws-butler-mode)
+       :init
+       (progn
+         (add-hook 'text-mode-hook 'ws-butler-mode)
+         (add-hook 'prog-mode-hook 'ws-butler-mode)))
+   #+END_SRC
+** Highlight expressions between {},[],()
+   #+BEGIN_SRC emacs-lisp
+     (use-package paren
+       :config
+       (progn
+         (setq show-paren-delay 0)
+         (setq show-paren-style 'expression)
 
-    (defun cleanup-buffer-notabs ()
-      "Perform a bunch of operations on the whitespace content of a buffer.
-    Remove tabs."
-      (interactive)
-      (indent-buffer)
-      (untabify-buffer)
-      (delete-trailing-whitespace)
-      nil)
-
-    (defun cleanup-buffer-tabs ()
-      "Perform a bunch of operations on the whitespace content of a buffer.
-    Dont remove tabs."
-      (interactive)
-      (indent-buffer)
-      (delete-trailing-whitespace)
-      nil)
-  #+END_SRC
-
-* Fixing up whitespaces only for touched lines
-  #+BEGIN_SRC emacs-lisp
-    (use-package ws-butler
-      :diminish ws-butler-mode
-      :ensure t
-      :commands (ws-butler-mode)
-      :init
-      (progn
-        (add-hook 'text-mode-hook 'ws-butler-mode)
-        (add-hook 'prog-mode-hook 'ws-butler-mode)))
-  #+END_SRC
-
-* Highlight expressions between {},[],()
-  #+BEGIN_SRC emacs-lisp
-    (use-package paren
-      :config
-      (progn
-        (setq show-paren-delay 0)
-        (setq show-paren-style 'expression)
-        (show-paren-mode)))
-  #+END_SRC
-
-* Ag
-  #+BEGIN_SRC emacs-lisp
-    (use-package ag
-      :ensure t
-      :commands (ag
-                 ag-files
-                 ag-regexp
-                 ag-project
-                 ag-project-files
-                 ag-project-regexp))
-  #+END_SRC
+         (show-paren-mode)))
+   #+END_SRC
+** Automatically pairs braces and quotes
+   #+BEGIN_SRC emacs-lisp
+     (electric-pair-mode)
+   #+END_SRC
+** Ag
+   #+BEGIN_SRC emacs-lisp :noweb tangle
+     (use-package ag
+         :ensure t
+         :commands (ag
+                    ag-files
+                    ag-regexp
+                    ag-project
+                    ag-project-files
+                    ag-project-regexp)
+         :init
+         (progn
+             <<helm-ag-use-package>>))
+   #+END_SRC
+*** Helm
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-ag-use-package
+      (use-package helm-ag
+          :ensure t
+          :bind (("C-c h s" . helm-ag))
+          :commands (helm-ag
+                     helm-projectile-ag))
+    #+END_SRC
+** Set newline at the end of file
+ #+BEGIN_SRC emacs-lisp
+   (setq require-final-newline t)
+   (setq next-line-add-newlines t)
+ #+END_SRC

@@ -11,3 +11,22 @@
     (setq auto-save-file-name-transforms
           `((".*" ,temporary-file-directory t)))
   #+END_SRC
+* Find path to executable
+  #+BEGIN_SRC emacs-lisp
+    (defun executable-find (command)
+        "Search for COMMAND in `exec-path' and return the absolute file name.
+    Return nil if COMMAND is not found anywhere in `exec-path'."
+        ;; Use 1 rather than file-executable-p to better match the behavior of
+        ;; call-process.
+        (locate-file command exec-path exec-suffixes 1))
+  #+END_SRC
+* Set multiple local bindings
+  #+BEGIN_SRC emacs-lisp
+    (defun local-set-keys (key-commands)
+        "Set multiple local bindings with KEY-COMMANDS list."
+        (let ((local-map (current-local-map)))
+            (dolist (kc key-commands)
+                (define-key local-map
+                    (kbd (car kc))
+                    (cdr kc)))))
+  #+END_SRC

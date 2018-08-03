@@ -1,191 +1,181 @@
-* Cleaning screen
-** Remove some GUI elelements
+#+TITLE: UI
+#+OPTIONS: toc:nil num:nil ^:nil
+
+UI settings
+
+* Packages
+  :PROPERTIES:
+  :CUSTOM_ID: ui-packages
+  :END:
+
+  #+NAME: ui-packages
+  #+CAPTION: Packages for ui settings
+  - [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html][dired]] :: Buffer containing a listing of a directory
+  - [[https://github.com/domtronn/all-the-icons.el][all-the-icons]] :: A utility package to collect various Icon Fonts and propertize them
+  - [[https://github.com/jaypei/emacs-neotree][neotree]] :: A emacs tree plugin like NerdTree for Vim
+  - [[https://github.com/emacs-helm/helm][helm]] :: Incremental completion and selection narrowing framework
+* Configuration
+** Cleaning screen
+*** Remove some GUI elelements
+    #+BEGIN_SRC emacs-lisp
+      (defun remove-gui-elements (&optional frame)
+        (menu-bar-mode     -1)
+        (tooltip-mode      -1)
+        (tool-bar-mode     -1)
+        (scroll-bar-mode   -1))
+
+      (remove-gui-elements)
+      (add-to-list 'after-make-frame-functions #'remove-gui-elements)
+    #+END_SRC
+*** Disable welcom screen
+    #+BEGIN_SRC emacs-lisp
+      (setq inhibit-splash-screen   t)
+      (setq inhibit-startup-message t)
+    #+END_SRC
+*** Disable dialog box
    #+BEGIN_SRC emacs-lisp
-     (defun remove-gui-elements (&optional frame)
-       (menu-bar-mode     -1)
-       (tooltip-mode      -1)
-       (tool-bar-mode     -1)
-       (scroll-bar-mode   -1))
-
-     (remove-gui-elements)
-     (add-to-list 'after-make-frame-functions #'remove-gui-elements)
+     (setq use-dialog-box nil)
    #+END_SRC
+*** Disable frienge
+    The fringe is a thin strip down the left and/or right edge of a window.
+    #+BEGIN_SRC emacs-lisp
+      (defun remove-fringe (&optional frame)
+        (fringe-mode '(0 . 0)))
 
-** Disable welcom screen
+      (remove-fringe)
+      (add-to-list 'after-make-frame-functions 'remove-fringe)
+    #+END_SRC
+*** Disable indicators
+    #+BEGIN_SRC emacs-lisp
+      (setq-default indicate-empty-lines t)
+      (setq-default indicate-buffer-boundaries 'left)
+      (size-indication-mode nil) ;; Don't show current buffer size
+    #+END_SRC
+*** Disable cursor blink
+    #+BEGIN_SRC emacs-lisp
+      (blink-cursor-mode 0)
+    #+END_SRC
+*** Disable ring-bell-function
+    That called when whenever function ‘ding’ is called.
+
+    #+BEGIN_SRC emacs-lisp
+      (setq ring-bell-function 'ignore)
+    #+END_SRC
+** Use 'y' and `n' instead of 'yes' and 'not'
    #+BEGIN_SRC emacs-lisp
-     (setq inhibit-splash-screen   t)
-     (setq inhibit-startup-message t)
+     (fset 'yes-or-no-p 'y-or-n-p)
    #+END_SRC
-
-** Disable frienge
-   The fringe is a thin strip down the left and/or right edge of a window.
+** Fullscreen at GUI startup
    #+BEGIN_SRC emacs-lisp
-     (defun remove-fringe (&optional frame)
-       (fringe-mode '(0 . 0)))
-
-     (remove-fringe)
-     (add-to-list 'after-make-frame-functions 'remove-fringe)
+     (add-to-list 'default-frame-alist '(fullscreen . maximized))
    #+END_SRC
-
-** Disable indicators
+** Name of current buffer in window title
    #+BEGIN_SRC emacs-lisp
-     (setq-default indicate-empty-lines t)
-     (setq-default indicate-buffer-boundaries 'left)
-     (size-indication-mode nil) ;; Don't show current buffer size
+     (setq frame-title-format "GNU Emacs: %b")
    #+END_SRC
-
-** Disable cursor blink
+** Scroll settings
    #+BEGIN_SRC emacs-lisp
-     (blink-cursor-mode 0)
+     ;; (setq scroll-preserve-screen-position t
+     ;;       scroll-margin 0
+     ;;       scroll-conservatively 101)
    #+END_SRC
-
-** Disable ring-bell-function
-   That called when whenever function ‘ding’ is called.
-
+** Dired
    #+BEGIN_SRC emacs-lisp
-     (setq ring-bell-function 'ignore)
+     (use-package dired
+       :config
+       (progn
+         (setq dired-recursive-deletes 'top) ;; for deleting of empty dir
+         (setq dired-recursive-deletes 'always)
+         (setq dired-recursive-copies 'always)
+
+         ;; if there is a dired buffer displayed in the next window, use its
+         ;; current subdir, instead of the current subdir of this dired buffe
+         (setq dired-dwim-target t)))
    #+END_SRC
+** Icons
+   #+BEGIN_SRC emacs-lisp
+     (use-package all-the-icons
+       :ensure t)
+   #+END_SRC
+** NeoTree
+   #+BEGIN_SRC emacs-lisp
+     (use-package neotree
+       :ensure t
+       :bind ("<f1>" . neotree-toggle)
+       :config
+       (progn
+         (setq neo-window-width 40)
+         (setq neo-theme (if (display-graphic-p) 'icons 'arrow))))
+   #+END_SRC
+** Helm
+   #+BEGIN_SRC emacs-lisp
+     (use-package helm
+         :ensure t
+         :diminish helm-mode
+         :bind
+         (("M-x"       . helm-M-x)
+          ("C-x C-b"   . helm-mini)
+          ("C-x b"     . helm-mini)
+          ("C-c h /"   . helm-find)
+          ("C-c h h"   . helm-info)
+          ("C-c h o"   . helm-occur)
+          ("C-c h c"   . helm-semantic)
+          ("C-c h i"   . helm-semantic-or-imenu)
 
-* Use 'y' and `n' instead of 'yes' and 'not'
-  #+BEGIN_SRC emacs-lisp
-    (fset 'yes-or-no-p 'y-or-n-p)
-  #+END_SRC
+          ;; Pre-configured helm to build regexps.
+          ("C-c h r"   . helm-regexp)
 
-* Fullscreen at GUI startup
-  #+BEGIN_SRC emacs-lisp
-    (add-to-list 'default-frame-alist '(fullscreen . maximized))
-  #+END_SRC
+          ("C-c h l"   . helm-bookmarks)
+          ("C-c h a"   . helm-apropos)
+          ("C-c h x"   . helm-register)
+          ("C-c h m"   . helm-man-woman)
+          ("C-x C-f"   . helm-find-files)
+          ("M-y"       . helm-show-kill-ring)
+          ;; make TAB work in terminal
+          ("C-i"       . helm-execute-persistent-action)
 
-* Name of current buffer in window title
-  #+BEGIN_SRC emacs-lisp
-    (setq frame-title-format "GNU Emacs: %b")
-  #+END_SRC
+          :map helm-map
+          ;; rebind tab to run persistent action
+          ("<tab>"     . helm-execute-persistent-action)
 
-* Scroll settings
-  #+BEGIN_SRC emacs-lisp
-    (setq scroll-preserve-screen-position t
-          scroll-margin 0
-          scroll-conservatively 101)
-  #+END_SRC
+          ("C-z"       . helm-select-action))
+         :config
+         (progn
+             (setq helm-M-x-fuzzy-match                  t
+                   helm-mode-fuzzy-match                 t
+                   helm-imenu-fuzzy-match                t
+                   helm-locate-fuzzy-match               t
+                   helm-apropos-fuzzy-match              t
+                   helm-recentf-fuzzy-match              t
+                   helm-semantic-fuzzy-match             t
+                   helm-lisp-fuzzy-completion            t
+                   helm-buffers-fuzzy-matching           t
+                   helm-ff-search-library-in-sexp        t
+                   helm-ff-file-name-history-use-recentf t
+                   helm-completion-in-region-fuzzy-match t
 
-* Dired
-  Dired makes an Emacs buffer containing a listing of a directory,
-  and optionally some of its subdirectories as well.
+                   ;; Open helm buffer inside current window, not occupy whole
+                   ;; other window
+                   helm-split-window-in-side-p           t
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package dired
-      :config
-      (progn
-        (setq dired-recursive-deletes 'top) ;; for deleting of empty dir
-        (setq dired-recursive-deletes 'always)
-        (setq dired-recursive-copies 'always)
+                   ;; Move to end or beginning of source when reaching top or
+                   ;; bottom of source.
+                   helm-move-to-line-cycle-in-source     t
 
-        ;; if there is a dired buffer displayed in the next window, use its
-        ;; current subdir, instead of the current subdir of this dired buffe
-        (setq dired-dwim-target t)))
+                   ;; Scroll 8 lines other window using M-<next>/M-<prior>
+                   helm-scroll-amount                    8
 
-  #+END_SRC
-* Icons
-  #+BEGIN_SRC emacs-lisp
-    (use-package  all-the-icons
-      :ensure t)
-  #+END_SRC
+                   helm-ff-file-name-history-use-recentf t)
 
-* NeoTree
-  #+BEGIN_SRC emacs-lisp
-    (use-package neotree
-      :ensure t
-      :bind ("<f1>" . neotree-toggle)
-      :config
-      (progn
-        (setq neo-window-width 40)
-        (setq neo-theme (if (display-graphic-p) 'icons 'arrow))))
-  #+END_SRC
+             ;; Autoresize helm minibufer
+             (helm-autoresize-mode t)
 
-* Helm
-  #+BEGIN_SRC emacs-lisp
-    (use-package helm
-      :ensure t
-      :diminish helm-mode
-      :bind
-      (("M-x"       . helm-M-x)
-       ("C-x C-b"   . helm-mini)
-       ("C-x b"     . helm-mini)
-       ("C-c h /"   . helm-find)
-       ("C-c h h"   . helm-info)
-       ("C-c h o"   . helm-occur)
-       ("C-c h c"   . helm-semantic)
-       ("C-c h i"   . helm-semantic-or-imenu)
-
-       ;; Pre-configured helm to build regexps.
-       ("C-c h r"   . helm-regexp)
-
-       ("C-c h l"   . helm-bookmarks)
-       ("C-c h a"   . helm-apropos)
-       ("C-c h x"   . helm-register)
-       ("C-c h m"   . helm-man-woman)
-       ("C-x C-f"   . helm-find-files)
-       ("M-y"       . helm-show-kill-ring))
-
-      :init
-      (progn
-        (use-package helm-flycheck
-          :ensure t
-          :bind (("C-c h f" . helm-flycheck)))
-
-        (use-package helm-ag
-          :ensure t
-          :bind (("C-c h s" . helm-ag))
-          :commands (helm-ag
-                     helm-projectile-ag)))
-
-      :config
-      (progn
-        (setq helm-M-x-fuzzy-match                  t
-              helm-mode-fuzzy-match                 t
-              helm-imenu-fuzzy-match                t
-              helm-locate-fuzzy-match               t
-              helm-apropos-fuzzy-match              t
-              helm-recentf-fuzzy-match              t
-              helm-semantic-fuzzy-match             t
-              helm-lisp-fuzzy-completion            t
-              helm-buffers-fuzzy-matching           t
-              helm-ff-search-library-in-sexp        t
-              helm-ff-file-name-history-use-recentf t
-              helm-completion-in-region-fuzzy-match t
-
-              ;; Open helm buffer inside current window, not occupy whole
-              ;; other window
-              helm-split-window-in-side-p           t
-
-              ;; Move to end or beginning of source when reaching top or
-              ;; bottom of source.
-              helm-move-to-line-cycle-in-source     t
-
-              ;; Scroll 8 lines other window using M-<next>/M-<prior>
-              helm-scroll-amount                    8
-
-              helm-ff-file-name-history-use-recentf t)
-
-        ;; rebind tab to run persistent action
-        (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-
-        ;; make TAB work in terminal
-        (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
-
-        ;; list actions using C-z
-        (define-key helm-map (kbd "C-z") 'helm-select-action)
-
-        ;; Autoresize helm minibufer
-        (helm-autoresize-mode t)
-
-        (helm-mode t)))
-  #+END_SRC
-
-* Change size of buffers
-  #+BEGIN_SRC emacs-lisp
-    (global-set-key (kbd "<C-M-up>") 'shrink-window)
-    (global-set-key (kbd "<C-M-down>") 'enlarge-window)
-    (global-set-key (kbd "<C-M-left>") 'shrink-window-horizontally)
-    (global-set-key (kbd "<C-M-right>") 'enlarge-window-horizontally)
-  #+END_SRC
+             (helm-mode t)))
+   #+END_SRC
+** Change size of buffers
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "<C-M-up>") 'shrink-window)
+     (global-set-key (kbd "<C-M-down>") 'enlarge-window)
+     (global-set-key (kbd "<C-M-left>") 'shrink-window-horizontally)
+     (global-set-key (kbd "<C-M-right>") 'enlarge-window-horizontally)
+   #+END_SRC

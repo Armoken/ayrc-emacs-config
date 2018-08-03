@@ -4,19 +4,16 @@
 Orgmode configuration for Emacs
 
 * Packages
-:PROPERTIES:
-:CUSTOM_ID: orgmode-packages
-:END:
+  :PROPERTIES:
+  :CUSTOM_ID: orgmode-packages
+  :END:
 
-#+NAME: orgmode-packages
-#+CAPTION: Packages for orgmode
-| Package      | Description                                               |
-|--------------+-----------------------------------------------------------|
-| [[https://github.com/sabof/org-bullets][org-bullets]]  | Show org-mode bullets as UTF-8 characters.                |
-| [[https://github.com/rlister/org-present][org-present]]  | Extremely minimalist presentation tool for Emacs org-mode |
-| [[https://github.com/rexim/org-cliplink][org-cliplink]] | Insert org-mode links from clipboard                      |
-
-* Org
+  #+NAME: orgmode-packages
+  #+CAPTION: Packages for orgmode
+  - [[https://github.com/sabof/org-bullets][org-bullets]] :: Show org-mode bullets as UTF-8 characters.
+  - [[https://github.com/rlister/org-present][org-present]] :: Extremely minimalist presentation tool for Emacs org-mode
+  - [[https://github.com/rexim/org-cliplink][org-cliplink]] :: Insert org-mode links from clipboard
+* Configuration
     #+BEGIN_SRC emacs-lisp
       (use-package org
           :init
@@ -24,7 +21,8 @@ Orgmode configuration for Emacs
               (use-package org-bullets
                   :ensure t
                   :commands org-bullets-mode
-                  :init  (add-hook 'org-mode-hook (lambda ()   (org-bullets-mode 1))))
+                  :init  (add-hook 'org-mode-hook
+                                   (lambda ()   (org-bullets-mode 1))))
 
               (use-package org-present
                   :ensure t
@@ -35,5 +33,12 @@ Orgmode configuration for Emacs
                   :commands org-cliplink
                   :bind ("C-c M-l" . org-cliplink))
 
-              (setq org-src-tab-acts-natively t)))
+              (setq org-log-done 'time)
+              (setq org-src-tab-acts-natively t)
+
+              (setq org-todo-keywords
+                    '((sequence "TODO" "CURRENT" "|" "DONE" "CANCELED")))
+              (setq org-todo-keyword-faces
+                    '(("CURRENT" . "yellow")
+                      ("CANCELED" . (:foreground "RoyalBlue3" :weight bold))))))
     #+END_SRC

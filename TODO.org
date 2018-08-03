@@ -1,4 +1,4 @@
-* Use package tasks [17/36]
+* Use package tasks [18/36]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
@@ -27,7 +27,8 @@
 **** DONE Rubocop
 **** DONE Inf-ruby
 ** Utils
-*** TODO GDB
+*** DONE GDB
+    CLOSED: [2018-08-03 Fri 23:17]
 *** DONE Magit
 *** TODO Gnus
 ** Refactoring
@@ -45,3 +46,8 @@
 *** DONE User config file
 *** TODO Set opening links in default browser
 *** TODO Update prerequisites header in config's template
+* C++ tasks [0/4]
+** TODO rtags
+** TODO malinka
+** TODO cmake-ide
+** TODO cquery

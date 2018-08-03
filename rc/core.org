@@ -1,0 +1,78 @@
+#+TITLE: Core
+#+OPTIONS: toc:nil num:nil ^:nil
+
+Core settings for editor
+
+* Packages
+  :PROPERTIES:
+  :CUSTOM_ID: core-packages
+  :END:
+
+  #+NAME: core-packages
+  #+CAPTION: Packages for core settings
+  - [[https://www.emacswiki.org/emacs/Desktop][desktop]] :: save partial status of Emacs when killed
+  - [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] ::  Make Emacs use the $PATH set up by the user's shell
+* Configuration
+** Session saving
+ #+BEGIN_SRC emacs-lisp
+   (use-package desktop
+       :init
+       (progn
+           (setq desktop-restore-frames nil)
+
+           ;; use only one desktop
+           (setq desktop-path (list user-emacs-directory))
+           (setq desktop-dirname user-emacs-directory)
+           (setq desktop-base-file-name "emacs-desktop")
+
+           (defun remove-stale-desktop-lock-file (dir)
+               (let ((pid (desktop-owner dir)))
+                   (when pid
+                       (let ((infile nil)
+                             (destination nil)
+                             (display nil))
+                           (unless (= (call-process "ps" infile destination display "-p"
+                                                    (number-to-string pid)) 0)
+                               (let ((lock-fn (desktop-full-lock-name dir)))
+                                   (delete-file lock-fn)))))))
+
+           ;; remove desktop after it's been read
+           (add-hook 'desktop-after-read-hook
+                     #'(lambda ()
+                           ;; desktop-remove clears desktop-dirname
+                           (setq desktop-dirname-tmp desktop-dirname)
+                           (desktop-remove)
+                           (setq desktop-dirname desktop-dirname-tmp)))
+
+           (defun path-to-saved-session ()
+               (file-exists-p
+                (concat desktop-dirname "/" desktop-base-file-name)))
+
+           ;; use session-restore to restore the desktop manually
+           (defun session-restore ()
+               "Restore a saved emacs session."
+               (interactive)
+               (remove-stale-desktop-lock-file desktop-dirname)
+               (if (path-to-saved-session)
+                       (desktop-read)
+                   (message "No desktop found.")))
+
+           ;; use session-save to save the desktop manually
+           (defun session-save ()
+               "Save an emacs session."
+               (interactive)
+               (if (path-to-saved-session)
+                       (if (y-or-n-p "Overwrite existing desktop? ")
+                               (desktop-save-in-desktop-dir)
+                           (message "Session not saved."))
+                   (desktop-save-in-desktop-dir)))))
+ #+END_SRC
+** Use user $PATH from shell
+   #+BEGIN_SRC emacs-lisp
+     (use-package exec-path-from-shell
+         :ensure t
+         :config
+         (progn
+             (when (memq window-system '(mac ns x))
+                 (exec-path-from-shell-initialize))))
+   #+END_SRC
