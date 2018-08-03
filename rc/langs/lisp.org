@@ -92,7 +92,6 @@ Lisp family languages configuration.
      (defun lisp-hook ()
          (flycheck-mode)
          (hs-minor-mode)
-         (semantic-mode)
 
          (aggressive-indent-mode)
          (eldoc-mode)
