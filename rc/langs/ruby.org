@@ -129,9 +129,9 @@ Installation path: rvm -> ruby -> gem install all packages above
                        ("\\.html\\.erb\\'" . web-mode))
                 :init
                 (progn
-                    (setq web-mode-markup-indent-offset 2)
-                    (setq web-mode-code-indent-offset 2)
-                    (setq web-mode-css-indent-offset 2)
+                    (setq web-mode-markup-indent-offset 4)
+                    (setq web-mode-code-indent-offset 4)
+                    (setq web-mode-css-indent-offset 4)
 
                     (setq web-mode-enable-auto-pairing t)
                     (setq web-mode-enable-auto-expanding t)
