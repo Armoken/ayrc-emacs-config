@@ -15,7 +15,7 @@ Python configuration for Emacs
    #+NAME: python-system-prerequisites
    #+CAPTION: System prerequisites for python packages
 
- - [[https://github.com/pyenv/pyenv][Pyenv]] :: [[https://github.com/pyenv/pyenv-installer][pyenv-installer]] and take a look at [[https://github.com/pyenv/pyenv/wiki/Common-build-problems][common build problems]]
+   - [[https://github.com/pyenv/pyenv][Pyenv]] :: [[https://github.com/pyenv/pyenv-installer][pyenv-installer]] and take a look at [[https://github.com/pyenv/pyenv/wiki/Common-build-problems][common build problems]]
 ** Language
    :PROPERTIES:
    :CUSTOM_ID: python-language-prerequisites
@@ -110,117 +110,121 @@ Python configuration for Emacs
   - [[https://github.com/paetzke/py-isort.el][py-isort.el]] :: Integrates isort into Emacs.
   - [[https://github.com/Wilfred/pyimport][pyimport]] :: Manage Python imports from Emac
   - [[https://github.com/naiquevin/sphinx-doc.el][sphinx-doc]] ::  Generate Sphinx friendly docstrings for Python functions
-* Python
-    Python mode settings for Emacs
+* Configuration
+** Python
+     Python mode settings for Emacs
 
-  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref elpy
-    (use-package elpy
-        :ensure t
-        :bind ("M-," . pop-tag-mark)
-        :diminish elpy-mode "[E]"
-        :commands (elpy-mode)
-        :config (progn
-                    (defun switch-to-jedi-flycheck-backend ()
-                        (interactive)
-                        (setq elpy-rpc-backend "jedi"))
-                    (defun switch-to-rope-flycheck-backend ()
-                        (interactive)
-                        (setq elpy-rpc-backend "rope"))
-                    (setq elpy-rpc-backend "jedi")))
-  #+END_SRC
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref elpy
+     (use-package elpy
+         :ensure t
+         :bind ("M-," . pop-tag-mark)
+         :diminish elpy-mode "[E]"
+         :commands (elpy-mode)
+         :config (progn
+                     (defun switch-to-jedi-flycheck-backend ()
+                         (interactive)
+                         (setq elpy-rpc-backend "jedi"))
+                     (defun switch-to-rope-flycheck-backend ()
+                         (interactive)
+                         (setq elpy-rpc-backend "rope"))
+                     (setq elpy-rpc-backend "jedi")))
+   #+END_SRC
 
-  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref py-yapf
-    (use-package py-yapf
-        :ensure t
-        :commands (py-yapf-buffer py-yapf-enable-on-save))
-  #+END_SRC
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref py-yapf
+     (use-package py-yapf
+         :ensure t
+         :commands (py-yapf-buffer py-yapf-enable-on-save))
+   #+END_SRC
 
-  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyenv-mode
-        (use-package pyenv-mode
-            :ensure t
-            :diminish "[V]"
-            :init
-            (progn
-                (use-package pyenv-mode-auto
-                    :ensure t
-                    :init
-                    (progn
-                        (add-hook 'switch-buffer-functions
-                                  (lambda (prev cur) (pyenv-mode-auto-hook)))
-                        (add-hook 'find-file-hook 'pyenv-mode-auto-hook)))
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyenv-mode
+         (use-package pyenv-mode
+             :ensure t
+             :diminish "[V]"
+             :init
+             (progn
+                 (use-package pyenv-mode-auto
+                     :ensure t
+                     :init
+                     (progn
+                         (add-hook 'switch-buffer-functions
+                                   (lambda (prev cur) (pyenv-mode-auto-hook)))
+                         (add-hook 'find-file-hook 'pyenv-mode-auto-hook)))
 
-                (setq pyenv-show-active-python-in-modeline t)))
-  #+END_SRC
+                 (setq pyenv-show-active-python-in-modeline t)))
+   #+END_SRC
 
-  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref sphinx-doc
-    (use-package sphinx-doc
-        :ensure t
-        :commands (sphinx-doc-mode))
-  #+END_SRC
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref sphinx-doc
+     (use-package sphinx-doc
+         :ensure t
+         :diminish sphinx-doc-mode "[spnxd]"
+         :commands (sphinx-doc-mode))
+   #+END_SRC
 
-  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyimport
-    (use-package pyimport
-        :ensure t
-        :commands (pyimport-insert-missing pyimport-insert-missing))
-  #+END_SRC
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyimport
+     (use-package pyimport
+         :ensure t
+         :commands (pyimport-insert-missing pyimport-insert-missing))
+   #+END_SRC
 
-  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref py-isort
-    (use-package py-isort
-        :ensure t
-        :commands (py-isort-before-save py-isort-buffer py-isort-region))
-  #+END_SRC
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref py-isort
+     (use-package py-isort
+         :ensure t
+         :commands (py-isort-before-save py-isort-buffer py-isort-region))
+   #+END_SRC
 
-  #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-hook
-    (defun python-hook ()
-        (elpy-mode)
-        (pyenv-mode)
-        (flycheck-mode)
-        (semantic-mode)
-        (hs-minor-mode)
-        (sphinx-doc-mode)
-        (pyenv-mode-auto-hook)
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-hook
+     (defun python-hook ()
+         (elpy-mode)
+         (pyenv-mode)
+         (flycheck-mode)
+         (semantic-mode)
+         (hs-minor-mode)
+         (sphinx-doc-mode)
+         (pyenv-mode-auto-hook)
 
-        (setq flycheck-checker 'python-pylint
-              flycheck-checker-error-threshold 400
+         (setq flycheck-checker 'python-pylint
+               flycheck-checker-error-threshold 400
 
-              py-python-command "python"
-              elpy-rpc-python-command "python"
-              python-shell-interpreter "ipython"
-              python-shell-interpreter-args "-i --simple-prompt")
+               py-python-command "python"
+               elpy-rpc-python-command "python"
+               python-shell-interpreter "ipython"
+               python-shell-interpreter-args "-i --simple-prompt")
 
-        (add-to-list
-         'python-shell-completion-native-disabled-interpreters "python")
+         (add-to-list
+          'python-shell-completion-native-disabled-interpreters "python")
 
-        (add-to-list (make-local-variable 'company-backends)
-                     '(elpy-company-backend company-yasnippet)))
-  #+END_SRC
+         (add-to-list (make-local-variable 'company-backends)
+                      '(elpy-company-backend company-yasnippet)))
+   #+END_SRC
 
-  #+BEGIN_SRC emacs-lisp :noweb tangle
-    (use-package python-mode
-        :ensure t
-        :bind (:map elpy-mode-map
-                    ("C-C TAB" . hs-toggle-hiding))
-        :init
-        (progn
-            <<elpy>>
-            <<py-yapf>>
-            <<pyenv-mode>>
-            <<py-isort>>
-            <<pyimport>>
-            <<sphinx-doc>>
+   #+BEGIN_SRC emacs-lisp :noweb tangle
+     (use-package python-mode
+         :ensure t
+         :mode (("wscript"   . python-mode)
+                ("\\.py\\'"   . python-mode))
+         :bind (:map elpy-mode-map
+                     ("C-C TAB" . hs-toggle-hiding))
+         :init
+         (progn
+             <<elpy>>
+             <<py-yapf>>
+             <<pyenv-mode>>
+             <<py-isort>>
+             <<pyimport>>
+             <<sphinx-doc>>
 
-            <<python-hook>>
-            (add-hook 'python-mode-hook 'python-hook)))
-  #+END_SRC
+             <<python-hook>>
+             (add-hook 'python-mode-hook 'python-hook)))
+   #+END_SRC
 
-* Pip requirments
-  Pip requirments for Emacs
-  #+BEGIN_SRC emacs-lisp
-    (use-package pip-requirements
-        :ensure t
-        :mode (("requirements.txt$" . pip-requirements-mode)
-               ("requirements.pip$" . pip-requirements-mode))
-        :init
-        (progn
-            (copy-hooks-to text-mode-hook 'pip-requirements-mode)))
-  #+END_SRC
+** Pip requirments
+   Pip requirments for Emacs
+   #+BEGIN_SRC emacs-lisp
+     (use-package pip-requirements
+         :ensure t
+         :mode (("requirements.txt$" . pip-requirements-mode)
+                ("requirements.pip$" . pip-requirements-mode))
+         :init
+         (progn
+             (copy-hooks-to text-mode-hook 'pip-requirements-mode)))
+   #+END_SRC
