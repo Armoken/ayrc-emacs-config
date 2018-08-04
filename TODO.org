@@ -1,12 +1,21 @@
-* Use package tasks [18/36]
+* Use package tasks [24/39]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
 ** Languages
-*** TODO C/C++
+*** DONE C/C++
+    CLOSED: [2018-08-04 Sat 08:45]
 **** DONE [#A] Basic support
-**** TODO Rtags
-**** TODO Documentation lookup
+**** DONE Rtags
+     CLOSED: [2018-08-04 Sat 08:44]
+**** DONE Cquery
+     CLOSED: [2018-08-04 Sat 08:45]
+**** DONE Documentation lookup
+     CLOSED: [2018-08-04 Sat 08:45]
+**** DONE cmake-ide
+     CLOSED: [2018-08-04 Sat 08:44]
+**** DONE cquery
+     CLOSED: [2018-08-04 Sat 08:44]
 *** TODO Python
 **** DONE Flycheck backends
 **** DONE Pyenv support
@@ -46,8 +55,3 @@
 *** DONE User config file
 *** TODO Set opening links in default browser
 *** TODO Update prerequisites header in config's template
-* C++ tasks [0/4]
-** TODO rtags
-** TODO malinka
-** TODO cmake-ide
-** TODO cquery
