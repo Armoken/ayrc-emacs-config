@@ -322,13 +322,13 @@ C/C++ configuration for Emacs
                            :extraClangArguments ("--driver-mode=cl")
                            ))
 
-                   (setq ccls-sem-highlight-method 'font-lock)
+                   ;; (setq ccls-sem-highlight-method 'font-lock)
 
                    ;; For rainbow semantic highlighting
-                   (ccls-use-default-rainbow-sem-highlight)
+                   ;;(ccls-use-default-rainbow-sem-highlight)
 
                    (setq lsp-ui-doc-include-signature t)
-                   (setq lsp-ui-sideline-show-symbol t)
+                   (setq lsp-ui-sideline-show-symbol nil)
 
                    (local-set-keys '(("M-."   . xref-find-definitions)
                                      ("M-,"   . xref-pop-marker-stack)
@@ -340,7 +340,8 @@ C/C++ configuration for Emacs
 **** Autocompletion
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref ccls-autocompletion
        (defun ccls-autocompletion-setup ()
-           (setq company-lsp-async            nil
+           (setq company-lsp-async            t
+                 company-transformers         nil
                  company-lsp-cache-candidates nil)
 
            ;; Returns company backends
@@ -388,13 +389,13 @@ C/C++ configuration for Emacs
                            :extraClangArguments ("--driver-mode=cl")
                            ))
 
-                   (setq cquery-sem-highlight-method 'font-lock)
+                   ;;(setq cquery-sem-highlight-method 'font-lock)
 
                    ;; For rainbow semantic highlighting
-                   (cquery-use-default-rainbow-sem-highlight)
+                   ;;(cquery-use-default-rainbow-sem-highlight)
 
                    (setq lsp-ui-doc-include-signature t)
-                   (setq lsp-ui-sideline-show-symbol t)
+                   (setq lsp-ui-sideline-show-symbol nil)
 
                    (local-set-keys '(("M-."   . xref-find-definitions)
                                      ("M-,"   . xref-pop-marker-stack)

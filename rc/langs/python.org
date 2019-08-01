@@ -16,6 +16,7 @@ Python configuration for Emacs
    #+CAPTION: System prerequisites for python packages
 
    - [[https://github.com/pyenv/pyenv][Pyenv]] :: [[https://github.com/pyenv/pyenv-installer][pyenv-installer]] and take a look at [[https://github.com/pyenv/pyenv/wiki/Common-build-problems][common build problems]]
+   - [[https://github.com/pypa/pipenv][Pipenv]] :: Python Development Workflow for Humans
 ** Language
    :PROPERTIES:
    :CUSTOM_ID: python-language-prerequisites
@@ -41,7 +42,7 @@ Python configuration for Emacs
                     (y-or-n-p (format "Save file %s? " (buffer-file-name))))
              (save-buffer))
 
-         (let ((default-directory (pythonic-default-directory))
+         (let ((default-directory (pythonic-aliased-path default-directory))
                (process-environment (copy-sequence process-environment)))
              (pythonic-set-process-environment)
              (let ((command
@@ -104,6 +105,7 @@ Python configuration for Emacs
   #+CAPTION: Packages for python
   - [[https://github.com/jorgenschaefer/elpy][elpy]] :: Elpy is the Emacs Python Development Environmen
   - [[https://github.com/paetzke/py-yapf.el][py-yapf]] :: Use yapf to beautify a Python buffer
+  - [[https://github.com/pwalsh/pipenv.el][pipenv.el]] :: A Pipenv porcelain inside Emacs
   - [[https://github.com/proofit404/pyenv-mode][pyenv-mode]] :: Integrate pyenv with python-mode
   - [[https://github.com/ssbb/pyenv-mode-auto][pyenv-mode-auto]] :: Automatically activates pyenv version
   - [[https://github.com/Wilfred/pip-requirements.el][pip-requirements]] :: Major mode for editing pip requirements files
@@ -153,6 +155,17 @@ Python configuration for Emacs
                  (setq pyenv-show-active-python-in-modeline t)))
    #+END_SRC
 
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pipenv-mode
+     (use-package pipenv
+         :ensure t
+         :commands (pipenv-mode)
+         :diminish "[pe]"
+         :init
+         (progn
+             (setq pipenv-projectile-after-switch-function
+                   #'pipenv-projectile-after-switch-extended)))
+   #+END_SRC
+
    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref sphinx-doc
      (use-package sphinx-doc
          :ensure t
@@ -174,8 +187,14 @@ Python configuration for Emacs
 
    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-hook
      (defun python-hook ()
+         (when (require 'flycheck nil t)
+             (remove-hook 'elpy-modules 'elpy-module-flymake)
+             (remove-hook 'elpy-mode-hook 'elpy-module-highlight-indentation)
+             (add-hook 'elpy-mode-hook 'flycheck-mode))
          (elpy-mode)
+
          (pyenv-mode)
+         (pipenv-mode)
          (flycheck-mode)
          (semantic-mode)
          (hs-minor-mode)
@@ -190,8 +209,8 @@ Python configuration for Emacs
                python-shell-interpreter "ipython"
                python-shell-interpreter-args "-i --simple-prompt")
 
-         (add-to-list
-          'python-shell-completion-native-disabled-interpreters "python")
+         ;; (add-to-list
+         ;;  'python-shell-completion-native-disabled-interpreters "python")
 
          (add-to-list (make-local-variable 'company-backends)
                       '(elpy-company-backend company-yasnippet)))
@@ -209,6 +228,7 @@ Python configuration for Emacs
              <<elpy>>
              <<py-yapf>>
              <<pyenv-mode>>
+             <<pipenv-mode>>
              <<py-isort>>
              <<pyimport>>
              <<sphinx-doc>>

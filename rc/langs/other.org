@@ -62,3 +62,19 @@
         (progn
             (copy-hooks-to text-mode-hook 'ini-mode-hook)))
   #+END_SRC
+* Plantuml
+  #+BEGIN_SRC emacs-lisp
+    (use-package plantuml-mode
+        :ensure t
+        :mode (("\\.plantuml\\'" . plantuml-mode))
+        :init
+        (progn
+            (use-package flycheck-plantuml
+                :ensure t
+                :commands (flycheck-plantuml-setup))
+
+            (copy-hooks-to text-mode-hook 'plantuml-mode)
+            (add-hook 'plantuml-mode-hook 'flycheck-plantuml-setup)
+            (setq plantuml-jar-path "/usr/share/plantuml/lib/plantuml.jar")
+            (setq plantuml-output-type "svg")))
+  #+END_SRC

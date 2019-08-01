@@ -396,7 +396,13 @@ Common settings for almost all development modes
          :diminish lsp-mode "[L]"
          :init
          (progn
-             <<company-lsp-use-package>>))
+             <<company-lsp-use-package>>
+
+             (setq lsp-ui-peek-enable     nil
+                   lsp-ui-sideline-enable nil
+                   lsp-ui-imenu-enable    t
+                   lsp-ui-doc-enable      t
+                   lsp-ui-flycheck-enable t)))
    #+END_SRC
 *** Company
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-lsp-use-package
@@ -404,7 +410,12 @@ Common settings for almost all development modes
           :ensure t
           :config
           (progn
-              (setq company-lsp-enable-recompletion t)))
+              (setq
+               company-transformers            nil
+               company-lsp-async               t
+               company-lsp-cache-candidates    nil
+
+               company-lsp-enable-recompletion t)))
     #+END_SRC
 ** Xref
    #+BEGIN_SRC emacs-lisp :noweb tangle

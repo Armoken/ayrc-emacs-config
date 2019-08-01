@@ -5,7 +5,7 @@
         :config
         (progn
             (defun make-hook ()
-                (flymake-mode)
+                ;; (flymake-mode)
                 (semantic-mode))
 
             (mapc (lambda (hook) (add-hook hook 'make-hook))
