@@ -132,12 +132,11 @@ UI settings
           ("C-x C-f"   . helm-find-files)
           ("M-y"       . helm-show-kill-ring)
           ;; make TAB work in terminal
-          ("C-i"       . helm-execute-persistent-action)
 
           :map helm-map
-          ;; rebind tab to run persistent action
+          ;; rebind tab to do persistent action
           ("<tab>"     . helm-execute-persistent-action)
-
+          ("C-i"       . helm-execute-persistent-action)
           ("C-z"       . helm-select-action))
          :config
          (progn
