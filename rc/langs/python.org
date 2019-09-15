@@ -116,107 +116,7 @@ Python configuration for Emacs
 ** Python
      Python mode settings for Emacs
 
-   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref elpy
-     (use-package elpy
-         :ensure t
-         :bind ("M-," . pop-tag-mark)
-         :diminish elpy-mode "[E]"
-         :commands (elpy-mode)
-         :config (progn
-                     (defun switch-to-jedi-flycheck-backend ()
-                         (interactive)
-                         (setq elpy-rpc-backend "jedi"))
-                     (defun switch-to-rope-flycheck-backend ()
-                         (interactive)
-                         (setq elpy-rpc-backend "rope"))
-                     (setq elpy-rpc-backend "jedi")))
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref py-yapf
-     (use-package py-yapf
-         :ensure t
-         :commands (py-yapf-buffer py-yapf-enable-on-save))
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyenv-mode
-         (use-package pyenv-mode
-             :ensure t
-             :diminish "[V]"
-             :init
-             (progn
-                 (use-package pyenv-mode-auto
-                     :ensure t
-                     :init
-                     (progn
-                         (add-hook 'switch-buffer-functions
-                                   (lambda (prev cur) (pyenv-mode-auto-hook)))
-                         (add-hook 'find-file-hook 'pyenv-mode-auto-hook)))
-
-                 (setq pyenv-show-active-python-in-modeline t)))
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pipenv-mode
-     (use-package pipenv
-         :ensure t
-         :commands (pipenv-mode)
-         :diminish "[pe]"
-         :init
-         (progn
-             (setq pipenv-projectile-after-switch-function
-                   #'pipenv-projectile-after-switch-extended)))
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref sphinx-doc
-     (use-package sphinx-doc
-         :ensure t
-         :diminish sphinx-doc-mode "[spnxd]"
-         :commands (sphinx-doc-mode))
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyimport
-     (use-package pyimport
-         :ensure t
-         :commands (pyimport-insert-missing pyimport-insert-missing))
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref py-isort
-     (use-package py-isort
-         :ensure t
-         :commands (py-isort-before-save py-isort-buffer py-isort-region))
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-hook
-     (defun python-hook ()
-         (when (require 'flycheck nil t)
-             (remove-hook 'elpy-modules 'elpy-module-flymake)
-             (remove-hook 'elpy-mode-hook 'elpy-module-highlight-indentation)
-             (add-hook 'elpy-mode-hook 'flycheck-mode))
-         (elpy-mode)
-
-         (pyenv-mode)
-         (pipenv-mode)
-         (flycheck-mode)
-         (semantic-mode)
-         (hs-minor-mode)
-         (sphinx-doc-mode)
-         (pyenv-mode-auto-hook)
-
-         (setq flycheck-checker 'python-pylint
-               flycheck-checker-error-threshold 400
-
-               py-python-command "python"
-               elpy-rpc-python-command "python"
-               python-shell-interpreter "ipython"
-               python-shell-interpreter-args "-i --simple-prompt")
-
-         ;; (add-to-list
-         ;;  'python-shell-completion-native-disabled-interpreters "python")
-
-         (add-to-list (make-local-variable 'company-backends)
-                      '(elpy-company-backend company-yasnippet)))
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp :noweb tangle
+   #+BEGIN_SRC emacs-lisp :noweb tangle :noweb yes
      (use-package python-mode
          :ensure t
          :mode (("wscript"   . python-mode)
@@ -229,13 +129,121 @@ Python configuration for Emacs
              <<py-yapf>>
              <<pyenv-mode>>
              <<pipenv-mode>>
-             <<py-isort>>
              <<pyimport>>
+             <<py-isort>>
              <<sphinx-doc>>
 
              <<python-hook>>
              (add-hook 'python-mode-hook 'python-hook)))
    #+END_SRC
+
+*** Hook
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-hook
+      (defun python-hook ()
+          (when (require 'flycheck nil t)
+              (remove-hook 'elpy-modules 'elpy-module-flymake)
+              (remove-hook 'elpy-mode-hook 'elpy-module-highlight-indentation)
+              (add-hook 'elpy-mode-hook 'flycheck-mode))
+          (elpy-mode)
+
+          (pyenv-mode)
+          (pipenv-mode)
+          (flycheck-mode)
+          (semantic-mode)
+          (hs-minor-mode)
+          (sphinx-doc-mode)
+          (pyenv-mode-auto-hook)
+
+          (setq flycheck-checker 'python-pylint
+                flycheck-checker-error-threshold 400
+
+                py-python-command "python"
+                elpy-rpc-python-command "python"
+                python-shell-interpreter "ipython"
+                python-shell-interpreter-args "-i --simple-prompt")
+
+          ;; (add-to-list
+          ;;  'python-shell-completion-native-disabled-interpreters "python")
+
+          (add-to-list (make-local-variable 'company-backends)
+                       '(elpy-company-backend company-yasnippet)))
+    #+END_SRC
+
+*** Env setup modes
+**** Pyenv
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyenv-mode
+           (use-package pyenv-mode
+               :ensure t
+               :diminish "[V]"
+               :init
+               (progn
+                   (use-package pyenv-mode-auto
+                       :ensure t
+                       :init
+                       (progn
+                           (add-hook 'switch-buffer-functions
+                                     (lambda (prev cur) (pyenv-mode-auto-hook)))
+                           (add-hook 'find-file-hook 'pyenv-mode-auto-hook)))
+
+                   (setq pyenv-show-active-python-in-modeline t)))
+     #+END_SRC
+
+**** Pipenv
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pipenv-mode
+       (use-package pipenv
+           :ensure t
+           :commands (pipenv-mode)
+           :diminish "[pe]"
+           :init
+           (progn
+               (setq pipenv-projectile-after-switch-function
+                     #'pipenv-projectile-after-switch-extended)))
+     #+END_SRC
+
+*** Main minor mode
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref elpy
+      (use-package elpy
+          :ensure t
+          :bind ("M-," . pop-tag-mark)
+          :diminish elpy-mode "[E]"
+          :commands (elpy-mode)
+          :config (progn
+                      (defun switch-to-jedi-flycheck-backend ()
+                          (interactive)
+                          (setq elpy-rpc-backend "jedi"))
+                      (defun switch-to-rope-flycheck-backend ()
+                          (interactive)
+                          (setq elpy-rpc-backend "rope"))
+                      (setq elpy-rpc-backend "jedi")))
+    #+END_SRC
+
+*** Code formatter
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref py-yapf
+      (use-package py-yapf
+          :ensure t
+          :commands (py-yapf-buffer py-yapf-enable-on-save))
+    #+END_SRC
+
+*** Sphinx doc in docstrings
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref sphinx-doc
+      (use-package sphinx-doc
+          :ensure t
+          :diminish sphinx-doc-mode "[spnxd]"
+          :commands (sphinx-doc-mode))
+    #+END_SRC
+
+*** Helpers for fixing imports
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref pyimport
+      (use-package pyimport
+          :ensure t
+          :commands (pyimport-insert-missing pyimport-insert-missing))
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref py-isort
+      (use-package py-isort
+          :ensure t
+          :commands (py-isort-before-save py-isort-buffer py-isort-region))
+    #+END_SRC
 
 ** Pip requirments
    Pip requirments for Emacs
