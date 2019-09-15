@@ -285,23 +285,30 @@ Common settings for almost all development modes
                                 nil))))
    #+END_SRC
 ** Snippets
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package yasnippet
          :ensure t
          :diminish yas-minor-mode
          :init
          (progn
+             <<snippets-collection>>
+
              (yas-global-mode))
          :config
          (progn
              (setq yas-snippet-dirs
                    (list
-                    (expand-file-name
-                     "./other/yasnippet/snippets" user-emacs-directory)
-                    (expand-file-name
-                     "./other/yasnippet/yasmate/snippets" user-emacs-directory)))
+                    (expand-config-path "./snippets/personal") ;; Personal snippets
+                    ))
              (yas-reload-all)))
    #+END_SRC
+
+*** Ready snippets collection
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref snippets-collection
+      (use-package yasnippet-snippets
+          :ensure t)
+    #+END_SRC
+
 ** Indents
    #+BEGIN_SRC emacs-lisp
      (setq-default tab-width 4)
