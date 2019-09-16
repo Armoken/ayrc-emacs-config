@@ -1,13 +1,32 @@
-* Use package tasks [24/39]
+* Use package tasks [28/41]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
 ** Languages
-*** DONE C/C++
+*** TODO Haskell
+**** DONE Choose minimal core packages
+**** TODO hlint apply refact
+*** TODO Basic Java support
+*** TODO Rust
+*** TODO HTML
+*** TODO CSS
+*** TODO JS
+*** DONE Python [4/4]
+    CLOSED: [2019-09-16 Mon 22:26]
+**** DONE Pyenv support
+     CLOSED: [2019-09-16 Mon 22:25]
+**** DONE Pipenv support
+     CLOSED: [2019-09-16 Mon 22:25]
+**** DONE Flycheck backends
+**** CANCELED Try traad - Dead
+     CLOSED: [2019-09-15 Sun 22:00]
+*** DONE C/C++ [7/7]
     CLOSED: [2018-08-04 Sat 08:45]
 **** DONE [#A] Basic support
 **** DONE Rtags
      CLOSED: [2018-08-04 Sat 08:44]
+**** DONE CCLS
+     CLOSED: [2019-09-16 Mon 22:26]
 **** DONE Cquery
      CLOSED: [2018-08-04 Sat 08:45]
 **** DONE Documentation lookup
@@ -16,19 +35,7 @@
      CLOSED: [2018-08-04 Sat 08:44]
 **** DONE cquery
      CLOSED: [2018-08-04 Sat 08:44]
-*** TODO Python
-**** DONE Flycheck backends
-**** DONE Pyenv support
-**** TODO Try traad
-*** TODO Haskell
-**** DONE Choose minimal core packages
-**** TODO hlint apply refact
-*** TODO Basic Java support
-*** TODO Rust
 *** DONE Golang
-*** TODO HTML
-*** TODO CSS
-*** TODO JS
 *** DONE VHDL
 *** DONE Ruby
 **** DONE RVM
