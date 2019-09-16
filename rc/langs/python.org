@@ -127,8 +127,10 @@ Python configuration for Emacs
          (progn
              <<elpy>>
              <<py-yapf>>
+
              <<pyenv-mode>>
              <<pipenv-mode>>
+
              <<pyimport>>
              <<py-isort>>
              <<sphinx-doc>>
@@ -172,20 +174,12 @@ Python configuration for Emacs
 *** Env setup modes
 **** Pyenv
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyenv-mode
-           (use-package pyenv-mode
-               :ensure t
-               :diminish "[V]"
-               :init
-               (progn
-                   (use-package pyenv-mode-auto
-                       :ensure t
-                       :init
-                       (progn
-                           (add-hook 'switch-buffer-functions
-                                     (lambda (prev cur) (pyenv-mode-auto-hook)))
-                           (add-hook 'find-file-hook 'pyenv-mode-auto-hook)))
-
-                   (setq pyenv-show-active-python-in-modeline t)))
+       (use-package pyenv-mode
+           :ensure t
+           :diminish "[V]"
+           :init
+           (progn
+               (setq pyenv-show-active-python-in-modeline t)))
      #+END_SRC
 
 **** Pipenv
