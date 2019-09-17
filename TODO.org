@@ -1,4 +1,4 @@
-* Use package tasks [28/41]
+* Use package tasks [29/42]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
@@ -11,8 +11,10 @@
 *** TODO HTML
 *** TODO CSS
 *** TODO JS
-*** DONE Python [4/4]
+*** DONE Python [5/5]
     CLOSED: [2019-09-16 Mon 22:26]
+**** DONE Interactive function for prerequisite packages installation
+     CLOSED: [2019-09-17 Tue 14:17]
 **** DONE Pyenv support
      CLOSED: [2019-09-16 Mon 22:25]
 **** DONE Pipenv support

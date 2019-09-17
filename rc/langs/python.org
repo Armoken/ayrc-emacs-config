@@ -42,21 +42,33 @@ Python configuration for Emacs
                     (y-or-n-p (format "Save file %s? " (buffer-file-name))))
              (save-buffer))
 
-         (let ((default-directory (pythonic-aliased-path default-directory))
-               (process-environment (copy-sequence process-environment)))
-             (pythonic-set-process-environment)
-             (let ((command
-                    (format "%s -c \"import pip; pip.main([\'install\', %s])\""
-                            (pythonic-executable)
-                            (string-join
-                             (mapcar '(lambda (str)
-                                          (format "\'%s\'" str))
-                                     python-language-prerequisites)
-                             ", ")))
-                   (buffer-name-function
-                    #'(lambda (maj-mode)
-                          "*python-language-prerequisites-installation*")))
-                 (compilation-start command nil buffer-name-function))))
+         (let* ((buf-name "*prerequisites-installation*")
+                (buffer (get-buffer-create buf-name))
+                (process (get-buffer-process buffer))
+                (cmd-args (append (list "-m" "pip" "install")
+                                  python-language-prerequisites)))
+             (when (and process
+                        (process-live-p process))
+                 (setq buffer (generate-new-buffer buf-name)))
+
+             (with-current-buffer buffer
+                 (let ((inhibit-read-only t))
+                     (erase-buffer))
+
+                 (insert "Installing python language prerequisites\n")
+
+                 (pythonic-start-process
+                  :process "PrerequisitesInstaller"
+                  :buffer buffer
+                  :args cmd-args)
+
+                 (move-marker (process-mark (get-buffer-process buffer))
+                              (point-max)
+                              buffer)
+
+                 (comint-mode)
+                 (setq-local comint-prompt-read-only t)
+                 (pop-to-buffer buffer))))
    #+END_SRC
 
    Prerequisites:
@@ -107,7 +119,7 @@ Python configuration for Emacs
   - [[https://github.com/paetzke/py-yapf.el][py-yapf]] :: Use yapf to beautify a Python buffer
   - [[https://github.com/pwalsh/pipenv.el][pipenv.el]] :: A Pipenv porcelain inside Emacs
   - [[https://github.com/proofit404/pyenv-mode][pyenv-mode]] :: Integrate pyenv with python-mode
-  - [[https://github.com/ssbb/pyenv-mode-auto][pyenv-mode-auto]] :: Automatically activates pyenv version
+  - [[https://github.com/tkf/emacs-python-environment][python-environment]] :: Python virtualenv API for Emacs Lisp
   - [[https://github.com/Wilfred/pip-requirements.el][pip-requirements]] :: Major mode for editing pip requirements files
   - [[https://github.com/paetzke/py-isort.el][py-isort.el]] :: Integrates isort into Emacs.
   - [[https://github.com/Wilfred/pyimport][pyimport]] :: Manage Python imports from Emac
@@ -154,7 +166,6 @@ Python configuration for Emacs
           (semantic-mode)
           (hs-minor-mode)
           (sphinx-doc-mode)
-          (pyenv-mode-auto-hook)
 
           (setq flycheck-checker 'python-pylint
                 flycheck-checker-error-threshold 400
