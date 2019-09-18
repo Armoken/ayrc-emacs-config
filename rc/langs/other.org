@@ -78,3 +78,9 @@
             (setq plantuml-jar-path "/usr/share/plantuml/lib/plantuml.jar")
             (setq plantuml-output-type "svg")))
   #+END_SRC
+* Dotenv
+  #+BEGIN_SRC emacs-lisp
+    (use-package dotenv-mode
+        :ensure t
+        :mode (("\\.env\\'" . dotenv-mode)))
+  #+END_SRC
