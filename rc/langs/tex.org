@@ -45,6 +45,7 @@ Tex configuration for Emacs
                  (hs-minor-mode)
                  (flycheck-mode)
                  (semantic-mode)
+                 (smartparens-mode)
                  (company-auctex-init)
                  (LaTeX-preview-setup)
                  (tex-fold-mode)
