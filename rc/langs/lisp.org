@@ -29,7 +29,6 @@ Lisp family languages configuration.
          (progn
              ;; Lisp configuration
              <<paredit>>
-             <<smartparens>>
              <<rainbow-delimiters>>
              <<lisp-extra-font-lock>>
 
@@ -96,12 +95,6 @@ Lisp family languages configuration.
               (eldoc-add-command
                'paredit-backward-delete
                'paredit-close-round)))
-    #+END_SRC
-
-*** Smart parens
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref smartparens
-      (use-package smartparens
-          :ensure t)
     #+END_SRC
 
 *** Highlights delimiters such as parentheses, brackets or braces according to their depth
