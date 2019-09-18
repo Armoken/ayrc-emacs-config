@@ -99,35 +99,61 @@ Common settings for almost all development modes
    #+END_SRC
 
 ** Static code analysis
-   #+BEGIN_SRC emacs-lisp :noweb tangle
-     (use-package flycheck
-         :ensure t
-         :diminish flycheck-mode "[F]"
-         :commands (flycheck-mode)
-         :init
-         (progn
-             <<flycheck-popup-use-package>>
-             (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)
+*** Flymake
+    #+BEGIN_SRC emacs-lisp :noweb tangle
+      (use-package flymake
+          :ensure t
+          :diminish flycheck-mode "[F]"
+          :init
+          (progn
+              <<helm-flymake-use-package>>
 
-             <<helm-flycheck-use-package>>)
-         :config
-         (progn
-             (setq flycheck-standard-error-navigation nil)
-             (setq flycheck-idle-change-delay 0)
-             (setq flycheck-check-syntax-automatically '(save mode-enabled))))
-   #+END_SRC
-*** Popup
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flycheck-popup-use-package
-      (use-package flycheck-popup-tip
-          :ensure t
-          :commands (flycheck-popup-tip-mode))
+              <<flymake-popup-use-package>>
+              (add-hook 'flymake-mode-hook
+                        #'flymake-diagnostic-at-point-mode)))
     #+END_SRC
-*** Helm
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-flycheck-use-package
-      (use-package helm-flycheck
+**** Popup
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flymake-popup-use-package
+       (use-package flymake-diagnostic-at-point
+           :ensure t
+           :after flymake)
+     #+END_SRC
+**** Helm
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-flymake-use-package
+       (use-package helm-flymake
+           :ensure t
+           :commands (helm-flymake))
+     #+END_SRC
+*** Flycheck
+    #+BEGIN_SRC emacs-lisp :noweb tangle
+      (use-package flycheck
           :ensure t
-          :bind (("C-c h f" . helm-flycheck)))
+          :diminish flycheck-mode "[F]"
+          :commands (flycheck-mode)
+          :init
+          (progn
+              <<flycheck-popup-use-package>>
+              (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)
+
+              <<helm-flycheck-use-package>>)
+          :config
+          (progn
+              (setq flycheck-standard-error-navigation nil)
+              (setq flycheck-idle-change-delay 0)
+              (setq flycheck-check-syntax-automatically '(save mode-enabled))))
     #+END_SRC
+**** Popup
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flycheck-popup-use-package
+       (use-package flycheck-popup-tip
+           :ensure t
+           :commands (flycheck-popup-tip-mode))
+     #+END_SRC
+**** Helm
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-flycheck-use-package
+       (use-package helm-flycheck
+           :ensure t
+           :bind (("C-c h f" . helm-flycheck)))
+     #+END_SRC
 ** Autocompletion
 *** Semantic
     #+BEGIN_SRC emacs-lisp
