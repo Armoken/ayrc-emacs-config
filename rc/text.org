@@ -30,7 +30,7 @@ Common settings for almost all text modes
                is highlighted
   - [[https://github.com/hbin/smart-shift][smart-shift]] :: Shift region using arrows
   - [[https://github.com/Wilfred/ag.el][ag]] :: Frontend to The Silver Searcher
-  - [[https://github.com/syohex/emacs-helm-ag][helm-ag]] :: The silver searcher with helm interface
+  - [[https://github.com/cosmicexplorer/helm-rg][helm-rg]] :: Ripgrep with helm interface
 * Configuration
 ** Auto revert mode
  #+BEGIN_SRC emacs-lisp
@@ -216,15 +216,15 @@ Common settings for almost all text modes
                     ag-project-regexp)
          :init
          (progn
-             <<helm-ag-use-package>>))
+             <<helm-rg-use-package>>))
    #+END_SRC
 *** Helm
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-ag-use-package
-      (use-package helm-ag
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-rg-use-package
+      (use-package helm-rg
           :ensure t
-          :bind (("C-c h s" . helm-ag))
-          :commands (helm-ag
-                     helm-projectile-ag))
+          :bind (("C-c h s" . helm-rg))
+          :commands (helm-rg
+                     helm-projectile-rg))
     #+END_SRC
 ** Set newline at the end of file
  #+BEGIN_SRC emacs-lisp
