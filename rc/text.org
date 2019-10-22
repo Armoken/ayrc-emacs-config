@@ -45,15 +45,14 @@ Common settings for almost all text modes
 ** Line numbering
 *** Left panel
     #+BEGIN_SRC emacs-lisp
-      (use-package nlinum
-        :ensure t
-        :commands (nlinum-mode)
-        :init (progn
-                (add-hook 'text-mode-hook '(lambda () (nlinum-mode t)))
-                (add-hook 'prog-mode-hook '(lambda () (nlinum-mode t))))
-        :config (progn
-                  (setq nlinum-format "%4d  ")
-                  (setq nlinum-highlight-current-line t)))
+      (use-package display-line-numbers
+          :init (progn
+                    (add-hook 'text-mode-hook
+                              '(lambda () (display-line-numbers-mode t)))
+                    (add-hook 'prog-mode-hook
+                              '(lambda () (display-line-numbers-mode t))))
+          :config (progn
+                      (setq display-line-numbers-width-start 4)))
     #+END_SRC
 *** Modeline
     #+BEGIN_SRC emacs-lisp
