@@ -351,20 +351,21 @@ C/C++ configuration for Emacs
                            :extraClangArguments ("--driver-mode=cl")
                            ))
 
-                   ;; (setq ccls-sem-highlight-method 'font-lock)
+                   (setq ccls-sem-highlight-method 'font-lock)
 
                    ;; For rainbow semantic highlighting
-                   ;;(ccls-use-default-rainbow-sem-highlight)
+                   ;; (ccls-use-default-rainbow-sem-highlight)
 
                    (setq lsp-ui-doc-include-signature t)
                    (setq lsp-ui-sideline-show-symbol nil)
 
-                   (local-set-keys '(("M-."   . xref-find-definitions)
-                                     ("M-,"   . xref-pop-marker-stack)
-                                     ("M-?"   . xref-find-references)
-                                     ("C-M-." . xref-find-apropos)))
+                   (local-set-keys '(("M-."     . xref-find-definitions)
+                                     ("M-,"     . xref-pop-marker-stack)
+                                     ("M-?"     . xref-find-references)
+                                     ("C-M-."   . xref-find-apropos)
+                                     ("C-c h i" . lsp-ui-imenu)))
 
-                   (lsp-ccls-enable))))
+                   (lsp))))
      #+END_SRC
 
 **** Autocompletion
@@ -383,8 +384,7 @@ C/C++ configuration for Emacs
      #+NAME: ccls-syntax-analytics
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (defun ccls-syntax-check-setup ()
-           (flycheck-mode)
-           (lsp-ui-mode))
+           (flycheck-mode))
      #+END_SRC
 
 **** Eldoc

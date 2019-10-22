@@ -433,16 +433,27 @@ Common settings for almost all development modes
      (use-package lsp-mode
          :ensure t
          :diminish lsp-mode "[L]"
+         :bind
+         ((:map lsp-mode-map
+                ("C-c h w" . helm-lsp-workspace-symbol)))
          :init
          (progn
              <<company-lsp-use-package>>
 
-             (setq lsp-ui-peek-enable     nil
-                   lsp-ui-sideline-enable nil
-                   lsp-ui-imenu-enable    t
-                   lsp-ui-doc-enable      t
-                   lsp-ui-flycheck-enable t)))
+             <<lsp-ui-use-package>>
+             (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+
+             <<helm-lsp-use-package>)
+         :config
+         (progn
+             (setq lsp-enable-file-watchers nil)))
    #+END_SRC
+*** Helm
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-lsp-use-package
+      (use-package helm-lsp
+          :ensure t
+          :commands (helm-lsp-workspace-symbol))
+    #+END_SRC
 *** Company
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-lsp-use-package
       (use-package company-lsp
@@ -455,6 +466,23 @@ Common settings for almost all development modes
                company-lsp-cache-candidates    nil
 
                company-lsp-enable-recompletion t)))
+    #+END_SRC
+*** UI modules
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref lsp-ui-use-package
+      (use-package lsp-ui
+          :ensure t
+          :config
+          (progn
+              (setq lsp-ui-peek-enable     nil
+                    lsp-ui-sideline-enable nil
+                    lsp-ui-imenu-enable    t
+                    lsp-ui-doc-enable      t
+                    lsp-ui-flycheck-enable t)
+
+              (define-key lsp-ui-mode-map [remap xref-find-definitions]
+                  #'lsp-ui-peek-find-definitions)
+              (define-key lsp-ui-mode-map [remap xref-find-references]
+                  #'lsp-ui-peek-find-references)))
     #+END_SRC
 ** Xref
    #+BEGIN_SRC emacs-lisp :noweb tangle
