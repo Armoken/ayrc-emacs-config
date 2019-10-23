@@ -13,6 +13,11 @@ Core settings for editor
   - [[https://www.emacswiki.org/emacs/Desktop][desktop]] :: save partial status of Emacs when killed
   - [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] ::  Make Emacs use the $PATH set up by the user's shell
 * Configuration
+** Bookmarks
+   #+BEGIN_SRC emacs-lisp
+     (setq bookmark-save-flag 1)
+   #+END_SRC
+
 ** Session saving
  #+BEGIN_SRC emacs-lisp
    (use-package desktop
