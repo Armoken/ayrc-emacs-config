@@ -29,7 +29,6 @@ C/C++ configuration for Emacs
   - [[https://github.com/Andersbakken/rtags][flycheck-rtags]] :: RTags Flycheck integration
   - [[https://github.com/sonatard/clang-format][clang-format]] :: Clang-format emacs integration for use with C/Objective-C/C++
   - [[https://github.com/ludwigpacifici/modern-cpp-font-lock][modern-cpp-font-lock]] :: C++ font-lock for Emacs
-  - [[https://github.com/cquery-project/cquery][cquery]] :: C/C++ language server supporting multi-million line code base
   - [[https://github.com/atilaneves/cmake-ide][cmake-ide]] :: Use Emacs as a C/C++ IDE
 * Configuration
    #+BEGIN_SRC emacs-lisp :noweb yes
@@ -67,7 +66,6 @@ C/C++ configuration for Emacs
      <<rtags-use-package>>
      <<gtags-use-package>>
      <<ccls-use-package>>
-     <<cquery-use-package>>
      <<cmake-ide-use-package>>
 
      (defun cc-hook ()
@@ -90,8 +88,6 @@ C/C++ configuration for Emacs
                  (gtags-setup))
          (if (member "ccls" conf-variable-for-cc)
                  (ccls-setup))
-         (if (member "cquery" conf-variable-for-cc)
-                 (cquery-setup))
 
          ;; Autocompletion setup
          (defun get-autocompletion-backends ()
@@ -99,28 +95,28 @@ C/C++ configuration for Emacs
                           ("irony"  'irony-autocompletion-setup)
                           ("rtags"  'rtags-autocompletion-setup)
                           ("gtags"  'gtags-autocompletion-setup)
-                          ("ccls"   'ccls-autocompletion-setup)
-                          ("cquery" 'cquery-autocompletion-setup))))
+                          ("ccls"   'ccls-autocompletion-setup))))
 
-         (add-to-list (make-local-variable 'company-backends)
-                      (append (get-autocompletion-backends)
-                              '(company-yasnippet)))
+
+         (let ((local-company-backends
+                (make-local-variable #'company-backends)))
+             (add-to-list local-company-backends
+                          (get-autocompletion-backends)))
+
 
          ;; Syntax check setup
          (funcall (pcase cc-syntat-check-plugin
                       ("irony"  'irony-syntax-check-setup)
                       ("rtags"  'rtags-syntax-check-setup)
                       ("gtags"  'gtags-syntax-check-setup)
-                      ("ccls"   'ccls-syntax-check-setup)
-                      ("cquery" 'cquery-syntax-check-setup)))
+                      ("ccls"   'ccls-syntax-check-setup)))
 
          ;; Eldoc setup
          (funcall (pcase cc-eldoc-plugin
                       ("irony"  'irony-eldoc-setup)
                       ("rtags"  'rtags-eldoc-setup)
                       ("gtags"  'gtags-eldoc-setup)
-                      ("ccls"   'ccls-eldoc-setup)
-                      ("cquery" 'cquery-eldoc-setup)))
+                      ("ccls"   'ccls-eldoc-setup)))
          )
 
      (add-hook 'c-mode-hook #'cc-hook)
@@ -346,12 +342,9 @@ C/C++ configuration for Emacs
                    (setq ccls-extra-init-params
                          '(
                            :index       (:comments 2)
-                           :cacheFormat "msgpack"
-                           :completion  (:detailedLabel t)
-                           :extraClangArguments ("--driver-mode=cl")
-                           ))
+                           :completion  (:detailedLabel t)))
 
-                   (setq ccls-sem-highlight-method 'font-lock)
+                   ;; (setq ccls-sem-highlight-method 'font-lock)
 
                    ;; For rainbow semantic highlighting
                    ;; (ccls-use-default-rainbow-sem-highlight)
@@ -372,12 +365,8 @@ C/C++ configuration for Emacs
      #+NAME: ccls-autocompletion
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (defun ccls-autocompletion-setup ()
-           (setq company-lsp-async            t
-                 company-transformers         nil
-                 company-lsp-cache-candidates nil)
-
            ;; Returns company backends
-           '(company-lsp))
+           #'company-lsp)
      #+END_SRC
 
 **** Syntax analytics
@@ -391,80 +380,6 @@ C/C++ configuration for Emacs
      #+NAME: ccls-eldoc
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (defun ccls-eldoc-setup ()
-           (eldoc-mode))
-     #+END_SRC
-
-*** Cquery
-     #+NAME: cquery-use-package
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (use-package cquery
-           :ensure t
-           :init
-           (progn
-               <<cquery-autocompletion>>
-               <<cquery-syntax-analytics>>
-               <<cquery-eldoc>>
-
-               (defun cquery--get-root ()
-                   "Return the root directory of a cquery project."
-                   (expand-file-name
-                    (or
-                     (locate-dominating-file default-directory "compile_commands.json")
-                     (locate-dominating-file default-directory ".cquery")
-                     (user-error "Could not find cquery project root"))))
-
-               (defun cquery-setup ()
-                   (setq cquery-executable (executable-find "cquery"))
-
-                   ;; Log file
-                   (setq cquery-extra-args '("--log-file=/tmp/cquery-9999.log"))
-                   (setq cquery-extra-init-params
-                         '(
-                           :index       (:comments 2)
-                           :cacheFormat "msgpack"
-                           :completion  (:detailedLabel t)
-                           :extraClangArguments ("--driver-mode=cl")
-                           ))
-
-                   ;;(setq cquery-sem-highlight-method 'font-lock)
-
-                   ;; For rainbow semantic highlighting
-                   ;;(cquery-use-default-rainbow-sem-highlight)
-
-                   (setq lsp-ui-doc-include-signature t)
-                   (setq lsp-ui-sideline-show-symbol nil)
-
-                   (local-set-keys '(("M-."   . xref-find-definitions)
-                                     ("M-,"   . xref-pop-marker-stack)
-                                     ("M-?"   . xref-find-references)
-                                     ("C-M-." . xref-find-apropos)))
-
-                   (lsp-cquery-enable))))
-     #+END_SRC
-
-**** Autocompletion
-     #+NAME: cquery-autocompletion
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (defun cquery-autocompletion-setup ()
-           (setq company-lsp-async            nil
-                 company-lsp-cache-candidates nil)
-
-           ;; Returns company backends
-           '(company-lsp))
-     #+END_SRC
-
-**** Syntax analytics
-     #+NAME: cquery-syntax-analytics
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (defun cquery-syntax-check-setup ()
-           (flycheck-mode)
-           (lsp-ui-mode))
-     #+END_SRC
-
-**** Eldoc
-     #+NAME: cquery-eldoc
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (defun cquery-eldoc-setup ()
            (eldoc-mode))
      #+END_SRC
 
@@ -486,6 +401,7 @@ C/C++ configuration for Emacs
                                                   "-Wextra")))
      (add-hook 'c-mode-hook #'c-hook)
    #+END_SRC
+
 
 ** C++ configuration
    #+NAME: c++-configuration

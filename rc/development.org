@@ -171,11 +171,13 @@ Common settings for almost all development modes
                 ("TAB" . company-complete-selection))
           :init
           (progn
+              <<company-box-use-package>>
               <<company-flx-use-package>>
               <<company-quickhelp-use-package>>
               <<company-statistics-use-package>>
 
-              (global-company-mode))
+              (global-company-mode)
+              (company-tng-configure-default))
           :config
           (progn
               (setq company-tooltip-align-annotations t
@@ -191,35 +193,48 @@ Common settings for almost all development modes
                        company-keywords)    ;; keywords
 
                       (company-abbrev       ;; abbreviations
-                       company-dabbrev      ;; dynamic abbreviations
-                       company-yasnippet))) ;; snippets
+                       company-dabbrev)))   ;; dynamic abbreviations
 
-              (company-flx-mode)
-              (company-quickhelp-mode)
-              (company-statistics-mode)))
+              (company-quickhelp-mode)))
     #+END_SRC
+
 **** Documentation
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-quickhelp-use-package
       (use-package company-quickhelp
           :ensure t
           :commands (company-quickhelp-mode)
-          :config
-          (progn
-              (define-key company-active-map (kbd "M-h")
-                  #'company-quickhelp-manual-begin)))
+          :bind (
+                 :map company-active-map
+                 ("M-h" . #'company-quickhelp-manual-begin)))
     #+END_SRC
+
 **** Fuzzy matching
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-flx-use-package
        (use-package company-flx
-           :commands (company-flx-mode)
-           :ensure t)
+           :ensure t
+           :after company lsp-mode
+           :commands (company-flx-mode))
      #+END_SRC
+
+**** Icons
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-box-use-package
+      (use-package company-box
+          :ensure t
+          :after company
+          :commands (company-box-mode)
+          :config
+          (progn
+              (setq company-box-icons-alist company-box-icons-all-the-icons)))
+     #+END_SRC
+
 **** Sort candidates by previous completion choices
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-statistics-use-package
        (use-package company-statistics
            :ensure t
+           :after company
            :commands (company-statistics-mode))
      #+END_SRC
+
 ** VCS
 *** Git
      #+BEGIN_SRC emacs-lisp
@@ -319,14 +334,16 @@ Common settings for almost all development modes
          (progn
              <<snippets-collection>>
 
-             (yas-global-mode))
+             (yas-global-mode)
+             (yasnippet-snippets-initialize))
          :config
          (progn
              (setq yas-snippet-dirs
                    (list
                     (expand-config-path "./snippets/personal") ;; Personal snippets
                     ))
-             (yas-reload-all)))
+             (yas-reload-all)
+             (add-to-list 'company-backends '(company-yasnippet))))
    #+END_SRC
 
 *** Ready snippets collection
@@ -443,10 +460,13 @@ Common settings for almost all development modes
              <<lsp-ui-use-package>>
              (add-hook 'lsp-mode-hook 'lsp-ui-mode)
 
-             <<helm-lsp-use-package>)
+             <<helm-lsp-use-package>>)
          :config
          (progn
-             (setq lsp-enable-file-watchers nil)))
+             (setq lsp-enable-folding                         t
+                   lsp-enable-snippet                         t
+                   lsp-vetur-completion-use-scaffold-snippets t
+                   lsp-enable-file-watchers                   nil)))
    #+END_SRC
 *** Helm
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-lsp-use-package
@@ -461,6 +481,7 @@ Common settings for almost all development modes
           :config
           (progn
               (setq
+               company-lsp-enable-snippet      t
                company-transformers            nil
                company-lsp-async               t
                company-lsp-cache-candidates    nil
