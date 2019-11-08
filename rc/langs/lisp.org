@@ -28,7 +28,6 @@ Lisp family languages configuration.
          :init
          (progn
              ;; Lisp configuration
-             <<paredit>>
              <<rainbow-delimiters>>
              <<lisp-extra-font-lock>>
 
@@ -67,9 +66,8 @@ Lisp family languages configuration.
           (eldoc-mode)
           (lisp-extra-font-lock-global-mode)
 
-          (paredit-mode)
-          (rainbow-delimiters-mode)
           (smartparens-mode)
+          (rainbow-delimiters-mode)
 
           (prettify-symbols-mode)
           (setq prettify-symbols-unprettify-at-point 'right-edge)
@@ -81,20 +79,6 @@ Lisp family languages configuration.
 
           (add-hook 'write-contents-functions
                     'cleanup-buffer-notabs nil t))
-    #+END_SRC
-
-*** Comfortable parens editing
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref paredit
-      (use-package paredit
-          :ensure t
-          :diminish paredit-mode "[pe]"
-          :config
-          (progn
-              ;; Whenever the listed commands are used, ElDoc will automatically
-              ;; refresh the minibuffer.
-              (eldoc-add-command
-               'paredit-backward-delete
-               'paredit-close-round)))
     #+END_SRC
 
 *** Highlights delimiters such as parentheses, brackets or braces according to their depth

@@ -200,9 +200,13 @@ Common settings for almost all text modes
          (show-paren-mode)))
    #+END_SRC
 ** Automatically pairs braces and quotes
-   #+BEGIN_SRC emacs-lisp
-     (electric-pair-mode)
-   #+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (use-package smartparens
+          :ensure t
+          :diminish smartparens-mode "[SP]"
+          :hook (text-mode-hook prog-mode-hook)
+          :commands (smartparens-mode))
+    #+END_SRC
 ** Ag
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package ag

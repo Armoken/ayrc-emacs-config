@@ -6,6 +6,7 @@
         (progn
             (defun make-hook ()
                 ;; (flymake-mode)
+                (smartparens-mode)
                 (semantic-mode))
 
             (mapc (lambda (hook) (add-hook hook 'make-hook))

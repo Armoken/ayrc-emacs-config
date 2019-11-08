@@ -401,12 +401,6 @@ Common settings for almost all development modes
        :commands (er/expand-region)
        :bind ("C-=" . er/expand-region))
    #+END_SRC
-** Smart parens
-    #+BEGIN_SRC emacs-lisp
-      (use-package smartparens
-          :ensure t
-          :commands (smartparens-mode))
-    #+END_SRC
 ** Eldoc
    #+BEGIN_SRC emacs-lisp
      (use-package eldoc
