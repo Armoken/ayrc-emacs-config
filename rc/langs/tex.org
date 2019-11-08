@@ -46,14 +46,15 @@ Tex configuration for Emacs
                  (flycheck-mode)
                  (semantic-mode)
                  (smartparens-mode)
-                 (company-auctex-init)
                  (LaTeX-preview-setup)
                  (tex-fold-mode)
 
+                 (start-company-mode)
                  (add-to-list (make-local-variable 'company-backends)
                               '(company-auctex
                                 company-math-symbols-latex
-                                company-latex-commands)))
+                                company-latex-commands))
+                 (company-auctex-init))
              (add-hook 'LaTeX-mode-hook 'auctex-hook))
          :config (progn
                      (setq TeX-auto-save  t
