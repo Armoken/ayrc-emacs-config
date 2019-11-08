@@ -13,8 +13,6 @@ Lisp family languages configuration.
   - [[https://www.emacswiki.org/emacs/ElDoc][eldoc]] :: Shows the argument list of the function call you are currently writing.
   - [[https://github.com/purcell/elisp-slime-nav][emacs-slime-nav]] :: Slime-style navigation of Emacs Lisp source with M-. & M-
   - [[https://github.com/Lindydancer/lisp-extra-font-lock][lisp-extra-font-lock]] :: Highlight bound variables and quoted expressions in lisp
-  - [[https://www.emacswiki.org/emacs/ParEdit][paredit]] :: Minor mode for performing structured editing of S-expression data
-  - [[https://github.com/Fuco1/smartparens][smartparens]] :: Minor mode for dealing with pairs in Emacs
   - [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] :: Mode which highlights delimiters such as parentheses,
     brackets or braces according to their depth.
 * Lisp
@@ -66,7 +64,6 @@ Lisp family languages configuration.
           (eldoc-mode)
           (lisp-extra-font-lock-global-mode)
 
-          (smartparens-mode)
           (rainbow-delimiters-mode)
 
           (prettify-symbols-mode)

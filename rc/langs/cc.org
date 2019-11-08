@@ -65,7 +65,6 @@ C/C++ configuration for Emacs
 
      (defun cc-hook ()
          (hs-minor-mode)
-         (smartparens-mode)
 
          (setq
           ;; Setup minor mods if any component need it

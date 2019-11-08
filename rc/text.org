@@ -28,6 +28,7 @@ Common settings for almost all text modes
                parentheses and other characters. When point is on the
                opening character of one of the paired characters, the other
                is highlighted
+  - [[https://github.com/Fuco1/smartparens][smartparens]] :: Minor mode for dealing with pairs in Emacs
   - [[https://github.com/hbin/smart-shift][smart-shift]] :: Shift region using arrows
   - [[https://github.com/Wilfred/ag.el][ag]] :: Frontend to The Silver Searcher
   - [[https://github.com/cosmicexplorer/helm-rg][helm-rg]] :: Ripgrep with helm interface
@@ -204,8 +205,8 @@ Common settings for almost all text modes
       (use-package smartparens
           :ensure t
           :diminish smartparens-mode "[SP]"
-          :hook (text-mode-hook prog-mode-hook)
-          :commands (smartparens-mode))
+          :hook ((text-mode prog-mode org-mode) . smartparens-mode)
+          :commands (smartparens-mode smartparens-strict-mode))
     #+END_SRC
 ** Ag
    #+BEGIN_SRC emacs-lisp :noweb tangle
