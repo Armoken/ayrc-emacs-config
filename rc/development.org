@@ -168,7 +168,7 @@ Common settings for almost all development modes
           :diminish company-mode
           :bind
           (:map company-active-map
-                ("TAB" . company-complete-selection))
+                ("<tab>" . company-complete-selection))
           :init
           (progn
               <<company-box-use-package>>
@@ -176,8 +176,11 @@ Common settings for almost all development modes
               <<company-quickhelp-use-package>>
               <<company-statistics-use-package>>
 
-              (global-company-mode)
-              (company-tng-configure-default))
+              (defun start-company-mode ()
+                  (global-company-mode)
+                  (company-flx-mode)
+                  (company-statistics-mode)
+                  (company-quickhelp-mode)))
           :config
           (progn
               (setq company-tooltip-align-annotations t
@@ -193,9 +196,7 @@ Common settings for almost all development modes
                        company-keywords)    ;; keywords
 
                       (company-abbrev       ;; abbreviations
-                       company-dabbrev)))   ;; dynamic abbreviations
-
-              (company-quickhelp-mode)))
+                       company-dabbrev))))) ;; dynamic abbreviat
     #+END_SRC
 
 **** Documentation
@@ -335,15 +336,14 @@ Common settings for almost all development modes
              <<snippets-collection>>
 
              (yas-global-mode)
-             (yasnippet-snippets-initialize))
          :config
          (progn
              (setq yas-snippet-dirs
                    (list
+                    yasnippet-snippets-dir
                     (expand-config-path "./snippets/personal") ;; Personal snippets
                     ))
-             (yas-reload-all)
-             (add-to-list 'company-backends '(company-yasnippet))))
+             (yas-reload-all))))
    #+END_SRC
 
 *** Ready snippets collection
@@ -488,16 +488,13 @@ Common settings for almost all development modes
           :ensure t
           :config
           (progn
-              (setq lsp-ui-peek-enable     nil
-                    lsp-ui-sideline-enable nil
-                    lsp-ui-imenu-enable    t
-                    lsp-ui-doc-enable      t
-                    lsp-ui-flycheck-enable t)
-
-              (define-key lsp-ui-mode-map [remap xref-find-definitions]
-                  #'lsp-ui-peek-find-definitions)
-              (define-key lsp-ui-mode-map [remap xref-find-references]
-                  #'lsp-ui-peek-find-references)))
+              (setq lsp-ui-peek-enable           nil
+                    lsp-ui-sideline-enable       nil
+                    lsp-ui-imenu-enable          t
+                    lsp-ui-doc-enable            t
+                    lsp-ui-flycheck-enable       t
+                    lsp-ui-doc-include-signature nil
+                    lsp-ui-sideline-show-symbol  nil)))
     #+END_SRC
 ** Xref
    #+BEGIN_SRC emacs-lisp :noweb tangle
@@ -516,7 +513,32 @@ Common settings for almost all development modes
                (setq xref-show-xrefs-function 'helm-xref-show-xrefs)))
      #+END_SRC
 ** Debugging
-   #+BEGIN_SRC emacs-lisp
-     (use-package realgud
-         :ensure t)
-   #+END_SRC
+*** GUD
+    #+BEGIN_SRC emacs-lisp
+      (use-package realgud
+          :ensure t)
+    #+END_SRC
+
+*** DAP
+    #+BEGIN_SRC emacs-lisp
+      (use-package dap-mode
+          :ensure t
+          :diminish dap-mode "[D]"
+          :init
+          (progn
+              (add-hook 'dap-stopped-hook
+                        (lambda (arg) (call-interactively #'dap-hydra)))
+              (add-hook 'dap-mode-hook
+                        (lambda (arg)
+                               (dap-ui-mode 1)
+
+                               ;; enables mouse hover support
+                               (dap-tooltip-mode 1)
+
+                               ;; use tooltips for mouse hover
+                               ;; if it is not enabled `dap-mode' will use the minibuffer.
+                               (tooltip-mode 1))))
+          :config
+          (progn
+              (setq dap-lldb-debug-program '("/usr/bin/lldb-vscode"))))
+    #+END_SRC

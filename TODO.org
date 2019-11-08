@@ -1,4 +1,4 @@
-* Use package tasks [29/42]
+* Use package tasks [29/46]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
@@ -22,8 +22,22 @@
 **** DONE Flycheck backends
 **** CANCELED Try traad - Dead
      CLOSED: [2019-09-15 Sun 22:00]
-*** DONE C/C++ [7/7]
+*** DONE C/C++ [7/8]
     CLOSED: [2018-08-04 Sat 08:45]
+**** TODO Add DAP template
+     #+BEGIN_SRC emacs-lisp
+       (dap-register-debug-template
+        "LLDB::Run"
+        (list :type "lldb"
+              :cwd "/home/armoken/Development/Learning/Algorithms and Data Structures/Machine Learning/University Tasks/01"
+              :request "launch"
+              :program "/home/armoken/Development/Learning/Algorithms and Data Structures/Machine Learning/University Tasks/01/build/linreg"
+              :args (list
+                     "--input_data_dir" "/home/armoken/Development/Learning/Algorithms and Data Structures/Machine Learning/University Tasks/01/test_data"
+                     "--output_dir" "/home/armoken/Development/Learning/Algorithms and Data Structures/Machine Learning/University Tasks/01/output")
+              :name "LLDB::Run"))
+     #+END_SRC
+
 **** DONE [#A] Basic support
 **** DONE Rtags
      CLOSED: [2018-08-04 Sat 08:44]
@@ -45,6 +59,8 @@
 **** DONE Rubocop
 **** DONE Inf-ruby
 ** Utils
+*** TODO Dired - make it more useful
+*** CURRENT DAP
 *** DONE GDB
     CLOSED: [2018-08-03 Fri 23:17]
 *** DONE Magit
@@ -53,7 +69,7 @@
 *** TODO Move region of code using arrows like in elpy
 *** TODO [[https://github.com/tuhdo/semantic-refactor][semantic-refactor ]]
 ** Performance
-*** Test startup time
+*** TODO Test startup time
 ** UI
 *** DONE [#A] Disable font scale on C-- and S-C-+
 *** TODO [#A] Fonts

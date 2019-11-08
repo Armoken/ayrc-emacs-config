@@ -23,10 +23,6 @@ C/C++ configuration for Emacs
   - [[https://github.com/Sarcasm/company-irony][company-irony]] :: company-mode completion back-end for irony-mode
   - [[https://github.com/Sarcasm/flycheck-irony][flycheck-irony]] :: C, C++ and Objective-C support for Flycheck, using Irony Mode
   - [[https://github.com/ikirill/irony-eldoc][irony-eldoc]] :: irony-mode support for eldoc-mode
-  - [[https://github.com/Andersbakken/rtags][rtags]] :: A c/c++ client/server indexer for c/c++/objc[++] with integration for Emacs based on clang
-  - [[https://github.com/Andersbakken/rtags][helm-rtags]] :: A front-end for rtags
-  - [[https://github.com/Andersbakken/rtags][company-rtags]] :: RTags back-end for company
-  - [[https://github.com/Andersbakken/rtags][flycheck-rtags]] :: RTags Flycheck integration
   - [[https://github.com/sonatard/clang-format][clang-format]] :: Clang-format emacs integration for use with C/Objective-C/C++
   - [[https://github.com/ludwigpacifici/modern-cpp-font-lock][modern-cpp-font-lock]] :: C++ font-lock for Emacs
   - [[https://github.com/atilaneves/cmake-ide][cmake-ide]] :: Use Emacs as a C/C++ IDE
@@ -63,18 +59,18 @@ C/C++ configuration for Emacs
          :commands (clang-format clang-buffer clang-format-region))
 
      <<irony-use-package>>
-     <<rtags-use-package>>
      <<gtags-use-package>>
      <<ccls-use-package>>
      <<cmake-ide-use-package>>
 
      (defun cc-hook ()
          (hs-minor-mode)
+         (smartparens-mode)
 
          (setq
           ;; Setup minor mods if any component need it
           conf-variable-for-cc (list cc-eldoc-plugin
-                                     cc-syntat-check-plugin
+                                     cc-syntax-check-plugin
                                      cc-autocompletion-plugin))
 
          (local-set-keys '(("C-c TAB" . hs-toggle-hiding)
@@ -82,42 +78,34 @@ C/C++ configuration for Emacs
 
          (if (member "irony" conf-variable-for-cc)
                  (irony-setup))
-         (if (member "rtags" conf-variable-for-cc)
-                 (rtags-setup))
          (if (member "gtags" conf-variable-for-cc)
                  (gtags-setup))
          (if (member "ccls" conf-variable-for-cc)
                  (ccls-setup))
 
          ;; Autocompletion setup
-         (defun get-autocompletion-backends ()
-             (funcall (pcase cc-autocompletion-plugin
-                          ("irony"  'irony-autocompletion-setup)
-                          ("rtags"  'rtags-autocompletion-setup)
-                          ("gtags"  'gtags-autocompletion-setup)
-                          ("ccls"   'ccls-autocompletion-setup))))
+         (start-company-mode)
 
-
-         (let ((local-company-backends
-                (make-local-variable #'company-backends)))
-             (add-to-list local-company-backends
-                          (get-autocompletion-backends)))
-
+         (make-local-variable 'company-backends)
+         (funcall (pcase cc-autocompletion-plugin
+                      ("irony"  'irony-autocompletion-setup)
+                      ("gtags"  'gtags-autocompletion-setup)
+                      ("ccls"   'ccls-autocompletion-setup)))
 
          ;; Syntax check setup
-         (funcall (pcase cc-syntat-check-plugin
+         (funcall (pcase cc-syntax-check-plugin
                       ("irony"  'irony-syntax-check-setup)
-                      ("rtags"  'rtags-syntax-check-setup)
                       ("gtags"  'gtags-syntax-check-setup)
                       ("ccls"   'ccls-syntax-check-setup)))
 
          ;; Eldoc setup
          (funcall (pcase cc-eldoc-plugin
                       ("irony"  'irony-eldoc-setup)
-                      ("rtags"  'rtags-eldoc-setup)
                       ("gtags"  'gtags-eldoc-setup)
                       ("ccls"   'ccls-eldoc-setup)))
-         )
+         ;; Debug support
+         (require 'dap-lldb)
+         (dap-mode 1))
 
      (add-hook 'c-mode-hook #'cc-hook)
      (add-hook 'c++-mode-hook #'cc-hook)
@@ -154,8 +142,9 @@ C/C++ configuration for Emacs
        (setq company-irony-ignore-case 'smart)
 
        ;; Use compilation database first, clang_complete as fallback.
-       (setq-default irony-cdb-compilation-databases '(irony-cdb-libclang
-                                                       irony-cdb-clang-complete))
+       (setq-default irony-cdb-compilation-databases
+                     '(irony-cdb-libclang
+                       irony-cdb-clang-complete))
 
        (defun irony-autocompletion-setup ()
            (define-key irony-mode-map [remap completion-at-point]
@@ -170,8 +159,7 @@ C/C++ configuration for Emacs
            ;; scope operator std::|
            (company-irony-setup-begin-commands)
 
-           ;; Returns company backends
-           '(company-irony-c-headers company-irony))
+           (push '(company-irony-c-headers company-irony) company-backends))
      #+END_SRC
 
 **** Syntax analytics
@@ -196,90 +184,6 @@ C/C++ configuration for Emacs
            (irony-eldoc))
      #+END_SRC
 
-*** Rtags
-     #+NAME: rtags-use-package
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (use-package rtags
-           :ensure t
-           :init
-           (progn
-               <<rtags-autocompletion>>
-               <<rtags-syntax-analytics>>
-               <<rtags-eldoc>>
-
-               (use-package helm-rtags
-                   :ensure t)
-
-               (defun rtags-setup ()
-                   (cmake-ide-setup)
-
-                   (setq rtags-display-result-backend 'helm)
-
-                   (local-set-keys '(("M-."  . rtags-find-symbol-at-point)
-                                     ("M-,"   . rtags-location-stack-back)
-                                     ("C-c r" . rtags-rename-symbol)))
-
-                   (rtags-start-process-unless-running))))
-     #+END_SRC
-
-**** Autocompletion
-     #+NAME: rtags-autocompletion
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (use-package company-rtags
-           :ensure t)
-
-       (defun rtags-autocompletion-setup ()
-           (setq rtags-completions-enabled t)
-           (setq rtags-autostart-diagnostics t)
-
-           ;; Returns company backends
-           '(company-rtags))
-     #+END_SRC
-
-**** Syntax analytics
-     #+NAME: rtags-syntax-analytics
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (use-package flycheck-rtags
-           :ensure t)
-
-       (defun rtags-syntax-check-setup ()
-           (flycheck-mode)
-           (flycheck-select-checker 'rtags)
-           (setq-local flycheck-highlighting-mode nil)
-           (setq-local flycheck-check-syntax-automatically nil))
-     #+END_SRC
-
-**** Eldoc
-     #+NAME: rtags-eldoc
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (defun rtags-eldoc-setup ()
-           (defun fontify-string (str mode)
-               "Return STR fontified according to MODE."
-               (with-temp-buffer
-                   (insert str)
-                   (delay-mode-hooks (funcall mode))
-                   (font-lock-default-function mode)
-                   (font-lock-default-fontify-region
-                    (point-min) (point-max) nil)
-                   (buffer-string)))
-
-           (defun rtags-eldoc-function ()
-               (let ((summary (rtags-get-summary-text)))
-                   (and summary
-                        (fontify-string
-                         (replace-regexp-in-string
-                          "{[^}]*$" ""
-                          (mapconcat
-                           (lambda (str) (if (= 0 (length str)) "//" (string-trim str)))
-                           (split-string summary "\r?\n")
-                           " "))
-                         major-mode))))
-
-           (setq-local eldoc-documentation-function #'rtags-eldoc-function)
-
-           (eldoc-mode))
-     #+END_SRC
-
 *** GTags
      #+NAME: gtags-use-package
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
@@ -297,8 +201,7 @@ C/C++ configuration for Emacs
      #+NAME: gtags-autocompletion
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (defun gtags-autocompletion-setup ()
-           ;; Returns company backends
-           '(company-gtags))
+           (push '(company-gtags) company-backends))
      #+END_SRC
 
 **** Syntax analytics
@@ -315,24 +218,17 @@ C/C++ configuration for Emacs
            (eldoc-mode))
      #+END_SRC
 
-*** ccls
+*** CCLS
      #+NAME: ccls-use-package
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (use-package ccls
            :ensure t
+           :diminish ccls-code-lens-mode
            :init
            (progn
                <<ccls-autocompletion>>
                <<ccls-syntax-analytics>>
                <<ccls-eldoc>>
-
-               (defun ccls--get-root ()
-                   "Return the root directory of a ccls project."
-                   (expand-file-name
-                    (or
-                     (locate-dominating-file default-directory "compile_commands.json")
-                     (locate-dominating-file default-directory ".ccls")
-                     (user-error "Could not find ccls project root"))))
 
                (defun ccls-setup ()
                    (setq ccls-executable (executable-find "ccls"))
@@ -344,17 +240,12 @@ C/C++ configuration for Emacs
                            :index       (:comments 2)
                            :completion  (:detailedLabel t)))
 
-                   ;; (setq ccls-sem-highlight-method 'font-lock)
+                   ;; (setq ccls-sem-highlight-method 'overlay)
 
-                   ;; For rainbow semantic highlighting
-                   ;; (ccls-use-default-rainbow-sem-highlight)
 
-                   (setq lsp-ui-doc-include-signature t)
-                   (setq lsp-ui-sideline-show-symbol nil)
-
-                   (local-set-keys '(("M-."     . xref-find-definitions)
+                   (local-set-keys '(("M-."     . lsp-ui-peek-find-definitions)
                                      ("M-,"     . xref-pop-marker-stack)
-                                     ("M-?"     . xref-find-references)
+                                     ("M-?"     . lsp-ui-peek-find-references)
                                      ("C-M-."   . xref-find-apropos)
                                      ("C-c h i" . lsp-ui-imenu)))
 
@@ -365,8 +256,8 @@ C/C++ configuration for Emacs
      #+NAME: ccls-autocompletion
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (defun ccls-autocompletion-setup ()
-           ;; Returns company backends
-           #'company-lsp)
+           (setq company-backends (delete 'company-lsp company-backends))
+           (push '(company-lsp :with company-yasnippet) company-backends))
      #+END_SRC
 
 **** Syntax analytics
@@ -401,7 +292,6 @@ C/C++ configuration for Emacs
                                                   "-Wextra")))
      (add-hook 'c-mode-hook #'c-hook)
    #+END_SRC
-
 
 ** C++ configuration
    #+NAME: c++-configuration

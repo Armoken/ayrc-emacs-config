@@ -14,6 +14,7 @@ UI settings
   - [[https://github.com/domtronn/all-the-icons.el][all-the-icons]] :: A utility package to collect various Icon Fonts and propertize them
   - [[https://github.com/jaypei/emacs-neotree][neotree]] :: A emacs tree plugin like NerdTree for Vim
   - [[https://github.com/emacs-helm/helm][helm]] :: Incremental completion and selection narrowing framework
+  - [[https://github.com/abo-abo/hydra][hydra]] :: Make Emacs bindings that stick around
 * Configuration
 ** Cleaning screen
 *** Remove some GUI elelements
@@ -177,4 +178,13 @@ UI settings
      (global-set-key (kbd "<C-M-down>") 'enlarge-window)
      (global-set-key (kbd "<C-M-left>") 'shrink-window-horizontally)
      (global-set-key (kbd "<C-M-right>") 'enlarge-window-horizontally)
+   #+END_SRC
+** Hydra
+   #+BEGIN_SRC emacs-lisp
+     (use-package hydra
+         :ensure t)
+   #+END_SRC
+** Layout switching
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "<AltGr>") 'toggle-input-method)
    #+END_SRC
