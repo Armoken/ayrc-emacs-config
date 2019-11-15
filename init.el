@@ -75,7 +75,6 @@
                "./rc/langs/cc.org"
                ;; "./rc/langs/python.org"
                ;; "./rc/langs/haskell.org"
-               ;; "./rc/langs/ruby.org"
                ;; "./rc/langs/tex.org"
                )))
 (provide 'init)
