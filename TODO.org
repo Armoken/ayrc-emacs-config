@@ -3,25 +3,7 @@
 :COOKIE_DATA: todo recursive
 :END:
 ** Languages [21/33]
-*** TODO Haskell
-**** DONE Choose minimal core packages
-**** TODO hlint apply refact
-*** TODO Rust
-*** TODO HTML
-*** TODO CSS
-*** TODO JS
-*** TODO Python [3/7]
-**** TODO pyls-lsp
-**** TODO Remove elpy
-**** TODO Pyenv support
-**** TODO Pipenv support
-**** DONE Flycheck backends
-**** DONE Interactive function for prerequisite packages installation
-     CLOSED: [2019-09-17 Tue 14:17]
-**** CANCELED Try traad - Dead
-     CLOSED: [2019-09-15 Sun 22:00]
-*** DONE C/C++ [7/8]
-    CLOSED: [2018-08-04 Sat 08:45]
+*** TODO C/C++ [7/8]
 **** TODO Add DAP template
      #+BEGIN_SRC emacs-lisp
        (dap-register-debug-template
@@ -49,13 +31,31 @@
      CLOSED: [2018-08-04 Sat 08:44]
 **** DONE cquery
      CLOSED: [2018-08-04 Sat 08:44]
-*** DONE Golang
+*** TODO Python [3/7]
+**** TODO pyls-lsp
+**** TODO Remove elpy
+**** TODO Pyenv support
+**** TODO Pipenv support
+**** DONE Flycheck backends
+**** DONE Interactive function for prerequisite packages installation
+     CLOSED: [2019-09-17 Tue 14:17]
+**** CANCELED Try traad - Dead
+     CLOSED: [2019-09-15 Sun 22:00]
+*** TODO Haskell [1/2]
+**** TODO hlint apply refact
+**** DONE Choose minimal core packages
+*** TODO Rust [/]
+*** TODO HTML [/]
+*** TODO CSS [/]
 *** DONE VHDL
-*** DONE Ruby
+*** CANCELED JS                                                     :useless:
+    CLOSED: [2019-11-15 Fri 21:10]
+*** CANCELED Ruby                                                   :useless:
 **** DONE RVM
 **** DONE Robe
 **** DONE Rubocop
 **** DONE Inf-ruby
+*** CANCELED Golang                                                 :useless:
 *** CANCELED C#                                                     :useless:
     CLOSED: [2019-11-08 Fri 12:11]
 *** CANCELED Basic Java support                                     :useless:

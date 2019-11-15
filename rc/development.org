@@ -248,60 +248,6 @@ Common settings for almost all development modes
           :hook (company-mode . company-statistics-mode))
      #+END_SRC
 
-** VCS
-*** Git
-     #+BEGIN_SRC emacs-lisp
-       (use-package magit
-           :ensure t
-           :commands (magit-get-top-dir)
-           :bind (("C-x g" . magit-status))
-           :hook (git-commit-mode-hook . magit-commit-mode-init)
-           :init
-           (progn
-               (delete 'Git vc-handled-backends)
-
-               ;; Close popup when commiting - this stops the commit window
-               ;; hanging around
-               ;; From: http://git.io/rPBE0Q
-               (defadvice git-commit-commit (after delete-window activate)
-                   (delete-window))
-
-               (defadvice git-commit-abort (after delete-window activate)
-                   (delete-window))
-
-               ;; these two force a new line to be inserted into a commit window,
-               ;; which stops the invalid style showing up.
-               ;; From: http://git.io/rPBE0Q
-               (defun magit-commit-mode-init ()
-                   (when (looking-at "\n")
-                       (open-line 1))))
-           :config
-           (progn
-               ;; restore previously hidden windows
-               (defadvice magit-quit-window (around magit-restore-screen activate)
-                   (let ((current-mode major-mode))
-                       ad-do-it
-                       (when (eq 'magit-status-mode current-mode)
-                           (jump-to-register :magit-fullscreen))))
-
-               ;; magit settings
-               (setq magit-default-tracking-name-function
-                     'magit-default-tracking-name-branch-only
-                     ;; open magit status in same window as current buffer
-                     magit-status-buffer-switch-function 'switch-to-buffer
-                     ;; highlight word/letter changes in hunk diffs
-                     magit-diff-refine-hunk t
-                     ;; ask me to save buffers
-                     magit-save-some-buffers t
-                     ;; ask me if I want a tracking upstream
-                     magit-set-upstream-on-push 'askifnotset)))
-	  #+END_SRC
-*** Subversion
-    #+BEGIN_SRC emacs-lisp
-      (use-package dsvn
-          :ensure t
-          :commands (svn-status svn-log svn-update))
-    #+END_SRC
 ** Folding
    #+BEGIN_SRC emacs-lisp
      (use-package hideshow
