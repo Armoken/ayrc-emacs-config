@@ -49,42 +49,23 @@ Common settings for almost all development modes
   - [[https://github.com/realgud/realgud][realgud]] :: The Grand "Cathedral" Debugger rewrite
 * Configuration
 ** Project managment
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package projectile
          :ensure t
-         :commands (projectile-global-mode
-                    projectile-ignored-projects
-                    projectile-compile-project)
          :bind
          (:map projectile-mode-map
                ("C-x p o" . projectile-switch-open-project)
                ("C-x p s" . projectile-switch-project)
                ("<f9>"    . projectile-compile-project)
-               ("C-c p h" . helm-projectile)
-               ("C-c p p" . helm-projectile-switch-project)
-               ("C-c p f" . helm-projectile-find-file)
-               ("C-c p F" . helm-projectile-find-file-in-known-projects)
-               ("C-c p g" . helm-projectile-find-file-dwim)
-               ("C-c p d" . helm-projectile-find-dir)
-               ("C-c p e" . helm-projectile-recentf)
-               ("C-c p a" . helm-projectile-find-other-file)
                ("C-c p i" . projectile-invalidate-cache)
                ("C-c p z" . projectile-cache-current-file)
-               ("C-c p b" . helm-projectile-switch-to-buffer)
-               ("C-c p s" . helm-projectile-grep-or-rg))
+               ("C-c p b" . helm-projectile-switch-to-buffer))
          :init
          (progn
-             (use-package helm-projectile
-                 :ensure t)
-             (defun helm-projectile-grep-or-rg ()
-                 "Uses helm-projectile-grep, if ag doesn't present"
-                 (interactive)
-                 (if (executable-find "rg") (helm-projectile-rg)
-                     (helm-projectile-grep)))
-             )
+             <<helm-projectile-use-package>>
+             (projectile-mode))
          :config
          (progn
-             (projectile-global-mode)
              (setq projectile-completion-system 'helm)
              (setq projectile-switch-project-action 'helm-projectile)
              (setq-default projectile-mode-line
@@ -98,6 +79,30 @@ Common settings for almost all development modes
                     projectile-project-root-files-top-down-recurring))))
    #+END_SRC
 
+*** Helm
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-projectile-use-package
+       (use-package helm-projectile
+           :ensure t
+           :after projectile
+           :bind (:map projectile-mode-map
+                       ("C-c p s" . ayrc/helm-projectile-grep-or-rg)
+                       ("C-c p h" . helm-projectile)
+                       ("C-c p p" . helm-projectile-switch-project)
+                       ("C-c p f" . helm-projectile-find-file)
+                       ("C-c p F" . helm-projectile-find-file-in-known-projects)
+                       ("C-c p g" . helm-projectile-find-file-dwim)
+                       ("C-c p d" . helm-projectile-find-dir)
+                       ("C-c p e" . helm-projectile-recentf)
+                       ("C-c p a" . helm-projectile-find-other-file))
+           :config
+           (progn
+               (defun ayrc/helm-projectile-grep-or-rg ()
+                   "Uses helm-projectile-grep, if ag doesn't present"
+                   (interactive)
+                   (if (executable-find "rg") (helm-projectile-rg)
+                       (helm-projectile-grep)))))
+
+     #+END_SRC
 ** Static code analysis
 *** Flymake
     #+BEGIN_SRC emacs-lisp :noweb tangle
@@ -107,23 +112,25 @@ Common settings for almost all development modes
           :init
           (progn
               <<helm-flymake-use-package>>
-
-              <<flymake-popup-use-package>>
-              (add-hook 'flymake-mode-hook
-                        #'flymake-diagnostic-at-point-mode)))
+              <<flymake-popup-use-package>>))
     #+END_SRC
+
 **** Popup
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flymake-popup-use-package
        (use-package flymake-diagnostic-at-point
            :ensure t
-           :after flymake)
+           :after flymake
+           :hook (flycheck-mode . flymake-diagnostic-at-point-mode))
      #+END_SRC
+
 **** Helm
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-flymake-use-package
        (use-package helm-flymake
            :ensure t
+           :after flymake
            :commands (helm-flymake))
      #+END_SRC
+
 *** Flycheck
     #+BEGIN_SRC emacs-lisp :noweb tangle
       (use-package flycheck
@@ -133,8 +140,6 @@ Common settings for almost all development modes
           :init
           (progn
               <<flycheck-popup-use-package>>
-              (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)
-
               <<helm-flycheck-use-package>>)
           :config
           (progn
@@ -142,18 +147,26 @@ Common settings for almost all development modes
               (setq flycheck-idle-change-delay 0)
               (setq flycheck-check-syntax-automatically '(save mode-enabled))))
     #+END_SRC
+
 **** Popup
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flycheck-popup-use-package
        (use-package flycheck-popup-tip
            :ensure t
+           :after flycheck
+           :hook (flycheck-mode . flycheck-popup-tip-mode)
            :commands (flycheck-popup-tip-mode))
      #+END_SRC
+
 **** Helm
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-flycheck-use-package
        (use-package helm-flycheck
            :ensure t
-           :bind (("C-c h f" . helm-flycheck)))
+           :after flycheck
+           :bind (:map flycheck-mode-map
+                       ("C-c h f" . helm-flycheck))
+           :commands (helm-flycheck))
      #+END_SRC
+
 ** Autocompletion
 *** Semantic
     #+BEGIN_SRC emacs-lisp
@@ -161,6 +174,7 @@ Common settings for almost all development modes
           :diminish semantic-mode "[S]"
           :commands (semantic-mode))
     #+END_SRC
+
 *** Company
     #+BEGIN_SRC emacs-lisp :noweb tangle
       (use-package company
@@ -177,10 +191,7 @@ Common settings for almost all development modes
               <<company-statistics-use-package>>
 
               (defun start-company-mode ()
-                  (global-company-mode)
-                  (company-flx-mode)
-                  (company-statistics-mode)
-                  (company-quickhelp-mode)))
+                  (global-company-mode)))
           :config
           (progn
               (setq company-tooltip-align-annotations t
@@ -203,26 +214,27 @@ Common settings for almost all development modes
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-quickhelp-use-package
       (use-package company-quickhelp
           :ensure t
-          :commands (company-quickhelp-mode)
-          :bind (
-                 :map company-active-map
-                 ("M-h" . #'company-quickhelp-manual-begin)))
+          :after company
+          :hook (company-mode . company-quickhelp-mode)
+          :bind (:map company-active-map
+                      ("M-h" . #'company-quickhelp-manual-begin)))
     #+END_SRC
 
 **** Fuzzy matching
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-flx-use-package
        (use-package company-flx
            :ensure t
-           :after company lsp-mode
-           :commands (company-flx-mode))
+           :after company
+           :hook (company-mode . company-flx-mode))
      #+END_SRC
 
 **** Icons
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-box-use-package
       (use-package company-box
           :ensure t
+          :disabled
           :after company
-          :commands (company-box-mode)
+          :hook (company-mode . company-box-mode)
           :config
           (progn
               (setq company-box-icons-alist company-box-icons-all-the-icons)))
@@ -230,63 +242,59 @@ Common settings for almost all development modes
 
 **** Sort candidates by previous completion choices
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-statistics-use-package
-       (use-package company-statistics
-           :ensure t
-           :after company
-           :commands (company-statistics-mode))
+      (use-package company-statistics
+          :ensure t
+          :after company
+          :hook (company-mode . company-statistics-mode))
      #+END_SRC
 
 ** VCS
 *** Git
      #+BEGIN_SRC emacs-lisp
        (use-package magit
-         :ensure t
+           :ensure t
+           :commands (magit-get-top-dir)
+           :bind (("C-x g" . magit-status))
+           :hook (git-commit-mode-hook . magit-commit-mode-init)
+           :init
+           (progn
+               (delete 'Git vc-handled-backends)
 
-         :commands magit-get-top-dir
-         :bind (("C-x g" . magit-status))
+               ;; Close popup when commiting - this stops the commit window
+               ;; hanging around
+               ;; From: http://git.io/rPBE0Q
+               (defadvice git-commit-commit (after delete-window activate)
+                   (delete-window))
 
-         :init
-         (progn
-           (delete 'Git vc-handled-backends)
-           ;; Close popup when commiting - this stops the commit window
-           ;; hanging around
-           ;; From: http://git.io/rPBE0Q
-           (defadvice git-commit-commit (after delete-window activate)
-             (delete-window))
+               (defadvice git-commit-abort (after delete-window activate)
+                   (delete-window))
 
-           (defadvice git-commit-abort (after delete-window activate)
-             (delete-window))
+               ;; these two force a new line to be inserted into a commit window,
+               ;; which stops the invalid style showing up.
+               ;; From: http://git.io/rPBE0Q
+               (defun magit-commit-mode-init ()
+                   (when (looking-at "\n")
+                       (open-line 1))))
+           :config
+           (progn
+               ;; restore previously hidden windows
+               (defadvice magit-quit-window (around magit-restore-screen activate)
+                   (let ((current-mode major-mode))
+                       ad-do-it
+                       (when (eq 'magit-status-mode current-mode)
+                           (jump-to-register :magit-fullscreen))))
 
-           ;; these two force a new line to be inserted into a commit window,
-           ;; which stops the invalid style showing up.
-           ;; From: http://git.io/rPBE0Q
-           (defun magit-commit-mode-init ()
-             (when (looking-at "\n")
-               (open-line 1)))
-
-           (add-hook 'git-commit-mode-hook 'magit-commit-mode-init))
-
-         :config
-         (progn
-           ;; restore previously hidden windows
-           (defadvice magit-quit-window (around magit-restore-screen activate)
-             (let ((current-mode major-mode))
-               ad-do-it
-               (when (eq 'magit-status-mode current-mode)
-                 (jump-to-register :magit-fullscreen))))
-
-           ;; magit settings
-           (setq
-            magit-default-tracking-name-function 'magit-default-tracking-name-branch-only
-            ;; open magit status in same window as current buffer
-            magit-status-buffer-switch-function 'switch-to-buffer
-            ;; highlight word/letter changes in hunk diffs
-            magit-diff-refine-hunk t
-            ;; ask me to save buffers
-            magit-save-some-buffers t
-            ;; ask me if I want a tracking upstream
-            magit-set-upstream-on-push 'askifnotset
-            )))
+               ;; magit settings
+               (setq magit-default-tracking-name-function
+                     'magit-default-tracking-name-branch-only
+                     ;; open magit status in same window as current buffer
+                     magit-status-buffer-switch-function 'switch-to-buffer
+                     ;; highlight word/letter changes in hunk diffs
+                     magit-diff-refine-hunk t
+                     ;; ask me to save buffers
+                     magit-save-some-buffers t
+                     ;; ask me if I want a tracking upstream
+                     magit-set-upstream-on-push 'askifnotset)))
 	  #+END_SRC
 *** Subversion
     #+BEGIN_SRC emacs-lisp
@@ -307,7 +315,7 @@ Common settings for almost all development modes
          :init
          (progn
              ;; For yaml mode and others
-             (defun indenation-toggle-fold ()
+             (defun ayrc/indenation-toggle-fold ()
                  "Toggle fold all lines larger than indentation on current line"
                  (interactive)
                  (let ((col 1))
@@ -349,7 +357,8 @@ Common settings for almost all development modes
 *** Ready snippets collection
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref snippets-collection
       (use-package yasnippet-snippets
-          :ensure t)
+          :ensure t
+          :after yasnippet)
     #+END_SRC
 
 ** Indents
@@ -366,9 +375,12 @@ Common settings for almost all development modes
 
     #+BEGIN_SRC emacs-lisp
       (use-package aggressive-indent
-        :ensure t
-        :commands (aggressive-indent-mode)
-        :diminish aggressive-indent-mode "[a]")
+          :ensure t
+          :commands (aggressive-indent-mode)
+          :diminish aggressive-indent-mode "[a]"
+          :config
+          (progn
+              (electric-indent-mode -1)))
     #+END_SRC
 ** Highlighting
 *** Syntax
@@ -378,6 +390,7 @@ Common settings for almost all development modes
         (progn
           (setq font-lock-maximum-decoration t)))
     #+END_SRC
+
 *** Indentation
     #+BEGIN_SRC emacs-lisp
       (use-package highlight-indentation
@@ -385,6 +398,7 @@ Common settings for almost all development modes
         :diminish "[hi]"
         :commands (highlight-indentation-mode))
     #+END_SRC
+
 ** EditorConfig
    #+BEGIN_SRC emacs-lisp
      (use-package editorconfig
@@ -394,6 +408,7 @@ Common settings for almost all development modes
        (progn
          (editorconfig-mode)))
    #+END_SRC
+
 ** Expand region
    #+BEGIN_SRC emacs-lisp
      (use-package expand-region
@@ -401,11 +416,13 @@ Common settings for almost all development modes
        :commands (er/expand-region)
        :bind ("C-=" . er/expand-region))
    #+END_SRC
+
 ** Eldoc
    #+BEGIN_SRC emacs-lisp
      (use-package eldoc
          :diminish eldoc-mode)
    #+END_SRC
+
 ** GTags
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package ggtags
@@ -423,37 +440,33 @@ Common settings for almost all development modes
              (unbind-key "M-<" ggtags-mode-map)
              (unbind-key "M->" ggtags-mode-map)))
    #+END_SRC
+
 *** Helm
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-gtags-use-package
       (use-package helm-gtags
           :ensure t
+          :after ggtags
           :commands (helm-gtags-select helm-gtags-find-tag)
-          :init
+          :config
           (progn
               (setq helm-gtags-fuzzy-match t)
               (setq helm-gtags-preselect t)
               (setq helm-gtags-prefix-key "\C-cg")
-              (setq helm-gtags-path-style 'relative))
-          :config
-          (progn
+              (setq helm-gtags-path-style 'relative)
+
               (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
               (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
     #+END_SRC
+
 ** LSP
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package lsp-mode
          :ensure t
          :diminish lsp-mode "[L]"
-         :bind
-         ((:map lsp-mode-map
-                ("C-c h w" . helm-lsp-workspace-symbol)))
          :init
          (progn
              <<company-lsp-use-package>>
-
              <<lsp-ui-use-package>>
-             (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-
              <<helm-lsp-use-package>>)
          :config
          (progn
@@ -462,12 +475,17 @@ Common settings for almost all development modes
                    lsp-vetur-completion-use-scaffold-snippets t
                    lsp-enable-file-watchers                   nil)))
    #+END_SRC
+
 *** Helm
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-lsp-use-package
       (use-package helm-lsp
           :ensure t
+          :bind
+          ((:map lsp-mode-map
+                 ("C-c h w" . helm-lsp-workspace-symbol)))
           :commands (helm-lsp-workspace-symbol))
     #+END_SRC
+
 *** Company
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-lsp-use-package
       (use-package company-lsp
@@ -482,10 +500,12 @@ Common settings for almost all development modes
 
                company-lsp-enable-recompletion t)))
     #+END_SRC
+
 *** UI modules
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref lsp-ui-use-package
       (use-package lsp-ui
           :ensure t
+          :hook (lsp-mode . lsp-ui-mode)
           :config
           (progn
               (setq lsp-ui-peek-enable           nil
@@ -496,6 +516,7 @@ Common settings for almost all development modes
                     lsp-ui-doc-include-signature nil
                     lsp-ui-sideline-show-symbol  nil)))
     #+END_SRC
+
 ** Xref
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package xref
@@ -503,6 +524,7 @@ Common settings for almost all development modes
          (progn
              <<helm-xref-use-package>>))
    #+END_SRC
+
 *** Helm
      #+BEGIN_SRC emacs-lisp  :tangle no :noweb-ref helm-xref-use-package
        (use-package helm-xref
@@ -512,6 +534,7 @@ Common settings for almost all development modes
            (progn
                (setq xref-show-xrefs-function 'helm-xref-show-xrefs)))
      #+END_SRC
+
 ** Debugging
 *** GUD
     #+BEGIN_SRC emacs-lisp
@@ -524,21 +547,30 @@ Common settings for almost all development modes
       (use-package dap-mode
           :ensure t
           :diminish dap-mode "[D]"
-          :init
-          (progn
-              (add-hook 'dap-stopped-hook
-                        (lambda (arg) (call-interactively #'dap-hydra)))
-              (add-hook 'dap-mode-hook
-                        (lambda (arg)
-                               (dap-ui-mode 1)
-
-                               ;; enables mouse hover support
-                               (dap-tooltip-mode 1)
-
-                               ;; use tooltips for mouse hover
-                               ;; if it is not enabled `dap-mode' will use the minibuffer.
-                               (tooltip-mode 1))))
           :config
           (progn
-              (setq dap-lldb-debug-program '("/usr/bin/lldb-vscode"))))
+              (setq dap-lldb-debug-program '("/usr/bin/lldb-vscode"))
+              (add-hook 'dap-stopped-hook
+                        (lambda (arg) (call-interactively #'dap-hydra)))
+
+              ;; use tooltips for mouse hover
+              ;; if it is not enabled `dap-mode' will use the minibuffer.
+              (tooltip-mode 1)
+
+              (dap-ui-mode 1)
+
+              ;; enables mouse hover support
+              (dap-tooltip-mode 1)))
     #+END_SRC
+
+** Compilation
+*** Press to compile                                                :global_hotkeys:
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "<f9>") 'compile)
+   #+END_SRC
+
+*** Errors switching                                                :global_hotkeys:
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "<f7>") 'next-error)
+     (global-set-key (kbd "<f8>") 'previous-error)
+   #+END_SRC

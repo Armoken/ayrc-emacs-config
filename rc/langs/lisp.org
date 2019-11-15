@@ -25,46 +25,55 @@ Lisp family languages configuration.
                 ("\\.sch\\'"   . scheme-mode))
          :init
          (progn
-             ;; Lisp configuration
-             <<rainbow-delimiters>>
-             <<lisp-extra-font-lock>>
-
+             <<rainbow-delimiters-use-package>>
+             <<lisp-extra-font-lock-use-package>>
+             <<elisp-slime-nav-use-package>>
+             <<geiser-use-package>>)
+         :config
+         (progn
              <<lisp-hook>>
-             (add-hook 'lisp-mode-hook                        'lisp-hook)
-             (add-hook 'eval-expression-minibuffer-setup-hook 'lisp-hook)
-             (add-hook 'ielm-mode-hook                        'lisp-hook)
-             (add-hook 'lisp-interaction-mode-hook            'lisp-hook)
-             (add-hook 'emacs-lisp-mode-hook                  'lisp-hook)
-
-             ;; Emacs Lisp configuration
-             <<elisp-slime-nav>>
-
              <<emacs-lisp-hook>>
-             (add-hook 'eval-expression-minibuffer-setup-hook 'emacs-lisp-hook)
-             (add-hook 'ielm-mode-hook                        'emacs-lisp-hook)
-             (add-hook 'lisp-interaction-mode-hook            'emacs-lisp-hook)
-             (add-hook 'emacs-lisp-mode-hook                  'emacs-lisp-hook)
-
-             ;; Scheme configuration
-             <<geiser>>
-
              <<scheme-hook>>
-             (add-hook 'scheme-mode-hook 'lisp-hook)
-             (add-hook 'scheme-mode-hook 'scheme-hook)))
+
+             (mapc (lambda (hook) (add-hook hook 'ayrc/emacs-lisp-hook))
+                   (list 'eval-expression-minibuffer-setup-hook
+                         'ielm-mode-hook
+                         'lisp-interaction-mode-hook
+                         'emacs-lisp-mode-hook))
+             (add-hook 'scheme-mode-hook 'ayrc/scheme-hook)))
    #+END_SRC
 
 ** Common configuration for all lisp dialects
+*** Highlights delimiters such as parentheses, brackets or braces according to their depth
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref rainbow-delimiters-use-package
+      (use-package rainbow-delimiters
+          :ensure t)
+    #+END_SRC
+
+*** Highlight bound variables and quoted expressions in lisp
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref lisp-extra-font-lock-use-package
+      (use-package lisp-extra-font-lock
+          :ensure t
+          :diminish lisp-extra-font-lock-mode "[lefl]")
+    #+END_SRC
+
 *** Hook
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref lisp-hook
-      (defun lisp-hook ()
+      (defun ayrc/lisp-hook ()
+          (display-line-numbers-mode)
+          (visual-line-mode)
+          (ws-butler-mode)
+          (smartparens-mode)
+          (semantic-mode)
+
+          (company-mode)
           (flycheck-mode)
           (hs-minor-mode)
 
           (aggressive-indent-mode)
-          (eldoc-mode)
-          (lisp-extra-font-lock-global-mode)
-
           (rainbow-delimiters-mode)
+          (eldoc-mode)
+          (lisp-extra-font-lock-mode)
 
           (prettify-symbols-mode)
           (setq prettify-symbols-unprettify-at-point 'right-edge)
@@ -75,34 +84,22 @@ Lisp family languages configuration.
           (setq lisp-body-indent 4)
 
           (add-hook 'write-contents-functions
-                    'cleanup-buffer-notabs nil t))
-    #+END_SRC
-
-*** Highlights delimiters such as parentheses, brackets or braces according to their depth
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref rainbow-delimiters
-      (use-package rainbow-delimiters
-          :ensure t)
-    #+END_SRC
-
-*** Highlight bound variables and quoted expressions in lisp
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref lisp-extra-font-lock
-      (use-package lisp-extra-font-lock
-          :ensure t
-          :diminish lisp-extra-font-lock-mode "[lefl]")
+                    'ayrc/cleanup-buffer-notabs nil t))
     #+END_SRC
 
 ** Emacs Lisp
 *** Navigation of source with M-. & M-,
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref elisp-slime-nav
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref elisp-slime-nav-use-package
       (use-package elisp-slime-nav
           :ensure t
-          :diminish elisp-slime-nav-mode "[sn]"
-          :commands (turn-on-elisp-slime-nav-mode))
+          :diminish elisp-slime-nav-mode "[sn]")
     #+END_SRC
 
 *** Hook
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref emacs-lisp-hook
-      (defun emacs-lisp-hook ()
+      (defun ayrc/emacs-lisp-hook ()
+          (ayrc/lisp-hook)
+
           (turn-on-elisp-slime-nav-mode)
 
           (add-to-list (make-local-variable 'company-backends)
@@ -110,20 +107,22 @@ Lisp family languages configuration.
     #+END_SRC
 
 ** Scheme
-*** Hook
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref scheme-hook
-      (defun scheme-hook ()
-          (geiser-mode)
-
-          (add-to-list (make-local-variable 'company-backends)
-                       '(company-capf company-dabbrev-code)))
-    #+END_SRC
-
 *** Main minor mode
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref geiser
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref geiser-use-package
       (use-package geiser
           :ensure t
           :config
           (progn
               (setq geiser-active-implementations '(racket guile))))
+    #+END_SRC
+
+*** Hook
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref scheme-hook
+      (defun ayrc/scheme-hook ()
+          (ayrc/lisp-hook)
+
+          (geiser-mode)
+
+          (add-to-list (make-local-variable 'company-backends)
+                       '(company-capf company-dabbrev-code)))
     #+END_SRC

@@ -1,140 +1,199 @@
 #+TITLE: Markup
 #+OPTIONS: toc:nil num:nil ^:nil
-* JSON
-  Install demjson python package
+* Configuration
+** JSON
+   Install demjson python package
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package json-mode
-      :ensure t
-      :mode (("\\.json\\'" . json-mode))
-      :init
-      (progn
-        (use-package json-reformat
-          :ensure t
-          :commands (json-reformat-region)
-          :bind (("C-c r" . json-reformat-region)))
-
-        (use-package flycheck-demjsonlint
-          :ensure t)
-
-        (add-hook 'json-mode-hook 'hs-minor-mode))
-      :config
-      (progn
-        (setq js-indent-level 4)))
-  #+END_SRC
-
-* Yaml
-  #+BEGIN_SRC emacs-lisp
-    (use-package yaml-mode
-      :ensure t
-      :mode (("\\.yml\\'"  . yaml-mode)
-             ("\\.yaml\\'" . yaml-mode))
-      :bind (:map yaml-mode-map
-                  ("C-c f TAB" . indenation-toggle-fold))
-      :init
-      (progn
-        (use-package flycheck-yamllint
-          :ensure t
-          :init (progn
-                  (eval-after-load 'flycheck
-                    '(add-hook 'flycheck-mode-hook
-                               'flycheck-yamllint-setup))))
-
-        (add-hook 'yaml-mode-hook 'prog-mode-hook)
-        (add-hook 'yaml-mode-hook 'highlight-indentation-mode)
-        (add-hook 'yaml-mode-hook 'smart-shift-mode))
-      :config
-      (progn
-        (setq yaml-indent-offset 2)))
-  #+END_SRC
-
-* XML
-  #+BEGIN_SRC emacs-lisp
-    (use-package nxml
-      :ensure t
-      :commands (nxml-mode)
-      :mode ("\\.\\(xml\\|axml\\|xsl|xaml\\)$" . nxml-mode)
-      :init
-      (progn
-        (defun xml-hook()
-          (hs-minor-mode)
-          (add-to-list (make-local-variable 'company-backends)
-                       '(company-nxml company-yasnippet)))
-        (add-hook 'nxml-mode-hook 'xml-hook)))
-  #+END_SRC
-
-* Jinja2
-  #+BEGIN_SRC emacs-lisp
-    (use-package jinja2-mode
-      :ensure t
-      :commands (jinja2-mode)
-      :mode (("\\.j2\\'" . jinja2-mode)))
-  #+END_SRC
-
-* RST
    #+BEGIN_SRC emacs-lisp
-     (use-package rst
-       :mode (("\\.txt$" . rst-mode)
-              ("\\.rst$" . rst-mode)))
-   #+END_SRC
-* Markdown
-** Prerequisites
-   :PROPERTIES:
-   :CUSTOM_ID: markdown-system-prerequisites
-   :END:
-
-   #+NAME: markdown-system-prerequisites
-   #+CAPTION: System prerequisites for markdown packages
-
-   - [[https://github.com/trentm/python-markdown2][python-markdown2]] :: A fast and complete implementation of Markdown
-** Packages
-   :PROPERTIES:
-   :CUSTOM_ID: markdown-packages
-   :END:
-
-   #+NAME: markdown-packages
-   #+CAPTION: Packages for markdown
-   - [[https://jblevins.org/projects/markdown-mode/][markdown-mode]] :: Emacs Markdown mode
-   - [[https://github.com/milkypostman/markdown-mode-plus][markdown-mode-plus]] :: Additional functions for Emacs [markdown-mode]
-   - [[https://github.com/ancane/markdown-preview-mode][markdown-preview-mode]] :: Minor mode to preview markdown output as you save
-** Conf
-   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref markdown-plus
-     (use-package markdown-mode+
+     (use-package json-mode
          :ensure t
-         :commands (markdown-cleanup-list-numbers
-                    markdown-export-latex
-                    markdown-copy-html
-                    markdown-copy-rtf))
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref markdown-preview
-     (use-package markdown-preview-mode
-         :ensure t
-         :commands (markdown-preview-mode
-                    markdown-preview-open-browser
-                    markdown-preview-cleanup)
-         :config
-         (progn
-             (add-to-list 'markdown-preview-stylesheets
-                          "https://raw.githubusercontent.com/richleland/pygments-css/master/emacs.css")
-             (add-to-list 'markdown-preview-javascript
-                          "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML")
-             (add-to-list 'markdown-preview-javascript
-                          '("http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" . async))))
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp :noweb tangle
-     (use-package markdown-mode
-         :ensure t
-         :commands (markdown-mode gfm-mode)
-         :mode (("README\\.md\\'" . gfm-mode)
-                ("\\.md\\'"       . markdown-mode)
-                ("\\.markdown\\'" . markdown-mode))
+         :mode (("\\.json\\'" . json-mode))
          :init
          (progn
-             <<markdown-plus>>
-             <<markdown-preview>>)
+             (use-package json-reformat
+                 :ensure t
+                 :bind (("C-c r" . json-reformat-region)))
+
+             (use-package flycheck-demjsonlint
+                 :ensure t))
          :config
          (progn
-             (setq markdown-command "markdown2")))
+             (defun ayrc/json-hook ()
+                 (display-line-numbers-mode)
+                 (visual-line-mode)
+                 (ws-butler-mode)
+                 (smartparens-mode)
+                 (semantic-mode)
+            
+                 (company-mode)
+                 (hs-minor-mode))
+             (add-hook 'json-mode-hook 'ayrc/json-hook)
+
+             (setq js-indent-level 4)))
    #+END_SRC
+
+** Yaml
+   #+BEGIN_SRC emacs-lisp
+     (use-package yaml-mode
+         :ensure t
+         :mode (("\\.yml\\'"  . yaml-mode)
+                ("\\.yaml\\'" . yaml-mode))
+         :bind (:map yaml-mode-map
+                     ("C-c f TAB" . indenation-toggle-fold))
+         :init
+         (progn
+             (use-package flycheck-yamllint
+                 :ensure t
+                 :init
+                 (progn
+                     (eval-after-load 'flycheck
+                         '(add-hook 'flycheck-mode-hook
+                                    'flycheck-yamllint-setup)))))
+         :config
+         (progn
+             (defun ayrc/yaml-hook ()
+                 (display-line-numbers-mode)
+                 (visual-line-mode)
+                 (ws-butler-mode)
+                 (smartparens-mode)
+                 (semantic-mode)
+            
+                 (company-mode)
+                 (hs-minor-mode)
+                 (highlight-indentation-mode)
+                 (smart-shift-mode))       
+             (add-hook 'yaml-mode-hook 'ayrc/yaml-hook)
+
+             (setq yaml-indent-offset 2)))
+   #+END_SRC
+
+** XML
+   #+BEGIN_SRC emacs-lisp
+     (use-package nxml
+         :ensure t
+         :commands (nxml-mode)
+         :mode ("\\.\\(xml\\|axml\\|xsl|xaml\\)$" . nxml-mode)
+         :config
+         (progn
+             (defun ayrc/nxml-hook ()
+                 (display-line-numbers-mode)
+                 (visual-line-mode)
+                 (ws-butler-mode)
+                 (smartparens-mode)
+                 (semantic-mode)
+
+                 (company-mode)
+                 (add-to-list (make-local-variable 'company-backends)
+                              '(company-nxml company-yasnippet))
+
+                 (hs-minor-mode))
+             (add-hook 'nxml-mode-hook 'ayrc/nxml-hook)))
+   #+END_SRC
+
+** Jinja2
+   #+BEGIN_SRC emacs-lisp
+     (use-package jinja2-mode
+         :ensure t
+         :commands (jinja2-mode)
+         :mode (("\\.j2\\'" . jinja2-mode))
+         :config
+         (progn
+             (defun ayrc/jinja2-hook ()
+                 (display-line-numbers-mode)
+                 (visual-line-mode)
+                 (ws-butler-mode)
+                 (smartparens-mode)
+                 (semantic-mode)
+
+                 (company-mode))
+             (add-hook 'jinja2-mode-hook 'ayrc/jinja2-hook)))
+   #+END_SRC
+
+** RST
+    #+BEGIN_SRC emacs-lisp
+      (use-package rst
+          :mode (("\\.txt$" . rst-mode)
+                 ("\\.rst$" . rst-mode))
+          :config
+          (progn
+              (defun ayrc/rst-hook ()
+                  (display-line-numbers-mode)
+                  (visual-line-mode)
+                  (ws-butler-mode)
+                  (smartparens-mode)
+                  (semantic-mode)
+
+                  (company-mode))
+              (add-hook 'rst-mode-hook 'ayrc/rst-hook)))
+    #+END_SRC
+** Markdown
+*** Prerequisites
+    :PROPERTIES:
+    :CUSTOM_ID: markdown-system-prerequisites
+    :END:
+
+    #+NAME: markdown-system-prerequisites
+    #+CAPTION: System prerequisites for markdown packages
+
+    - [[https://github.com/trentm/python-markdown2][python-markdown2]] :: A fast and complete implementation of Markdown
+*** Packages
+    :PROPERTIES:
+    :CUSTOM_ID: markdown-packages
+    :END:
+
+    #+NAME: markdown-packages
+    #+CAPTION: Packages for markdown
+    - [[https://jblevins.org/projects/markdown-mode/][markdown-mode]] :: Emacs Markdown mode
+    - [[https://github.com/milkypostman/markdown-mode-plus][markdown-mode-plus]] :: Additional functions for Emacs [markdown-mode]
+    - [[https://github.com/ancane/markdown-preview-mode][markdown-preview-mode]] :: Minor mode to preview markdown output as you save
+*** Conf
+    #+BEGIN_SRC emacs-lisp :noweb tangle
+      (use-package markdown-mode
+          :ensure t
+          :commands (markdown-mode gfm-mode)
+          :mode (("README\\.md\\'" . gfm-mode)
+                 ("\\.md\\'"       . markdown-mode)
+                 ("\\.markdown\\'" . markdown-mode))
+          :init
+          (progn
+              <<markdown-plus-use-package>>
+              <<markdown-preview-use-package>>)
+          :config
+          (progn
+              (defun ayrc/markdown-hook ()
+                  (display-line-numbers-mode)
+                  (visual-line-mode)
+                  (ws-butler-mode)
+                  (smartparens-mode)
+                  (semantic-mode)
+
+                  (company-mode))
+              (add-hook 'markdown-mode-hook 'ayrc/markdown-hook)
+
+              (setq markdown-command "markdown2")))
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref markdown-plus-use-package
+      (use-package markdown-mode+
+          :ensure t
+          :commands (markdown-cleanup-list-numbers
+                     markdown-export-latex
+                     markdown-copy-html
+                     markdown-copy-rtf))
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref markdown-preview-use-package
+      (use-package markdown-preview-mode
+          :ensure t
+          :commands (markdown-preview-mode
+                     markdown-preview-open-browser
+                     markdown-preview-cleanup)
+          :config
+          (progn
+              (add-to-list 'markdown-preview-stylesheets
+                           "https://raw.githubusercontent.com/richleland/pygments-css/master/emacs.css")
+              (add-to-list 'markdown-preview-javascript
+                           "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML")
+              (add-to-list 'markdown-preview-javascript
+                           '("http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" . async))))
+    #+END_SRC

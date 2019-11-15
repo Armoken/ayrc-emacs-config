@@ -1,0 +1,113 @@
+* Configuration
+** Rename current buffer and file                               :interactive:
+   #+BEGIN_SRC emacs-lisp
+     (defun ayrc/rename-current-file-and-buffer ()
+       "Rename the current buffer and file it is visiting."
+       (interactive)
+       (let ((filename (buffer-file-name)))
+         (if (not (and filename (file-exists-p filename)))
+             (message "Buffer is not visiting a file!")
+           (let ((new-name (read-file-name "New name: " filename)))
+             (cond
+              ((vc-backend filename) (vc-rename-file filename new-name))
+              (t
+               (rename-file filename new-name t)
+               (set-visited-file-name new-name t t)))))))
+   #+END_SRC
+
+** Edit files as root                                           :interactive:
+   #+BEGIN_SRC emacs-lisp
+     (defun ayrc/sudo-edit (&optional arg)
+       "Edit currently visited file as root.
+
+     With a prefix ARG prompt for a file to visit.
+     Will also prompt for a file to visit if current
+     buffer is not visiting a file."
+       (interactive "P")
+       (if (or arg (not buffer-file-name))
+           (find-file (concat "/sudo:root@localhost:"
+                              (ido-read-file-name "Find file(as root): ")))
+         (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+
+   #+END_SRC
+
+** Copy the current buffer file name to the clipboard           :interactive:
+   #+BEGIN_SRC emacs-lisp
+     (defun ayrc/copy-file-name-to-clipboard ()
+       "Copy the current buffer file name to the clipboard."
+       (interactive)
+       (let ((filename (if (equal major-mode 'dired-mode)
+                           default-directory
+                         (buffer-file-name))))
+         (when filename
+           (kill-new filename)
+           (message "Copied buffer file name '%s' to the clipboard." filename))))
+   #+END_SRC
+
+** CRLF to LF                                                   :interactive:
+   #+BEGIN_SRC emacs-lisp
+     (defun ayrc/dos2unix (buffer)
+       "Automate M-% C-q C-m RET C-q C-j RET"
+       (interactive "*b")
+       (save-excursion
+         (goto-char (point-min))
+         (while (search-forward (string ?\C-m) nil t)
+           (replace-match (string ?\C-j) nil t))))
+   #+END_SRC
+
+** Copy hooks
+   #+BEGIN_SRC emacs-lisp
+     (defun ayrc/copy-hooks-to (from-hook to-hook)
+       (dolist (hook from-hook)
+         (add-hook to-hook hook)))
+   #+END_SRC
+
+** Find path to executable
+   #+BEGIN_SRC emacs-lisp
+     (defun ayrc/executable-find (command)
+         "Search for COMMAND in `exec-path' and return the absolute file name.
+     Return nil if COMMAND is not found anywhere in `exec-path'."
+         ;; Use 1 rather than file-executable-p to better match the behavior of
+         ;; call-process.
+         (locate-file command exec-path exec-suffixes 1))
+   #+END_SRC
+
+** Set multiple local bindings
+   #+BEGIN_SRC emacs-lisp
+     (defun ayrc/local-set-keys (key-commands)
+         "Set multiple local bindings with KEY-COMMANDS list."
+         (let ((local-map (current-local-map)))
+             (dolist (kc key-commands)
+                 (define-key local-map
+                     (kbd (car kc))
+                     (cdr kc)))))
+   #+END_SRC
+** Functions for making text pretty                             :interactive:
+   #+BEGIN_SRC emacs-lisp
+     (defun ayrc/untabify-buffer ()
+       "Remove tabs from buffer."
+       (interactive)
+       (untabify (point-min) (point-max)))
+
+     (defun ayrc/indent-buffer ()
+       "Indent region."
+       (interactive)
+       (indent-region (point-min) (point-max)))
+
+     (defun ayrc/cleanup-buffer-notabs ()
+       "Perform a bunch of operations on the whitespace content of a buffer.
+     Remove tabs."
+       (interactive)
+       (ayrc/indent-buffer)
+       (ayrc/untabify-buffer)
+       (delete-trailing-whitespace)
+       nil)
+
+     (defun ayrc/cleanup-buffer-tabs ()
+         "Perform a bunch of operations on the whitespace content of a buffer.
+     Dont remove tabs."
+         (interactive)
+         (ayrc/indent-buffer)
+         (delete-trailing-whitespace)
+         nil)
+   #+END_SRC

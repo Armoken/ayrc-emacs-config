@@ -35,13 +35,18 @@ C/C++ configuration for Emacs
                 ("\\.cpp\\'" . c++-mode))
          :init
          (progn
-             <<cc-configuration>>
-
-             <<c-configuration>>
-             <<c++-configuration>>
-          )
+             <<clang-format-use-package>>
+             <<irony-use-package>>
+             <<gtags-use-package>>
+             <<ccls-use-package>>
+             <<cmake-ide-use-package>>
+             <<modern-cpp-font-lock-use-package>>)
          :config
          (progn
+             <<cc-configuration>>
+             <<c-configuration>>
+             <<c++-configuration>>
+
              (setq c-basic-offset       4
                    c-default-style      '((c-mode    . "k&r")
                                           (c++-mode  . "stroustrup")
@@ -54,16 +59,13 @@ C/C++ configuration for Emacs
 ** CC configuration
    #+NAME: cc-configuration
    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-     (use-package clang-format
-         :ensure t
-         :commands (clang-format clang-buffer clang-format-region))
+     (defun ayrc/cc-hook ()
+         (display-line-numbers-mode)
+         (visual-line-mode)
+         (ws-butler-mode)
+         (smartparens-mode)
+         (semantic-mode)
 
-     <<irony-use-package>>
-     <<gtags-use-package>>
-     <<ccls-use-package>>
-     <<cmake-ide-use-package>>
-
-     (defun cc-hook ()
          (hs-minor-mode)
 
          (setq
@@ -72,43 +74,48 @@ C/C++ configuration for Emacs
                                      cc-syntax-check-plugin
                                      cc-autocompletion-plugin))
 
-         (local-set-keys '(("C-c TAB" . hs-toggle-hiding)
-                           ("C-c C-r" . clang-format-region)))
+         (ayrc/local-set-keys '(("C-c TAB" . hs-toggle-hiding)
+                                ("C-c C-r" . clang-format-region)))
 
          (if (member "irony" conf-variable-for-cc)
-                 (irony-setup))
+                 (ayrc/irony-setup))
          (if (member "gtags" conf-variable-for-cc)
-                 (gtags-setup))
+                 (ayrc/gtags-setup))
          (if (member "ccls" conf-variable-for-cc)
-                 (ccls-setup))
+                 (ayrc/ccls-setup))
 
          ;; Autocompletion setup
          (start-company-mode)
 
          (make-local-variable 'company-backends)
          (funcall (pcase cc-autocompletion-plugin
-                      ("irony"  'irony-autocompletion-setup)
-                      ("gtags"  'gtags-autocompletion-setup)
-                      ("ccls"   'ccls-autocompletion-setup)))
+                      ("irony"  'ayrc/irony-autocompletion-setup)
+                      ("gtags"  'ayrc/gtags-autocompletion-setup)
+                      ("ccls"   'ayrc/ccls-autocompletion-setup)))
 
          ;; Syntax check setup
          (funcall (pcase cc-syntax-check-plugin
-                      ("irony"  'irony-syntax-check-setup)
-                      ("gtags"  'gtags-syntax-check-setup)
-                      ("ccls"   'ccls-syntax-check-setup)))
+                      ("irony"  'ayrc/irony-syntax-check-setup)
+                      ("gtags"  'ayrc/gtags-syntax-check-setup)
+                      ("ccls"   'ayrc/ccls-syntax-check-setup)))
 
          ;; Eldoc setup
          (funcall (pcase cc-eldoc-plugin
-                      ("irony"  'irony-eldoc-setup)
-                      ("gtags"  'gtags-eldoc-setup)
-                      ("ccls"   'ccls-eldoc-setup)))
+                      ("irony"  'ayrc/irony-eldoc-setup)
+                      ("gtags"  'ayrc/gtags-eldoc-setup)
+                      ("ccls"   'ayrc/ccls-eldoc-setup)))
          ;; Debug support
          (require 'dap-lldb)
          (dap-mode 1))
-
-     (add-hook 'c-mode-hook #'cc-hook)
-     (add-hook 'c++-mode-hook #'cc-hook)
    #+END_SRC
+
+*** Clang format 
+     #+NAME: clang-format-use-package
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+       (use-package clang-format
+           :ensure t
+           :commands (clang-format clang-buffer clang-format-region))
+     #+END_SRC
 
 *** Irony
      #+NAME: irony-use-package
@@ -118,11 +125,16 @@ C/C++ configuration for Emacs
            :diminish irony-mode "[I]"
            :init
            (progn
-               <<irony-autocompletion>>
-               <<irony-syntax-analytics>>
-               <<irony-eldoc>>
+               <<irony-autocompletion-use-package>>
+               <<irony-syntax-analytics-use-package>>
+               <<irony-eldoc-use-package>>)
+           :config
+           (progn
+               <<irony-autocompletion-config>>
+               <<irony-syntax-analytics-config>>
+               <<irony-eldoc-config>>
 
-               (defun irony-setup ()
+               (defun ayrc/irony-setup ()
                    (setq irony-server-install-prefix
                          (concat user-emacs-directory
                                  "/contrib/servers/irony"))
@@ -131,13 +143,16 @@ C/C++ configuration for Emacs
      #+END_SRC
 
 **** Autocompletion
-     #+NAME: irony-autocompletion
+     #+NAME: irony-autocompletion-use-package
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (use-package company-irony
            :ensure t)
        (use-package company-irony-c-headers
            :ensure t)
+     #+END_SRC
 
+     #+NAME: irony-autocompletion-config
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (setq company-irony-ignore-case 'smart)
 
        ;; Use compilation database first, clang_complete as fallback.
@@ -145,7 +160,7 @@ C/C++ configuration for Emacs
                      '(irony-cdb-libclang
                        irony-cdb-clang-complete))
 
-       (defun irony-autocompletion-setup ()
+       (defun ayrc/irony-autocompletion-setup ()
            (define-key irony-mode-map [remap completion-at-point]
                'irony-completion-at-point-async)
            (define-key irony-mode-map [remap complete-symbol]
@@ -162,23 +177,29 @@ C/C++ configuration for Emacs
      #+END_SRC
 
 **** Syntax analytics
-     #+NAME: irony-syntax-analytics
+     #+NAME: irony-syntax-analytics-use-package
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (use-package flycheck-irony
            :ensure t)
+     #+END_SRC
 
-       (defun irony-syntax-check-setup ()
+     #+NAME: irony-syntax-analytics-config
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+       (defun ayrc/irony-syntax-check-setup ()
            (flycheck-mode)
            (flycheck-irony-setup))
      #+END_SRC
 
 **** Eldoc
-     #+NAME: irony-eldoc
+     #+NAME: irony-eldoc-use-package
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (use-package irony-eldoc
            :ensure t)
+     #+END_SRC
 
-       (defun irony-eldoc-setup ()
+     #+NAME: irony-eldoc-config
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+       (defun ayrc/irony-eldoc-setup ()
            (eldoc-mode)
            (irony-eldoc))
      #+END_SRC
@@ -186,34 +207,38 @@ C/C++ configuration for Emacs
 *** GTags
      #+NAME: gtags-use-package
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       <<gtags-autocompletion>>
-       <<gtags-syntax-analytics>>
-       <<gtags-eldoc>>
+       (use-package ggtags
+           :ensure t
+           :config
+           (progn
+               <<gtags-autocompletion-config>>
+               <<gtags-syntax-analytics-config>>
+               <<gtags-eldoc-config>>
 
-       (defun gtags-setup ()
-           (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
+               (defun gtags-setup ()
+                   (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
 
-           (ggtags-mode))
+                   (ggtags-mode))))
      #+END_SRC
 
 **** Autocompletion
-     #+NAME: gtags-autocompletion
+     #+NAME: gtags-autocompletion-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (defun gtags-autocompletion-setup ()
+       (defun ayrc/gtags-autocompletion-setup ()
            (push '(company-gtags) company-backends))
      #+END_SRC
 
 **** Syntax analytics
-     #+NAME: gtags-syntax-analytics
+     #+NAME: gtags-syntax-analytics-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (defun gtags-syntax-check-setup ()
+       (defun ayrc/gtags-syntax-check-setup ()
            (flycheck-mode))
      #+END_SRC
 
 **** Eldoc
-     #+NAME: gtags-eldoc
+     #+NAME: gtags-eldoc-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (defun gtags-eldoc-setup ()
+       (defun ayrc/gtags-eldoc-setup ()
            (eldoc-mode))
      #+END_SRC
 
@@ -223,13 +248,13 @@ C/C++ configuration for Emacs
        (use-package ccls
            :ensure t
            :diminish ccls-code-lens-mode
-           :init
+           :config
            (progn
-               <<ccls-autocompletion>>
-               <<ccls-syntax-analytics>>
-               <<ccls-eldoc>>
+               <<ccls-autocompletion-config>>
+               <<ccls-syntax-analytics-config>>
+               <<ccls-eldoc-config>>
 
-               (defun ccls-setup ()
+               (defun ayrc/ccls-setup ()
                    (setq ccls-executable (executable-find "ccls"))
 
                    ;; Log file
@@ -242,34 +267,34 @@ C/C++ configuration for Emacs
                    ;; (setq ccls-sem-highlight-method 'overlay)
 
 
-                   (local-set-keys '(("M-."     . lsp-ui-peek-find-definitions)
-                                     ("M-,"     . xref-pop-marker-stack)
-                                     ("M-?"     . lsp-ui-peek-find-references)
-                                     ("C-M-."   . xref-find-apropos)
-                                     ("C-c h i" . lsp-ui-imenu)))
+                   (ayrc/local-set-keys '(("M-."     . lsp-ui-peek-find-definitions)
+                                          ("M-,"     . xref-pop-marker-stack)
+                                          ("M-?"     . lsp-ui-peek-find-references)
+                                          ("C-M-."   . xref-find-apropos)
+                                          ("C-c h i" . lsp-ui-imenu)))
 
                    (lsp))))
      #+END_SRC
 
 **** Autocompletion
-     #+NAME: ccls-autocompletion
+     #+NAME: ccls-autocompletion-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (defun ccls-autocompletion-setup ()
+       (defun ayrc/ccls-autocompletion-setup ()
            (setq company-backends (delete 'company-lsp company-backends))
            (push '(company-lsp :with company-yasnippet) company-backends))
      #+END_SRC
 
 **** Syntax analytics
-     #+NAME: ccls-syntax-analytics
+     #+NAME: ccls-syntax-analytics-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (defun ccls-syntax-check-setup ()
+       (defun ayrc/ccls-syntax-check-setup ()
            (flycheck-mode))
      #+END_SRC
 
 **** Eldoc
-     #+NAME: ccls-eldoc
+     #+NAME: ccls-eldoc-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (defun ccls-eldoc-setup ()
+       (defun ayrc/ccls-eldoc-setup ()
            (eldoc-mode))
      #+END_SRC
 
@@ -284,27 +309,38 @@ C/C++ configuration for Emacs
 ** C configuration
    #+NAME: c-configuration
    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-     (defun c-hook ()
+     (defun ayrc/c-hook ()
+         (ayrc/cc-hook)
+
          (setq clang-format-style               "webkit"
                flycheck-clang-language-standard "c99"
                irony-additional-clang-options   '("-Wall"
                                                   "-Wextra")))
-     (add-hook 'c-mode-hook #'c-hook)
+     (add-hook 'c-mode-hook #'ayrc/c-hook)
    #+END_SRC
 
 ** C++ configuration
-   #+NAME: c++-configuration
+   #+NAME: modern-cpp-font-lock-use-package
    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
      (use-package modern-cpp-font-lock
          :ensure t
          :diminish modern-c++-font-lock-mode
          :commands (modern-c++-font-lock-mode))
+   #+END_SRC    
+
+   #+NAME: c++-configuration
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
      (add-hook 'c++-mode-hook #'modern-c++-font-lock-mode)
 
-     (defun c++-hook ()
+     (defun ayrc/c++-hook ()
+         (ayrc/cc-hook)
+
+         (modern-c++-font-lock-mode)
+
          (setq clang-format-style               "webkit"
                flycheck-clang-language-standard "c++17"
                irony-additional-clang-options   '("-Wall"
                                                   "-Wextra")))
-     (add-hook 'c++-mode-hook #'c++-hook)
+     (add-hook 'c++-mode-hook #'ayrc/c++-hook)
    #+END_SRC
+

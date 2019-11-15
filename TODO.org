@@ -1,25 +1,23 @@
-* Use package tasks [29/46]
+* Use package tasks [29/51]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
-** Languages
+** Languages [21/33]
 *** TODO Haskell
 **** DONE Choose minimal core packages
 **** TODO hlint apply refact
-*** TODO Basic Java support
 *** TODO Rust
 *** TODO HTML
 *** TODO CSS
 *** TODO JS
-*** DONE Python [5/5]
-    CLOSED: [2019-09-16 Mon 22:26]
+*** TODO Python [3/7]
+**** TODO pyls-lsp
+**** TODO Remove elpy
+**** TODO Pyenv support
+**** TODO Pipenv support
+**** DONE Flycheck backends
 **** DONE Interactive function for prerequisite packages installation
      CLOSED: [2019-09-17 Tue 14:17]
-**** DONE Pyenv support
-     CLOSED: [2019-09-16 Mon 22:25]
-**** DONE Pipenv support
-     CLOSED: [2019-09-16 Mon 22:25]
-**** DONE Flycheck backends
 **** CANCELED Try traad - Dead
      CLOSED: [2019-09-15 Sun 22:00]
 *** DONE C/C++ [7/8]
@@ -58,25 +56,34 @@
 **** DONE Robe
 **** DONE Rubocop
 **** DONE Inf-ruby
-** Utils
-*** TODO Dired - make it more useful
+*** CANCELED C#                                                     :useless:
+    CLOSED: [2019-11-08 Fri 12:11]
+*** CANCELED Basic Java support                                     :useless:
+    CLOSED: [2019-11-08 Fri 12:11]
+** Utils [2/5]
 *** CURRENT DAP
+*** TODO Dired - make it more useful
+*** TODO Gnus
 *** DONE GDB
     CLOSED: [2018-08-03 Fri 23:17]
 *** DONE Magit
-*** TODO Gnus
-** Refactoring
+** Refactoring [1/2]
 *** TODO Move region of code using arrows like in elpy
-*** TODO [[https://github.com/tuhdo/semantic-refactor][semantic-refactor ]]
-** Performance
+*** CANCELED [[https://github.com/tuhdo/semantic-refactor][semantic-refactor ]]                                     :useless:
+    CLOSED: [2019-11-08 Fri 12:06]
+** Performance [0/1]
 *** TODO Test startup time
-** UI
-*** DONE [#A] Disable font scale on C-- and S-C-+
+** UI [1/2]
 *** TODO [#A] Fonts
-** Other
+*** DONE [#A] Disable font scale on C-- and S-C-+
+** Other [4/8]
+*** TODO Use system layout switching
+*** TODO Fix spell checking in text modes
+    https://github.com/tmalsburg/guess-language.el
+    http://manuel-uberti.github.io/emacs/2017/02/04/guess-language/
+*** TODO Set opening links in default browser
+*** TODO Update prerequisites header in config's template
 *** DONE Plugin switching for syntax checkers
 *** DONE Yasnippet snippets autodownload
 *** DONE Ag or grep for helm project search
 *** DONE User config file
-*** TODO Set opening links in default browser
-*** TODO Update prerequisites header in config's template

@@ -38,29 +38,29 @@ Common settings for almost all text modes
    (use-package autorevert
        :diminish auto-revert-mode)
  #+END_SRC
+
 ** Abbrev mode
    #+BEGIN_SRC emacs-lisp
      (use-package abbrev
          :diminish abbrev-mode)
    #+END_SRC
+
 ** Line numbering
 *** Left panel
     #+BEGIN_SRC emacs-lisp
       (use-package display-line-numbers
-          :init (progn
-                    (add-hook 'text-mode-hook
-                              '(lambda () (display-line-numbers-mode t)))
-                    (add-hook 'prog-mode-hook
-                              '(lambda () (display-line-numbers-mode t))))
-          :config (progn
-                      (setq display-line-numbers-width-start 4)))
+	  :config
+	  (progn
+	      (setq display-line-numbers-width-start 4)))
     #+END_SRC
+
 *** Modeline
     #+BEGIN_SRC emacs-lisp
       (line-number-mode t)
       (column-number-mode t)
     #+END_SRC
-** Undo tree
+
+** Undo tree                                                 :global_hotkeys:
    #+BEGIN_SRC emacs-lisp
      (use-package undo-tree
          :ensure t
@@ -70,7 +70,8 @@ Common settings for almost all text modes
          (progn
              (global-undo-tree-mode)))
    #+END_SRC
-** Jump to things in Emacs tree-style
+
+** Jump to things in Emacs tree-style                        :global_hotkeys:
    #+BEGIN_SRC emacs-lisp
      (use-package avy
          :ensure t
@@ -84,19 +85,22 @@ Common settings for almost all text modes
                 ("M-g )" . avy-goto-close-paren)
                 ("M-g P" . avy-pop-mark))
          :config
-         ;; case sensitive makes selection easier
-         (setq avy-case-fold-search nil)
+         (progn
+             ;; case sensitive makes selection easier
+             (setq avy-case-fold-search nil)
 
-         (avy-setup-default))
+             (avy-setup-default)))
    #+END_SRC
 ** Current line hightlight
    #+BEGIN_SRC emacs-lisp
      (global-hl-line-mode 1)
    #+END_SRC
+
 ** Common clipboard with X Server
    #+BEGIN_SRC emacs-lisp
      (setq select-enable-clipboard t)
    #+END_SRC
+
 ** Region shifting
    #+BEGIN_SRC emacs-lisp
      (use-package smart-shift
@@ -109,13 +113,13 @@ Common settings for almost all text modes
              ("<C-left>" . smart-shift-left)
              ("<C-right>" . smart-shift-right)))
    #+END_SRC
+
 ** Visual line mode
   #+BEGIN_SRC emacs-lisp
     (setq word-wrap t)
     (diminish 'visual-line-mode)
-    (add-hook 'text-mode-hook #'visual-line-mode)
-    (add-hook 'prog-mode-hook #'visual-line-mode)
   #+END_SRC
+
 ** Automatic line wrapping
    This package provides the `adaptive-wrap-prefix-mode' minor mode which sets
    the wrap-prefix property on the fly so that single-long-line paragraphs get
@@ -125,14 +129,13 @@ Common settings for almost all text modes
    #+BEGIN_SRC emacs-lisp
      (use-package adaptive-wrap
          :ensure t
+         :hook (visual-line-mode . adaptive-wrap-prefix-mode)
          :commands (adaptive-wrap-prefix-mode)
-         :init
-         (progn
-             (add-hook 'visual-line-mode-hook #'adaptive-wrap-prefix-mode))
          :config
          (progn
              (setq-default adaptive-wrap-extra-indent 2)))
    #+END_SRC
+
 ** Delete Selection mode
    If you enable Delete Selection mode, a minor mode,
    then inserting text while the mark is active causes the selected text
@@ -142,53 +145,23 @@ Common settings for almost all text modes
    #+BEGIN_SRC emacs-lisp
      (delete-selection-mode t)
    #+END_SRC
+
 ** Display in the modeline search information
    #+BEGIN_SRC emacs-lisp
      (use-package anzu
-       :ensure t
-       :diminish anzu-mode
-       :init (progn
-               (global-anzu-mode)))
+         :ensure t
+         :diminish anzu-mode
+         :init
+         (progn
+             (global-anzu-mode)))
    #+END_SRC
-** Functions for making text pretty
-   #+BEGIN_SRC emacs-lisp
-     (defun untabify-buffer ()
-       "Remove tabs from buffer."
-       (interactive)
-       (untabify (point-min) (point-max)))
 
-     (defun indent-buffer ()
-       "Indent region."
-       (interactive)
-       (indent-region (point-min) (point-max)))
-
-     (defun cleanup-buffer-notabs ()
-       "Perform a bunch of operations on the whitespace content of a buffer.
-     Remove tabs."
-       (interactive)
-       (indent-buffer)
-       (untabify-buffer)
-       (delete-trailing-whitespace)
-       nil)
-
-     (defun cleanup-buffer-tabs ()
-       "Perform a bunch of operations on the whitespace content of a buffer.
-     Dont remove tabs."
-       (interactive)
-       (indent-buffer)
-       (delete-trailing-whitespace)
-       nil)
-   #+END_SRC
 ** Fixing up whitespaces only for touched lines
    #+BEGIN_SRC emacs-lisp
      (use-package ws-butler
-       :diminish ws-butler-mode
-       :ensure t
-       :commands (ws-butler-mode)
-       :init
-       (progn
-         (add-hook 'text-mode-hook 'ws-butler-mode)
-         (add-hook 'prog-mode-hook 'ws-butler-mode)))
+         :diminish ws-butler-mode
+         :ensure t
+         :commands (ws-butler-mode))
    #+END_SRC
 ** Highlight expressions between {},[],()
    #+BEGIN_SRC emacs-lisp
@@ -200,14 +173,15 @@ Common settings for almost all text modes
 
          (show-paren-mode)))
    #+END_SRC
+
 ** Automatically pairs braces and quotes
     #+BEGIN_SRC emacs-lisp
       (use-package smartparens
           :ensure t
           :diminish smartparens-mode "[SP]"
-          :hook ((text-mode prog-mode org-mode) . smartparens-mode)
           :commands (smartparens-mode smartparens-strict-mode))
     #+END_SRC
+
 ** Ag
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package ag
@@ -222,7 +196,8 @@ Common settings for almost all text modes
          (progn
              <<helm-rg-use-package>>))
    #+END_SRC
-*** Helm
+
+*** Helm                                                     :global_hotkeys:
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-rg-use-package
       (use-package helm-rg
           :ensure t
@@ -230,8 +205,14 @@ Common settings for almost all text modes
           :commands (helm-rg
                      helm-projectile-rg))
     #+END_SRC
+
 ** Set newline at the end of file
  #+BEGIN_SRC emacs-lisp
    (setq require-final-newline t)
    (setq next-line-add-newlines t)
  #+END_SRC
+
+** Spell checking
+   #+BEGIN_SRC emacs-lisp
+     (use-package flyspell)
+   #+END_SRC

@@ -1,0 +1,13 @@
+* Configuration
+** Docker
+   #+BEGIN_SRC emacs-lisp
+     (use-package docker
+       :ensure t)
+   #+END_SRC
+
+** Kubernetes
+   #+BEGIN_SRC emacs-lisp
+     (use-package kubernetes
+       :ensure t
+       :commands (kubernetes-overview))
+   #+END_SRC

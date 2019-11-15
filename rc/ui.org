@@ -15,6 +15,7 @@ UI settings
   - [[https://github.com/jaypei/emacs-neotree][neotree]] :: A emacs tree plugin like NerdTree for Vim
   - [[https://github.com/emacs-helm/helm][helm]] :: Incremental completion and selection narrowing framework
   - [[https://github.com/abo-abo/hydra][hydra]] :: Make Emacs bindings that stick around
+
 * Configuration
 ** Cleaning screen
 *** Remove some GUI elelements
@@ -28,15 +29,18 @@ UI settings
       (remove-gui-elements)
       (add-to-list 'after-make-frame-functions #'remove-gui-elements)
     #+END_SRC
+
 *** Disable welcom screen
     #+BEGIN_SRC emacs-lisp
       (setq inhibit-splash-screen   t)
       (setq inhibit-startup-message t)
     #+END_SRC
+
 *** Disable dialog box
    #+BEGIN_SRC emacs-lisp
      (setq use-dialog-box nil)
    #+END_SRC
+
 *** Disable frienge
     The fringe is a thin strip down the left and/or right edge of a window.
     #+BEGIN_SRC emacs-lisp
@@ -46,40 +50,48 @@ UI settings
       (remove-fringe)
       (add-to-list 'after-make-frame-functions 'remove-fringe)
     #+END_SRC
+
 *** Disable indicators
     #+BEGIN_SRC emacs-lisp
       (setq-default indicate-empty-lines t)
       (setq-default indicate-buffer-boundaries 'left)
       (size-indication-mode nil) ;; Don't show current buffer size
     #+END_SRC
+
 *** Disable cursor blink
     #+BEGIN_SRC emacs-lisp
       (blink-cursor-mode 0)
     #+END_SRC
+
 *** Disable ring-bell-function
     That called when whenever function ‘ding’ is called.
 
     #+BEGIN_SRC emacs-lisp
       (setq ring-bell-function 'ignore)
     #+END_SRC
+
 ** Use 'y' and `n' instead of 'yes' and 'not'
    #+BEGIN_SRC emacs-lisp
      (fset 'yes-or-no-p 'y-or-n-p)
    #+END_SRC
+
 ** Fullscreen at GUI startup
    #+BEGIN_SRC emacs-lisp
      (add-to-list 'default-frame-alist '(fullscreen . maximized))
    #+END_SRC
+
 ** Name of current buffer in window title
    #+BEGIN_SRC emacs-lisp
      (setq frame-title-format "GNU Emacs: %b")
    #+END_SRC
+
 ** Scroll settings
    #+BEGIN_SRC emacs-lisp
-     ;; (setq scroll-preserve-screen-position t
-     ;;       scroll-margin 0
-     ;;       scroll-conservatively 101)
+     (setq scroll-preserve-screen-position t
+           scroll-margin 0
+           scroll-conservatively 101)
    #+END_SRC
+
 ** Dired
    #+BEGIN_SRC emacs-lisp
      (use-package dired
@@ -93,12 +105,14 @@ UI settings
          ;; current subdir, instead of the current subdir of this dired buffe
          (setq dired-dwim-target t)))
    #+END_SRC
+
 ** Icons
    #+BEGIN_SRC emacs-lisp
      (use-package all-the-icons
        :ensure t)
    #+END_SRC
-** NeoTree
+
+** NeoTree                                                          :hotkeys:
    #+BEGIN_SRC emacs-lisp
      (use-package neotree
        :ensure t
@@ -108,7 +122,8 @@ UI settings
          (setq neo-window-width 40)
          (setq neo-theme (if (display-graphic-p) 'icons 'arrow))))
    #+END_SRC
-** Helm
+
+** Helm                                                             :hotkeys:
    #+BEGIN_SRC emacs-lisp
      (use-package helm
          :ensure t
@@ -172,19 +187,22 @@ UI settings
 
              (helm-mode t)))
    #+END_SRC
-** Change size of buffers
+
+** Change size of buffers                                           :hotkeys:
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "<C-M-up>") 'shrink-window)
      (global-set-key (kbd "<C-M-down>") 'enlarge-window)
      (global-set-key (kbd "<C-M-left>") 'shrink-window-horizontally)
      (global-set-key (kbd "<C-M-right>") 'enlarge-window-horizontally)
    #+END_SRC
-** Hydra
+
+** Hydra                                                            :hotkeys:
    #+BEGIN_SRC emacs-lisp
      (use-package hydra
          :ensure t)
    #+END_SRC
-** Layout switching
+
+** Layout switching                                                 :hotkeys:
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "<AltGr>") 'toggle-input-method)
    #+END_SRC

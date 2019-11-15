@@ -18,10 +18,24 @@ Core settings for editor
      (setq bookmark-save-flag 1)
    #+END_SRC
 
+** Hook Run When Current Buffer Changed
+   #+BEGIN_SRC emacs-lisp
+     (use-package switch-buffer-functions
+         :ensure t)
+   #+END_SRC
+
+** Backups in /tmp
+   #+BEGIN_SRC emacs-lisp
+     (setq backup-directory-alist
+           `((".*" . ,temporary-file-directory)))
+     (setq auto-save-file-name-transforms
+           `((".*" ,temporary-file-directory t)))
+   #+END_SRC
+
 ** Session saving
  #+BEGIN_SRC emacs-lisp
    (use-package desktop
-       :init
+       :config
        (progn
            (setq desktop-restore-frames nil)
 
@@ -54,7 +68,7 @@ Core settings for editor
                 (concat desktop-dirname "/" desktop-base-file-name)))
 
            ;; use session-restore to restore the desktop manually
-           (defun session-restore ()
+           (defun ayrc/session-restore ()
                "Restore a saved emacs session."
                (interactive)
                (remove-stale-desktop-lock-file desktop-dirname)
@@ -63,7 +77,7 @@ Core settings for editor
                    (message "No desktop found.")))
 
            ;; use session-save to save the desktop manually
-           (defun session-save ()
+           (defun ayrc/session-save ()
                "Save an emacs session."
                (interactive)
                (if (path-to-saved-session)
@@ -72,6 +86,7 @@ Core settings for editor
                            (message "Session not saved."))
                    (desktop-save-in-desktop-dir)))))
  #+END_SRC
+
 ** Use user $PATH from shell
    #+BEGIN_SRC emacs-lisp
      (use-package exec-path-from-shell

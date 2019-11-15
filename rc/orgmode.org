@@ -13,25 +13,25 @@ Orgmode configuration for Emacs
   - [[https://github.com/sabof/org-bullets][org-bullets]] :: Show org-mode bullets as UTF-8 characters.
   - [[https://github.com/rlister/org-present][org-present]] :: Extremely minimalist presentation tool for Emacs org-mode
   - [[https://github.com/rexim/org-cliplink][org-cliplink]] :: Insert org-mode links from clipboard
+
 * Configuration
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :noweb tangle
       (use-package org
           :init
           (progn
-              (use-package org-bullets
-                  :ensure t
-                  :commands org-bullets-mode
-                  :init  (add-hook 'org-mode-hook
-                                   (lambda ()   (org-bullets-mode 1))))
-
-              (use-package org-present
-                  :ensure t
-                  :commands org-present)
-
-              (use-package org-cliplink
-                  :ensure t
-                  :commands org-cliplink
-                  :bind ("C-c M-l" . org-cliplink))
+              <<org-bullets-use-package>>
+              <<org-present-use-package>>
+              <<org-cliplink-use-package>>)
+          :config
+          (progn
+              (defun ayrc/orgmode-hook()
+                  (display-line-numbers-mode)
+                  (visual-line-mode)
+                  (ws-butler-mode)
+                  (smartparens-mode)
+                  (semantic-mode)
+                  (company-mode))
+              (add-hook 'org-mode-hook 'ayrc/orgmode-hook)
 
               (setq org-log-done 'time)
               (setq org-src-tab-acts-natively t)
@@ -42,3 +42,28 @@ Orgmode configuration for Emacs
                     '(("CURRENT" . "yellow")
                       ("CANCELED" . (:foreground "RoyalBlue3" :weight bold))))))
     #+END_SRC
+
+** Bullets
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref org-bullets-use-package
+       (use-package org-bullets
+           :ensure t
+           :after org
+           :commands org-bullets-mode
+           :hook (org-mode . org-bullets-mode))
+     #+END_SRC
+
+** Present
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref org-present-use-package
+       (use-package org-present
+           :ensure t
+           :after org
+           :commands org-present)
+     #+END_SRC
+
+** Cliplink
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref org-cliplink-use-package
+       (use-package org-cliplink
+           :ensure t
+           :commands org-cliplink
+           :bind ("C-c M-l" . org-cliplink))
+     #+END_SRC

@@ -52,27 +52,32 @@
                          (expand-config-path user-conf-template-filename)))
 
 (mapc 'org-babel-load-file
-      (mapcar 'expand-config-path  (list "./rc/core.org"
-                                         "./rc/ui.org"
-                                         "./rc/text.org"
-                                         "./rc/utils.org"
-                                         "./rc/keybindings.org"
-                                         "./rc/development.org"
-                                         "./rc/misc-interactive-functions.org"
-                                         "./rc/orgmode.org"
-                                         "./rc/langs/tex.org"
-                                         "./rc/langs/markup.org"
-                                         "./rc/langs/lisp.org"
-                                         "./rc/langs/haskell.org"
-                                         "./rc/langs/other.org"
-                                         "./rc/langs/python.org"
-                                         "./rc/langs/ruby.org"
-                                         "./rc/langs/cc.org"
-                                         "./rc/langs/go.org"
-                                         "./rc/langs/shell.org"
-                                         "./rc/langs/build.org"
-                                         "./rc/langs/js.org"
-                                         )))
+      (mapcar 'expand-config-path
+              (list
+               ;; Core
+               "./rc/core.org"
+               "./rc/misc-functions.org"
+               "./rc/keybindings.org"
+               "./rc/ui.org"
+               "./rc/text.org"
+               "./rc/development.org"
+               "./rc/orgmode.org"
+               "./rc/clients.org"
+
+               ;; Minumum
+               "./rc/langs/lisp.org"
+               "./rc/langs/shell.org"
+               "./rc/langs/other.org"
+               "./rc/langs/markup.org"
+               "./rc/langs/build.org"
+
+               ;; Optional
+               "./rc/langs/cc.org"
+               ;; "./rc/langs/python.org"
+               ;; "./rc/langs/haskell.org"
+               ;; "./rc/langs/ruby.org"
+               ;; "./rc/langs/tex.org"
+               )))
 (provide 'init)
 ;;; init.el ends here
 (custom-set-variables
@@ -82,23 +87,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (guess-language hydra dap-mode indium company-tern tern cmake-font-lock cmake-mode company-shell go-gopath go-eldoc company-go go-mode modern-cpp-font-lock cmake-ide ccls irony-eldoc flycheck-irony company-irony-c-headers company-irony irony clang-format projectile-direnv web-mode rspec-mode bundler rinari projectile-rails robe rubocop company-inf-ruby rvm pip-requirements sphinx-doc py-isort pyimport pipenv pyenv-mode py-yapf elpy python-mode dotenv-mode flycheck-plantuml plantuml-mode ini-mode systemd nginx-mode kubernetes docker dockerfile-mode hindent intero flycheck-haskell company-ghci haskell-mode geiser elisp-slime-nav lisp-extra-font-lock rainbow-delimiters paredit markdown-preview-mode markdown-mode+ jinja2-mode flycheck-yamllint yaml-mode flycheck-demjsonlint json-mode latex-preview-pane latex-math-preview company-math company-auctex auctex org-cliplink org-present org-bullets switch-buffer-functions realgud helm-xref helm-lsp lsp-ui company-lsp lsp-mode helm-gtags ggtags smartparens expand-region editorconfig highlight-indentation aggressive-indent yasnippet-snippets yasnippet dsvn magit company-statistics company-quickhelp company-flx company-box company helm-flycheck flycheck-popup-tip flycheck flymake-diagnostic-at-point helm-flymake helm-projectile projectile helm-rg ag ws-butler anzu adaptive-wrap smart-shift avy undo-tree helm neotree exec-path-from-shell spaceline-all-the-icons spaceline spacemacs-theme bind-key diminish use-package)))
- '(safe-local-variable-values
-   (quote
-    ((eval add-to-list
-           (make-local-variable
-            (quote auto-mode-alist))
-           (quote
-            ("\\.h\\'" . c++-mode)))
-     (eval add-to-list
-           (quote auto-mode-alist)
-           (quote
-            ("\\.h\\'" . c++-mode)))
-     (ruby-compilation-executable . "ruby")
-     (ruby-compilation-executable . "ruby1.8")
-     (ruby-compilation-executable . "ruby1.9")
-     (ruby-compilation-executable . "rbx")
-     (ruby-compilation-executable . "jruby")))))
+    (modern-cpp-font-lock cmake-ide ccls irony-eldoc flycheck-irony company-irony-c-headers company-irony irony clang-format cmake-font-lock cmake-mode markdown-preview-mode markdown-mode+ jinja2-mode flycheck-yamllint yaml-mode flycheck-demjsonlint dotenv-mode flycheck-plantuml plantuml-mode ini-mode systemd nginx-mode dockerfile-mode company-shell geiser elisp-slime-nav lisp-extra-font-lock rainbow-delimiters kubernetes docker org-cliplink org-present org-bullets dap-mode realgud helm-xref helm-lsp lsp-ui company-lsp lsp-mode helm-gtags ggtags expand-region editorconfig highlight-indentation aggressive-indent yasnippet-snippets yasnippet dsvn magit company-statistics company-quickhelp company-flx company helm-flycheck flycheck-popup-tip flycheck flymake-diagnostic-at-point helm-flymake helm-projectile projectile helm-rg ag smartparens ws-butler anzu adaptive-wrap smart-shift avy undo-tree hydra helm neotree exec-path-from-shell switch-buffer-functions spaceline-all-the-icons spaceline spacemacs-theme bind-key diminish use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
