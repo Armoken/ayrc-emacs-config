@@ -69,3 +69,6 @@ flycheck_*.el
 other/yasnippet
 bin/
 contrib/
+
+.dap-breakpoints
+.lsp-session*
