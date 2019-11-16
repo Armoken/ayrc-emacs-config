@@ -73,7 +73,7 @@
 
                ;; Optional
                "./rc/langs/cc.org"
-               ;; "./rc/langs/python.org"
+               "./rc/langs/python.org"
                ;; "./rc/langs/haskell.org"
                ;; "./rc/langs/tex.org"
                )))

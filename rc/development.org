@@ -188,10 +188,7 @@ Common settings for almost all development modes
               <<company-box-use-package>>
               <<company-flx-use-package>>
               <<company-quickhelp-use-package>>
-              <<company-statistics-use-package>>
-
-              (defun start-company-mode ()
-                  (global-company-mode)))
+              <<company-statistics-use-package>>)
           :config
           (progn
               (setq company-tooltip-align-annotations t
@@ -409,6 +406,9 @@ Common settings for almost all development modes
      (use-package lsp-mode
          :ensure t
          :diminish lsp-mode "[L]"
+         :commands (lsp-mode lsp-deffered)
+         :hook ((c-mode . ayrc/c-hook)
+                (c-mode . ayrc/c-hook))
          :init
          (progn
              <<company-lsp-use-package>>
@@ -416,11 +416,31 @@ Common settings for almost all development modes
              <<helm-lsp-use-package>>)
          :config
          (progn
+             <<lsp-hook>>
+
              (setq lsp-enable-folding                         t
                    lsp-enable-snippet                         t
                    lsp-vetur-completion-use-scaffold-snippets t
                    lsp-enable-file-watchers                   nil)))
    #+END_SRC
+
+*** Hook
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref lsp-hook
+      (defun ayrc/lsp-hook ()
+          (flycheck-mode)
+
+          (company-mode)
+          (setq company-backends (delete 'company-lsp company-backends))
+          (push '(company-lsp :with company-yasnippet) company-backends)
+
+          (ayrc/local-set-keys
+           '(("C-c TAB" . hs-toggle-hiding)
+             ("C-c C-r" . lsp-format-region)
+             ("M-."     . lsp-ui-peek-find-definitions)
+             ("M-,"     . xref-pop-marker-stack)
+             ("M-?"     . lsp-ui-peek-find-references)
+             ("C-M-."   . xref-find-apropos))))
+    #+END_SRC
 
 *** Helm
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-lsp-use-package

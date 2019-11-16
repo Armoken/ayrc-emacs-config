@@ -12,7 +12,8 @@
          (progn
              (use-package json-reformat
                  :ensure t
-                 :bind (("C-c r" . json-reformat-region)))
+                 :bind (:map json-mode-map
+                             ("C-c C-r" . json-reformat-region)))
 
              (use-package flycheck-demjsonlint
                  :ensure t))
@@ -24,7 +25,7 @@
                  (ws-butler-mode)
                  (smartparens-mode)
                  (semantic-mode)
-            
+
                  (company-mode)
                  (hs-minor-mode))
              (add-hook 'json-mode-hook 'ayrc/json-hook)
