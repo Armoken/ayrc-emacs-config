@@ -8,6 +8,7 @@
      (use-package json-mode
          :ensure t
          :mode (("\\.json\\'" . json-mode))
+         :hook (json-mode . ayrc/json-hook)
          :init
          (progn
              (use-package json-reformat
@@ -20,17 +21,17 @@
          :config
          (progn
              (defun ayrc/json-hook ()
-                 (display-line-numbers-mode)
-                 (visual-line-mode)
-                 (ws-butler-mode)
-                 (smartparens-mode)
-                 (semantic-mode)
+                 (display-line-numbers-mode 1)
+                 (visual-line-mode          1)
+                 (ws-butler-mode            1)
+                 (smartparens-mode          1)
+                 (semantic-mode             1)
+                 (yas-minor-mode            1)
 
-                 (company-mode)
-                 (hs-minor-mode))
-             (add-hook 'json-mode-hook 'ayrc/json-hook)
+                 (company-mode              1)
+                 (hs-minor-mode             1)
 
-             (setq js-indent-level 4)))
+                 (setq js-indent-level 4))))
    #+END_SRC
 
 ** Yaml
@@ -50,19 +51,20 @@
          :config
          (progn
              (defun ayrc/yaml-hook ()
-                 (display-line-numbers-mode)
-                 (visual-line-mode)
-                 (ws-butler-mode)
-                 (smartparens-mode)
-                 (semantic-mode)
+                 (display-line-numbers-mode  1)
+                 (visual-line-mode           1)
+                 (ws-butler-mode             1)
+                 (smartparens-mode           1)
+                 (semantic-mode              1)
+                 (yas-minor-mode             1)
 
-                 (flycheck-mode)
-                 (flycheck-yamllint-setup)
+                 (flycheck-mode              1)
+                 (flycheck-yamllint-setup    1)
 
-                 (company-mode)
-                 (hs-minor-mode)
-                 (highlight-indentation-mode)
-                 (smart-shift-mode)
+                 (company-mode               1)
+                 (hs-minor-mode              1)
+                 (highlight-indentation-mode 1)
+                 (smart-shift-mode           1)
 
                  (setq yaml-indent-offset 2))))
    #+END_SRC
@@ -73,21 +75,21 @@
          :ensure t
          :commands (nxml-mode)
          :mode ("\\.\\(xml\\|axml\\|xsl|xaml\\)$" . nxml-mode)
+         :hook (nxml-mode . ayrc/nxml-hook)
          :config
          (progn
              (defun ayrc/nxml-hook ()
-                 (display-line-numbers-mode)
-                 (visual-line-mode)
-                 (ws-butler-mode)
-                 (smartparens-mode)
-                 (semantic-mode)
+                 (display-line-numbers-mode 1)
+                 (visual-line-mode          1)
+                 (ws-butler-mode            1)
+                 (smartparens-mode          1)
+                 (semantic-mode             1)
+                 (yas-minor-mode            1)
 
-                 (company-mode)
+                 (hs-minor-mode             1)
+                 (company-mode              1)
                  (add-to-list (make-local-variable 'company-backends)
-                              '(company-nxml company-yasnippet))
-
-                 (hs-minor-mode))
-             (add-hook 'nxml-mode-hook 'ayrc/nxml-hook)))
+                              '(company-nxml company-yasnippet)))))
    #+END_SRC
 
 ** Jinja2
@@ -96,17 +98,18 @@
          :ensure t
          :commands (jinja2-mode)
          :mode (("\\.j2\\'" . jinja2-mode))
+         :hook (jinja2-mode . ayrc/jinja2-hook)
          :config
          (progn
              (defun ayrc/jinja2-hook ()
-                 (display-line-numbers-mode)
-                 (visual-line-mode)
-                 (ws-butler-mode)
-                 (smartparens-mode)
-                 (semantic-mode)
+                 (display-line-numbers-mode 1)
+                 (visual-line-mode          1)
+                 (ws-butler-mode            1)
+                 (smartparens-mode          1)
+                 (semantic-mode             1)
+                 (yas-minor-mode            1)
 
-                 (company-mode))
-             (add-hook 'jinja2-mode-hook 'ayrc/jinja2-hook)))
+                 (company-mode              1))))
    #+END_SRC
 
 ** RST
@@ -114,17 +117,18 @@
       (use-package rst
           :mode (("\\.txt$" . rst-mode)
                  ("\\.rst$" . rst-mode))
+          :hook (rst-mode . ayrc/rst-hook)
           :config
           (progn
               (defun ayrc/rst-hook ()
-                  (display-line-numbers-mode)
-                  (visual-line-mode)
-                  (ws-butler-mode)
-                  (smartparens-mode)
-                  (semantic-mode)
+                  (display-line-numbers-mode 1)
+                  (visual-line-mode          1)
+                  (ws-butler-mode            1)
+                  (smartparens-mode          1)
+                  (semantic-mode             1)
+                  (yas-minor-mode            1)
 
-                  (company-mode))
-              (add-hook 'rst-mode-hook 'ayrc/rst-hook)))
+                  (company-mode              1))))
     #+END_SRC
 ** Markdown
 *** Prerequisites
@@ -154,6 +158,7 @@
           :mode (("README\\.md\\'" . gfm-mode)
                  ("\\.md\\'"       . markdown-mode)
                  ("\\.markdown\\'" . markdown-mode))
+          :hook (markdown-mode . ayrc/markdown-hook)
           :init
           (progn
               <<markdown-plus-use-package>>
@@ -161,16 +166,16 @@
           :config
           (progn
               (defun ayrc/markdown-hook ()
-                  (display-line-numbers-mode)
-                  (visual-line-mode)
-                  (ws-butler-mode)
-                  (smartparens-mode)
-                  (semantic-mode)
+                  (display-line-numbers-mode 1)
+                  (visual-line-mode          1)
+                  (ws-butler-mode            1)
+                  (smartparens-mode          1)
+                  (semantic-mode             1)
+                  (yas-minor-mode            1)
 
-                  (company-mode))
-              (add-hook 'markdown-mode-hook 'ayrc/markdown-hook)
+                  (company-mode              1)
 
-              (setq markdown-command "markdown2")))
+                  (setq markdown-command "markdown2"))))
     #+END_SRC
 
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref markdown-plus-use-package

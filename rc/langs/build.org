@@ -3,24 +3,23 @@
    #+BEGIN_SRC emacs-lisp
      (use-package make-mode
          :mode (("[Mm]akefile\\'" . makefile-gmake-mode))
+         :hook ((makefile-mode          . ayrc/make-hook)
+                (makefile-gmake-mode    . ayrc/make-hook)
+                (makefile-imake-mode    . ayrc/make-hook)
+                (makefile-bsdmake-mode  . ayrc/make-hook)
+                (makefile-automake-mode . ayrc/make-hook)
+                (makefile-mode          . ayrc/make-hook))
          :config
          (progn
              (defun ayrc/make-hook ()
-                 (display-line-numbers-mode)
-                 (visual-line-mode)
-                 (ws-butler-mode)
-                 (smartparens-mode)
-                 (semantic-mode)
+                 (display-line-numbers-mode 1)
+                 (visual-line-mode          1)
+                 (ws-butler-mode            1)
+                 (smartparens-mode          1)
+                 (semantic-mode             1)
+                 (yas-minor-mode            1)
 
-                 (company-mode))
-
-             (mapc (lambda (hook) (add-hook hook 'ayrc/make-hook))
-                   (list 'makefile-mode-hook
-                         'makefile-gmake-mode-hook
-                         'makefile-imake-mode-hook
-                         'makefile-bsdmake-mode-hook
-                         'makefile-automake-mode-hook
-                         'makefile-mode-hook))))
+                 (company-mode              1))))
    #+END_SRC
 
 ** CMake
@@ -29,6 +28,7 @@
          :ensure t
          :mode (("/CMakeLists\\.txt\\'" . cmake-mode)
                 ("\\.cmake\\'" . cmake-mode))
+         :hook (cmake-mode . ayrc/cmake-hook)
          :init
          (progn
              (use-package cmake-font-lock
@@ -36,21 +36,21 @@
                  :commands (cmake-font-lock-activate)))
          :config
          (progn
-             (defun ayrc/cmake-hook()
-                 (display-line-numbers-mode)
-                 (visual-line-mode)
-                 (ws-butler-mode)
-                 (smartparens-mode)
-                 (semantic-mode)
+             (defun ayrc/cmake-hook ()
+                 (display-line-numbers-mode 1)
+                 (visual-line-mode          1)
+                 (ws-butler-mode            1)
+                 (smartparens-mode          1)
+                 (semantic-mode             1)
+                 (yas-minor-mode            1)
 
-                 (company-mode)
+                 (company-mode              1)
                  (set (make-local-variable 'company-backends)
                       '(company-cmake))
 
-                 (hs-minor-mode)
-                 (flycheck-mode)
-                 (cmake-font-lock-activate))
-             (add-hook 'cmake-mode-hook 'ayrc/cmake-hook)
+                 (hs-minor-mode             1)
+                 (flycheck-mode             1)
+                 (cmake-font-lock-activate  1)
 
-             (setq cmake-tab-width 4)))
+                 (setq cmake-tab-width 4))))
    #+END_SRC

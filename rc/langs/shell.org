@@ -3,23 +3,25 @@
     (use-package shell-script-mode
         :mode (("\\.ebuild\\'" . shell-script-mode)
                ("\\.sh\\'"     . shell-script-mode))
+        :hook (sh-mode . ayrc/shell-hook)
         :init
         (progn
             (use-package company-shell
                 :ensure t))
         :config
         (progn
-            (defun shell-hook()
-		(display-line-numbers-mode)
-		(visual-line-mode)
-		(ws-butler-mode)
-		(smartparens-mode)
-		(semantic-mode)
+            (defun ayrc/shell-hook()
+                (display-line-numbers-mode 1)
+                (visual-line-mode          1)
+                (ws-butler-mode            1)
+                (smartparens-mode          1)
+                (semantic-mode             1)
+                (yas-minor-mode            1)
 
-		(hs-minor-mode)
-		(flycheck-mode)
+                (hs-minor-mode             1)
+                (flycheck-mode             1)
 
-		(add-to-list (make-local-variable 'company-backends)
-			     '(company-shell company-yasnippet)))
-	    (add-hook sh-mode-hook shell-hook)))
+                (company-mode              1)
+                (add-to-list (make-local-variable 'company-backends)
+                             '(company-shell company-yasnippet)))))
   #+END_SRC

@@ -33,7 +33,7 @@ C/C++ configuration for Emacs
                 ("\\.c\\'"   . c-mode)
                 ("\\.hpp\\'" . c++-mode)
                 ("\\.cpp\\'" . c++-mode))
-         :hook ((c-mode . ayrc/c-hook)
+         :hook ((c-mode   . ayrc/c-hook)
                 (c++-mode . ayrc/c++-hook))
          :init
          (progn
@@ -62,14 +62,14 @@ C/C++ configuration for Emacs
    #+NAME: cc-configuration
    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
      (defun ayrc/cc-hook ()
-         (display-line-numbers-mode)
-         (visual-line-mode)
-         (ws-butler-mode)
-         (smartparens-mode)
-         (abbrev-mode)
-         (semantic-mode)
-
-         (hs-minor-mode)
+         (display-line-numbers-mode 1)
+         (visual-line-mode          1)
+         (ws-butler-mode            1)
+         (smartparens-mode          1)
+         (abbrev-mode               1)
+         (semantic-mode             1)
+         (yas-minor-mode            1)
+         (hs-minor-mode             1)
 
          ;; Setup minor mods if any component need it
          (setq conf-variable-for-cc (list cc-eldoc-plugin
@@ -133,7 +133,7 @@ C/C++ configuration for Emacs
                          (concat user-emacs-directory
                                  "/contrib/servers/irony"))
 
-                   (irony-mode))))
+                   (irony-mode 1))))
      #+END_SRC
 
 **** Autocompletion
@@ -155,7 +155,7 @@ C/C++ configuration for Emacs
                        irony-cdb-clang-complete))
 
        (defun ayrc/irony-autocompletion-setup ()
-           (company-mode)
+           (company-mode 1)
            (make-local-variable 'company-backends)
 
            (define-key irony-mode-map [remap completion-at-point]
@@ -183,8 +183,8 @@ C/C++ configuration for Emacs
      #+NAME: irony-syntax-analytics-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (defun ayrc/irony-syntax-check-setup ()
-           (flycheck-mode)
-           (flycheck-irony-setup))
+           (flycheck-mode        1)
+           (flycheck-irony-setup 1))
      #+END_SRC
 
 **** Eldoc
@@ -197,8 +197,8 @@ C/C++ configuration for Emacs
      #+NAME: irony-eldoc-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (defun ayrc/irony-eldoc-setup ()
-           (eldoc-mode)
-           (irony-eldoc))
+           (eldoc-mode  1)
+           (irony-eldoc 1))
      #+END_SRC
 
 *** GTags
@@ -215,16 +215,17 @@ C/C++ configuration for Emacs
                (defun gtags-setup ()
                    (ayrc/local-set-keys '(("C-c C-r" . clang-format-region)))
 
-                   (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
+                   (setq-local imenu-create-index-function
+                               #'ggtags-build-imenu-index)
 
-                   (ggtags-mode))))
+                   (ggtags-mode 1))))
      #+END_SRC
 
 **** Autocompletion
      #+NAME: gtags-autocompletion-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (defun ayrc/gtags-autocompletion-setup ()
-           (company-mode)
+           (company-mode 1)
            (make-local-variable 'company-backends)
 
            (push '(company-gtags) company-backends))
@@ -234,14 +235,14 @@ C/C++ configuration for Emacs
      #+NAME: gtags-syntax-analytics-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (defun ayrc/gtags-syntax-check-setup ()
-           (flycheck-mode))
+           (flycheck-mode 1))
      #+END_SRC
 
 **** Eldoc
      #+NAME: gtags-eldoc-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (defun ayrc/gtags-eldoc-setup ()
-           (eldoc-mode))
+           (eldoc-mode 1))
      #+END_SRC
 
 *** CCLS
@@ -291,7 +292,7 @@ C/C++ configuration for Emacs
      #+NAME: ccls-eldoc-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (defun ayrc/ccls-eldoc-setup ()
-           (eldoc-mode))
+           (eldoc-mode 1))
      #+END_SRC
 
 *** CMake IDE
@@ -328,7 +329,7 @@ C/C++ configuration for Emacs
      (defun ayrc/c++-hook ()
          (ayrc/cc-hook)
 
-         (modern-c++-font-lock-mode)
+         (modern-c++-font-lock-mode 1)
 
          (setq clang-format-style               "webkit"
                flycheck-clang-language-standard "c++17"

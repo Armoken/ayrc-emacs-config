@@ -60,22 +60,23 @@ Lisp family languages configuration.
 *** Hook
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref lisp-hook
       (defun ayrc/lisp-hook ()
-          (display-line-numbers-mode)
-          (visual-line-mode)
-          (ws-butler-mode)
-          (smartparens-mode)
-          (semantic-mode)
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (ws-butler-mode            1)
+          (smartparens-mode          1)
+          (semantic-mode             1)
+          (yas-minor-mode            1)
 
-          (company-mode)
-          (flycheck-mode)
-          (hs-minor-mode)
+          (company-mode              1)
+          (flycheck-mode             1)
+          (hs-minor-mode             1)
 
-          (aggressive-indent-mode)
-          (rainbow-delimiters-mode)
-          (eldoc-mode)
-          (lisp-extra-font-lock-mode)
+          (aggressive-indent-mode    1)
+          (rainbow-delimiters-mode   1)
+          (eldoc-mode                1)
+          (lisp-extra-font-lock-mode 1)
 
-          (prettify-symbols-mode)
+          (prettify-symbols-mode     1)
           (setq prettify-symbols-unprettify-at-point 'right-edge)
           (push '(">=" . ?≥) prettify-symbols-alist)
           (push '("<=" . ?≤) prettify-symbols-alist)
@@ -121,7 +122,7 @@ Lisp family languages configuration.
       (defun ayrc/scheme-hook ()
           (ayrc/lisp-hook)
 
-          (geiser-mode)
+          (geiser-mode 1)
 
           (add-to-list (make-local-variable 'company-backends)
                        '(company-capf company-dabbrev-code)))

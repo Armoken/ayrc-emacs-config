@@ -31,43 +31,55 @@ Tex configuration for Emacs
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package auctex
          :ensure t
-         :commands (latex-mode LaTeX-mode plain-tex-mode LaTeX-preview-setup)
+         :commands (latex-mode
+                    LaTeX-mode
+                    plain-tex-mode
+                    LaTeX-preview-setup)
+         :hook ((latex-mode     . ayrc/auctex-hook)
+                (LaTeX-mode     . ayrc/auctex-hook)
+                (plain-tex-mode . ayrc/auctex-hook))
          :mode ("\\.tex\\'" . latex-mode)
          :init
          (progn
              <<auctex-company-use-package>>
              <<latex-math-company-use-package>>
-
              <<latex-math-preview-use-package>>
              <<latex-preview-pane-use-package>>
+             <<latex-pretty-symbols-use-package>>)
+         :config
+         (progn
+             (defun ayrc/auctex-hook()
+                 (display-line-numbers-mode 1)
+                 (visual-line-mode          1)
+                 (ws-butler-mode            1)
+                 (smartparens-mode          1)
+                 (abbrev-mode               1)
+                 (semantic-mode             1)
+                 (yas-minor-mode            1)
 
-             (defun auctex-hook()
-                 (hs-minor-mode)
-                 (flycheck-mode)
-                 (semantic-mode)
-                 (smartparens-mode)
-                 (LaTeX-preview-setup)
-                 (tex-fold-mode)
+                 (hs-minor-mode             1)
+                 (flycheck-mode             1)
+                 (LaTeX-preview-setup       1)
+                 (tex-fold-mode             1)
 
-                 (start-company-mode)
+                 (company-mode              1)
                  (add-to-list (make-local-variable 'company-backends)
                               '(company-auctex
                                 company-math-symbols-latex
                                 company-latex-commands))
-                 (company-auctex-init))
-             (add-hook 'LaTeX-mode-hook 'auctex-hook))
-         :config (progn
-                     (setq TeX-auto-save  t
-                           TeX-parse-self t
-                           TeX-save-query nil
-                           TeX-PDF-mode   t)
+                 (company-auctex-init)
 
-                     (setq-default TeX-PDF-mode t)
-                     (setq-default TeX-master nil)
-                     (setq-default TeX-engine 'xetex)
+                 (setq TeX-auto-save  t
+                       TeX-parse-self t
+                       TeX-save-query nil
+                       TeX-PDF-mode   t)
 
-                     <<latex-separated-preview-setup>>
-                     <<latex-pretty-symbols-use-package>>))
+                 (setq-default TeX-PDF-mode t)
+                 (setq-default TeX-master nil)
+                 (setq-default TeX-engine 'xetex)
+
+                 <<latex-separated-preview-setup>>)))
+
    #+END_SRC
 
 ** Preview
@@ -79,7 +91,9 @@ Tex configuration for Emacs
           :config (progn
                       (setq pdf-latex-command "xelatex")))
     #+END_SRC
+
 *** Separated preview
+
     #+BEGIN_SRC emacs-lisp :tangle :noweb-ref latex-separated-preview-setup
       (setq-default
        preview-scale 1.4
@@ -87,22 +101,26 @@ Tex configuration for Emacs
                                    (* (/ 10.0 (preview-document-pt))
                                       preview-scale)))
     #+END_SRC
+
 *** Math preview
     #+BEGIN_SRC emacs-lisp :tangle :noweb-ref latex-math-preview-use-package
       (use-package latex-math-preview
           :ensure t)
     #+END_SRC
+
 ** Pretty symbols
    #+BEGIN_SRC emacs-lisp :tangle :noweb-ref latex-pretty-symbols-use-package
      (use-package latex-pretty-symbols
          :ensure t)
    #+END_SRC
+
 ** Autocompletion
 *** Latex math symbols
     #+BEGIN_SRC emacs-lisp :tangle :noweb-ref latex-math-company-use-package
       (use-package company-math
           :ensure t)
     #+END_SRC
+
 *** Auctex company
     #+BEGIN_SRC emacs-lisp :tangle :noweb-ref auctex-company-use-package
       (use-package company-auctex

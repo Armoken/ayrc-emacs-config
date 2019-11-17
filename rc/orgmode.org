@@ -25,12 +25,13 @@ Orgmode configuration for Emacs
           :config
           (progn
               (defun ayrc/orgmode-hook()
-                  (display-line-numbers-mode)
-                  (visual-line-mode)
-                  (ws-butler-mode)
-                  (smartparens-mode)
-                  (semantic-mode)
-                  (company-mode))
+                  (display-line-numbers-mode 1)
+                  (visual-line-mode          1)
+                  (ws-butler-mode            1)
+                  (smartparens-mode          1)
+                  (semantic-mode             1)
+                  (yas-minor-mode            1)
+                  (company-mode              1))
               (add-hook 'org-mode-hook 'ayrc/orgmode-hook)
 
               (setq org-log-done 'time)

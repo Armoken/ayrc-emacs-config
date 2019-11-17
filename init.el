@@ -74,8 +74,9 @@
                ;; Optional
                "./rc/langs/cc.org"
                "./rc/langs/python.org"
+               "./rc/langs/tex.org"
                ;; "./rc/langs/haskell.org"
-               ;; "./rc/langs/tex.org"
+               ;; "./rc/langs/vhdl.org"
                )))
 (provide 'init)
 ;;; init.el ends here
