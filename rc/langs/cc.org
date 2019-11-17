@@ -71,12 +71,10 @@ C/C++ configuration for Emacs
 
          (hs-minor-mode)
 
-         (setq
-          ;; Setup minor mods if any component need it
-          conf-variable-for-cc (list cc-eldoc-plugin
-                                     cc-syntax-check-plugin
-                                     cc-autocompletion-plugin))
-
+         ;; Setup minor mods if any component need it
+         (setq conf-variable-for-cc (list cc-eldoc-plugin
+                                          cc-syntax-check-plugin
+                                          cc-autocompletion-plugin))
          (if (member "irony" conf-variable-for-cc)
                  (ayrc/irony-setup))
          (if (member "gtags" conf-variable-for-cc)
@@ -85,9 +83,6 @@ C/C++ configuration for Emacs
                  (ayrc/ccls-setup))
 
          ;; Autocompletion setup
-         (company-mode)
-
-         (make-local-variable 'company-backends)
          (funcall (pcase cc-autocompletion-plugin
                       ("irony"  'ayrc/irony-autocompletion-setup)
                       ("gtags"  'ayrc/gtags-autocompletion-setup)
@@ -103,10 +98,7 @@ C/C++ configuration for Emacs
          (funcall (pcase cc-eldoc-plugin
                       ("irony"  'ayrc/irony-eldoc-setup)
                       ("gtags"  'ayrc/gtags-eldoc-setup)
-                      ("ccls"   'ayrc/ccls-eldoc-setup)))
-         ;; Debug support
-         (require 'dap-lldb)
-         (dap-mode 1))
+                      ("ccls"   'ayrc/ccls-eldoc-setup))))
    #+END_SRC
 
 *** Clang format 
@@ -135,8 +127,7 @@ C/C++ configuration for Emacs
                <<irony-eldoc-config>>
 
                (defun ayrc/irony-setup ()
-                   (ayrc/local-set-keys '(("C-c TAB" . hs-toggle-hiding)
-                                          ("C-c C-r" . clang-format-region)))
+                   (ayrc/local-set-keys '(("C-c C-r" . clang-format-region)))
 
                    (setq irony-server-install-prefix
                          (concat user-emacs-directory
@@ -164,6 +155,9 @@ C/C++ configuration for Emacs
                        irony-cdb-clang-complete))
 
        (defun ayrc/irony-autocompletion-setup ()
+           (company-mode)
+           (make-local-variable 'company-backends)
+
            (define-key irony-mode-map [remap completion-at-point]
                'irony-completion-at-point-async)
            (define-key irony-mode-map [remap complete-symbol]
@@ -219,8 +213,7 @@ C/C++ configuration for Emacs
                <<gtags-eldoc-config>>
 
                (defun gtags-setup ()
-                   (ayrc/local-set-keys '(("C-c TAB" . hs-toggle-hiding)
-                                          ("C-c C-r" . clang-format-region)))
+                   (ayrc/local-set-keys '(("C-c C-r" . clang-format-region)))
 
                    (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
 
@@ -231,6 +224,9 @@ C/C++ configuration for Emacs
      #+NAME: gtags-autocompletion-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (defun ayrc/gtags-autocompletion-setup ()
+           (company-mode)
+           (make-local-variable 'company-backends)
+
            (push '(company-gtags) company-backends))
      #+END_SRC
 
@@ -273,22 +269,22 @@ C/C++ configuration for Emacs
                    ;; Add a lot of highlight mistakes
                    ;; (setq ccls-sem-highlight-method 'overlay)
 
-                   (lsp-deferred))))
+                   (lsp-deferred)
+
+                   ;; Debug support
+                   (require 'dap-lldb))))
      #+END_SRC
 
 **** Autocompletion
      #+NAME: ccls-autocompletion-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (defun ayrc/ccls-autocompletion-setup ()
-           (setq company-backends (delete 'company-lsp company-backends))
-           (push '(company-lsp :with company-yasnippet) company-backends))
+       (defun ayrc/ccls-autocompletion-setup ())
      #+END_SRC
 
 **** Syntax analytics
      #+NAME: ccls-syntax-analytics-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (defun ayrc/ccls-syntax-check-setup ()
-           (flycheck-mode))
+       (defun ayrc/ccls-syntax-check-setup ())
      #+END_SRC
 
 **** Eldoc

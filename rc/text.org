@@ -129,11 +129,22 @@ Common settings for almost all text modes
    #+BEGIN_SRC emacs-lisp
      (use-package adaptive-wrap
          :ensure t
+         :diminish adaptive-wrap-prefix-mode
          :hook (visual-line-mode . adaptive-wrap-prefix-mode)
          :commands (adaptive-wrap-prefix-mode)
          :config
          (progn
              (setq-default adaptive-wrap-extra-indent 2)))
+   #+END_SRC
+
+** Automatic line breaking
+   When Auto Fill mode is enabled, inserting a space at a column
+   beyond ‘current-fill-column’ automatically breaks the line at a
+   previous space.
+
+   #+BEGIN_SRC emacs-lisp
+     (diminish 'auto-fill-function)
+     (add-hook 'visual-line-mode-hook 'auto-fill-mode)
    #+END_SRC
 
 ** Delete Selection mode
@@ -215,4 +226,39 @@ Common settings for almost all text modes
 ** Spell checking
    #+BEGIN_SRC emacs-lisp
      (use-package flyspell)
+   #+END_SRC
+
+** Outline mode
+   #+BEGIN_SRC emacs-lisp
+     (use-package outline
+         :diminish outline-minor-mode "[o]"
+         :bind (:map outline-minor-mode-map
+                     ("C-c f TAB" . ayrc/outline-toggle-entry)
+                     ;; ("C-c f h"   . hs-hide-all)
+                     ;; ("C-c f s"   . hs-show-all)
+                     )
+         :config
+         (progn
+             (defun ayrc/outline-toggle-entry ()
+                 (interactive)
+                 "Toggle outline hiding for the entry under the cursor"
+                 (if (progn
+                           (setq cpos_save (point))
+                           (end-of-line)
+                           (get-char-property (point) 'invisible))
+                        (progn
+                            (outline-hide-subtree)
+                            (goto-char cpos_save))
+                        (progn
+                            (outline-hide-subtree)
+                            (goto-char cpos_save))))))
+   #+END_SRC
+** Fill column indicator
+   #+BEGIN_SRC emacs-lisp
+     (use-package fill-column-indicator
+         :ensure t
+         :commands (fci-mode)
+         :config
+         (progn
+             (setq fci-rule-column 79)))
    #+END_SRC

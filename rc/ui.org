@@ -128,6 +128,15 @@ UI settings
      (use-package helm
          :ensure t
          :diminish helm-mode
+         :commands (helm-regexp
+                    helm-describe-variable-function
+                    helm-describe-function-function
+                    helm-bookmarks
+                    helm-apropos
+                    helm-register
+                    helm-man-woman
+                    helm-find-files
+                    helm-show-kill-ring)
          :bind
          (("M-x"       . helm-M-x)
           ("C-x C-b"   . helm-mini)
@@ -140,7 +149,6 @@ UI settings
 
           ;; Pre-configured helm to build regexps.
           ("C-c h r"   . helm-regexp)
-
           ("C-c h l"   . helm-bookmarks)
           ("C-c h a"   . helm-apropos)
           ("C-c h x"   . helm-register)

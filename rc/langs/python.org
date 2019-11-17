@@ -167,6 +167,8 @@ Python configuration for Emacs
          :mode (("wscript"   . python-mode)
                 ("\\.py\\'"  . python-mode))
          :hook (python-mode . ayrc/python-hook)
+         :bind (:map python-mode-map
+                     ("C-c i" . run-python))
          :init
          (progn
              <<pyenv-mode-use-package>>
@@ -190,17 +192,18 @@ Python configuration for Emacs
           (abbrev-mode)
           (semantic-mode)
 
-          (setq python-shell-interpreter "ipython"
+          (setq py-outline-minor-mode-p nil
+                python-shell-interpreter "ipython"
                 python-shell-interpreter-args "-i --simple-prompt")
 
           (pipenv-mode)
           (pyenv-mode)
-          (hs-minor-mode)
           (sphinx-doc-mode)
+          (eldoc-mode)
+          (fci-mode)
 
           (require 'lsp-pyls)
           (lsp-deferred))
-      (add-hook 'python-mode-hook #'ayrc/python-hook)
     #+END_SRC
 
 *** Env setup modes
@@ -240,6 +243,7 @@ Python configuration for Emacs
          :ensure t
          :mode (("requirements.txt$" . pip-requirements-mode)
                 ("requirements.pip$" . pip-requirements-mode))
+         :hook (pip-requirements-mode . ayrc/pip-hook)
          :config
          (progn
              (defun ayrc/pip-hook ()
@@ -247,6 +251,5 @@ Python configuration for Emacs
                  (visual-line-mode)
                  (ws-butler-mode)
                  (smartparens-mode)
-                 (semantic-mode))
-             (add-hook 'pip-requirements-mode 'ayrc/pip-hook)))
+                 (semantic-mode))))
    #+END_SRC

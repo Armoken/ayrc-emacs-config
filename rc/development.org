@@ -107,8 +107,8 @@ Common settings for almost all development modes
 *** Flymake
     #+BEGIN_SRC emacs-lisp :noweb tangle
       (use-package flymake
-          :ensure t
-          :diminish flycheck-mode "[F]"
+          :diminish flymake-mode "[FM]"
+          :commands (flymake-mode)
           :init
           (progn
               <<helm-flymake-use-package>>
@@ -119,15 +119,16 @@ Common settings for almost all development modes
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flymake-popup-use-package
        (use-package flymake-diagnostic-at-point
            :ensure t
-           :after flymake
-           :hook (flycheck-mode . flymake-diagnostic-at-point-mode))
+           :disabled
+           :hook (flymake-mode . flymake-diagnostic-at-point-mode))
      #+END_SRC
 
 **** Helm
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-flymake-use-package
        (use-package helm-flymake
            :ensure t
-           :after flymake
+           :bind (:map flymake-mode-map
+                       ("C-c h f" . helm-flymake))
            :commands (helm-flymake))
      #+END_SRC
 
@@ -135,23 +136,28 @@ Common settings for almost all development modes
     #+BEGIN_SRC emacs-lisp :noweb tangle
       (use-package flycheck
           :ensure t
-          :diminish flycheck-mode "[F]"
+          :diminish flycheck-mode "[FC]"
           :commands (flycheck-mode)
+          :hook (flycheck-mode . ayrc/flycheck-hook)
           :init
           (progn
               <<flycheck-popup-use-package>>
               <<helm-flycheck-use-package>>)
           :config
           (progn
-              (setq flycheck-standard-error-navigation nil)
-              (setq flycheck-idle-change-delay 0)
-              (setq flycheck-check-syntax-automatically '(save mode-enabled))))
+              (defun ayrc/flycheck-hook ()
+                  (flymake-mode -1)
+
+                  (setq flycheck-standard-error-navigation nil)
+                  (setq flycheck-idle-change-delay 0)
+                  (setq flycheck-check-syntax-automatically '(save mode-enabled)))))
     #+END_SRC
 
 **** Popup
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flycheck-popup-use-package
        (use-package flycheck-popup-tip
            :ensure t
+           :disabled
            :after flycheck
            :hook (flycheck-mode . flycheck-popup-tip-mode)
            :commands (flycheck-popup-tip-mode))
@@ -406,9 +412,8 @@ Common settings for almost all development modes
      (use-package lsp-mode
          :ensure t
          :diminish lsp-mode "[L]"
-         :commands (lsp-mode lsp-deffered)
-         :hook ((c-mode . ayrc/c-hook)
-                (c-mode . ayrc/c-hook))
+         :commands (lsp-mode lsp-deffered lsp-rename)
+         :hook (lsp-mode . ayrc/lsp-hook)
          :init
          (progn
              <<company-lsp-use-package>>
@@ -416,30 +421,33 @@ Common settings for almost all development modes
              <<helm-lsp-use-package>>)
          :config
          (progn
-             <<lsp-hook>>
-
-             (setq lsp-enable-folding                         t
-                   lsp-enable-snippet                         t
-                   lsp-vetur-completion-use-scaffold-snippets t
-                   lsp-enable-file-watchers                   nil)))
+             <<lsp-hook>>))
    #+END_SRC
 
 *** Hook
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref lsp-hook
       (defun ayrc/lsp-hook ()
+          (setq lsp-prefer-flymake                         nil
+                lsp-enable-folding                         t
+                lsp-enable-snippet                         t
+                lsp-vetur-completion-use-scaffold-snippets t
+                lsp-enable-file-watchers                   nil)
+
+          (ayrc/local-set-keys '(("C-c r"   . lsp-rename)
+                                 ("C-c C-r" . lsp-format-region)
+                                 ("M-."     . lsp-ui-peek-find-definitions)
+                                 ("M-,"     . xref-pop-marker-stack)
+                                 ("M-?"     . lsp-ui-peek-find-references)
+                                 ("C-M-."   . xref-find-apropos)))
+
           (flycheck-mode)
 
           (company-mode)
+          (make-local-variable 'company-backends)
           (setq company-backends (delete 'company-lsp company-backends))
           (push '(company-lsp :with company-yasnippet) company-backends)
 
-          (ayrc/local-set-keys
-           '(("C-c TAB" . hs-toggle-hiding)
-             ("C-c C-r" . lsp-format-region)
-             ("M-."     . lsp-ui-peek-find-definitions)
-             ("M-,"     . xref-pop-marker-stack)
-             ("M-?"     . lsp-ui-peek-find-references)
-             ("C-M-."   . xref-find-apropos))))
+          (dap-mode))
     #+END_SRC
 
 *** Helm
@@ -513,20 +521,23 @@ Common settings for almost all development modes
       (use-package dap-mode
           :ensure t
           :diminish dap-mode "[D]"
+          :hook (dap-mode . ayrc/dap-hook)
           :config
           (progn
-              (setq dap-lldb-debug-program '("/usr/bin/lldb-vscode"))
-              (add-hook 'dap-stopped-hook
-                        (lambda (arg) (call-interactively #'dap-hydra)))
+              (defun ayrc/dap-hook ()
+                  (setq dap-lldb-debug-program '("/usr/bin/lldb-vscode"))
+                  (add-hook 'dap-stopped-hook
+                            (lambda (arg) (call-interactively #'dap-hydra)))
 
-              ;; use tooltips for mouse hover
-              ;; if it is not enabled `dap-mode' will use the minibuffer.
-              (tooltip-mode 1)
+                  ;; use tooltips for mouse hover
+                  ;; if it is not enabled `dap-mode' will use the minibuffer.
+                  (tooltip-mode 1)
 
-              (dap-ui-mode 1)
+                  (dap-ui-mode 1)
 
-              ;; enables mouse hover support
-              (dap-tooltip-mode 1)))
+                  ;; enables mouse hover support
+                  (dap-tooltip-mode 1))))
+
     #+END_SRC
 
 ** Compilation

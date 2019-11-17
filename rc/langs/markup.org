@@ -41,15 +41,12 @@
                 ("\\.yaml\\'" . yaml-mode))
          :bind (:map yaml-mode-map
                      ("C-c f TAB" . indenation-toggle-fold))
+         :hook (yaml-mode . ayrc/yaml-hook)
          :init
          (progn
              (use-package flycheck-yamllint
                  :ensure t
-                 :init
-                 (progn
-                     (eval-after-load 'flycheck
-                         '(add-hook 'flycheck-mode-hook
-                                    'flycheck-yamllint-setup)))))
+                 :commands (flycheck-yamllint-setup)))
          :config
          (progn
              (defun ayrc/yaml-hook ()
@@ -58,14 +55,16 @@
                  (ws-butler-mode)
                  (smartparens-mode)
                  (semantic-mode)
-            
+
+                 (flycheck-mode)
+                 (flycheck-yamllint-setup)
+
                  (company-mode)
                  (hs-minor-mode)
                  (highlight-indentation-mode)
-                 (smart-shift-mode))       
-             (add-hook 'yaml-mode-hook 'ayrc/yaml-hook)
+                 (smart-shift-mode)
 
-             (setq yaml-indent-offset 2)))
+                 (setq yaml-indent-offset 2))))
    #+END_SRC
 
 ** XML
