@@ -45,7 +45,9 @@ Tex configuration for Emacs
              <<latex-math-company-use-package>>
              <<latex-math-preview-use-package>>
              <<latex-preview-pane-use-package>>
-             <<latex-pretty-symbols-use-package>>
+             <<latex-pretty-symbols-use-package>>)
+         :preface
+         (progn
              <<auctex-hook>>))
 
    #+END_SRC
@@ -82,11 +84,10 @@ Tex configuration for Emacs
           (tex-fold-mode             1)
 
           (company-mode              1)
-          (add-to-list (make-local-variable 'company-backends)
-                       '(company-auctex
-                         company-math-symbols-latex
-                         company-latex-commands))
+          (make-local-variable 'company-backends)
           (company-auctex-init)
+          (add-to-list 'company-backends '(company-math-symbols-latex
+                                           company-latex-commands))
 
           (LaTeX-preview-setup))
     #+END_SRC
@@ -97,6 +98,7 @@ Tex configuration for Emacs
     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
       (use-package latex-preview-pane
           :ensure t
+          :after (auctex)
           :commands (latex-preview-pane-enable)
           :config (progn
                       (setq pdf-latex-command "xelatex")))
@@ -116,6 +118,7 @@ Tex configuration for Emacs
     #+NAME: latex-math-preview-use-package
     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
       (use-package latex-math-preview
+          :after (auctex)
           :ensure t)
     #+END_SRC
 
@@ -123,6 +126,7 @@ Tex configuration for Emacs
    #+NAME: latex-pretty-symbols-use-package
    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
      (use-package latex-pretty-symbols
+         :after (auctex)
          :ensure t)
    #+END_SRC
 
@@ -131,7 +135,10 @@ Tex configuration for Emacs
     #+NAME: latex-math-company-use-package
     #+BEGIN_SRC emacs-lisp :tangle :noweb yes
       (use-package company-math
-          :ensure t)
+          :ensure t
+          :after (auctex company)
+          :commands (company-math-symbols-latex
+                     company-latex-commands))
     #+END_SRC
 
 *** Auctex company
@@ -139,5 +146,6 @@ Tex configuration for Emacs
     #+BEGIN_SRC emacs-lisp :tangle :noweb yes
       (use-package company-auctex
           :ensure t
+          :after (auctex company)
           :commands (company-auctex-init))
     #+END_SRC

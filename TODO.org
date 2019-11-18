@@ -1,4 +1,4 @@
-* Use package tasks [29/51]
+* Use package tasks [29/52]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
@@ -76,7 +76,11 @@
 ** UI [1/2]
 *** TODO [#A] Fonts
 *** DONE [#A] Disable font scale on C-- and S-C-+
-** Other [4/8]
+** Other [4/9]
+*** TODO Check installed system executables
+**** [[https://github.com/dmeranda/demjson][flycheck-json-demjsonlint-executable]]
+**** https://github.com/adrienverge/yamllint
+**** [[https://github.com/trentm/python-markdown2][python-markdown2]]
 *** TODO Use system layout switching
 *** TODO Fix spell checking in text modes
     https://github.com/tmalsburg/guess-language.el

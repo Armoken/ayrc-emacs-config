@@ -93,6 +93,9 @@ Core settings for editor
          :ensure t
          :config
          (progn
+             (setq exec-path-from-shell-check-startup-files nil)
+
              (when (memq window-system '(mac ns x))
-                 (exec-path-from-shell-initialize))))
+                 (exec-path-from-shell-initialize)
+                 (exec-path-from-shell-copy-env "PYENV_ROOT"))))
    #+END_SRC

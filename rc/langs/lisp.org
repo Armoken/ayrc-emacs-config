@@ -23,24 +23,21 @@ Lisp family languages configuration.
                 ("\\.ss\\'"    . scheme-mode)
                 ("\\.scm\\'"   . scheme-mode)
                 ("\\.sch\\'"   . scheme-mode))
+         :hook ((eval-expression-minibuffer-setup . ayrc/emacs-lisp-hook)
+                (ielm-mode                        . ayrc/emacs-lisp-hook)
+                (lisp-interaction-mode            . ayrc/emacs-lisp-hook)
+                (emacs-lisp-mode                  . ayrc/emacs-lisp-hook)
+                (scheme-mode                      . ayrc/scheme-hook))
          :init
          (progn
              <<rainbow-delimiters-use-package>>
              <<lisp-extra-font-lock-use-package>>
              <<elisp-slime-nav-use-package>>
-             <<geiser-use-package>>)
-         :config
-         (progn
-             <<lisp-hook>>
-             <<emacs-lisp-hook>>
-             <<scheme-hook>>
+             <<geiser-use-package>>
 
-             (mapc (lambda (hook) (add-hook hook 'ayrc/emacs-lisp-hook))
-                   (list 'eval-expression-minibuffer-setup-hook
-                         'ielm-mode-hook
-                         'lisp-interaction-mode-hook
-                         'emacs-lisp-mode-hook))
-             (add-hook 'scheme-mode-hook 'ayrc/scheme-hook)))
+             ;; Mode with elisp is a first thind that user see
+             <<lisp-hook>>
+             <<emacs-lisp-hook>>))
    #+END_SRC
 
 ** Common configuration for all lisp dialects
@@ -110,12 +107,13 @@ Lisp family languages configuration.
 
 ** Scheme
 *** Main minor mode
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref geiser-use-package
+    #+NAME: geiser-use-package
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
       (use-package geiser
           :ensure t
-          :config
+          :preface
           (progn
-              (setq geiser-active-implementations '(racket guile))))
+              <<scheme-hook>>))
     #+END_SRC
 
 *** Hook
@@ -124,7 +122,9 @@ Lisp family languages configuration.
           (ayrc/lisp-hook)
 
           (geiser-mode 1)
+          (setq geiser-active-implementations '(racket guile))
 
-          (add-to-list (make-local-variable 'company-backends)
+          (make-local-variable 'company-backends)
+          (add-to-list 'company-backends
                        '(company-capf company-dabbrev-code)))
     #+END_SRC

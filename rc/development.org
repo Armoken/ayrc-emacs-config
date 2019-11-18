@@ -296,7 +296,7 @@ Common settings for almost all development modes
              (setq yas-snippet-dirs
                    (list
                     yasnippet-snippets-dir
-                    (expand-config-path "./snippets/personal") ;; Personal snippets
+                    (expand-config-path "./personal-snippets") ;; Personal snippets
                     ))
              (yas-reload-all)))
    #+END_SRC
@@ -475,7 +475,10 @@ Common settings for almost all development modes
                                  ("C-M-."   . xref-find-apropos)))
 
           (flycheck-mode 1)
+
           (company-mode  1)
+          (make-local-variable 'company-backends)
+
           (dap-mode      1))
     #+END_SRC
 
