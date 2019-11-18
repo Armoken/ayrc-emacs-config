@@ -64,6 +64,7 @@ C/C++ configuration for Emacs
      (defun ayrc/cc-hook ()
          (display-line-numbers-mode 1)
          (visual-line-mode          1)
+         (auto-fill-mode            1)
          (ws-butler-mode            1)
          (smartparens-mode          1)
          (abbrev-mode               1)

@@ -32,7 +32,7 @@ Python configuration for Emacs
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
-     (defun install-python-language-prerequisites ()
+     (defun ayrc/install-python-language-prerequisites ()
          "Install python language prerequisites.
 
      Prerequisites listed in python-language-prerequisites
@@ -185,25 +185,34 @@ Python configuration for Emacs
 *** Hook
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-hook
       (defun ayrc/python-hook ()
+          (setq lsp-eldoc-render-all            nil
+                lsp-eldoc-render-all            nil
+                lsp-eldoc-enable-hover          nil
+                lsp-eldoc-enable-signature-help nil
+                lsp-eldoc-prefer-signature-help nil
+                py-outline-minor-mode-p         nil
+                python-shell-interpreter        "ipython"
+                python-shell-interpreter-args   "-i --simple-prompt")
+
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
+          (auto-fill-mode            1)
           (ws-butler-mode            1)
           (smartparens-mode          1)
           (abbrev-mode               1)
           (semantic-mode             1)
           (yas-minor-mode            1)
 
-          (setq py-outline-minor-mode-p nil
-                python-shell-interpreter "ipython"
-                python-shell-interpreter-args "-i --simple-prompt")
-
           (pipenv-mode               1)
           (pyenv-mode                1)
           (sphinx-doc-mode           1)
           (eldoc-mode                -1)
-          (fci-mode                  -1)
+
+          ;; Temporary disabled, need to fix look
+          ;; (fci-mode                  -1)
 
           (require 'lsp-pyls)
+          (require 'dap-python)
           (lsp-deferred))
     #+END_SRC
 

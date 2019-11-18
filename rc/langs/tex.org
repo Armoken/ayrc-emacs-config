@@ -28,9 +28,10 @@ Tex configuration for Emacs
   - [[https://bitbucket.org/mortiferus/latex-pretty-symbols.el][latex-pretty-symbols]] :: makes emacs display unicode characters instead of latex commands
   - [[https://www.emacswiki.org/emacs/LaTeXPreviewPane][latex-preview-pane]] :: minor mode that enables you to preview your LaTeX files directly in Emacs
 * Configuration
-   #+BEGIN_SRC emacs-lisp :noweb tangle
+   #+BEGIN_SRC emacs-lisp :noweb tangle :noweb yes
      (use-package auctex
          :ensure t
+         :mode ("\\.tex\\'" . latex-mode)
          :commands (latex-mode
                     LaTeX-mode
                     plain-tex-mode
@@ -38,53 +39,62 @@ Tex configuration for Emacs
          :hook ((latex-mode     . ayrc/auctex-hook)
                 (LaTeX-mode     . ayrc/auctex-hook)
                 (plain-tex-mode . ayrc/auctex-hook))
-         :mode ("\\.tex\\'" . latex-mode)
          :init
          (progn
              <<auctex-company-use-package>>
              <<latex-math-company-use-package>>
              <<latex-math-preview-use-package>>
              <<latex-preview-pane-use-package>>
-             <<latex-pretty-symbols-use-package>>)
-         :config
-         (progn
-             (defun ayrc/auctex-hook()
-                 (display-line-numbers-mode 1)
-                 (visual-line-mode          1)
-                 (ws-butler-mode            1)
-                 (smartparens-mode          1)
-                 (abbrev-mode               1)
-                 (semantic-mode             1)
-                 (yas-minor-mode            1)
-
-                 (hs-minor-mode             1)
-                 (flycheck-mode             1)
-                 (LaTeX-preview-setup       1)
-                 (tex-fold-mode             1)
-
-                 (company-mode              1)
-                 (add-to-list (make-local-variable 'company-backends)
-                              '(company-auctex
-                                company-math-symbols-latex
-                                company-latex-commands))
-                 (company-auctex-init)
-
-                 (setq TeX-auto-save  t
-                       TeX-parse-self t
-                       TeX-save-query nil
-                       TeX-PDF-mode   t)
-
-                 (setq-default TeX-PDF-mode t)
-                 (setq-default TeX-master nil)
-                 (setq-default TeX-engine 'xetex)
-
-                 <<latex-separated-preview-setup>>)))
+             <<latex-pretty-symbols-use-package>>
+             <<auctex-hook>>))
 
    #+END_SRC
+** Hook
+    #+NAME: auctex-hook
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+      (defun ayrc/auctex-hook ()
+          (setq TeX-auto-save  t
+                TeX-parse-self t
+                TeX-save-query nil
+                TeX-PDF-mode   t)
+
+          (setq-default TeX-PDF-mode t)
+          (setq-default TeX-master nil)
+          (setq-default TeX-engine 'xetex)
+
+          <<latex-separated-preview-setup>>
+
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+
+          ;; Very bad behavior
+          ;; (auto-fill-mode            -1)
+
+          (aggressive-indent-mode    1)
+          (ws-butler-mode            1)
+          (smartparens-mode          1)
+          (abbrev-mode               1)
+          (semantic-mode             1)
+          (yas-minor-mode            1)
+
+          (hs-minor-mode             1)
+          (flycheck-mode             1)
+          (tex-fold-mode             1)
+
+          (company-mode              1)
+          (add-to-list (make-local-variable 'company-backends)
+                       '(company-auctex
+                         company-math-symbols-latex
+                         company-latex-commands))
+          (company-auctex-init)
+
+          (LaTeX-preview-setup))
+    #+END_SRC
 
 ** Preview
 *** Preview pane
-    #+BEGIN_SRC emacs-lisp :tangle :noweb-ref latex-preview-pane-use-package
+    #+NAME: latex-preview-pane-use-package
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
       (use-package latex-preview-pane
           :ensure t
           :commands (latex-preview-pane-enable)
@@ -93,8 +103,8 @@ Tex configuration for Emacs
     #+END_SRC
 
 *** Separated preview
-
-    #+BEGIN_SRC emacs-lisp :tangle :noweb-ref latex-separated-preview-setup
+    #+NAME: latex-separated-preview-setup
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
       (setq-default
        preview-scale 1.4
        preview-scale-function '(lambda ()
@@ -103,26 +113,30 @@ Tex configuration for Emacs
     #+END_SRC
 
 *** Math preview
-    #+BEGIN_SRC emacs-lisp :tangle :noweb-ref latex-math-preview-use-package
+    #+NAME: latex-math-preview-use-package
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
       (use-package latex-math-preview
           :ensure t)
     #+END_SRC
 
 ** Pretty symbols
-   #+BEGIN_SRC emacs-lisp :tangle :noweb-ref latex-pretty-symbols-use-package
+   #+NAME: latex-pretty-symbols-use-package
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
      (use-package latex-pretty-symbols
          :ensure t)
    #+END_SRC
 
 ** Autocompletion
 *** Latex math symbols
-    #+BEGIN_SRC emacs-lisp :tangle :noweb-ref latex-math-company-use-package
+    #+NAME: latex-math-company-use-package
+    #+BEGIN_SRC emacs-lisp :tangle :noweb yes
       (use-package company-math
           :ensure t)
     #+END_SRC
 
 *** Auctex company
-    #+BEGIN_SRC emacs-lisp :tangle :noweb-ref auctex-company-use-package
+    #+NAME: auctex-company-use-package
+    #+BEGIN_SRC emacs-lisp :tangle :noweb yes
       (use-package company-auctex
           :ensure t
           :commands (company-auctex-init))

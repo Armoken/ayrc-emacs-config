@@ -367,7 +367,10 @@ Common settings for almost all development modes
 ** Eldoc
    #+BEGIN_SRC emacs-lisp
      (use-package eldoc
-         :diminish eldoc-mode)
+         :diminish eldoc-mode
+         :init
+         (progn
+             (global-eldoc-mode -1)))
    #+END_SRC
 
 ** GTags

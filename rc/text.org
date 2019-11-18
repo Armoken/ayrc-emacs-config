@@ -51,7 +51,7 @@ Common settings for almost all text modes
       (use-package display-line-numbers
 	  :config
 	  (progn
-	      (setq display-line-numbers-width-start 4)))
+	      (setq display-line-numbers-width-start 5)))
     #+END_SRC
 
 *** Modeline
@@ -144,7 +144,6 @@ Common settings for almost all text modes
 
    #+BEGIN_SRC emacs-lisp
      (diminish 'auto-fill-function)
-     (add-hook 'visual-line-mode-hook 'auto-fill-mode)
    #+END_SRC
 
 ** Delete Selection mode

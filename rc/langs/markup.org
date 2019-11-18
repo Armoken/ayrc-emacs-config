@@ -9,12 +9,13 @@
          :ensure t
          :mode (("\\.json\\'" . json-mode))
          :hook (json-mode . ayrc/json-hook)
+         :bind (:map json-mode-map
+                     ("C-c C-r" . json-reformat-region))
          :init
          (progn
              (use-package json-reformat
                  :ensure t
-                 :bind (:map json-mode-map
-                             ("C-c C-r" . json-reformat-region)))
+                 :commands (json-reformat-region))
 
              (use-package flycheck-demjsonlint
                  :ensure t))
@@ -53,6 +54,7 @@
              (defun ayrc/yaml-hook ()
                  (display-line-numbers-mode  1)
                  (visual-line-mode           1)
+                 (auto-fill-mode            1)
                  (ws-butler-mode             1)
                  (smartparens-mode           1)
                  (semantic-mode              1)
@@ -81,6 +83,7 @@
              (defun ayrc/nxml-hook ()
                  (display-line-numbers-mode 1)
                  (visual-line-mode          1)
+                 (auto-fill-mode            1)
                  (ws-butler-mode            1)
                  (smartparens-mode          1)
                  (semantic-mode             1)
@@ -104,6 +107,7 @@
              (defun ayrc/jinja2-hook ()
                  (display-line-numbers-mode 1)
                  (visual-line-mode          1)
+                 (auto-fill-mode            1)
                  (ws-butler-mode            1)
                  (smartparens-mode          1)
                  (semantic-mode             1)
@@ -123,6 +127,7 @@
               (defun ayrc/rst-hook ()
                   (display-line-numbers-mode 1)
                   (visual-line-mode          1)
+                  (auto-fill-mode            1)
                   (ws-butler-mode            1)
                   (smartparens-mode          1)
                   (semantic-mode             1)
@@ -168,6 +173,7 @@
               (defun ayrc/markdown-hook ()
                   (display-line-numbers-mode 1)
                   (visual-line-mode          1)
+                  (auto-fill-mode            1)
                   (ws-butler-mode            1)
                   (smartparens-mode          1)
                   (semantic-mode             1)
