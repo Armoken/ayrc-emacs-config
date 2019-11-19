@@ -174,28 +174,15 @@ Common settings for almost all development modes
           :bind
           (:map company-active-map
                 ("<tab>" . company-complete-selection))
+          :hook (company-mode . ayrc/company-hook)
           :init
           (progn
               <<company-box-use-package>>
               <<company-flx-use-package>>
-              <<company-quickhelp-use-package>>
-              <<company-statistics-use-package>>)
-          :config
+              <<company-quickhelp-use-package>>)
+          :preface
           (progn
-              (setq company-tooltip-align-annotations t
-
-                    ;; Easy navigation to candidates with M-<n>
-                    company-idle-delay                0.0
-
-                    company-show-numbers              t
-                    company-minimum-prefix-length     1)
-
-              (setq company-backends
-                    '((company-files        ;; files & directory
-                       company-keywords)    ;; keywords
-
-                      (company-abbrev       ;; abbreviations
-                       company-dabbrev))))) ;; dynamic abbreviat
+              <<company-hook>>))
     #+END_SRC
 
 **** Documentation
@@ -228,13 +215,23 @@ Common settings for almost all development modes
               (setq company-box-icons-alist company-box-icons-all-the-icons)))
      #+END_SRC
 
-**** Sort candidates by previous completion choices
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-statistics-use-package
-      (use-package company-statistics
-          :ensure t
-          :after company
-          :hook (company-mode . company-statistics-mode))
-     #+END_SRC
+**** Hook
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-hook
+      (defun ayrc/company-hook ()
+          (setq company-tooltip-align-annotations t
+
+                ;; Easy navigation to candidates with M-<n>
+                company-idle-delay                0.0
+
+                company-show-numbers              t
+                company-minimum-prefix-length     1)
+
+          (setq company-backends
+                ;; files & directory && keywords
+                '((company-files        company-keywords)
+                  ;; abbreviations && dynamic abbreviat
+                  (company-abbrev     company-dabbrev))))
+    #+END_SRC
 
 ** Folding
    #+BEGIN_SRC emacs-lisp
