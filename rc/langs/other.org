@@ -2,48 +2,58 @@
 ** Virtualization
 *** Containers
 **** Docker
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :noweb tangle
       (use-package dockerfile-mode
           :ensure t
           :mode (("Dockerfile'"       . dockerfile-mode)
                  ("\\.Dockerfile\\'"  . dockerfile-mode))
           :hook (dockerfile-mode . ayrc/dockerfile-hook)
-          :config
+          :preface
           (progn
-              (defun ayrc/dockerfile-hook ()
-                  (display-line-numbers-mode 1)
-                  (visual-line-mode          1)
-                  (auto-fill-mode            1)
-                  (ws-butler-mode            1)
-                  (smartparens-mode          1)
-                  (semantic-mode             1)
-                  (yas-minor-mode            1)
-
-                  (company-mode              1))))
+              <<dockerfile-hook>>))
     #+END_SRC
 
+***** Hook
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref dockerfile-hook
+        (defun ayrc/dockerfile-hook ()
+            (display-line-numbers-mode 1)
+            (visual-line-mode          1)
+            (auto-fill-mode            1)
+            (ws-butler-mode            1)
+            (smartparens-mode          1)
+            (semantic-mode             1)
+            (yas-minor-mode            1)
+
+            (company-mode              1))
+      #+END_SRC
+
 ** Nginx
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package nginx-mode
          :ensure t
          :mode (("nginx\.conf\.?.*$" . nginx-mode))
          :hook (nginx-mode . ayrc/nginx-hook)
-         :config
+         :preface
          (progn
-             (defun ayrc/nginx-hook ()
-                 (display-line-numbers-mode 1)
-                 (visual-line-mode          1)
-                 (auto-fill-mode            1)
-                 (ws-butler-mode            1)
-                 (smartparens-mode          1)
-                 (semantic-mode             1)
-                 (yas-minor-mode            1)
-
-                 (company-mode              1))))
+             <<nginx-hook>>))
    #+END_SRC
 
+*** Hook
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref nginx-hook
+    (defun ayrc/nginx-hook ()
+            (display-line-numbers-mode 1)
+            (visual-line-mode          1)
+            (auto-fill-mode            1)
+            (ws-butler-mode            1)
+            (smartparens-mode          1)
+            (semantic-mode             1)
+            (yas-minor-mode            1)
+
+            (company-mode              1))
+    #+END_SRC
+
 ** Systemd
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package systemd
          :ensure t
          :mode (("\\.service\\'"   . systemd-mode)
@@ -59,85 +69,112 @@
                 ("\\.network\\'"   . systemd-mode)
                 ("\\.link\\'"      . systemd-mode))
          :hook (systemd-mode . ayrc/systemd-hook)
-         :config
+         :preface
          (progn
-             (defun ayrc/systemd-hook ()
-                 (display-line-numbers-mode 1)
-                 (visual-line-mode          1)
-                 (auto-fill-mode            1)
-                 (ws-butler-mode            1)
-                 (smartparens-mode          1)
-                 (semantic-mode             1)
-                 (yas-minor-mode            1)
-
-                 (company-mode              1))))
+             <<systemd-hook>>))
    #+END_SRC
 
+*** Hook
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref systemd-hook
+      (defun ayrc/systemd-hook ()
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (auto-fill-mode            1)
+          (ws-butler-mode            1)
+          (smartparens-mode          1)
+          (semantic-mode             1)
+          (yas-minor-mode            1)
+
+          (company-mode              1))
+    #+END_SRC
+
 ** Ini
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package ini-mode
          :ensure t
          :mode (("\\.ini\\'" . ini-mode))
          :hook (ini-mode . ayrc/ini-hook)
-         :config
+         :preface
          (progn
-             (defun ayrc/ini-hook ()
-                 (display-line-numbers-mode 1)
-                 (visual-line-mode          1)
-                 (auto-fill-mode            1)
-                 (ws-butler-mode            1)
-                 (smartparens-mode          1)
-                 (semantic-mode             1)
-                 (yas-minor-mode            1)
-
-                 (company-mode              1))))
+             <<ini-hook>>))
    #+END_SRC
 
+*** Hook
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref ini-hook
+      (defun ayrc/ini-hook ()
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (auto-fill-mode            1)
+          (ws-butler-mode            1)
+          (smartparens-mode          1)
+          (semantic-mode             1)
+          (yas-minor-mode            1)
+
+          (company-mode              1))
+    #+END_SRC
+
 ** Plantuml
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package plantuml-mode
          :ensure t
          :mode (("\\.plantuml\\'" . plantuml-mode))
          :hook (plantuml-mode . ayrc/plantuml-hook)
          :init
          (progn
-             (use-package flycheck-plantuml
-                 :ensure t
-                 :commands (flycheck-plantuml-setup)))
-         :config
+             <<flycheck-plantuml-use-package>>)
+         :preface
          (progn
-             (defun ayrc/plantuml-hook ()
-                 (display-line-numbers-mode 1)
-                 (visual-line-mode          1)
-                 (auto-fill-mode            1)
-                 (ws-butler-mode            1)
-                 (smartparens-mode          1)
-                 (semantic-mode             1)
-                 (yas-minor-mode            1)
-
-                 (company-mode              1)
-                 (flycheck-plantuml-setup   1)
-
-                 (setq plantuml-jar-path "/usr/share/plantuml/lib/plantuml.jar")
-                 (setq plantuml-output-type "svg"))))
+             <<plantuml-hook>>))
    #+END_SRC
 
+*** Flycheck
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flycheck-plantuml-use-package
+      (use-package flycheck-plantuml
+          :ensure t
+          :commands (flycheck-plantuml-setup))
+    #+END_SRC
+
+*** Hook
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref plantuml-hook
+      (defun ayrc/plantuml-hook ()
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (auto-fill-mode            1)
+          (ws-butler-mode            1)
+          (smartparens-mode          1)
+          (semantic-mode             1)
+          (yas-minor-mode            1)
+
+          (company-mode              1)
+          (flycheck-plantuml-setup   1)
+
+          (setq plantuml-jar-path "/usr/share/plantuml/lib/plantuml.jar")
+          (setq plantuml-output-type "svg"))
+
+
+    #+END_SRC
+
 ** Dotenv
-  #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :noweb tangle
     (use-package dotenv-mode
         :ensure t
         :mode (("\\.env\\'" . dotenv-mode))
         :hook (dotenv-mode . ayrc/dotenv-hook)
-        :config
+        :preface
         (progn
-            (defun ayrc/dotenv-hook ()
-                (display-line-numbers-mode 1)
-                (visual-line-mode          1)
-                (auto-fill-mode            1)
-                (ws-butler-mode            1)
-                (smartparens-mode          1)
-                (semantic-mode             1)
-                (yas-minor-mode            1)
+            <<dotenv-hook>>))
+   #+END_SRC
 
-                (company-mode              1))))
-  #+END_SRC
+*** Hook
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref dotenv-hook
+      (defun ayrc/dotenv-hook ()
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (auto-fill-mode            1)
+          (ws-butler-mode            1)
+          (smartparens-mode          1)
+          (semantic-mode             1)
+          (yas-minor-mode            1)
+
+          (company-mode              1))
+    #+END_SRC

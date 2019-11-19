@@ -18,6 +18,8 @@
     #+NAME: make-hook
     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
       (defun ayrc/make-hook ()
+          (setq indent-tabs-mode t)
+
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (auto-fill-mode            1)

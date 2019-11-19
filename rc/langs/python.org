@@ -28,14 +28,14 @@ Python configuration for Emacs
    Add language prerequisite to this list after its first mention in 
    list after function definition below
    #+BEGIN_SRC emacs-lisp
-   (setq python-language-prerequisites '())
+   (setq ayrc/python-language-prerequisites '())
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
      (defun ayrc/install-python-language-prerequisites ()
          "Install python language prerequisites.
 
-     Prerequisites listed in python-language-prerequisites
+     Prerequisites listed in ayrc/python-language-prerequisites
      global variable"
          (interactive)
          (when (and (buffer-modified-p)
@@ -46,7 +46,7 @@ Python configuration for Emacs
                 (buffer (get-buffer-create buf-name))
                 (process (get-buffer-process buffer))
                 (cmd-args (append (list "-m" "pip" "install")
-                                  python-language-prerequisites)))
+                                  ayrc/python-language-prerequisites)))
              (when (and process
                         (process-live-p process))
                  (setq buffer (generate-new-buffer buf-name)))
@@ -74,72 +74,72 @@ Python configuration for Emacs
    Prerequisites:
 *** [[https://github.com/palantir/python-language-server][pyls]]
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'python-language-prerequisites "python-language-server")
+   (add-to-list 'ayrc/python-language-prerequisites "python-language-server")
    #+END_SRC
 
 *** [[https://github.com/tomv564/pyls-mypy][pyls-mypy]]                                            :temporary_disabled:
    #+BEGIN_SRC emacs-lisp
-     ;; (add-to-list 'python-language-prerequisites "pyls-mypy")
+     ;; (add-to-list 'ayrc/python-language-prerequisites "pyls-mypy")
    #+END_SRC
 
 *** [[https://github.com/tomv564/pyls-mypy][pyls-isort]]
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'python-language-prerequisites "pyls-isort")
+   (add-to-list 'ayrc/python-language-prerequisites "pyls-isort")
    #+END_SRC
 
 *** [[https://github.com/tomv564/pyls-mypy][pyls-black]]
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'python-language-prerequisites "pyls-black")
+   (add-to-list 'ayrc/python-language-prerequisites "pyls-black")
    #+END_SRC
 
 *** [[https://www.pylint.org/][Pylint]]
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'python-language-prerequisites "pylint")
+   (add-to-list 'ayrc/python-language-prerequisites "pylint")
    #+END_SRC
 
 *** [[https://github.com/davidhalter/jedi][Jedi]]
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'python-language-prerequisites "jedi")
+   (add-to-list 'ayrc/python-language-prerequisites "jedi")
    #+END_SRC
 
 *** [[https://github.com/python-rope/rope][Rope]]
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'python-language-prerequisites "rope")
+   (add-to-list 'ayrc/python-language-prerequisites "rope")
    #+END_SRC
 
 *** [[https://github.com/PyCQA/pyflakes][pyflakes]]
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'python-language-prerequisites "pyflakes")
+   (add-to-list 'ayrc/python-language-prerequisites "pyflakes")
    #+END_SRC
 
 *** [[https://github.com/PyCQA/mccabe][mccabe]]
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'python-language-prerequisites "mccabe")
+   (add-to-list 'ayrc/python-language-prerequisites "mccabe")
    #+END_SRC
 
 *** [[https://github.com/PyCQA/pycodestyle][pycodestyle]]
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'python-language-prerequisites "pycodestyle")
+   (add-to-list 'ayrc/python-language-prerequisites "pycodestyle")
    #+END_SRC
 
 *** [[https://github.com/PyCQA/pydocstyle][pydocstyle]]
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'python-language-prerequisites "pydocstyle")
+   (add-to-list 'ayrc/python-language-prerequisites "pydocstyle")
    #+END_SRC
 
 *** [[https://github.com/hhatto/autopep8][Autopep8]]
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'python-language-prerequisites "autopep8")
+   (add-to-list 'ayrc/python-language-prerequisites "autopep8")
    #+END_SRC
 
 *** [[https://github.com/google/yapf][Yapf]]
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'python-language-prerequisites "yapf")
+   (add-to-list 'ayrc/python-language-prerequisites "yapf")
    #+END_SRC
 
 *** [[https://github.com/ipython/ipython][ipython]]
    #+BEGIN_SRC emacs-lisp
-   (add-to-list 'python-language-prerequisites "ipython")
+   (add-to-list 'ayrc/python-language-prerequisites "ipython")
    #+END_SRC
 
 * Packages
@@ -171,13 +171,9 @@ Python configuration for Emacs
                      ("C-c i" . run-python))
          :init
          (progn
-             <<pyenv-mode-use-package>>
-             <<pipenv-mode-use-package>>
-
-             <<pyimport-use-package>>
-             <<py-isort-use-package>>
+             <<venv-support-packages>>
              <<sphinx-doc-use-package>>)
-         :config
+         :preface
          (progn
              <<python-hook>>))
    #+END_SRC
@@ -217,6 +213,12 @@ Python configuration for Emacs
     #+END_SRC
 
 *** Env setup modes
+     #+NAME: venv-support-packages
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+       <<pyenv-mode-use-package>>
+       <<pipenv-mode-use-package>>
+     #+END_SRC
+
 **** Pyenv
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyenv-mode-use-package
        (use-package pyenv-mode
@@ -248,19 +250,24 @@ Python configuration for Emacs
 
 ** Pip requirments
    Pip requirments for Emacs
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package pip-requirements
          :ensure t
          :mode (("requirements.txt$" . pip-requirements-mode)
                 ("requirements.pip$" . pip-requirements-mode))
          :hook (pip-requirements-mode . ayrc/pip-hook)
-         :config
+         :preface
          (progn
-             (defun ayrc/pip-hook ()
-                 (display-line-numbers-mode 1)
-                 (visual-line-mode          1)
-                 (ws-butler-mode            1)
-                 (smartparens-mode          1)
-                 (semantic-mode             1)
-                 (yas-minor-mode            1))))
+             <<pip-requirements-hook>>))
    #+END_SRC
+
+*** Hook
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pip-requirements-hook
+      (defun ayrc/pip-hook ()
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (ws-butler-mode            1)
+          (smartparens-mode          1)
+          (semantic-mode             1)
+          (yas-minor-mode            1))
+    #+END_SRC
