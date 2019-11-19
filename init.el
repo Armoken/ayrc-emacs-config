@@ -3,6 +3,9 @@
 ;;; Commentary:
 ;; Init settings
 
+;; Setting background color from Spacemacs theme, to prevent blinking
+(set-background-color "#292b2e")
+
 
 ;;; Code:
 
