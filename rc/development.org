@@ -111,17 +111,8 @@ Common settings for almost all development modes
           :commands (flymake-mode)
           :init
           (progn
-              <<helm-flymake-use-package>>
-              <<flymake-popup-use-package>>))
+              <<helm-flymake-use-package>>))
     #+END_SRC
-
-**** Popup
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flymake-popup-use-package
-       (use-package flymake-diagnostic-at-point
-           :ensure t
-           :disabled
-           :hook (flymake-mode . flymake-diagnostic-at-point-mode))
-     #+END_SRC
 
 **** Helm
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-flymake-use-package
@@ -141,27 +132,11 @@ Common settings for almost all development modes
           :hook (flycheck-mode . ayrc/flycheck-hook)
           :init
           (progn
-              <<flycheck-popup-use-package>>
               <<helm-flycheck-use-package>>)
-          :config
+          :preface
           (progn
-              (defun ayrc/flycheck-hook ()
-                  (flymake-mode -1)
-
-                  (setq flycheck-standard-error-navigation nil)
-                  (setq flycheck-idle-change-delay 0)
-                  (setq flycheck-check-syntax-automatically '(save mode-enabled)))))
+              <<flycheck-hook>>))
     #+END_SRC
-
-**** Popup
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flycheck-popup-use-package
-       (use-package flycheck-popup-tip
-           :ensure t
-           :disabled
-           :after flycheck
-           :hook (flycheck-mode . flycheck-popup-tip-mode)
-           :commands (flycheck-popup-tip-mode))
-     #+END_SRC
 
 **** Helm
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-flycheck-use-package
@@ -171,6 +146,16 @@ Common settings for almost all development modes
            :bind (:map flycheck-mode-map
                        ("C-c h f" . helm-flycheck))
            :commands (helm-flycheck))
+     #+END_SRC
+
+**** Hook
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flycheck-hook
+       (defun ayrc/flycheck-hook ()
+           (flymake-mode -1)
+
+           (setq flycheck-standard-error-navigation nil)
+           (setq flycheck-idle-change-delay 0)
+           (setq flycheck-check-syntax-automatically '(save mode-enabled)))
      #+END_SRC
 
 ** Autocompletion
