@@ -52,24 +52,25 @@ Common settings for almost all development modes
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package projectile
          :ensure t
-         :bind
-         (:map projectile-mode-map
-               ("C-x p o" . projectile-switch-open-project)
-               ("C-x p s" . projectile-switch-project)
-               ("<f9>"    . projectile-compile-project)
-               ("C-c p i" . projectile-invalidate-cache)
-               ("C-c p z" . projectile-cache-current-file)
-               ("C-c p b" . helm-projectile-switch-to-buffer))
+         :hook (projectile-mode . ayrc/projectile-hook)
+         :bind (:map projectile-mode-map
+                     ("<f9>"    . projectile-compile-project)
+                     ("C-x p o" . projectile-switch-open-project)
+                     ("C-x p s" . projectile-switch-project)
+                     ("C-c p i" . projectile-invalidate-cache)
+                     ("C-c p z" . projectile-cache-current-file))
          :init
          (progn
              <<helm-projectile-use-package>>
-             (projectile-mode))
+             (projectile-mode 1))
          :config
          (progn
              (setq projectile-completion-system 'helm)
              (setq projectile-switch-project-action 'helm-projectile)
-             (setq-default projectile-mode-line
-                           '(:eval (format "[P<%s>]" (projectile-project-name))))
+
+             (setq-default
+              projectile-mode-line
+              '(:eval (format "[P<%s>]" (projectile-project-name))))
 
              (setq projectile-project-root-files-top-down-recurring
                    (append
@@ -93,8 +94,9 @@ Common settings for almost all development modes
                        ("C-c p g" . helm-projectile-find-file-dwim)
                        ("C-c p d" . helm-projectile-find-dir)
                        ("C-c p e" . helm-projectile-recentf)
-                       ("C-c p a" . helm-projectile-find-other-file))
-           :config
+                       ("C-c p a" . helm-projectile-find-other-file)
+                       ("C-c p b" . helm-projectile-switch-to-buffer))
+           :preface
            (progn
                (defun ayrc/helm-projectile-grep-or-rg ()
                    "Uses helm-projectile-grep, if ag doesn't present"
@@ -103,6 +105,7 @@ Common settings for almost all development modes
                        (helm-projectile-grep)))))
 
      #+END_SRC
+
 ** Static code analysis
 *** Flymake
     #+BEGIN_SRC emacs-lisp :noweb tangle
@@ -302,15 +305,23 @@ Common settings for almost all development modes
     Emacs minor mode that keeps your code always indented.
     More reliable than electric-indent-mode.
 
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :noweb tangle
       (use-package aggressive-indent
           :ensure t
           :commands (aggressive-indent-mode)
+          :hook (aggressive-indent-mode . ayrc/aggressive-indent-hook)
           :diminish aggressive-indent-mode "[a]"
-          :config
+          :preface
           (progn
-              (electric-indent-mode -1)))
+              <<aggressive-indent-hook>>))
     #+END_SRC
+
+**** Hook
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref aggressive-indent-hook
+       (defun ayrc/aggressive-indent-hook ()
+           (electric-indent-local-mode -1))
+     #+END_SRC
+
 ** Highlighting
 *** Syntax
     #+BEGIN_SRC emacs-lisp

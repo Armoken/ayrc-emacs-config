@@ -3,8 +3,9 @@
 ;;; Commentary:
 ;; Init settings
 
-;; Setting background color from Spacemacs theme, to prevent blinking
+;; Setting background color from Spacemacs theme, to prevent blinking    :hack:
 (set-background-color "#292b2e")
+(set-face-background 'mode-line "#292b2e")
 
 
 ;;; Code:

@@ -128,15 +128,6 @@ UI settings
      (use-package helm
          :ensure t
          :diminish helm-mode
-         :commands (helm-regexp
-                    helm-describe-variable-function
-                    helm-describe-function-function
-                    helm-bookmarks
-                    helm-apropos
-                    helm-register
-                    helm-man-woman
-                    helm-find-files
-                    helm-show-kill-ring)
          :bind
          (("M-x"       . helm-M-x)
           ("C-x C-b"   . helm-mini)
@@ -162,6 +153,9 @@ UI settings
           ("<tab>"     . helm-execute-persistent-action)
           ("C-i"       . helm-execute-persistent-action)
           ("C-z"       . helm-select-action))
+         :init
+         (progn
+             (helm-mode 1))
          :config
          (progn
              (setq helm-M-x-fuzzy-match                  t
@@ -191,9 +185,7 @@ UI settings
                    helm-ff-file-name-history-use-recentf t)
 
              ;; Autoresize helm minibufer
-             (helm-autoresize-mode t)
-
-             (helm-mode t)))
+             (helm-autoresize-mode t)))
    #+END_SRC
 
 ** Change size of buffers                                           :hotkeys:
