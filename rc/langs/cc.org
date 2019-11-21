@@ -263,7 +263,7 @@ C/C++ configuration for Emacs
                    (setq ccls-executable (executable-find "ccls"))
 
                    ;; Log file
-                   (setq ccls-extra-args '("--log-file=/tmp/ccls-9999.log"))
+                   ;; (setq ccls-args '("--log-file=/tmp/ccls-9999.log"))
                    (setq ccls-extra-init-params
                          '(
                            :index       (:comments 2)
