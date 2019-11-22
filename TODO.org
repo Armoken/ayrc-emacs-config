@@ -1,8 +1,8 @@
-* Use package tasks [32/61]
+* Use package tasks [34/63]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
-** Languages [24/33]
+** Languages [26/33]
 *** TODO C/C++ [7/8]
 **** TODO Add DAP template
      #+BEGIN_SRC emacs-lisp
@@ -18,7 +18,7 @@
               :name "LLDB::Run"))
      #+END_SRC
 
-**** DONE [#A] Basic support
+**** DONE Basic support
 **** DONE Rtags
      CLOSED: [2018-08-04 Sat 08:44]
 **** DONE CCLS
@@ -31,8 +31,16 @@
      CLOSED: [2018-08-04 Sat 08:44]
 **** DONE cquery
      CLOSED: [2018-08-04 Sat 08:44]
-*** TODO Python [6/7]
-**** TODO Pyenv support
+*** TODO Haskell [1/2]
+**** TODO hlint apply refact
+**** DONE Choose minimal core packages
+*** TODO Rust [/]
+*** TODO HTML [/]
+*** TODO CSS [/]
+*** DONE Python [7/7]
+    CLOSED: [2019-11-22 Fri 19:27]
+**** DONE Pyenv support
+     CLOSED: [2019-11-22 Fri 19:23]
 **** DONE pyls-lsp
      CLOSED: [2019-11-19 Tue 15:51]
 **** DONE Remove elpy
@@ -44,12 +52,6 @@
      CLOSED: [2019-09-17 Tue 14:17]
 **** CANCELED Try traad - Dead
      CLOSED: [2019-09-15 Sun 22:00]
-*** TODO Haskell [1/2]
-**** TODO hlint apply refact
-**** DONE Choose minimal core packages
-*** TODO Rust [/]
-*** TODO HTML [/]
-*** TODO CSS [/]
 *** DONE VHDL
 *** CANCELED JS                                                     :useless:
     CLOSED: [2019-11-15 Fri 21:10]
@@ -79,13 +81,15 @@
 ** UI [1/2]
 *** TODO [#A] Fonts
 *** DONE [#A] Disable font scale on C-- and S-C-+
-** Other [4/18]
+** Other [4/20]
 *** TODO Hot reload of config parts
-*** TODO Check installed system executables [0/8]
+*** TODO Check installed system executables [0/10]
 **** TODO [[https://github.com/dmeranda/demjson][flycheck-json-demjsonlint-executable]]
 **** TODO https://github.com/adrienverge/yamllint
 **** TODO [[https://github.com/trentm/python-markdown2][python-markdown2]]
 **** TODO ccls
+**** TODO lldb
+**** TODO gdb
 **** TODO irony
 **** TODO Git
 **** TODO SVN

@@ -85,7 +85,7 @@
   #+END_SRC
 
 * C/C++
-  Select "irony", "rtags", "ccls", "gtags" for some editor part.
+  Select "irony", "ccls", "gtags" for some editor part.
 
   #+BEGIN_SRC emacs-lisp
     (setq cc-eldoc-plugin                         "ccls")
