@@ -136,7 +136,7 @@ UI settings
           ("C-c h h"   . helm-info)
           ("C-c h o"   . helm-occur)
           ("C-c h c"   . helm-semantic)
-          ("C-c h i"   . helm-semantic-or-imenu)
+          ("C-c h i"   . helm-imenu)
 
           ;; Pre-configured helm to build regexps.
           ("C-c h r"   . helm-regexp)
