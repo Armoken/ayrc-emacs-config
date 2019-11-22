@@ -93,3 +93,11 @@
     (setq cc-autocompletion-plugin                "ccls")
   #+END_SRC
 
+* Shell
+  Set default shell for shell mode
+   #+BEGIN_SRC emacs-lisp
+     (setq explicit-shell-file-name "/bin/bash")
+     (setq shell-file-name "bash")
+     (setq explicit-bash.exe-args '("--noediting" "--login" "-i"))
+     (setenv "SHELL" shell-file-name)
+  #+END_SRC
