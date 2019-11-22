@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: for_range
+# key: for_range
+# --
+for (auto ${1:iterator} : ${2:collection})
+{
+    $0
+}

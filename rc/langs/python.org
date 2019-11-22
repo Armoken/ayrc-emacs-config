@@ -234,10 +234,9 @@ Python configuration for Emacs
        (use-package pipenv
            :ensure t
            :diminish
-           :config
+           :init
            (progn
-               (setq pipenv-projectile-after-switch-function
-                     #'pipenv-projectile-after-switch-extended)))
+               (setq pipenv-with-projectile nil)))
      #+END_SRC
 
 *** Sphinx doc in docstrings
