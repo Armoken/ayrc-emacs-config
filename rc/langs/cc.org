@@ -273,9 +273,7 @@ C/C++ configuration for Emacs
                    ;; (setq ccls-sem-highlight-method 'overlay)
 
                    (lsp-deferred)
-
-                   ;; Debug support
-                   (require 'dap-lldb))))
+                   <<ccls-debug-support>>)))
      #+END_SRC
 
 **** Autocompletion
@@ -295,6 +293,24 @@ C/C++ configuration for Emacs
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (defun ayrc/ccls-eldoc-setup ()
            (eldoc-mode 1))
+     #+END_SRC
+
+**** Debug support
+     #+NAME: ccls-debug-support
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+       (require 'dap-lldb)
+       (ayrc/dap-remove-nth-first-templates 1)
+
+       (dap-register-debug-template
+        "AYRC Initial Configuration of LLDB::Run"
+        (list :type "lldb"
+              :cwd "absolute path to working directory"
+              :request "launch"
+              :program "absolute path to executable"
+              :args (list
+                     "--first_flag"
+                     "--second_flag" "third_argumnt")
+              :name "LLDB::Run"))
      #+END_SRC
 
 *** CMake IDE

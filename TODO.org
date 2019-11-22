@@ -1,23 +1,18 @@
-* Use package tasks [34/63]
+* Use package tasks [36/63]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
-** Languages [26/33]
-*** TODO C/C++ [7/8]
-**** TODO Add DAP template
-     #+BEGIN_SRC emacs-lisp
-       (dap-register-debug-template
-        "LLDB::Run"
-        (list :type "lldb"
-              :cwd "/home/armoken/Development/Learning/Algorithms and Data Structures/Machine Learning/University Tasks/01"
-              :request "launch"
-              :program "/home/armoken/Development/Learning/Algorithms and Data Structures/Machine Learning/University Tasks/01/build/linreg"
-              :args (list
-                     "--input_data_dir" "/home/armoken/Development/Learning/Algorithms and Data Structures/Machine Learning/University Tasks/01/test_data"
-                     "--output_dir" "/home/armoken/Development/Learning/Algorithms and Data Structures/Machine Learning/University Tasks/01/output")
-              :name "LLDB::Run"))
-     #+END_SRC
-
+** Languages [28/33]
+*** TODO Haskell [1/2]
+**** TODO hlint apply refact
+**** DONE Choose minimal core packages
+*** TODO Rust [/]
+*** TODO HTML [/]
+*** TODO CSS [/]
+*** DONE C/C++ [8/8]
+    CLOSED: [2019-11-22 Fri 19:36]
+**** DONE Add DAP template
+     CLOSED: [2019-11-22 Fri 19:36]
 **** DONE Basic support
 **** DONE Rtags
      CLOSED: [2018-08-04 Sat 08:44]
@@ -31,12 +26,6 @@
      CLOSED: [2018-08-04 Sat 08:44]
 **** DONE cquery
      CLOSED: [2018-08-04 Sat 08:44]
-*** TODO Haskell [1/2]
-**** TODO hlint apply refact
-**** DONE Choose minimal core packages
-*** TODO Rust [/]
-*** TODO HTML [/]
-*** TODO CSS [/]
 *** DONE Python [7/7]
     CLOSED: [2019-11-22 Fri 19:27]
 **** DONE Pyenv support
