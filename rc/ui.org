@@ -90,6 +90,31 @@ UI settings
      (setq scroll-preserve-screen-position t
            scroll-margin 0
            scroll-conservatively 101)
+
+     (pixel-scroll-mode)
+
+     ;; Never go back to the old scrolling behaviour.
+     (setq pixel-dead-time 0)
+
+     ;; Scroll by number of pixels instead of
+     ;; lines (t = frame-char-height pixels).
+     (setq pixel-resolution-fine-flag t)
+
+     ;; Distance in pixel-resolution to scroll each mouse wheel event.
+     (setq mouse-wheel-scroll-amount '(1))
+
+     (setq mouse-wheel-progressive-speed nil)
+
+     ;; No (less) lag while scrolling lots.
+     (setq fast-but-imprecise-scrolling t)
+
+     ;; Just don't even fontify if we're still catching up on user input.
+     (setq jit-lock-defer-time 0)
+
+     (global-set-key (kbd "M-n")
+                     '(lambda nil (interactive) (pixel-scroll-up 1)))
+     (global-set-key (kbd "M-p")
+                     '(lambda nil (interactive) (pixel-scroll-down 1)))
    #+END_SRC
 
 ** Dired
