@@ -82,12 +82,18 @@
                      (kbd (car kc))
                      (cdr kc)))))
    #+END_SRC
+
 ** Functions for making text pretty                             :interactive:
    #+BEGIN_SRC emacs-lisp
+     (defun ayrc/tabify-buffer ()
+         "Replace spaces by from buffer."
+         (interactive)
+         (tabify (point-min) (point-max)))
+
      (defun ayrc/untabify-buffer ()
-       "Remove tabs from buffer."
-       (interactive)
-       (untabify (point-min) (point-max)))
+         "Remove tabs from buffer."
+         (interactive)
+         (untabify (point-min) (point-max)))
 
      (defun ayrc/indent-buffer ()
        "Indent region."
