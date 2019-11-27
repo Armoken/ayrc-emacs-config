@@ -1,4 +1,4 @@
-* Use package tasks [36/63]
+* Use package tasks [37/63]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
@@ -54,10 +54,11 @@
     CLOSED: [2019-11-08 Fri 12:11]
 *** CANCELED Basic Java support                                     :useless:
     CLOSED: [2019-11-08 Fri 12:11]
-** Utils [2/5]
-*** CURRENT DAP
+** Utils [3/5]
 *** TODO Dired - make it more useful
 *** TODO Gnus
+*** DONE DAP
+    CLOSED: [2019-11-22 Fri 20:18]
 *** DONE GDB
     CLOSED: [2018-08-03 Fri 23:17]
 *** DONE Magit
@@ -84,6 +85,9 @@
 **** TODO SVN
 **** TODO gtags
 *** TODO Use system layout switching
+    Ideas:
+    1) Binary running from emacs to obtain layout
+    2) Process obtaining system layout and sending it to emacs (For personal usage)
 *** TODO Fix spell checking in text modes
     https://github.com/tmalsburg/guess-language.el
     http://manuel-uberti.github.io/emacs/2017/02/04/guess-language/
