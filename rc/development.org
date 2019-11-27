@@ -281,7 +281,7 @@ Common settings for almost all development modes
              (setq yas-snippet-dirs
                    (list
                     yasnippet-snippets-dir
-                    (expand-config-path "./personal-snippets") ;; Personal snippets
+                    (ayrc/expand-config-path "./personal-snippets") ;; Personal snippets
                     ))
              (yas-reload-all)))
    #+END_SRC

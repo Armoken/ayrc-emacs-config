@@ -41,7 +41,7 @@
 ;; Loading orgmode plugin, that used for notes, plaining and literate programming
 (require 'org)
 
-(defun expand-config-path (path)
+(defun ayrc/expand-config-path (path)
     "Expand passed path relative to the EMACS user directory.
 `PATH' - passed path"
     (expand-file-name
@@ -50,13 +50,13 @@
 ;; Load example use-conf if
 (defvar user-conf-template-filename "./other/user-conf-template.org")
 (defvar user-conf-filename "./rc/user-conf.org")
-(org-babel-load-file (if (file-exists-p (expand-config-path
+(org-babel-load-file (if (file-exists-p (ayrc/expand-config-path
                                          user-conf-filename))
-                             (expand-config-path user-conf-filename)
-                         (expand-config-path user-conf-template-filename)))
+                             (ayrc/expand-config-path user-conf-filename)
+                         (ayrc/expand-config-path user-conf-template-filename)))
 
 (mapc 'org-babel-load-file
-      (mapcar 'expand-config-path
+      (mapcar 'ayrc/expand-config-path
               (list
                ;; Core
                "./rc/core.org"
@@ -82,20 +82,10 @@
                ;; "./rc/langs/haskell.org"
                ;; "./rc/langs/vhdl.org"
                )))
+
+(setq custom-file (ayrc/expand-config-path "custom.el"))
+(if (file-exists-p custom-file)
+        (load custom-file))
+
 (provide 'init)
 ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (fill-column-indicator modern-cpp-font-lock cmake-ide ccls irony-eldoc flycheck-irony company-irony-c-headers company-irony irony clang-format cmake-font-lock cmake-mode markdown-preview-mode markdown-mode+ jinja2-mode flycheck-yamllint yaml-mode flycheck-demjsonlint dotenv-mode flycheck-plantuml plantuml-mode ini-mode systemd nginx-mode dockerfile-mode company-shell geiser elisp-slime-nav lisp-extra-font-lock rainbow-delimiters kubernetes docker org-cliplink org-present org-bullets dap-mode realgud helm-xref helm-lsp lsp-ui company-lsp lsp-mode helm-gtags ggtags expand-region editorconfig highlight-indentation aggressive-indent yasnippet-snippets yasnippet dsvn magit company-statistics company-quickhelp company-flx company helm-flycheck flycheck-popup-tip flycheck flymake-diagnostic-at-point helm-flymake helm-projectile projectile helm-rg ag smartparens ws-butler anzu adaptive-wrap smart-shift avy undo-tree hydra helm neotree exec-path-from-shell switch-buffer-functions spaceline-all-the-icons spaceline spacemacs-theme bind-key diminish use-package))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(show-paren-match ((t (:background "purple4"))))
- '(show-paren-mismatch ((((class color)) (:background "red" :foreground "white")))))
