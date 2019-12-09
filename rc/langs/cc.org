@@ -264,7 +264,7 @@ C/C++ configuration for Emacs
 
                    ;; Log file
                    ;; (setq ccls-args '("--log-file=/tmp/ccls-9999.log"))
-                   (setq ccls-extra-init-params
+                   (setq ccls-initialization-options
                          '(
                            :index       (:comments 2)
                            :completion  (:detailedLabel t)))
