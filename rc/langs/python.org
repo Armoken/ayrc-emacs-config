@@ -192,7 +192,6 @@ Python configuration for Emacs
 
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
-          (auto-fill-mode            1)
           (ws-butler-mode            1)
           (smartparens-mode          1)
           (abbrev-mode               1)

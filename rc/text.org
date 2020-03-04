@@ -189,7 +189,10 @@ Common settings for almost all text modes
       (use-package smartparens
           :ensure t
           :diminish smartparens-mode "[SP]"
-          :commands (smartparens-mode smartparens-strict-mode))
+          :commands (smartparens-mode smartparens-strict-mode)
+          :init
+          (progn
+              (sp-pair "'" "'" :actions nil)))
     #+END_SRC
 
 ** Ag
