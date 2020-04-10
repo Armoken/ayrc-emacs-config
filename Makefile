@@ -4,7 +4,12 @@ all: clean
 
 .PHONY: clean
 clean:
-	find "./rc" | grep --extended-regexp '.*\.el|.*~' | xargs rm --force
+	@echo "Removing el org-files and temporary files:"
+	@find "./rc" \
+		| grep --extended-regexp '.*\.el|.*~' \
+		| xargs --replace="%S" \
+				sh -c '{ echo -e "\t%S"; rm --recursive --force %S; }'
+
 
 .PHONY: drop
 drop: clean
@@ -13,12 +18,15 @@ drop: clean
 				! -path "./elpa" \
 				-and ! -path "./elpa/gnupg" \
 				-and ! -path "./elpa/archives" \
+		| sort \
 		| xargs --replace="%S" \
 				sh -c '{ echo -e "\t%S"; rm --recursive --force %S; }'
+
 
 .PHONY: full_drop
 full_drop: clean
 	@echo "Removing installed packages:"
-	@find "./elpa" \
+	@find "./elpa" -maxdepth 1 \
+		| sort \
 		| xargs --replace="%S" \
 				sh -c '{ echo -e "\t%S"; rm --recursive --force %S; }'
