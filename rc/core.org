@@ -143,7 +143,7 @@ Core settings for editor
       (column-number-mode t)
     #+END_SRC
 
-** [[http://www.dr-qubit.org/undo-tree/undo-tree.el][Undo tree]]                                      :global_hotkeys:
+** [[http://www.dr-qubit.org/undo-tree/undo-tree.el][Undo tree]]                                                                                  :hotkeys:
    Treat undo history as a tree
 
    #+BEGIN_SRC emacs-lisp
@@ -156,7 +156,7 @@ Core settings for editor
              (global-undo-tree-mode)))
    #+END_SRC
 
-** [[https://github.com/abo-abo/avy][Jump to things in Emacs tree-style]]             :global_hotkeys:
+** [[https://github.com/abo-abo/avy][Jump to things in Emacs tree-style]]                                                              :hotkeys:
    Jump to arbitrary positions in visible text and select text quickly
 
    #+BEGIN_SRC emacs-lisp
@@ -250,7 +250,7 @@ Core settings for editor
      (delete-selection-mode t)
    #+END_SRC
 
-** [[https://github.com/syohex/emacs-anzu][Display in the modeline search information]]     :global_hotkeys:
+** [[https://github.com/syohex/emacs-anzu][Display in the modeline search information]]                                                       :hotkeys:
    Show number of matches in mode-line while searching
 
    #+BEGIN_SRC emacs-lisp
@@ -305,7 +305,7 @@ Core settings for editor
              (sp-pair "'" "'" :actions nil)))
    #+END_SRC
 
-** [[https://github.com/cosmicexplorer/helm-rg][Ripgrep]]                                        :global_hotkeys:
+** [[https://github.com/cosmicexplorer/helm-rg][Ripgrep]]                                                                                   :hotkeys:
    A helm interface to ripgrep
 
    #+BEGIN_SRC emacs-lisp
@@ -352,6 +352,7 @@ Core settings for editor
                             (outline-hide-subtree)
                             (goto-char cpos_save))))))
    #+END_SRC
+
 ** [[https://github.com/alpaker/fill-column-indicator][Fill column indicator]]
    Graphically indicate the fill column
 
@@ -363,7 +364,8 @@ Core settings for editor
          (progn
              (setq fci-rule-column 79)))
    #+END_SRC
-** Cleaning screen
+
+** Cleaning screen                                                                              :ui:
 *** Remove some GUI elelements
     #+BEGIN_SRC emacs-lisp
       (defun ayrc/remove-gui-elements (&optional frame)
@@ -406,22 +408,22 @@ Core settings for editor
       (setq ring-bell-function 'ignore)
     #+END_SRC
 
-** Use 'y' and `n' instead of 'yes' and 'not'
+** Use 'y' and `n' instead of 'yes' and 'not'                                                   :ui:
    #+BEGIN_SRC emacs-lisp
      (fset 'yes-or-no-p 'y-or-n-p)
    #+END_SRC
 
-** Fullscreen at GUI startup
+** Fullscreen at GUI startup                                                                    :ui:
    #+BEGIN_SRC emacs-lisp
      (add-to-list 'default-frame-alist '(fullscreen . maximized))
    #+END_SRC
 
-** Name of current buffer in window title
+** Name of current buffer in window title                                                       :ui:
    #+BEGIN_SRC emacs-lisp
      (setq frame-title-format "GNU Emacs: %b")
    #+END_SRC
 
-** Scroll settings
+** Scroll settings                                                                              :ui:
    #+BEGIN_SRC emacs-lisp
      (setq scroll-preserve-screen-position t
            scroll-margin 0
@@ -453,7 +455,7 @@ Core settings for editor
                      '(lambda nil (interactive) (pixel-scroll-down 1)))
    #+END_SRC
 
-** [[https://github.com/domtronn/all-the-icons.el][Icons]]
+** [[https://github.com/domtronn/all-the-icons.el][Icons]]                                                                                         :ui:
    A library for inserting Developer icons
 
    #+BEGIN_SRC emacs-lisp
@@ -461,7 +463,7 @@ Core settings for editor
        :ensure t)
    #+END_SRC
 
-** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                       :global_hotkeys:
+** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                                                                       :ui:
    A tree plugin like NerdTree for Vim
 
    #+BEGIN_SRC emacs-lisp
@@ -474,7 +476,7 @@ Core settings for editor
          (setq neo-theme (if (display-graphic-p) 'icons 'arrow))))
    #+END_SRC
 
-** [[https://emacs-helm.github.io/helm/][Helm]]                                          :global_hotkeys:
+** [[https://emacs-helm.github.io/helm/][Helm]]                                                                                  :ui:hotkeys:
    Incremental and narrowing framework
 
    #+BEGIN_SRC emacs-lisp
@@ -541,7 +543,7 @@ Core settings for editor
              (helm-autoresize-mode t)))
    #+END_SRC
 
-** Change size of buffers                               :hotkeys:
+** Change size of buffers                                                                  :hotkeys:
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "<C-M-up>") 'shrink-window)
      (global-set-key (kbd "<C-M-down>") 'enlarge-window)
@@ -549,7 +551,7 @@ Core settings for editor
      (global-set-key (kbd "<C-M-right>") 'enlarge-window-horizontally)
    #+END_SRC
 
-** [[https://github.com/abo-abo/hydra][Hydra]]                                                :hotkeys:
+** [[https://github.com/abo-abo/hydra][Hydra]]                                                                                    :hotkeys:
    Make bindings that stick around
 
    #+BEGIN_SRC emacs-lisp
@@ -557,11 +559,11 @@ Core settings for editor
          :ensure t)
    #+END_SRC
 
-** Layout switching                                     :hotkeys:
+** Layout switching                                                                        :hotkeys:
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "<AltGr>") 'toggle-input-method)
    #+END_SRC
-** Movement between windows with M-arrow-keys M-arrow-keys (except org-mode) :global_hotkeys:
+** Movement between windows with M-arrow-keys M-arrow-keys (except org-mode)               :hotkeys:
     #+BEGIN_SRC emacs-lisp
      (if (equal nil (equal major-mode 'org-mode))
          (windmove-default-keybindings 'meta))
@@ -586,23 +588,23 @@ Core settings for editor
       ;; (global-set-key (kbd "<backspace>") 'ayrc/backward-delete-tab-whitespace)
     #+END_SRC
 
-** Goto to line with specific number                                         :global_hotkeys:
+** Goto to line with specific number                                                       :hotkeys:
   #+BEGIN_SRC emacs-lisp
     (global-set-key (kbd "M-g g") 'goto-line)
   #+END_SRC
 
-** Add newline and indent on enter press                                     :global_hotkeys:
+** Add newline and indent on enter press                                                   :hotkeys:
   #+BEGIN_SRC emacs-lisp
     (global-set-key (kbd "RET") 'newline-and-indent)
   #+END_SRC
 
-** Scroll screen without changing cursor position                            :global_hotkeys:
+** Scroll screen without changing cursor position                                          :hotkeys:
   #+BEGIN_SRC emacs-lisp
    (global-set-key (kbd "M-n") (lambda () (interactive) (scroll-up 1)))
    (global-set-key (kbd "M-p") (lambda () (interactive) (scroll-down 1)))
   #+END_SRC
 
-** Revert buffer                                  :global_hotkeys:
+** Revert buffer                                                                           :hotkeys:
   #+BEGIN_SRC emacs-lisp
     (global-set-key (kbd "<f5>") (lambda () (interactive) (revert-buffer)))
   #+END_SRC
@@ -913,7 +915,7 @@ Core settings for editor
          (editorconfig-mode)))
    #+END_SRC
 
-** [[https://github.com/magnars/expand-region.el][Expand region]]                                  :global_hotkeys:
+** [[https://github.com/magnars/expand-region.el][Expand region]]                                                                           :hotkeys:
    #+BEGIN_SRC emacs-lisp
      (use-package expand-region
        :ensure t
@@ -1168,18 +1170,19 @@ Core settings for editor
     #+END_SRC
 
 ** Compilation
-*** Press to compile                                                :global_hotkeys:
+*** Press to compile                                                                       :hotkeys:
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "<f9>") 'compile)
    #+END_SRC
 
-*** Errors switching                                                :global_hotkeys:
+*** Errors switching                                                                       :hotkeys:
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "<f7>") 'next-error)
      (global-set-key (kbd "<f8>") 'previous-error)
    #+END_SRC
+
 * Helpful functions
-** Rename current buffer and file                               :interactive:
+** Rename current buffer and file                                                      :interactive:
    #+BEGIN_SRC emacs-lisp
      (defun ayrc/rename-current-file-and-buffer ()
        "Rename the current buffer and file it is visiting."
@@ -1195,7 +1198,7 @@ Core settings for editor
                (set-visited-file-name new-name t t)))))))
    #+END_SRC
 
-** Edit files as root                                           :interactive:
+** Edit files as root                                                                  :interactive:
    #+BEGIN_SRC emacs-lisp
      (defun ayrc/sudo-edit (&optional arg)
        "Edit currently visited file as root.
@@ -1211,7 +1214,7 @@ Core settings for editor
 
    #+END_SRC
 
-** Copy the current buffer file name to the clipboard           :interactive:
+** Copy the current buffer file name to the clipboard                                  :interactive:
    #+BEGIN_SRC emacs-lisp
      (defun ayrc/copy-file-name-to-clipboard ()
        "Copy the current buffer file name to the clipboard."
@@ -1224,7 +1227,7 @@ Core settings for editor
            (message "Copied buffer file name '%s' to the clipboard." filename))))
    #+END_SRC
 
-** CRLF to LF                                                   :interactive:
+** CRLF to LF                                                                          :interactive:
    #+BEGIN_SRC emacs-lisp
      (defun ayrc/dos2unix (buffer)
        "Automate M-% C-q C-m RET C-q C-j RET"
@@ -1263,7 +1266,7 @@ Core settings for editor
                      (cdr kc)))))
    #+END_SRC
 
-** Functions for making text pretty                             :interactive:
+** Functions for making text pretty                                                    :interactive:
    #+BEGIN_SRC emacs-lisp
      (defun ayrc/tabify-buffer ()
          "Replace spaces by from buffer."
