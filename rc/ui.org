@@ -3,31 +3,18 @@
 
 UI settings
 
-* Packages
-  :PROPERTIES:
-  :CUSTOM_ID: ui-packages
-  :END:
-
-  #+NAME: ui-packages
-  #+CAPTION: Packages for ui settings
-  - [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html][dired]] :: Buffer containing a listing of a directory
-  - [[https://github.com/domtronn/all-the-icons.el][all-the-icons]] :: A utility package to collect various Icon Fonts and propertize them
-  - [[https://github.com/jaypei/emacs-neotree][neotree]] :: A emacs tree plugin like NerdTree for Vim
-  - [[https://github.com/emacs-helm/helm][helm]] :: Incremental completion and selection narrowing framework
-  - [[https://github.com/abo-abo/hydra][hydra]] :: Make Emacs bindings that stick around
-
 * Configuration
 ** Cleaning screen
 *** Remove some GUI elelements
     #+BEGIN_SRC emacs-lisp
-      (defun remove-gui-elements (&optional frame)
-        (menu-bar-mode     -1)
-        (tooltip-mode      -1)
-        (tool-bar-mode     -1)
-        (scroll-bar-mode   -1))
+      (defun ayrc/remove-gui-elements (&optional frame)
+          (menu-bar-mode     -1)
+          (tooltip-mode      -1)
+          (tool-bar-mode     -1)
+          (scroll-bar-mode   -1))
 
-      (remove-gui-elements)
-      (add-to-list 'after-make-frame-functions #'remove-gui-elements)
+      (ayrc/remove-gui-elements)
+      (add-to-list 'after-make-frame-functions #'ayrc/remove-gui-elements)
     #+END_SRC
 
 *** Disable welcom screen
@@ -41,7 +28,7 @@ UI settings
      (setq use-dialog-box nil)
    #+END_SRC
 
-*** Disable frienge                                                :disabled:
+*** Disable frienge                                    :disabled:
     The fringe is a thin strip down the left and/or right edge of a window.
     #+BEGIN_SRC emacs-lisp
       ;; (defun remove-fringe (&optional frame)
@@ -117,27 +104,17 @@ UI settings
                      '(lambda nil (interactive) (pixel-scroll-down 1)))
    #+END_SRC
 
-** Dired
-   #+BEGIN_SRC emacs-lisp
-     (use-package dired
-       :config
-       (progn
-         (setq dired-recursive-deletes 'top) ;; for deleting of empty dir
-         (setq dired-recursive-deletes 'always)
-         (setq dired-recursive-copies 'always)
+** [[https://github.com/domtronn/all-the-icons.el][Icons]]
+   A library for inserting Developer icons
 
-         ;; if there is a dired buffer displayed in the next window, use its
-         ;; current subdir, instead of the current subdir of this dired buffe
-         (setq dired-dwim-target t)))
-   #+END_SRC
-
-** Icons
    #+BEGIN_SRC emacs-lisp
      (use-package all-the-icons
        :ensure t)
    #+END_SRC
 
-** NeoTree                                                          :hotkeys:
+** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                       :global_hotkeys:
+   A tree plugin like NerdTree for Vim
+
    #+BEGIN_SRC emacs-lisp
      (use-package neotree
        :ensure t
@@ -148,7 +125,9 @@ UI settings
          (setq neo-theme (if (display-graphic-p) 'icons 'arrow))))
    #+END_SRC
 
-** Helm                                                             :hotkeys:
+** [[https://emacs-helm.github.io/helm/][Helm]]                                          :global_hotkeys:
+   Incremental and narrowing framework
+
    #+BEGIN_SRC emacs-lisp
      (use-package helm
          :ensure t
@@ -213,7 +192,7 @@ UI settings
              (helm-autoresize-mode t)))
    #+END_SRC
 
-** Change size of buffers                                           :hotkeys:
+** Change size of buffers                               :hotkeys:
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "<C-M-up>") 'shrink-window)
      (global-set-key (kbd "<C-M-down>") 'enlarge-window)
@@ -221,13 +200,15 @@ UI settings
      (global-set-key (kbd "<C-M-right>") 'enlarge-window-horizontally)
    #+END_SRC
 
-** Hydra                                                            :hotkeys:
+** [[https://github.com/abo-abo/hydra][Hydra]]                                                :hotkeys:
+   Make bindings that stick around
+
    #+BEGIN_SRC emacs-lisp
      (use-package hydra
          :ensure t)
    #+END_SRC
 
-** Layout switching                                                 :hotkeys:
+** Layout switching                                     :hotkeys:
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "<AltGr>") 'toggle-input-method)
    #+END_SRC

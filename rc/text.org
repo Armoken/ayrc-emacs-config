@@ -3,43 +3,19 @@
 
 Common settings for almost all text modes
 
-* Packages
-  :PROPERTIES:
-  :CUSTOM_ID: text-packages
-  :END:
-
-  #+NAME: text-packages
-  #+CAPTION: Packages for text editing
-  - [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Autorevert.html][autorevert-mode]] :: Revert buffer on external changes
-  - [[https://www.emacswiki.org/emacs/AbbrevMode][abbrev]] :: Mode for expanding abbreviations
-  - [[https://github.com/emacsmirror/nlinum][nlinum]] :: Show line numbers in the margin
-  - [[https://elpa.gnu.org/packages/undo-tree.html][undo-tree]] :: Undo tree
-  - [[https://github.com/abo-abo/avy][avy]] :: Jump to things in Emacs tree-style
-  - [[https://elpa.gnu.org/packages/adaptive-wrap.html][adaptive-wrap]] :: mode which sets the wrap-prefix property on the fly
-                       so that single-long-line paragraphs get word-wrapped
-                       in a way similar to what you'd get with M-q using
-                       adaptive-fill-mode, but without actually changing the
-                       buffer's text
-  - [[https://github.com/syohex/emacs-anzu][anzu]] :: minor mode which displays current match and total matches
-              information in the mode-line in various search modes
-  - [[https://github.com/lewang/ws-butler][ws-buttler]] :: Unobtrusively trim extraneous white-space *ONLY* in
-                    lines edited
-  - [[https://www.emacswiki.org/emacs/ShowParenMode][paren]] :: Provide mode which allows one to see matching pairs of
-               parentheses and other characters. When point is on the
-               opening character of one of the paired characters, the other
-               is highlighted
-  - [[https://github.com/Fuco1/smartparens][smartparens]] :: Minor mode for dealing with pairs in Emacs
-  - [[https://github.com/hbin/smart-shift][smart-shift]] :: Shift region using arrows
-  - [[https://github.com/Wilfred/ag.el][ag]] :: Frontend to The Silver Searcher
-  - [[https://github.com/cosmicexplorer/helm-rg][helm-rg]] :: Ripgrep with helm interface
 * Configuration
 ** Auto revert mode
- #+BEGIN_SRC emacs-lisp
-   (use-package autorevert
-       :diminish auto-revert-mode)
- #+END_SRC
+   Revert buffers when files on disk change
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package autorevert
+         :diminish auto-revert-mode)
+   #+END_SRC
 
 ** Abbrev mode
+   Word abbreviations mode. In Abbrev mode, inserting an abbreviation causes
+   it to expand and be replaced by its expansion
+
    #+BEGIN_SRC emacs-lisp
      (use-package abbrev
          :diminish abbrev-mode)
@@ -47,6 +23,8 @@ Common settings for almost all text modes
 
 ** Line numbering
 *** Left panel
+    Interface for display-line-numbers
+
     #+BEGIN_SRC emacs-lisp
       (use-package display-line-numbers
 	  :config
@@ -60,7 +38,9 @@ Common settings for almost all text modes
       (column-number-mode t)
     #+END_SRC
 
-** Undo tree                                                 :global_hotkeys:
+** [[http://www.dr-qubit.org/undo-tree/undo-tree.el][Undo tree]]                                      :global_hotkeys:
+   Treat undo history as a tree
+
    #+BEGIN_SRC emacs-lisp
      (use-package undo-tree
          :ensure t
@@ -71,7 +51,9 @@ Common settings for almost all text modes
              (global-undo-tree-mode)))
    #+END_SRC
 
-** Jump to things in Emacs tree-style                        :global_hotkeys:
+** [[https://github.com/abo-abo/avy][Jump to things in Emacs tree-style]]             :global_hotkeys:
+   Jump to arbitrary positions in visible text and select text quickly
+
    #+BEGIN_SRC emacs-lisp
      (use-package avy
          :ensure t
@@ -101,7 +83,9 @@ Common settings for almost all text modes
      (setq select-enable-clipboard t)
    #+END_SRC
 
-** Region shifting
+** [[https://github.com/hbin/smart-shift][Region shifting]]
+   Smart shift text left/right.
+
    #+BEGIN_SRC emacs-lisp
      (use-package smart-shift
        :ensure t
@@ -120,7 +104,7 @@ Common settings for almost all text modes
     (diminish 'visual-line-mode)
   #+END_SRC
 
-** Automatic line wrapping
+** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]
    This package provides the `adaptive-wrap-prefix-mode' minor mode which sets
    the wrap-prefix property on the fly so that single-long-line paragraphs get
    word-wrapped in a way similar to what you'd get with M-q using
@@ -137,13 +121,18 @@ Common settings for almost all text modes
              (setq-default adaptive-wrap-extra-indent 2)))
    #+END_SRC
 
-** Automatic line breaking
+** Disable automatic line breaking
    When Auto Fill mode is enabled, inserting a space at a column
    beyond ‘current-fill-column’ automatically breaks the line at a
    previous space.
 
+   This minor-mode have bad behavior almost in all modes.
+
    #+BEGIN_SRC emacs-lisp
      (diminish 'auto-fill-function)
+
+     (auto-fill-mode            -1)
+     (remove-hook 'text-mode-hook #'turn-on-auto-fill)
    #+END_SRC
 
 ** Delete Selection mode
@@ -156,24 +145,37 @@ Common settings for almost all text modes
      (delete-selection-mode t)
    #+END_SRC
 
-** Display in the modeline search information
+** [[https://github.com/syohex/emacs-anzu][Display in the modeline search information]]     :global_hotkeys:
+   Show number of matches in mode-line while searching
+
    #+BEGIN_SRC emacs-lisp
      (use-package anzu
          :ensure t
          :diminish anzu-mode
+         :bind (([remap query-replace]        . #'anzu-query-replace)
+                ([remap query-replace-regexp] . #'anzu-query-replace-regexp)
+
+                :map isearch-mode-map
+                ([remap isearch-query-replace]        . #'anzu-isearch-query-replace)
+                ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp))
          :init
          (progn
              (global-anzu-mode)))
    #+END_SRC
 
-** Fixing up whitespaces only for touched lines
+** [[https://github.com/lewang/ws-butler][Fixing up whitespaces only for touched lines]]
+   Unobtrusively remove trailing whitespace
+
    #+BEGIN_SRC emacs-lisp
      (use-package ws-butler
          :diminish ws-butler-mode
          :ensure t
          :commands (ws-butler-mode))
    #+END_SRC
+
 ** Highlight expressions between {},[],()
+   Highlight matching paren
+
    #+BEGIN_SRC emacs-lisp
      (use-package paren
        :config
@@ -184,40 +186,30 @@ Common settings for almost all text modes
          (show-paren-mode)))
    #+END_SRC
 
-** Automatically pairs braces and quotes
-    #+BEGIN_SRC emacs-lisp
-      (use-package smartparens
-          :ensure t
-          :diminish smartparens-mode "[SP]"
-          :commands (smartparens-mode smartparens-strict-mode)
-          :config
-          (progn
-              (sp-pair "'" "'" :actions nil)))
-    #+END_SRC
+** [[https://github.com/Fuco1/smartparens][Automatically pairs braces and quotes]]
+   Minor mode for Emacs that deals with parens pairs and tries to be smart
+   about it
 
-** Ag
-   #+BEGIN_SRC emacs-lisp :noweb tangle
-     (use-package ag
+   #+BEGIN_SRC emacs-lisp
+     (use-package smartparens
          :ensure t
-         :commands (ag
-                    ag-files
-                    ag-regexp
-                    ag-project
-                    ag-project-files
-                    ag-project-regexp)
-         :init
+         :diminish smartparens-mode "[SP]"
+         :commands (smartparens-mode smartparens-strict-mode)
+         :config
          (progn
-             <<helm-rg-use-package>>))
+             (sp-pair "'" "'" :actions nil)))
    #+END_SRC
 
-*** Helm                                                     :global_hotkeys:
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-rg-use-package
-      (use-package helm-rg
-          :ensure t
-          :bind (("C-c h s" . helm-rg))
-          :commands (helm-rg
-                     helm-projectile-rg))
-    #+END_SRC
+** [[https://github.com/cosmicexplorer/helm-rg][Ripgrep]]                                        :global_hotkeys:
+   A helm interface to ripgrep
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package helm-rg
+         :ensure t
+         :bind (("C-c h s" . helm-rg))
+         :commands (helm-rg
+                    helm-projectile-rg))
+   #+END_SRC
 
 ** Set newline at the end of file
  #+BEGIN_SRC emacs-lisp
@@ -255,7 +247,9 @@ Common settings for almost all text modes
                             (outline-hide-subtree)
                             (goto-char cpos_save))))))
    #+END_SRC
-** Fill column indicator
+** [[https://github.com/alpaker/fill-column-indicator][Fill column indicator]]
+   Graphically indicate the fill column
+
    #+BEGIN_SRC emacs-lisp
      (use-package fill-column-indicator
          :ensure t

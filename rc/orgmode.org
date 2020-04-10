@@ -3,17 +3,6 @@
 
 Orgmode configuration for Emacs
 
-* Packages
-  :PROPERTIES:
-  :CUSTOM_ID: orgmode-packages
-  :END:
-
-  #+NAME: orgmode-packages
-  #+CAPTION: Packages for orgmode
-  - [[https://github.com/sabof/org-bullets][org-bullets]] :: Show org-mode bullets as UTF-8 characters.
-  - [[https://github.com/rlister/org-present][org-present]] :: Extremely minimalist presentation tool for Emacs org-mode
-  - [[https://github.com/rexim/org-cliplink][org-cliplink]] :: Insert org-mode links from clipboard
-
 * Configuration
     #+BEGIN_SRC emacs-lisp :noweb tangle
       (use-package org
@@ -36,6 +25,7 @@ Orgmode configuration for Emacs
 
               (setq org-log-done 'time)
               (setq org-src-tab-acts-natively t)
+              (setq org-tags-column -65)
 
               (setq org-todo-keywords
                     '((sequence "TODO" "CURRENT" "|" "DONE" "CANCELED")))
@@ -44,27 +34,34 @@ Orgmode configuration for Emacs
                       ("CANCELED" . (:foreground "RoyalBlue3" :weight bold))))))
     #+END_SRC
 
-** Bullets
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref org-bullets-use-package
-       (use-package org-bullets
-           :ensure t
-           :after org
-           :commands org-bullets-mode
-           :hook (org-mode . org-bullets-mode))
-     #+END_SRC
+** [[https://github.com/emacsorphanage/org-bullets][Bullets]]
+   Show bullets in org-mode as UTF-8 characters
 
-** Present
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref org-present-use-package
-       (use-package org-present
-           :ensure t
-           :after org
-           :commands org-present)
-     #+END_SRC
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref org-bullets-use-package
+     (use-package org-bullets
+         :ensure t
+         :after org
+         :commands org-bullets-mode
+         :hook (org-mode . org-bullets-mode))
+   #+END_SRC
 
-** Cliplink
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref org-cliplink-use-package
-       (use-package org-cliplink
-           :ensure t
-           :commands org-cliplink
-           :bind ("C-c M-l" . org-cliplink))
-     #+END_SRC
+** [[https://github.com/rlister/org-present][Present]]
+   Minimalist presentation minor-mode for Emacs org-mode
+
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref org-present-use-package
+     (use-package org-present
+         :ensure t
+         :after org
+         :commands org-present)
+   #+END_SRC
+
+** [[http://github.com/rexim/org-cliplink][Cliplink]]
+   Insert org-mode links from the clipboard
+
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref org-cliplink-use-package
+     (use-package org-cliplink
+         :ensure t
+         :commands org-cliplink
+         :bind (:map org-mode-map
+                     ("C-c M-l" . org-cliplink)))
+   #+END_SRC

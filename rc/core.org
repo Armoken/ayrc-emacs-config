@@ -3,22 +3,28 @@
 
 Core settings for editor
 
-* Packages
-  :PROPERTIES:
-  :CUSTOM_ID: core-packages
-  :END:
-
-  #+NAME: core-packages
-  #+CAPTION: Packages for core settings
-  - [[https://www.emacswiki.org/emacs/Desktop][desktop]] :: save partial status of Emacs when killed
-  - [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] ::  Make Emacs use the $PATH set up by the user's shell
 * Configuration
+** Reload configuration
+   #+BEGIN_SRC emacs-lisp
+     (defun ayrc/reload-configuration ()
+         "Reload configuration starting from ~/.emacs.d/init.el"
+         (interactive)
+         (load-file (ayrc/expand-config-path "./init.el")))
+
+     (defun ayrc/reload-current-config ()
+         (interactive)
+         (let ((filename (buffer-file-name)))
+             (if (string-equal (file-name-extension filename) "org")
+                     (org-babel-load-file filename)
+                 (load-file filename))))
+   #+END_SRC
+
 ** Bookmarks
    #+BEGIN_SRC emacs-lisp
      (setq bookmark-save-flag 1)
    #+END_SRC
 
-** Hook Run When Current Buffer Changed
+** [[https://github.com/10sr/switch-buffer-functions-el][Hook Run When Current Buffer Changed]]
    #+BEGIN_SRC emacs-lisp
      (use-package switch-buffer-functions
          :ensure t)
@@ -32,62 +38,66 @@ Core settings for editor
            `((".*" ,temporary-file-directory t)))
    #+END_SRC
 
-** Session saving
- #+BEGIN_SRC emacs-lisp
-   (use-package desktop
-       :config
-       (progn
-           (setq desktop-restore-frames nil)
+** [[https://www.emacswiki.org/emacs/Desktop][Session saving]]
+   Save partial status of Emacs when killed
 
-           ;; use only one desktop
-           (setq desktop-path (list user-emacs-directory))
-           (setq desktop-dirname user-emacs-directory)
-           (setq desktop-base-file-name "emacs-desktop")
+   #+BEGIN_SRC emacs-lisp
+     (use-package desktop
+         :config
+         (progn
+             (setq desktop-restore-frames nil)
 
-           (defun remove-stale-desktop-lock-file (dir)
-               (let ((pid (desktop-owner dir)))
-                   (when pid
-                       (let ((infile nil)
-                             (destination nil)
-                             (display nil))
-                           (unless (= (call-process "ps" infile destination display "-p"
-                                                    (number-to-string pid)) 0)
-                               (let ((lock-fn (desktop-full-lock-name dir)))
-                                   (delete-file lock-fn)))))))
+             ;; use only one desktop
+             (setq desktop-path (list user-emacs-directory))
+             (setq desktop-dirname user-emacs-directory)
+             (setq desktop-base-file-name "emacs-desktop")
 
-           ;; remove desktop after it's been read
-           (add-hook 'desktop-after-read-hook
-                     #'(lambda ()
-                           ;; desktop-remove clears desktop-dirname
-                           (setq desktop-dirname-tmp desktop-dirname)
-                           (desktop-remove)
-                           (setq desktop-dirname desktop-dirname-tmp)))
+             (defun ayrc/remove-stale-desktop-lock-file (dir)
+                 (let ((pid (desktop-owner dir)))
+                     (when pid
+                         (let ((infile nil)
+                               (destination nil)
+                               (display nil))
+                             (unless (= (call-process "ps" infile destination display "-p"
+                                                      (number-to-string pid)) 0)
+                                 (let ((lock-fn (desktop-full-lock-name dir)))
+                                     (delete-file lock-fn)))))))
 
-           (defun path-to-saved-session ()
-               (file-exists-p
-                (concat desktop-dirname "/" desktop-base-file-name)))
+             ;; remove desktop after it's been read
+             (add-hook 'desktop-after-read-hook
+                       #'(lambda ()
+                             ;; desktop-remove clears desktop-dirname
+                             (setq desktop-dirname-tmp desktop-dirname)
+                             (desktop-remove)
+                             (setq desktop-dirname desktop-dirname-tmp)))
 
-           ;; use session-restore to restore the desktop manually
-           (defun ayrc/session-restore ()
-               "Restore a saved emacs session."
-               (interactive)
-               (remove-stale-desktop-lock-file desktop-dirname)
-               (if (path-to-saved-session)
-                       (desktop-read)
-                   (message "No desktop found.")))
+             (defun ayrc/path-to-saved-session ()
+                 (file-exists-p
+                  (concat desktop-dirname "/" desktop-base-file-name)))
 
-           ;; use session-save to save the desktop manually
-           (defun ayrc/session-save ()
-               "Save an emacs session."
-               (interactive)
-               (if (path-to-saved-session)
-                       (if (y-or-n-p "Overwrite existing desktop? ")
-                               (desktop-save-in-desktop-dir)
-                           (message "Session not saved."))
-                   (desktop-save-in-desktop-dir)))))
- #+END_SRC
+             ;; use session-restore to restore the desktop manually
+             (defun ayrc/session-restore ()
+                 "Restore a saved emacs session."
+                 (interactive)
+                 (ayrc/remove-stale-desktop-lock-file desktop-dirname)
+                 (if (ayrc/path-to-saved-session)
+                         (desktop-read)
+                     (message "No desktop found.")))
 
-** Use user $PATH from shell
+             ;; use session-save to save the desktop manually
+             (defun ayrc/session-save ()
+                 "Save an emacs session."
+                 (interactive)
+                 (if (ayrc/path-to-saved-session)
+                         (if (y-or-n-p "Overwrite existing desktop? ")
+                                 (desktop-save-in-desktop-dir)
+                             (message "Session not saved."))
+                     (desktop-save-in-desktop-dir)))))
+    #+END_SRC
+
+** [[https://github.com/purcell/exec-path-from-shell][Use user ${PATH} from shell]]
+   Make Emacs use the $PATH set up by the user's shell
+
    #+BEGIN_SRC emacs-lisp
      (use-package exec-path-from-shell
          :ensure t

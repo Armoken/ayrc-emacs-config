@@ -8,20 +8,14 @@ Python configuration for Emacs
                            -> virtualenv
                            -> install all packages by running function above
 ** System
-   :PROPERTIES:
-   :CUSTOM_ID: python-system-prerequisites
-   :END:
-
    #+NAME: python-system-prerequisites
    #+CAPTION: System prerequisites for python packages
-
+   - [[https://www.python.org/][Python]] :: The Python programming language
    - [[https://github.com/pyenv/pyenv][Pyenv]] :: [[https://github.com/pyenv/pyenv-installer][pyenv-installer]] and take a look at [[https://github.com/pyenv/pyenv/wiki/Common-build-problems][common build problems]]
    - [[https://github.com/pypa/pipenv][Pipenv]] :: Python Development Workflow for Humans
-** Language
-   :PROPERTIES:
-   :CUSTOM_ID: python-language-prerequisites
-   :END:
+   - [[https://python-poetry.org/][Poetry]] :: Python dependency management and packaging made easy
 
+** Language
    #+NAME: python-language-prerequisites
    #+CAPTION: Language prerequisites for python packages
 
@@ -142,23 +136,8 @@ Python configuration for Emacs
    (add-to-list 'ayrc/python-language-prerequisites "ipython")
    #+END_SRC
 
-* Packages
-  :PROPERTIES:
-  :CUSTOM_ID: python-packages
-  :END:
-
-  #+NAME: python-packages
-  #+CAPTION: Packages for python
-  - [[https://github.com/paetzke/py-yapf.el][py-yapf]] :: Use yapf to beautify a Python buffer
-  - [[https://github.com/pwalsh/pipenv.el][pipenv.el]] :: A Pipenv porcelain inside Emacs
-  - [[https://github.com/proofit404/pyenv-mode][pyenv-mode]] :: Integrate pyenv with python-mode
-  - [[https://github.com/tkf/emacs-python-environment][python-environment]] :: Python virtualenv API for Emacs Lisp
-  - [[https://github.com/Wilfred/pip-requirements.el][pip-requirements]] :: Major mode for editing pip requirements files
-  - [[https://github.com/paetzke/py-isort.el][py-isort.el]] :: Integrates isort into Emacs.
-  - [[https://github.com/Wilfred/pyimport][pyimport]] :: Manage Python imports from Emac
-  - [[https://github.com/naiquevin/sphinx-doc.el][sphinx-doc]] ::  Generate Sphinx friendly docstrings for Python functions
 * Configuration
-** Python
+** [[https://gitlab.com/python-mode-devs/python-mode][Python]]
      Python mode settings for Emacs
 
    #+BEGIN_SRC emacs-lisp :noweb tangle :noweb yes
@@ -186,7 +165,10 @@ Python configuration for Emacs
                 lsp-eldoc-enable-hover          nil
                 lsp-eldoc-enable-signature-help nil
                 lsp-eldoc-prefer-signature-help nil
+
                 py-outline-minor-mode-p         nil
+                py-auto-fill-mode               nil
+
                 python-shell-interpreter        "ipython"
                 python-shell-interpreter-args   "-i --simple-prompt")
 
@@ -216,29 +198,41 @@ Python configuration for Emacs
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        <<pyenv-mode-use-package>>
        <<pipenv-mode-use-package>>
+       <<poetry-use-package>>
      #+END_SRC
 
-**** Pyenv
+**** [[https://github.com/pythonic-emacs/pyenv-mode][Pyenv]]
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyenv-mode-use-package
        (use-package pyenv-mode
            :ensure t
+           :after (python-mode)
            :diminish
            :config
            (progn
                (setq pyenv-show-active-python-in-modeline t)))
      #+END_SRC
 
-**** Pipenv
+**** [[https://github.com/pwalsh/pipenv.el][Pipenv]]
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pipenv-mode-use-package
        (use-package pipenv
            :ensure t
+           :after (python-mode)
            :diminish
            :init
            (progn
                (setq pipenv-with-projectile nil)))
      #+END_SRC
 
-*** Sphinx doc in docstrings
+**** [[https://github.com/galaunay/poetry.el][Poetry]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref poetry-use-package
+       (use-package poetry
+           :ensure t
+           :after (python-mode))
+     #+END_SRC
+
+*** [[https://github.com/naiquevin/sphinx-doc.el][Sphinx doc in docstrings]]
+    Generate Sphinx friendly docstrings for Python functions
+
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref sphinx-doc-use-package
       (use-package sphinx-doc
           :ensure t
@@ -246,8 +240,9 @@ Python configuration for Emacs
           :commands (sphinx-doc-mode))
     #+END_SRC
 
-** Pip requirments
-   Pip requirments for Emacs
+** [[https://github.com/Wilfred/pip-requirements.el][Pip requirments]]
+   Major mode for editing pip requirements files
+
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package pip-requirements
          :ensure t

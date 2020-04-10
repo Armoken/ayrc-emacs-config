@@ -1,33 +1,25 @@
 #+TITLE: Markup
 #+OPTIONS: toc:nil num:nil ^:nil
+
 * Configuration
 ** JSON
-   Install demjson python package
+    #+NAME: json-system-prerequisites
+    #+CAPTION: System prerequisites for json packages
+    - [[https://github.com/dmeranda/demjson][demjson]] :: Python module for JSON data encoding, including jsonlint
 
    #+BEGIN_SRC emacs-lisp :noweb tangle :noweb yes
      (use-package json-mode
-         :ensure t
          :mode (("\\.json\\'" . json-mode))
          :hook (json-mode . ayrc/json-hook)
          :bind (:map json-mode-map
-                     ("C-c C-r" . json-reformat-region))
+                     ("C-c C-r" . json-pretty-print))
          :init
          (progn
-             <<json-reformat-use-package>>
              <<flycheck-demjsonlint-use-package>>)
          :preface
          (progn
              <<json-hook>>))
    #+END_SRC
-
-*** Format
-    #+NAME: json-reformat-use-package
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-      (use-package json-reformat
-          :ensure t
-          :after (json-mode)
-          :commands (json-reformat-region))
-    #+END_SRC
 
 *** Flycheck
     #+NAME: flycheck-demjsonlint-use-package
@@ -54,7 +46,11 @@
           (setq js-indent-level 4))
     #+END_SRC
 
-** Yaml
+** [[https://github.com/yoshiki/yaml-mode][Yaml]]
+    #+NAME: yaml-system-prerequisites
+    #+CAPTION: System prerequisites for yaml packages
+    - [[https://github.com/adrienverge/yamllint][yamllint]] :: A linter for YAML files
+
    #+BEGIN_SRC emacs-lisp :noweb tangle :noweb yes
      (use-package yaml-mode
          :ensure t
@@ -63,21 +59,10 @@
          :bind (:map yaml-mode-map
                      ("C-c f TAB" . indenation-toggle-fold))
          :hook (yaml-mode . ayrc/yaml-hook)
-         :init
-         (progn
-             <<flycheck-yamllint-use-package>>)
          :preface
          (progn
              <<yaml-hook>>))
    #+END_SRC
-
-*** Flycheck
-    #+NAME: flycheck-yamllint-use-package
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-      (use-package flycheck-yamllint
-          :ensure t
-          :commands (flycheck-yamllint-setup))
-    #+END_SRC
 
 *** Hook
     #+NAME: yaml-hook
@@ -85,7 +70,6 @@
       (defun ayrc/yaml-hook ()
           (display-line-numbers-mode  1)
           (visual-line-mode           1)
-          (auto-fill-mode            1)
           (ws-butler-mode             1)
           (smartparens-mode           1)
           (semantic-mode              1)
@@ -120,7 +104,6 @@
       (defun ayrc/nxml-hook ()
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
-          (auto-fill-mode            1)
           (ws-butler-mode            1)
           (smartparens-mode          1)
           (semantic-mode             1)
@@ -134,7 +117,7 @@
                        '(company-nxml company-yasnippet)))
     #+END_SRC
 
-** Jinja2
+** [[http://github.com/paradoxxxzero/jinja2-mode][Jinja2]]
    #+BEGIN_SRC emacs-lisp :noweb tangle :noweb yes
      (use-package jinja2-mode
          :ensure t
@@ -152,7 +135,6 @@
       (defun ayrc/jinja2-hook ()
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
-          (auto-fill-mode            1)
           (ws-butler-mode            1)
           (smartparens-mode          1)
           (semantic-mode             1)
@@ -179,7 +161,6 @@
       (defun ayrc/rst-hook ()
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
-          (auto-fill-mode            1)
           (ws-butler-mode            1)
           (smartparens-mode          1)
           (semantic-mode             1)
@@ -245,7 +226,6 @@
       (defun ayrc/markdown-hook ()
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
-          (auto-fill-mode            1)
           (ws-butler-mode            1)
           (smartparens-mode          1)
           (semantic-mode             1)

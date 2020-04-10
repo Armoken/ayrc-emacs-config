@@ -17,8 +17,6 @@ Haskell configuration for Emacs
 | [[https://github.com/ndmitchell/hlint][hlint]]   | hlint     | dev-haskell/hlint            | hlint   | No       |
 | [[https://github.com/ndmitchell/hoogle][hoogle]]  | hoogle    | dev-haskell/hoogle [haskell] | hoogle  | No       |
 
-
-
 * Packages
 :PROPERTIES:
 :CUSTOM_ID: haskell-packages
@@ -33,9 +31,7 @@ Haskell configuration for Emacs
 | [[https://github.com/DanielG/ghc-mod][ghc-mod]]          | Haskell completion and keybindings                                 |
 | [[https://github.com/flycheck/flycheck-haskell][flycheck-haskell]] | Flycheck mode for haskell                                          |
 
-
 * Haskell
-
   #+BEGIN_SRC emacs-lisp
     (use-package haskell-mode
         :ensure t

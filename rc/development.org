@@ -3,56 +3,12 @@
 
 Common settings for almost all development modes
 
-* Prerequisites
-** System
-   :PROPERTIES:
-   :CUSTOM_ID: development-system-prerequisites
-   :END:
-
-   #+NAME: development-system-prerequisites
-   #+CAPTION: System prerequisites for development
-
-   - [[https://www.gnu.org/software/global/][GNU Global]] :: intall it and put [[file:~/.emacs.d/other/etc/gtags.conf][gtags configuration]] into HOME/.globalrc
-                     or gtags.conf into project root
-* Packages
-  :PROPERTIES:
-  :CUSTOM_ID: development-packages
-  :END:
-
-  #+NAME: development-packages
-  #+CAPTION: Packages for development
-  - [[https://github.com/bbatsov/projectile][projectile]] :: Project managment
-  - [[https://github.com/flycheck/flycheck][flycheck]] :: Modern on-the-fly syntax checking extension
-  - [[https://github.com/flycheck/flycheck-popup-tip][flycheck-popup-tip]] :: Display Flycheck error messages using popup.el
-  - [[http://cedet.sourceforge.net/semantic.shtml][semantic]] :: Languages parser for static analysis and navigation
-  - [[https://github.com/company-mode/company-mode][company]] :: Modular in-buffer completion framework
-  - [[https://github.com/company-mode/company-statistics][company-quickhelp]] :: Sort completion candidates by previous completion choices
-  - [[https://github.com/PythonNut/company-flx][company-flx]] :: Flx fuzzy matching for company
-  - [[https://github.com/company-mode/company-statistics][company-statistics]] :: Sort completion candidates by previous completion choices
-  - [[https://github.com/magit/magit][magit]] :: Git support
-  - [[https://melpa.org/#/dsvn][dsvn]] :: Subversion interface
-  - [[https://www.emacswiki.org/emacs/HideShow][hideshow]] :: It hides and shows blocks of text
-  - [[https://github.com/joaotavora/yasnippet][yasnippet]] :: Template system
-  - [[https://github.com/Malabarba/aggressive-indent-mode][aggressive-indent]] :: Minor mode that keeps your code always indented
-  - [[https://github.com/antonj/Highlight-Indentation-for-Emacs][highlight-indentation]] :: Modes to highlight indentation guides
-  - [[https://github.com/editorconfig/editorconfig-emacs][editorconfig]] :: EditorConfig plugin
-  - [[https://github.com/magnars/expand-region.el][expand-region]] :: Expand current region using lexems' semantic
-  - [[https://www.emacswiki.org/emacs/ElDoc][eldoc]] :: which shows you, in the echo area, the argument list of the
-              function call you are currently writing
-  - [[https://github.com/leoliu/ggtags][ggtags]] :: Frontend to GNU Global source code tagging system
-  - [[https://github.com/syohex/emacs-helm-gtags][emacs-helm-gtags]] :: GNU GLOBAL helm interface
-  - [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] :: Client/library for the Language Server Protocol
-  - [[https://github.com/tigersoldier/company-lsp][company-lsp]] :: Company completion backend for lsp-mode
-  - [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Xref.html][xref]] :: A generic framework and new commands to find and move to
-             definitions of functions
-  - [[https://github.com/brotzeit/helm-xref][helm-xref]] :: Helm interface for xref results
-  - [[https://github.com/realgud/realgud][realgud]] :: The Grand "Cathedral" Debugger rewrite
 * Configuration
-** Project managment
+** [[https://github.com/bbatsov/projectile][Project managment]]
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package projectile
          :ensure t
-         :hook (projectile-mode . ayrc/projectile-hook)
+         :delight '(:eval (format "[P<%s>]" (projectile-project-name)))
          :bind (:map projectile-mode-map
                      ("<f9>"    . projectile-compile-project)
                      ("C-x p o" . projectile-switch-open-project)
@@ -62,15 +18,12 @@ Common settings for almost all development modes
          :init
          (progn
              <<helm-projectile-use-package>>
+
              (projectile-mode 1))
          :config
          (progn
              (setq projectile-completion-system 'helm)
              (setq projectile-switch-project-action 'helm-projectile)
-
-             (setq-default
-              projectile-mode-line
-              '(:eval (format "[P<%s>]" (projectile-project-name))))
 
              (setq projectile-project-root-files-top-down-recurring
                    (append
@@ -80,7 +33,7 @@ Common settings for almost all development modes
                     projectile-project-root-files-top-down-recurring))))
    #+END_SRC
 
-*** Helm
+*** [[https://github.com/bbatsov/helm-projectile][Helm]]
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-projectile-use-package
        (use-package helm-projectile
            :ensure t
@@ -108,6 +61,8 @@ Common settings for almost all development modes
 
 ** Static code analysis
 *** Flymake
+    A universal on-the-fly syntax checker
+
     #+BEGIN_SRC emacs-lisp :noweb tangle
       (use-package flymake
           :diminish flymake-mode "[FM]"
@@ -117,7 +72,7 @@ Common settings for almost all development modes
               <<helm-flymake-use-package>>))
     #+END_SRC
 
-**** Helm
+**** [[https://github.com/tam17aki/helm-flymake][Helm]]
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-flymake-use-package
        (use-package helm-flymake
            :ensure t
@@ -126,7 +81,9 @@ Common settings for almost all development modes
            :commands (helm-flymake))
      #+END_SRC
 
-*** Flycheck
+*** [[http://www.flycheck.org][Flycheck]]
+    On-the-fly syntax checking
+
     #+BEGIN_SRC emacs-lisp :noweb tangle
       (use-package flycheck
           :ensure t
@@ -141,7 +98,7 @@ Common settings for almost all development modes
               <<flycheck-hook>>))
     #+END_SRC
 
-**** Helm
+**** [[https://github.com/yasuyk/helm-flycheck][Helm]]
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-flycheck-use-package
        (use-package helm-flycheck
            :ensure t
@@ -156,6 +113,7 @@ Common settings for almost all development modes
        (defun ayrc/flycheck-hook ()
            (flymake-mode -1)
 
+           (setq flycheck-checker-error-threshold 700)
            (setq flycheck-standard-error-navigation nil)
            (setq flycheck-idle-change-delay 0)
            (setq flycheck-check-syntax-automatically '(save mode-enabled)))
@@ -169,7 +127,7 @@ Common settings for almost all development modes
           :commands (semantic-mode))
     #+END_SRC
 
-*** Company
+*** [[http://company-mode.github.io/][Company]]
     #+BEGIN_SRC emacs-lisp :noweb tangle
       (use-package company
           :ensure t
@@ -188,7 +146,7 @@ Common settings for almost all development modes
               <<company-hook>>))
     #+END_SRC
 
-**** Documentation
+**** [[https://www.github.com/expez/company-quickhelp][Documentation]]
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-quickhelp-use-package
       (use-package company-quickhelp
           :ensure t
@@ -198,7 +156,7 @@ Common settings for almost all development modes
                       ("M-h" . #'company-quickhelp-manual-begin)))
     #+END_SRC
 
-**** Fuzzy matching
+**** [[https://github.com/PythonNut/company-flx][Fuzzy matching]]
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-flx-use-package
        (use-package company-flx
            :ensure t
@@ -206,7 +164,7 @@ Common settings for almost all development modes
            :hook (company-mode . company-flx-mode))
      #+END_SRC
 
-**** Icons
+**** [[https://github.com/sebastiencs/company-box][Icons]]
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-box-use-package
       (use-package company-box
           :ensure t
@@ -268,7 +226,7 @@ Common settings for almost all development modes
                                 'nxml-forward-element
                                 nil))))
    #+END_SRC
-** Snippets
+** [[http://github.com/joaotavora/yasnippet][Snippets]]
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package yasnippet
          :ensure t
@@ -286,7 +244,9 @@ Common settings for almost all development modes
              (yas-reload-all)))
    #+END_SRC
 
-*** Ready snippets collection
+*** [[https://github.com/AndreaCrotti/yasnippet-snippets][Ready snippets collection]]
+    A collection of yasnippet snippets for many languages
+
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref snippets-collection
       (use-package yasnippet-snippets
           :ensure t
@@ -301,7 +261,7 @@ Common settings for almost all development modes
      (setq-default indent-tabs-mode nil)
    #+END_SRC
 
-*** Aggressive Indent
+*** [[https://github.com/Malabarba/aggressive-indent-mode][Aggressive Indent]]
     Emacs minor mode that keeps your code always indented.
     More reliable than electric-indent-mode.
 
@@ -331,7 +291,9 @@ Common settings for almost all development modes
           (setq font-lock-maximum-decoration t)))
     #+END_SRC
 
-*** Indentation
+*** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Indentation]]
+    Minor modes for highlighting indentation
+
     #+BEGIN_SRC emacs-lisp
       (use-package highlight-indentation
         :ensure t
@@ -339,7 +301,7 @@ Common settings for almost all development modes
         :commands (highlight-indentation-mode))
     #+END_SRC
 
-** EditorConfig
+** [[https://github.com/editorconfig/editorconfig-emacs][EditorConfig]]
    #+BEGIN_SRC emacs-lisp
      (use-package editorconfig
        :ensure t
@@ -349,7 +311,7 @@ Common settings for almost all development modes
          (editorconfig-mode)))
    #+END_SRC
 
-** Expand region
+** [[https://github.com/magnars/expand-region.el][Expand region]]                                  :global_hotkeys:
    #+BEGIN_SRC emacs-lisp
      (use-package expand-region
        :ensure t
@@ -366,7 +328,14 @@ Common settings for almost all development modes
              (global-eldoc-mode -1)))
    #+END_SRC
 
-** GTags
+** [[https://github.com/leoliu/ggtags][GTags]]
+   Emacs frontend to GNU Global source code tagging system
+
+   #+NAME: gtags-system-prerequisites
+   #+CAPTION: System prerequisites for GTags
+   - [[https://www.gnu.org/software/global/][GNU Global]] :: intall it and put [[file:~/.emacs.d/other/etc/gtags.conf][gtags configuration]] into HOME/.globalrc
+                   or gtags.conf into project root
+
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package ggtags
          :ensure t
@@ -384,7 +353,7 @@ Common settings for almost all development modes
              (unbind-key "M->" ggtags-mode-map)))
    #+END_SRC
 
-*** Helm
+*** [[https://github.com/syohex/emacs-helm-gtags][Helm]]
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-gtags-use-package
       (use-package helm-gtags
           :ensure t
@@ -401,7 +370,9 @@ Common settings for almost all development modes
               (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
     #+END_SRC
 
-** LSP
+** [[https://github.com/emacs-lsp/lsp-mode][LSP]]
+   Emacs client/library for the Language Server Protocol
+
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package lsp-mode
          :ensure t
@@ -416,39 +387,49 @@ Common settings for almost all development modes
          :config
          (progn
              <<redefined--lsp-auto-configure>>
-
              <<lsp-hook>>))
    #+END_SRC
 
 *** Redefined lsp--auto-configure
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref redefined--lsp-auto-configure
       (defun lsp--auto-configure ()
-          "Autoconfigure `lsp-ui', `company-lsp' if they are installed."
+          "Autoconfigure `company', `flycheck', `lsp-ui',  if they are installed."
 
-          (with-no-warnings
-              (when (functionp 'lsp-ui-mode)
-                  (lsp-ui-mode))
+          (when (functionp 'lsp-ui-mode)
+              (lsp-ui-mode))
 
-              (cond
-               ((eq :none lsp-prefer-flymake))
-               ((and (not (version< emacs-version "26.1")) lsp-prefer-flymake)
-                (lsp--flymake-setup))
-               ((and (functionp 'lsp-ui-mode) (featurep 'flycheck))
-                (require 'lsp-ui-flycheck)
-                (lsp-ui-flycheck-enable t)
-                (flycheck-mode 1)))
+          (cond
+           ((or
+             (and (eq lsp-diagnostic-package :auto)
+                  (functionp 'flycheck-mode))
+             (and (eq lsp-diagnostic-package :flycheck)
+                  (or (functionp 'flycheck-mode)
+                      (user-error
+                       "lsp-diagnostic-package is set to :flycheck but flycheck is not installed?")))
+             ;; legacy
+             (null lsp-diagnostic-package))
+            (lsp-flycheck-enable))
+           ((and (not (version< emacs-version "26.1"))
+                 (or (eq lsp-diagnostic-package :auto)
+                     (eq lsp-diagnostic-package :flymake)
+                     (eq lsp-diagnostic-package t)))
+            (with-no-warnings
+                (require 'flymake)
+                (lsp--flymake-setup)))
+           ((not (eq lsp-diagnostic-package :none))
+            (lsp--warn "Unable to autoconfigure flycheck/flymake. The diagnostics won't be rendered.")))
 
-              (when (functionp 'company-lsp)
-                  (company-mode 1)
-                  (add-to-list 'company-backends
-                               '(company-lsp :with company-yasnippet))
+          (cond
+           ((and (functionp 'company-lsp)
+                 (not lsp-prefer-capf))
+            (progn
+                (company-mode 1)
+                (add-to-list 'company-backends '(company-lsp :with company-yasnippet))
+                (setq-local company-backends (remove 'company-capf company-backends))))
 
-                  ;; make sure that company-capf is disabled since it is not indented to be
-                  ;; used in combination with lsp-mode (see #884)
-                  (setq-local company-backends (remove 'company-capf company-backends))
-
-                  (when (functionp 'yas-minor-mode)
-                      (yas-minor-mode t)))))
+           ((and (fboundp 'company-mode))
+            (company-mode 1)
+            (add-to-list 'company-backends 'company-capf))))
     #+END_SRC
 
 *** Hook
@@ -458,6 +439,7 @@ Common settings for almost all development modes
                 lsp-enable-folding                         t
                 lsp-enable-snippet                         t
                 lsp-vetur-completion-use-scaffold-snippets t
+                lsp-enable-indentation                     t
                 lsp-enable-file-watchers                   nil)
 
           (ayrc/local-set-keys '(("C-c r"   . lsp-rename)
@@ -475,7 +457,7 @@ Common settings for almost all development modes
           (dap-mode      1))
     #+END_SRC
 
-*** Helm
+*** [[https://github.com/yyoncho/helm-lsp][Helm]]
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-lsp-use-package
       (use-package helm-lsp
           :ensure t
@@ -485,7 +467,7 @@ Common settings for almost all development modes
           :commands (helm-lsp-workspace-symbol))
     #+END_SRC
 
-*** Company
+*** [[https://github.com/tigersoldier/company-lsp][Company]]
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-lsp-use-package
       (use-package company-lsp
           :ensure t
@@ -500,7 +482,7 @@ Common settings for almost all development modes
                company-lsp-enable-recompletion t)))
     #+END_SRC
 
-*** UI modules
+*** [[https://github.com/emacs-lsp/lsp-ui][UI modules]]
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref lsp-ui-use-package
       (use-package lsp-ui
           :ensure t
@@ -517,6 +499,8 @@ Common settings for almost all development modes
     #+END_SRC
 
 ** Xref
+   Cross-referencing commands
+
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package xref
          :init
@@ -524,7 +508,7 @@ Common settings for almost all development modes
              <<helm-xref-use-package>>))
    #+END_SRC
 
-*** Helm
+*** [[https://github.com/brotzeit/helm-xref][Helm]]
      #+BEGIN_SRC emacs-lisp  :tangle no :noweb-ref helm-xref-use-package
        (use-package helm-xref
            :ensure t
@@ -535,13 +519,16 @@ Common settings for almost all development modes
      #+END_SRC
 
 ** Debugging
-*** GUD
+*** [[http://github.com/realgud/realgud/][GUD]]
     #+BEGIN_SRC emacs-lisp
       (use-package realgud
-          :ensure t)
+          :ensure t
+          :defer t)
     #+END_SRC
 
-*** DAP
+*** [[https://github.com/yyoncho/dap-mode][DAP]]
+    Debug Adapter Protocol mode
+
     #+BEGIN_SRC emacs-lisp
       (use-package dap-mode
           :ensure t
@@ -576,7 +563,6 @@ Common settings for almost all development modes
                                 (if (listp rest-of-debug-templates)
                                         '()
                                     rest-of-debug-templates)))))))
-
     #+END_SRC
 
 ** Compilation

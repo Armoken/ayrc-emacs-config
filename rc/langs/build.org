@@ -30,7 +30,7 @@
           (company-mode              1))
     #+END_SRC
 
-** CMake
+** [[https://gitlab.kitware.com/cmake/cmake/blob/master/Auxiliary/cmake-mode.el][CMake]]
    #+BEGIN_SRC emacs-lisp :noweb tangle :noweb yes
      (use-package cmake-mode
          :ensure t
@@ -45,7 +45,9 @@
              <<cmake-hook>>))
    #+END_SRC
 
-*** CMake font lock
+*** [[https://github.com/Lindydancer/cmake-font-lock][CMake Font-lock]]
+    Emacs Font-lock rules for CMake
+
     #+NAME: cmake-font-lock-use-package
     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
       (use-package cmake-font-lock

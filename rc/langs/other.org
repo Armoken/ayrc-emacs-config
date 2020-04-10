@@ -1,7 +1,7 @@
 * Configuration
 ** Virtualization
 *** Containers
-**** Docker
+**** [[https://github.com/spotify/dockerfile-mode][Docker]]
     #+BEGIN_SRC emacs-lisp :noweb tangle
       (use-package dockerfile-mode
           :ensure t
@@ -18,7 +18,6 @@
         (defun ayrc/dockerfile-hook ()
             (display-line-numbers-mode 1)
             (visual-line-mode          1)
-            (auto-fill-mode            1)
             (ws-butler-mode            1)
             (smartparens-mode          1)
             (semantic-mode             1)
@@ -27,32 +26,42 @@
             (company-mode              1))
       #+END_SRC
 
-** Nginx
+** [[https://github.com/ajc/nginx-mode][Nginx]]
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package nginx-mode
          :ensure t
          :mode (("nginx\.conf\.?.*$" . nginx-mode))
          :hook (nginx-mode . ayrc/nginx-hook)
+         :init
+         (progn
+             <<company-nginx-use-package>>)
          :preface
          (progn
              <<nginx-hook>>))
    #+END_SRC
 
-*** Hook
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref nginx-hook
-    (defun ayrc/nginx-hook ()
-            (display-line-numbers-mode 1)
-            (visual-line-mode          1)
-            (auto-fill-mode            1)
-            (ws-butler-mode            1)
-            (smartparens-mode          1)
-            (semantic-mode             1)
-            (yas-minor-mode            1)
-
-            (company-mode              1))
+*** [[https://github.com/stardiviner/company-nginx][Autocompletion]]
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-nginx-use-package
+      (use-package company-nginx
+          :ensure t
+          :after (nginx-mode))
     #+END_SRC
 
-** Systemd
+*** Hook
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref nginx-hook
+      (defun ayrc/nginx-hook ()
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (ws-butler-mode            1)
+          (smartparens-mode          1)
+          (semantic-mode             1)
+          (yas-minor-mode            1)
+
+          (company-mode              1)
+          (company-nginx-keywords))
+    #+END_SRC
+
+** [[https://github.com/holomorph/systemd-mode][Systemd]]
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package systemd
          :ensure t
@@ -79,7 +88,6 @@
       (defun ayrc/systemd-hook ()
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
-          (auto-fill-mode            1)
           (ws-butler-mode            1)
           (smartparens-mode          1)
           (semantic-mode             1)
@@ -88,23 +96,23 @@
           (company-mode              1))
     #+END_SRC
 
-** Ini
+** [[https://github.com/emacs-mirror/emacs/blob/master/lisp/textmodes/conf-mode.el][Conf]]
    #+BEGIN_SRC emacs-lisp :noweb tangle
-     (use-package ini-mode
-         :ensure t
-         :mode (("\\.ini\\'" . ini-mode))
-         :hook (ini-mode . ayrc/ini-hook)
+     (use-package conf-mode
+         :mode (("\\.toml\\'" . conf-toml-mode)
+                ("\\.ini\\'" . conf-windows-mode))
+         :hook ((conf-toml-mode-hook    . ayrc/conf-hook)
+                (conf-windows-mode-hook . ayrc/conf-hook))
          :preface
          (progn
-             <<ini-hook>>))
+             <<conf-hook>>))
    #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref ini-hook
-      (defun ayrc/ini-hook ()
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref conf-hook
+      (defun ayrc/conf-hook ()
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
-          (auto-fill-mode            1)
           (ws-butler-mode            1)
           (smartparens-mode          1)
           (semantic-mode             1)
@@ -113,7 +121,7 @@
           (company-mode              1))
     #+END_SRC
 
-** Plantuml
+** [[https://github.com/skuro/plantuml-mode][Plantuml]]
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package plantuml-mode
          :ensure t
@@ -127,7 +135,7 @@
              <<plantuml-hook>>))
    #+END_SRC
 
-*** Flycheck
+*** [[https://github.com/alexmurray/flycheck-plantuml][Flycheck]]
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flycheck-plantuml-use-package
       (use-package flycheck-plantuml
           :ensure t
@@ -139,7 +147,6 @@
       (defun ayrc/plantuml-hook ()
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
-          (auto-fill-mode            1)
           (ws-butler-mode            1)
           (smartparens-mode          1)
           (semantic-mode             1)
@@ -154,7 +161,7 @@
 
     #+END_SRC
 
-** Dotenv
+** [[https://github.com/preetpalS/emacs-dotenv-mode][Dotenv]]
    #+BEGIN_SRC emacs-lisp :noweb tangle
     (use-package dotenv-mode
         :ensure t
@@ -170,7 +177,6 @@
       (defun ayrc/dotenv-hook ()
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
-          (auto-fill-mode            1)
           (ws-butler-mode            1)
           (smartparens-mode          1)
           (semantic-mode             1)

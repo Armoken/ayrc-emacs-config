@@ -1,6 +1,6 @@
 * Configuration
 ** VCS
-*** Git
+*** [[https://github.com/magit/magit][Git]]                                           :global_hotkeys:
      #+BEGIN_SRC emacs-lisp
        (use-package magit
            :ensure t
@@ -48,20 +48,34 @@
                      magit-set-upstream-on-push 'askifnotset)))
 	  #+END_SRC
 
-*** Subversion
+*** [[https://github.com/emacsmirror/dsvn][Subversion]]
     #+BEGIN_SRC emacs-lisp
       (use-package dsvn
           :ensure t
           :commands (svn-status svn-log svn-update))
     #+END_SRC
 
-** Docker
+** Dired
+   #+BEGIN_SRC emacs-lisp
+     (use-package dired
+       :config
+       (progn
+         (setq dired-recursive-deletes 'top) ;; for deleting of empty dir
+         (setq dired-recursive-deletes 'always)
+         (setq dired-recursive-copies 'always)
+
+         ;; if there is a dired buffer displayed in the next window, use its
+         ;; current subdir, instead of the current subdir of this dired buffe
+         (setq dired-dwim-target t)))
+   #+END_SRC
+
+** [[https://github.com/Silex/docker.el][Docker]]
    #+BEGIN_SRC emacs-lisp
      (use-package docker
        :ensure t)
    #+END_SRC
 
-** Kubernetes
+** [[https://github.com/chrisbarrett/kubernetes-el][Kubernetes]]
    #+BEGIN_SRC emacs-lisp
      (use-package kubernetes
        :ensure t
