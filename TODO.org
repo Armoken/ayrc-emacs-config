@@ -1,16 +1,17 @@
-* Use package tasks [37/63]
+#+STARTUP: content
+
+* Use package tasks [39/79]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
-** Languages [28/33]
+
+** Languages [28/35]
 *** TODO Haskell [1/2]
 **** TODO hlint apply refact
 **** DONE Choose minimal core packages
 *** TODO Rust [/]
-*** TODO HTML [/]
-*** TODO CSS [/]
-*** DONE C/C++ [8/8]
-    CLOSED: [2019-11-22 Fri 19:36]
+*** TODO C/C++ [8/9]
+**** TODO Malinka
 **** DONE Add DAP template
      CLOSED: [2019-11-22 Fri 19:36]
 **** DONE Basic support
@@ -26,8 +27,8 @@
      CLOSED: [2018-08-04 Sat 08:44]
 **** DONE cquery
      CLOSED: [2018-08-04 Sat 08:44]
-*** DONE Python [7/7]
-    CLOSED: [2019-11-22 Fri 19:27]
+*** TODO Python [7/8]
+**** TODO Install packages using poetry or pipenv
 **** DONE Pyenv support
      CLOSED: [2019-11-22 Fri 19:23]
 **** DONE pyls-lsp
@@ -42,6 +43,10 @@
 **** CANCELED Try traad - Dead
      CLOSED: [2019-09-15 Sun 22:00]
 *** DONE VHDL
+*** CANCELED HTML [/]
+    CLOSED: [2020-04-10 Fri 11:19]
+*** CANCELED CSS [/]
+    CLOSED: [2020-04-10 Fri 11:19]
 *** CANCELED JS                                                     :useless:
     CLOSED: [2019-11-15 Fri 21:10]
 *** CANCELED Ruby                                                   :useless:
@@ -54,26 +59,44 @@
     CLOSED: [2019-11-08 Fri 12:11]
 *** CANCELED Basic Java support                                     :useless:
     CLOSED: [2019-11-08 Fri 12:11]
-** Utils [3/5]
-*** TODO Dired - make it more useful
+** Utils [5/8]
+*** TODO [[https://github.com/rejeep/prodigy.el][Prodigy]]
+*** TODO Dired - make it more powerful
 *** TODO Gnus
+*** DONE Docker
+    CLOSED: [2019-11-27 Wed 18:26]
+*** DONE Kubernetes
+    CLOSED: [2019-11-27 Wed 18:26]
 *** DONE DAP
     CLOSED: [2019-11-22 Fri 20:18]
 *** DONE GDB
     CLOSED: [2018-08-03 Fri 23:17]
 *** DONE Magit
-** Refactoring [1/2]
+** Refactoring [1/4]
+*** TODO [[https://github.com/lassik/emacs-format-all-the-code][format-all-the-code]] - Auto-format source code with one command
+*** TODO [[https://github.com/jacktasia/dumb-jump][dump-jump]] - an Emacs "jump to definition" package for 40+ languages
 *** TODO Move region of code using arrows like in elpy
 *** CANCELED [[https://github.com/tuhdo/semantic-refactor][semantic-refactor ]]                                     :useless:
     CLOSED: [2019-11-08 Fri 12:06]
 ** Performance [0/1]
 *** TODO Test startup time
-** UI [1/2]
+** UI [1/6]
+*** CURRENT Pixel scroll mode
+*** TODO [[https://github.com/bbatsov/persp-projectile][persp-projectile]]
+*** TODO [[https://github.com/emacs-dashboard/emacs-dashboard][emacs-dashboard]]
+*** TODO Layout switching
+    https://github.com/a13/reverse-im.el
+
 *** TODO [#A] Fonts
 *** DONE [#A] Disable font scale on C-- and S-C-+
-** Other [4/20]
+** Other [4/25]
+*** TODO https://github.com/raxod502/straight.el#integration-with-org
 *** TODO Hot reload of config parts
-*** TODO Check installed system executables [0/10]
+*** TODO Check installed system executables [0/14]
+**** TODO python
+**** TODO pyenv
+**** TODO pipenv
+**** TODO poetry
 **** TODO [[https://github.com/dmeranda/demjson][flycheck-json-demjsonlint-executable]]
 **** TODO https://github.com/adrienverge/yamllint
 **** TODO [[https://github.com/trentm/python-markdown2][python-markdown2]]
@@ -88,9 +111,11 @@
     Ideas:
     1) Binary running from emacs to obtain layout
     2) Process obtaining system layout and sending it to emacs (For personal usage)
+
 *** TODO Fix spell checking in text modes
     https://github.com/tmalsburg/guess-language.el
     http://manuel-uberti.github.io/emacs/2017/02/04/guess-language/
+
 *** TODO Set opening links in default browser
 *** TODO Update prerequisites header in config's template
 *** DONE Plugin switching for syntax checkers
