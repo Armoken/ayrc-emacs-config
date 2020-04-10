@@ -61,12 +61,6 @@
               (list
                ;; Core
                "./rc/core.org"
-               "./rc/misc-functions.org"
-               "./rc/keybindings.org"
-               "./rc/ui.org"
-               "./rc/text.org"
-               "./rc/development.org"
-               "./rc/orgmode.org"
                "./rc/clients.org"
 
                ;; Minumum
