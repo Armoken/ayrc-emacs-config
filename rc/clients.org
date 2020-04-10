@@ -1,6 +1,6 @@
 * Configuration
 ** VCS
-*** [[https://github.com/magit/magit][Git]]                                                                                    :hotkeys:
+*** [[https://github.com/magit/magit][Git]]                                                :hotkeys:
      #+BEGIN_SRC emacs-lisp
        (use-package magit
            :ensure t
