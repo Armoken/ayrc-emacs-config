@@ -366,18 +366,6 @@ Core settings for editor
    #+END_SRC
 
 ** Cleaning screen                                                                              :ui:
-*** Remove some GUI elelements
-    #+BEGIN_SRC emacs-lisp
-      (defun ayrc/remove-gui-elements (&optional frame)
-          (menu-bar-mode     -1)
-          (tooltip-mode      -1)
-          (tool-bar-mode     -1)
-          (scroll-bar-mode   -1))
-
-      (ayrc/remove-gui-elements)
-      (add-to-list 'after-make-frame-functions #'ayrc/remove-gui-elements)
-    #+END_SRC
-
 *** Disable welcom screen
     #+BEGIN_SRC emacs-lisp
       (setq inhibit-splash-screen   t)

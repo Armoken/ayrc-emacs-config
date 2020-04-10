@@ -1,15 +1,28 @@
 ;;; init.el --- Summary
 
 ;;; Commentary:
-;; Init settings
+;;; Code:
+;; Settings that should be applied as quickly as possible to keep
+;; intact your eyes
 
-;; Setting background color from Spacemacs theme, to prevent blinking    :hack:
+;; Setting background color from Spacemacs theme, to prevent blinking
 (set-background-color "#292b2e")
 (set-face-background 'mode-line "#292b2e")
 
+(defun ayrc/remove-gui-elements (&optional frame)
+    "Remove some GUI elelements.
+It placed here, not in org file, to increase speed of removing them
 
-;;; Code:
+FRAME: screen area that contains one or more Emacs windows"
+    (menu-bar-mode     -1)
+    (tooltip-mode      -1)
+    (tool-bar-mode     -1)
+    (scroll-bar-mode   -1))
 
+(ayrc/remove-gui-elements)
+(add-to-list 'after-make-frame-functions #'ayrc/remove-gui-elements)
+
+;; Setup package management system
 (require 'package)
 
 ;; Without that line, (package-initialize) is executed twice
