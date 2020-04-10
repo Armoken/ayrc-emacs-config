@@ -19,7 +19,6 @@
 
 (setq package-archives
       '(("gnu" . "http://elpa.gnu.org/packages/")
-        ("marmalade" . "https://marmalade-repo.org/packages/")
         ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
@@ -27,10 +26,12 @@
 ;; Bootstrap 'use-package'
 (unless (or (package-installed-p 'use-package)
             (package-installed-p 'diminish)
+            (package-installed-p 'delight)
             (package-installed-p 'bind-key))
     (package-refresh-contents)
     (package-install 'use-package)
     (package-install 'diminish)
+    (package-install 'delight)
     (package-install 'bind-key))
 
 (eval-when-compile
