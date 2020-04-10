@@ -387,16 +387,6 @@ Core settings for editor
      (setq use-dialog-box nil)
    #+END_SRC
 
-*** Disable frienge                                    :disabled:
-    The fringe is a thin strip down the left and/or right edge of a window.
-    #+BEGIN_SRC emacs-lisp
-      ;; (defun remove-fringe (&optional frame)
-      ;;   (fringe-mode '(0 . 0)))
-
-      ;; (remove-fringe)
-      ;; (add-to-list 'after-make-frame-functions 'remove-fringe)
-    #+END_SRC
-
 *** Disable indicators
     #+BEGIN_SRC emacs-lisp
       (setq-default indicate-empty-lines t)
