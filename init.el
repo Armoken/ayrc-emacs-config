@@ -30,9 +30,11 @@ FRAME: screen area that contains one or more Emacs windows"
 ;; Emacs finishes reading the init file).
 (setq package-enable-at-startup nil)
 
-(setq package-archives
-      '(("gnu" . "http://elpa.gnu.org/packages/")
-        ("melpa" . "http://melpa.milkbox.net/packages/")))
+(setq package-archives '(
+                         ("gnu"          . "http://elpa.gnu.org/packages/")
+                         ("melpa"        . "https://melpa.org/packages/")
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")
+                         ))
 (package-initialize)
 
 
