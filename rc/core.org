@@ -1289,7 +1289,7 @@ Core settings for editor
          nil)
    #+END_SRC
 
-* Orgmode
+* Org-mode
     #+BEGIN_SRC emacs-lisp :noweb tangle
       (use-package org
           :init
@@ -1311,7 +1311,7 @@ Core settings for editor
 
               (setq org-log-done 'time)
               (setq org-src-tab-acts-natively t)
-              (setq org-tags-column -65)
+              (setq org-tags-column -100)
 
               (setq org-todo-keywords
                     '((sequence "TODO" "CURRENT" "|" "DONE" "CANCELED")))
