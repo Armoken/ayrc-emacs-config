@@ -132,6 +132,7 @@ Tex configuration for Emacs
           ;; (aggressive-indent-mode    -1)
 
           (ws-butler-mode            1)
+          (smart-shift-mode          1)
           (smartparens-mode          1)
           (abbrev-mode               1)
           (semantic-mode             1)

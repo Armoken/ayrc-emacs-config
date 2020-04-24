@@ -26,6 +26,7 @@
          (display-line-numbers-mode 1)
          (visual-line-mode          1)
          (ws-butler-mode            1)
+         (smart-shift-mode          1)
          (smartparens-mode          1)
          (semantic-mode             1)
          (yas-minor-mode            1)
