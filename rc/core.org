@@ -334,24 +334,47 @@ Core settings for editor
          :diminish outline-minor-mode "[o]"
          :bind (:map outline-minor-mode-map
                      ("C-c f TAB" . ayrc/outline-toggle-entry)
-                     ;; ("C-c f h"   . hs-hide-all)
-                     ;; ("C-c f s"   . hs-show-all)
-                     )
+                     ("C-c f h"   . ayrc/outline-hide-all)
+                     ("C-c f s"   . ayrc/outline-show-all))
          :config
-         (progn
-             (defun ayrc/outline-toggle-entry ()
-                 (interactive)
-                 "Toggle outline hiding for the entry under the cursor"
-                 (if (progn
-                           (setq cpos_save (point))
-                           (end-of-line)
-                           (get-char-property (point) 'invisible))
-                        (progn
-                            (outline-hide-subtree)
-                            (goto-char cpos_save))
-                        (progn
-                            (outline-hide-subtree)
-                            (goto-char cpos_save))))))
+         (defvar ayrc/outline-toggle-all-flag nil "toggle all flag")
+         (make-variable-buffer-local 'ayrc/outline-toggle-all-flag)
+
+         (defvar ayrc/cpos_save nil "current cursor position")
+         (make-variable-buffer-local 'ayrc/cpos_save)
+
+         (defun ayrc/outline-toggle-entry ()
+             (interactive)
+             "Toggle outline hiding for the entry under the cursor"
+             (if (progn
+                     (setq ayrc/cpos_save (point))
+                     (end-of-line)
+                     (get-char-property (point) 'invisible))
+                     (progn
+                         (outline-show-subtree)
+                         (goto-char ayrc/cpos_save))
+                 (progn
+                     (outline-hide-subtree)
+                     (goto-char ayrc/cpos_save))))
+
+         (defun ayrc/outline-show-all ()
+             (interactive)
+             "Show all outline hidings for the entire file"
+             (setq ayrc/outline-toggle-all-flag nil)
+             (outline-show-all))
+
+         (defun ayrc/outline-hide-all ()
+             (interactive)
+             "Hide all outline hidings for the entire file"
+             (setq ayrc/outline-toggle-all-flag t)
+             (outline-hide-sublevels 1))
+
+         (defun ayrc/outline-toggle-all ()
+             (interactive)
+             "Toggle outline hiding for the entire file"
+             (if ayrc/outline-toggle-all-flag
+                     (ayrc/outline-show-all)
+                 (ayrc/outline-hide-all))))
    #+END_SRC
 
 ** [[https://github.com/alpaker/fill-column-indicator][Fill column indicator]]
@@ -592,7 +615,7 @@ Core settings for editor
   #+BEGIN_SRC emacs-lisp
     (global-set-key (kbd "<f5>") (lambda () (interactive) (revert-buffer)))
   #+END_SRC
-** [[https://github.com/bbatsov/projectile][Project managment]]                                                               :helm:projectile:
+** [[https://github.com/bbatsov/projectile][Project managment]]                    :helm:projectile:
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package projectile
          :ensure t
@@ -899,7 +922,7 @@ Core settings for editor
          (editorconfig-mode)))
    #+END_SRC
 
-** [[https://github.com/magnars/expand-region.el][Expand region]]                                                                           :hotkeys:
+** [[https://github.com/magnars/expand-region.el][Expand region]]                          :hotkeys:
    #+BEGIN_SRC emacs-lisp
      (use-package expand-region
        :ensure t
@@ -1103,7 +1126,11 @@ Core settings for editor
            :commands (helm-xref-show-xrefs)
            :config
            (progn
-               (setq xref-show-xrefs-function 'helm-xref-show-xrefs)))
+               (if (< emacs-major-version 27)
+                       (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
+                   (setq
+                    xref-show-xrefs-function 'helm-xref-show-xrefs-27
+                    xref-show-definitions-function 'helm-xref-show-defs-27))))
      #+END_SRC
 
 ** Debugging

@@ -77,11 +77,22 @@
           (semantic-mode              1)
           (yas-minor-mode             1)
 
+          (outline-minor-mode)
+          (setq outline-regexp
+                (format
+                 "^\\([ ]\\{%d\\}\\)*\\([-] \\)?\\([\"][^\"]*[\"]\\|[a-zA-Z0-9_-]*\\): *\\([>|]\\|&[a-zA-Z0-9_-]*\\)?$"
+                 yaml-indent-offset))
+
+          (defun yaml-outline-level ()
+              "Return the outline level based on the indentation"
+              (s-count-matches (format "[ ]\\{%d\\}" yaml-indent-offset)
+                               (match-string 0)))
+          (setq outline-level 'yaml-outline-level)
+
           (flycheck-mode              1)
           (flycheck-yamllint-setup    1)
 
           (company-mode               1)
-          (hs-minor-mode              1)
           (highlight-indentation-mode 1)
           (smart-shift-mode           1)
 
