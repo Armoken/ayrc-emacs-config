@@ -160,22 +160,23 @@ Python configuration for Emacs
 *** Hook
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-hook
       (defun ayrc/python-hook ()
-          (setq lsp-eldoc-render-all            nil
-                lsp-eldoc-render-all            nil
-                lsp-eldoc-enable-hover          nil
-                lsp-eldoc-enable-signature-help nil
-                lsp-eldoc-prefer-signature-help nil
+          (setq
+           lsp-eldoc-render-all            nil
+           lsp-eldoc-enable-hover          nil
+           lsp-eldoc-enable-signature-help nil
+           lsp-eldoc-prefer-signature-help nil
 
-                py-outline-minor-mode-p         nil
-                py-auto-fill-mode               nil
+           py-outline-minor-mode-p         nil
+           py-auto-fill-mode               nil
 
-                python-shell-interpreter        "ipython"
-                python-shell-interpreter-args   "-i --simple-prompt")
+           python-shell-interpreter        "ipython"
+           python-shell-interpreter-args   "-i --simple-prompt")
 
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
           (smartparens-mode          1)
+          (hs-minor-mode             1)
           (abbrev-mode               1)
           (semantic-mode             1)
           (yas-minor-mode            1)
@@ -186,12 +187,13 @@ Python configuration for Emacs
           (sphinx-doc-mode           1)
           (eldoc-mode                1)
 
-          ;; Temporary disabled, need to fix look
-          ;; (fci-mode                  -1)
-
+          ;; (eglot-ensure)
           (require 'lsp-pyls)
           (require 'dap-python)
-          (lsp-deferred))
+          (lsp-deferred)
+
+          ;; Temporary disabled, need to fix look
+          (fci-mode                  -1))
     #+END_SRC
 
 *** Env setup modes
