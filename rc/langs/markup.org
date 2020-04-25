@@ -39,6 +39,7 @@
           (smart-shift-mode          1)
           (smartparens-mode          1)
           (semantic-mode             1)
+          (abbrev-mode               1)
           (yas-minor-mode            1)
 
           (company-mode              1)
@@ -75,6 +76,7 @@
           (smart-shift-mode           1)
           (smartparens-mode           1)
           (semantic-mode              1)
+          (abbrev-mode               1)
           (yas-minor-mode             1)
 
           (outline-minor-mode)
@@ -121,6 +123,7 @@
           (smart-shift-mode          1)
           (smartparens-mode          1)
           (semantic-mode             1)
+          (abbrev-mode               1)
           (yas-minor-mode            1)
 
           (hs-minor-mode             1)
@@ -153,6 +156,7 @@
           (smart-shift-mode          1)
           (smartparens-mode          1)
           (semantic-mode             1)
+          (abbrev-mode               1)
           (yas-minor-mode            1)
 
           (company-mode              1)
@@ -180,6 +184,7 @@
           (smart-shift-mode          1)
           (smartparens-mode          1)
           (semantic-mode             1)
+          (abbrev-mode               1)
           (yas-minor-mode            1)
 
           (company-mode              1)
@@ -246,6 +251,7 @@
           (smart-shift-mode          1)
           (smartparens-mode          1)
           (semantic-mode             1)
+          (abbrev-mode               1)
           (yas-minor-mode            1)
 
           (company-mode              1)

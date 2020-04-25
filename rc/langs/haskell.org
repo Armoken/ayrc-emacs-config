@@ -73,6 +73,7 @@ Haskell configuration for Emacs
                 (semantic-mode)
                 (flycheck-mode)
                 (smart-shift-mode          1)
+                (abbrev-mode               1)
                 (intero-global-mode)
                 (hindent-mode)
                 (add-to-list (make-local-variable 'company-backends)

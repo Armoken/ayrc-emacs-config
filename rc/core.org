@@ -123,7 +123,9 @@ Core settings for editor
 
    #+BEGIN_SRC emacs-lisp
      (use-package abbrev
-         :diminish abbrev-mode)
+         :diminish abbrev-mode
+         :config
+         (setq abbrev-file-name (ayrc/expand-config-path "./abbrev_defs")))
    #+END_SRC
 
 ** Line numbering
@@ -328,55 +330,6 @@ Core settings for editor
      (use-package flyspell)
    #+END_SRC
 
-** Outline mode
-   #+BEGIN_SRC emacs-lisp
-     (use-package outline
-         :diminish outline-minor-mode "[o]"
-         :bind (:map outline-minor-mode-map
-                     ("C-c f TAB" . ayrc/outline-toggle-entry)
-                     ("C-c f h"   . ayrc/outline-hide-all)
-                     ("C-c f s"   . ayrc/outline-show-all))
-         :config
-         (defvar ayrc/outline-toggle-all-flag nil "toggle all flag")
-         (make-variable-buffer-local 'ayrc/outline-toggle-all-flag)
-
-         (defvar ayrc/cpos_save nil "current cursor position")
-         (make-variable-buffer-local 'ayrc/cpos_save)
-
-         (defun ayrc/outline-toggle-entry ()
-             (interactive)
-             "Toggle outline hiding for the entry under the cursor"
-             (if (progn
-                     (setq ayrc/cpos_save (point))
-                     (end-of-line)
-                     (get-char-property (point) 'invisible))
-                     (progn
-                         (outline-show-subtree)
-                         (goto-char ayrc/cpos_save))
-                 (progn
-                     (outline-hide-subtree)
-                     (goto-char ayrc/cpos_save))))
-
-         (defun ayrc/outline-show-all ()
-             (interactive)
-             "Show all outline hidings for the entire file"
-             (setq ayrc/outline-toggle-all-flag nil)
-             (outline-show-all))
-
-         (defun ayrc/outline-hide-all ()
-             (interactive)
-             "Hide all outline hidings for the entire file"
-             (setq ayrc/outline-toggle-all-flag t)
-             (outline-hide-sublevels 1))
-
-         (defun ayrc/outline-toggle-all ()
-             (interactive)
-             "Toggle outline hiding for the entire file"
-             (if ayrc/outline-toggle-all-flag
-                     (ayrc/outline-show-all)
-                 (ayrc/outline-hide-all))))
-   #+END_SRC
-
 ** [[https://github.com/alpaker/fill-column-indicator][Fill column indicator]]
    Graphically indicate the fill column
 
@@ -575,6 +528,7 @@ Core settings for editor
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "<AltGr>") 'toggle-input-method)
    #+END_SRC
+
 ** Movement between windows with M-arrow-keys (except org-mode)                            :hotkeys:
     #+BEGIN_SRC emacs-lisp
      (if (equal nil (equal major-mode 'org-mode))
@@ -615,6 +569,7 @@ Core settings for editor
   #+BEGIN_SRC emacs-lisp
     (global-set-key (kbd "<f5>") (lambda () (interactive) (revert-buffer)))
   #+END_SRC
+
 ** [[https://github.com/bbatsov/projectile][Project managment]]                    :helm:projectile:
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package projectile
@@ -806,37 +761,88 @@ Core settings for editor
     #+END_SRC
 
 ** Folding
-   #+BEGIN_SRC emacs-lisp
-     (use-package hideshow
-         :diminish hs-minor-mode
-         :commands (hs-minor-mode)
-         :bind
-         (:map hs-minor-mode-map
-               ("C-c f TAB" . hs-toggle-hiding)
-               ("C-c f h"   . hs-hide-all)
-               ("C-c f s"   . hs-show-all))
-         :init
-         (progn
-             ;; For yaml mode and others
-             (defun ayrc/indenation-toggle-fold ()
-                 "Toggle fold all lines larger than indentation on current line"
-                 (interactive)
-                 (let ((col 1))
-                     (save-excursion
-                         (back-to-indentation)
-                         (setq col (+ 1 (current-column)))
-                         (set-selective-display
-                          (if selective-display nil (or col 1)))))))
-         :config
-         (progn
-             (add-to-list 'hs-special-modes-alist
-                          (list 'nxml-mode
-                                "<!--\\|<[^/>]*[^/]>"
-                                "-->\\|</[^/>]*[^/]>"
-                                "<!--"
-                                'nxml-forward-element
-                                nil))))
-   #+END_SRC
+*** Hideshow
+    #+BEGIN_SRC emacs-lisp
+      (use-package hideshow
+          :diminish hs-minor-mode
+          :commands (hs-minor-mode)
+          :bind
+          (:map hs-minor-mode-map
+                ("C-c f TAB" . hs-toggle-hiding)
+                ("C-c f h"   . hs-hide-all)
+                ("C-c f s"   . hs-show-all))
+          :init
+          (progn
+              ;; For yaml mode and others
+              (defun ayrc/indenation-toggle-fold ()
+                  "Toggle fold all lines larger than indentation on current line"
+                  (interactive)
+                  (let ((col 1))
+                      (save-excursion
+                          (back-to-indentation)
+                          (setq col (+ 1 (current-column)))
+                          (set-selective-display
+                           (if selective-display nil (or col 1)))))))
+          :config
+          (progn
+              (add-to-list 'hs-special-modes-alist
+                           (list 'nxml-mode
+                                 "<!--\\|<[^/>]*[^/]>"
+                                 "-->\\|</[^/>]*[^/]>"
+                                 "<!--"
+                                 'nxml-forward-element
+                                 nil))))
+    #+END_SRC
+
+*** Outline mode
+    #+BEGIN_SRC emacs-lisp
+      (use-package outline
+          :diminish outline-minor-mode "[o]"
+          :bind (:map outline-minor-mode-map
+                      ("C-c f TAB" . ayrc/outline-toggle-entry)
+                      ("C-c f h"   . ayrc/outline-hide-all)
+                      ("C-c f s"   . ayrc/outline-show-all))
+          :config
+          (defvar ayrc/outline-toggle-all-flag nil "toggle all flag")
+          (make-variable-buffer-local 'ayrc/outline-toggle-all-flag)
+
+          (defvar ayrc/cpos_save nil "current cursor position")
+          (make-variable-buffer-local 'ayrc/cpos_save)
+
+          (defun ayrc/outline-toggle-entry ()
+              (interactive)
+              "Toggle outline hiding for the entry under the cursor"
+              (if (progn
+                      (setq ayrc/cpos_save (point))
+                      (end-of-line)
+                      (get-char-property (point) 'invisible))
+                      (progn
+                          (outline-show-subtree)
+                          (goto-char ayrc/cpos_save))
+                  (progn
+                      (outline-hide-subtree)
+                      (goto-char ayrc/cpos_save))))
+
+          (defun ayrc/outline-show-all ()
+              (interactive)
+              "Show all outline hidings for the entire file"
+              (setq ayrc/outline-toggle-all-flag nil)
+              (outline-show-all))
+
+          (defun ayrc/outline-hide-all ()
+              (interactive)
+              "Hide all outline hidings for the entire file"
+              (setq ayrc/outline-toggle-all-flag t)
+              (outline-hide-sublevels 1))
+
+          (defun ayrc/outline-toggle-all ()
+              (interactive)
+              "Toggle outline hiding for the entire file"
+              (if ayrc/outline-toggle-all-flag
+                      (ayrc/outline-show-all)
+                  (ayrc/outline-hide-all))))
+    #+END_SRC
+
 ** [[http://github.com/joaotavora/yasnippet][FSnippets]]
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package yasnippet

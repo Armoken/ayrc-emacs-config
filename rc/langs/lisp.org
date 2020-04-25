@@ -58,6 +58,7 @@ Lisp family languages configuration.
           (smartparens-mode          1)
           (semantic-mode             1)
           (yas-minor-mode            1)
+          (abbrev-mode               1)
 
           (company-mode              1)
           (flycheck-mode             1)
