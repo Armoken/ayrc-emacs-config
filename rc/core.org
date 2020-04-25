@@ -570,7 +570,7 @@ Core settings for editor
     (global-set-key (kbd "<f5>") (lambda () (interactive) (revert-buffer)))
   #+END_SRC
 
-** [[https://github.com/bbatsov/projectile][Project managment]]                    :helm:projectile:
+** [[https://github.com/bbatsov/projectile][Project managment]]                                                               :helm:projectile:
    #+BEGIN_SRC emacs-lisp :noweb tangle
      (use-package projectile
          :ensure t
@@ -706,7 +706,8 @@ Core settings for editor
           (progn
               <<company-box-use-package>>
               <<company-flx-use-package>>
-              <<company-quickhelp-use-package>>)
+              <<company-quickhelp-use-package>>
+              <<company-setup-func>>)
           :preface
           (progn
               <<company-hook>>))
@@ -742,6 +743,24 @@ Core settings for editor
               (setq company-box-icons-alist company-box-icons-all-the-icons)))
      #+END_SRC
 
+**** Setup function
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-setup-func
+      (defun ayrc/setup-company (&optional mode-specific-backends)
+          (company-mode 1)
+          (or mode-specific-backends (setq mode-specific-backends '()))
+
+          (let ((backends (list
+                           (symbol-value 'mode-specific-backends)
+                           '(company-files        ;; files & directories
+                             company-dabbrev-code ;; dynamic code abbreviations
+                             company-keywords)    ;; keywords
+
+                           '(company-abbrev       ;; abbreviations
+                             company-dabbrev))))  ;; dynamic abbreviat
+              (make-local-variable 'company-backends)
+              (setq company-backends (-non-nil (symbol-value 'backends)))))
+    #+END_SRC
+
 **** Hook
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-hook
       (defun ayrc/company-hook ()
@@ -751,13 +770,7 @@ Core settings for editor
                 company-idle-delay                0.0
 
                 company-show-numbers              t
-                company-minimum-prefix-length     1)
-
-          (setq company-backends
-                ;; files & directory && keywords
-                '((company-files        company-keywords)
-                  ;; abbreviations && dynamic abbreviat
-                  (company-abbrev     company-dabbrev))))
+                company-minimum-prefix-length     1))
     #+END_SRC
 
 ** Folding
@@ -928,7 +941,7 @@ Core settings for editor
          (editorconfig-mode)))
    #+END_SRC
 
-** [[https://github.com/magnars/expand-region.el][Expand region]]                          :hotkeys:
+** [[https://github.com/magnars/expand-region.el][Expand region]]                                                                           :hotkeys:
    #+BEGIN_SRC emacs-lisp
      (use-package expand-region
        :ensure t
@@ -1012,10 +1025,7 @@ Core settings for editor
                                   ("M-?"     . xref-find-definitions)
                                   ("C-M-."   . xref-find-apropos)))
            (add-to-list 'eglot-stay-out-of 'company)
-
-           (company-mode  1)
-           (make-local-variable 'company-backends)
-           (add-to-list 'company-backends '(company-capf :with company-yasnippet)))
+           (ayrc/setup-company '(company-capf :with company-yasnippet)))
      #+END_SRC
 
 *** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
@@ -1058,9 +1068,7 @@ Core settings for editor
            (flycheck-mode 1)
            (lsp-flycheck-enable)
 
-           (company-mode  1)
-           (make-local-variable 'company-backends)
-           (add-to-list 'company-backends '(company-capf :with company-yasnippet))
+           (ayrc/setup-company '(company-capf :with company-yasnippet))
 
            (lsp-ui-mode   1)
            (dap-mode      1))

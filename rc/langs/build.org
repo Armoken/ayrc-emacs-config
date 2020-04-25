@@ -29,7 +29,7 @@
           (semantic-mode             1)
           (yas-minor-mode            1)
 
-          (company-mode              1))
+          (ayrc/setup-company '(company-capf :with company-yasnippet)))
     #+END_SRC
 
 ** [[https://gitlab.kitware.com/cmake/cmake/blob/master/Auxiliary/cmake-mode.el][CMake]]
@@ -70,9 +70,7 @@
           (abbrev-mode               1)
           (yas-minor-mode            1)
 
-          (company-mode              1)
-          (set (make-local-variable 'company-backends)
-               '(company-cmake))
+          (ayrc/setup-company '(company-cmake :with company-yasnippet))
 
           (hs-minor-mode             1)
           (flycheck-mode             1)

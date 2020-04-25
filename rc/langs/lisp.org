@@ -60,7 +60,6 @@ Lisp family languages configuration.
           (yas-minor-mode            1)
           (abbrev-mode               1)
 
-          (company-mode              1)
           (flycheck-mode             1)
 
           ;; eval-expression-minibuffer doesn't support this mode
@@ -104,16 +103,14 @@ Lisp family languages configuration.
           (hs-minor-mode t)
           (turn-on-elisp-slime-nav-mode)
 
-          (add-to-list (make-local-variable 'company-backends)
-                       '(company-elisp company-yasnippet)))
+          (ayrc/setup-company '(company-elisp :with company-yasnippet)))
 
       (defun ayrc/eval-expression-minibuffer-setup-hook ()
           (ayrc/lisp-hook)
 
           (turn-on-elisp-slime-nav-mode)
 
-          (add-to-list (make-local-variable 'company-backends)
-                       '(company-elisp company-yasnippet)))
+          (ayrc/setup-company '(company-elisp :with company-yasnippet)))
     #+END_SRC
 
 ** [[http://www.nongnu.org/geiser/][Scheme]]
@@ -141,7 +138,5 @@ Lisp family languages configuration.
           (geiser-mode   1)
           (setq geiser-active-implementations '(racket guile))
 
-          (make-local-variable 'company-backends)
-          (add-to-list 'company-backends
-                       '(company-capf company-dabbrev-code)))
+          (ayrc/setup-company '(company-capf :with company-yasnippet)))
     #+END_SRC

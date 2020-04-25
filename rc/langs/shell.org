@@ -35,8 +35,5 @@
          (hs-minor-mode             1)
          (flycheck-mode             1)
 
-         (company-mode              1)
-         (make-local-variable 'company-backends)
-         (add-to-list 'company-backends
-                      '(company-shell company-yasnippet)))
+         (ayrc/setup-company '(company-shell company-yasnippet)))
    #+END_SRC

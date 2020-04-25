@@ -161,8 +161,9 @@ C/C++ configuration for Emacs
                         irony-cdb-clang-complete))
 
         (defun ayrc/irony-autocompletion-setup ()
-            (company-mode 1)
-            (make-local-variable 'company-backends)
+            (ayrc/setup-company '(company-irony :with
+                                                company-irony-c-headers
+                                                company-yasnippet))
 
             (define-key irony-mode-map [remap completion-at-point]
                 'irony-completion-at-point-async)
@@ -174,9 +175,7 @@ C/C++ configuration for Emacs
             ;; `company-begin-commands' in order to
             ;; trigger completion at interesting places, such as after
             ;; scope operator std::|
-            (company-irony-setup-begin-commands)
-
-            (push '(company-irony-c-headers company-irony) company-backends))
+            (company-irony-setup-begin-commands))
       #+END_SRC
 
 **** [[https://github.com/Sarcasm/flycheck-irony][Syntax analytics]]
@@ -241,10 +240,7 @@ C/C++ configuration for Emacs
      #+NAME: gtags-autocompletion-config
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (defun ayrc/gtags-autocompletion-setup ()
-           (company-mode 1)
-           (make-local-variable 'company-backends)
-
-           (push '(company-gtags) company-backends))
+           (ayrc/setup-company '(company-gtags :with company-yasnippet)))
      #+END_SRC
 
 **** Syntax analytics

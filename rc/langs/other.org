@@ -25,7 +25,7 @@
             (abbrev-mode               1)
             (yas-minor-mode            1)
 
-            (company-mode              1))
+            (ayrc/setup-company))
       #+END_SRC
 
 ** [[https://github.com/ajc/nginx-mode][Nginx]]
@@ -61,7 +61,7 @@
           (abbrev-mode               1)
           (yas-minor-mode            1)
 
-          (company-mode              1)
+          (ayrc/setup-company)
           (company-nginx-keywords))
     #+END_SRC
 
@@ -99,7 +99,7 @@
           (abbrev-mode               1)
           (yas-minor-mode            1)
 
-          (company-mode              1))
+          (ayrc/setup-company))
     #+END_SRC
 
 ** [[https://github.com/emacs-mirror/emacs/blob/master/lisp/textmodes/conf-mode.el][Conf]]
@@ -126,7 +126,7 @@
           (abbrev-mode               1)
           (yas-minor-mode            1)
 
-          (company-mode              1))
+          (ayrc/setup-company))
     #+END_SRC
 
 ** [[https://github.com/skuro/plantuml-mode][Plantuml]]
@@ -162,7 +162,7 @@
           (abbrev-mode               1)
           (yas-minor-mode            1)
 
-          (company-mode              1)
+          (ayrc/setup-company)
           (flycheck-plantuml-setup   1)
 
           (setq plantuml-jar-path "/usr/share/plantuml/lib/plantuml.jar")
@@ -194,5 +194,5 @@
           (abbrev-mode               1)
           (yas-minor-mode            1)
 
-          (company-mode              1))
+          (ayrc/setup-company))
     #+END_SRC

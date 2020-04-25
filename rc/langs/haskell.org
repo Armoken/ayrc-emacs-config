@@ -76,8 +76,9 @@ Haskell configuration for Emacs
                 (abbrev-mode               1)
                 (intero-global-mode)
                 (hindent-mode)
-                (add-to-list (make-local-variable 'company-backends)
-                             '(company-intero company-ghci company-dabbrev-code company-yasnippet)))
+                (ayrc/setup-company '(company-intero
+                                      company-ghci
+                                      company-yasnippet)))
 
             (add-hook 'haskell-mode-hook 'haskell-hook)))
   #+END_SRC

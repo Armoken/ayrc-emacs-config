@@ -142,11 +142,9 @@ Tex configuration for Emacs
           (flycheck-mode             1)
           (tex-fold-mode             1)
 
-          (company-mode              1)
-          (make-local-variable 'company-backends)
+          (ayrc/setup-company '(company-math-symbols-latex
+                                company-latex-commands))
           (company-auctex-init)
-          (add-to-list 'company-backends '(company-math-symbols-latex
-                                           company-latex-commands))
 
           (LaTeX-preview-setup))
     #+END_SRC
