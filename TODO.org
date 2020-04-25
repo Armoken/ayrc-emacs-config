@@ -1,11 +1,11 @@
 #+STARTUP: content
 
-* Use package tasks [39/79]
+* Use package tasks [39/81]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
 
-** Languages [28/35]
+** Languages [28/37]
 *** TODO Haskell [1/2]
 **** TODO hlint apply refact
 **** DONE Choose minimal core packages
@@ -42,6 +42,8 @@
      CLOSED: [2019-09-17 Tue 14:17]
 **** CANCELED Try traad - Dead
      CLOSED: [2019-09-15 Sun 22:00]
+*** TODO TeX/LaTeX [0/1]
+**** TODO [[https://github.com/latex-lsp/texlab][texlab (lsp)]]
 *** DONE VHDL
 *** CANCELED HTML [/]
     CLOSED: [2020-04-10 Fri 11:19]
