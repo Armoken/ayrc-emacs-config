@@ -172,28 +172,28 @@ Python configuration for Emacs
            python-shell-interpreter        "ipython"
            python-shell-interpreter-args   "-i --simple-prompt")
 
-          (display-line-numbers-mode 1)
-          (visual-line-mode          1)
-          (ws-butler-mode            1)
-          (smartparens-mode          1)
-          (hs-minor-mode             1)
-          (abbrev-mode               1)
-          (semantic-mode             1)
-          (yas-minor-mode            1)
-          (smart-shift-mode          1)
+          (display-line-numbers-mode  1)
+          (visual-line-mode           1)
+          (ws-butler-mode             1)
+          (smartparens-mode           1)
+          (hs-minor-mode              1)
+          (abbrev-mode                1)
+          (semantic-mode              1)
+          (yas-minor-mode             1)
+          (smart-shift-mode           1)
 
-          (pipenv-mode               1)
-          (pyenv-mode                1)
-          (sphinx-doc-mode           1)
-          (eldoc-mode                1)
+          (highlight-indentation-mode 1)
+          (fci-mode                   1)
+
+          (pipenv-mode                1)
+          (pyenv-mode                 1)
+          (sphinx-doc-mode            1)
+          (eldoc-mode                 1)
 
           ;; (eglot-ensure)
           (require 'lsp-pyls)
           (require 'dap-python)
-          (lsp-deferred)
-
-          ;; Temporary disabled, need to fix look
-          (fci-mode                  -1))
+          (lsp-deferred))
     #+END_SRC
 
 *** Env setup modes
