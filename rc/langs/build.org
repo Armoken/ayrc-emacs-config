@@ -14,6 +14,16 @@
              <<make-hook>>))
    #+END_SRC
 
+*** [[https://github.com/nverno/company-makefile][Company]]                                                                               :disabled:
+    Package is not ready yet.
+
+    #+NAME: make-company-completion
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+      (use-package company-makefile
+          :ensure t
+          :commands (company-makefile-init company-makefile-capf))
+    #+END_SRC
+
 *** Hook
     #+NAME: make-hook
     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes

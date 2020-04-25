@@ -687,6 +687,8 @@ Core settings for editor
 
 ** Autocompletion
 *** Semantic
+    Required for helm-semantic
+
     #+BEGIN_SRC emacs-lisp
       (use-package semantic
           :diminish semantic-mode "[S]"
@@ -765,10 +767,7 @@ Core settings for editor
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-hook
       (defun ayrc/company-hook ()
           (setq company-tooltip-align-annotations t
-
-                ;; Easy navigation to candidates with M-<n>
-                company-idle-delay                0.0
-
+                company-idle-delay                0.1
                 company-show-numbers              t
                 company-minimum-prefix-length     1))
     #+END_SRC
@@ -1039,7 +1038,6 @@ Core settings for editor
           :hook (lsp-mode . ayrc/lsp-hook)
           :init
           (progn
-              <<company-lsp-use-package>>
               <<lsp-ui-use-package>>
               <<helm-lsp-use-package>>)
           :config
@@ -1082,21 +1080,6 @@ Core settings for editor
            ((:map lsp-mode-map
                   ("C-c h w" . helm-lsp-workspace-symbol)))
            :commands (helm-lsp-workspace-symbol))
-     #+END_SRC
-
-**** [[https://github.com/tigersoldier/company-lsp][Company]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-lsp-use-package
-       (use-package company-lsp
-           :ensure t
-           :config
-           (progn
-               (setq
-                company-lsp-enable-snippet      t
-                company-transformers            nil
-                company-lsp-async               t
-                company-lsp-cache-candidates    nil
-
-                company-lsp-enable-recompletion t)))
      #+END_SRC
 
 **** [[https://github.com/emacs-lsp/lsp-ui][UI modules]]
