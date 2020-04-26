@@ -1,6 +1,6 @@
 #+STARTUP: content
 
-* Use package tasks [39/81]
+* Use package tasks [39/83]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
@@ -12,6 +12,7 @@
 *** TODO Rust [/]
 *** TODO C/C++ [8/9]
 **** TODO Malinka
+**** [[https://github.com/emacsorphanage/cpp-auto-include][Auto include]]
 **** DONE Add DAP template
      CLOSED: [2019-11-22 Fri 19:36]
 **** DONE Basic support
@@ -82,8 +83,9 @@
     CLOSED: [2019-11-08 Fri 12:06]
 ** Performance [0/1]
 *** TODO Test startup time
-** UI [1/6]
+** UI [1/7]
 *** CURRENT Pixel scroll mode
+*** TODO [[https://github.com/nflath/hungry-delete][hungry-delete]]
 *** TODO [[https://github.com/bbatsov/persp-projectile][persp-projectile]]
 *** TODO [[https://github.com/emacs-dashboard/emacs-dashboard][emacs-dashboard]]
 *** TODO Layout switching
@@ -91,7 +93,8 @@
 
 *** TODO [#A] Fonts
 *** DONE [#A] Disable font scale on C-- and S-C-+
-** Other [4/25]
+** Other [4/26]
+*** TODO Support of encrypted containers
 *** TODO https://github.com/raxod502/straight.el#integration-with-org
 *** TODO Hot reload of config parts
 *** TODO Check installed system executables [0/14]
