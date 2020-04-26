@@ -330,18 +330,6 @@ Core settings for editor
      (use-package flyspell)
    #+END_SRC
 
-** [[https://github.com/alpaker/fill-column-indicator][Fill column indicator]]
-   Graphically indicate the fill column
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package fill-column-indicator
-         :ensure t
-         :commands (fci-mode)
-         :config
-         (progn
-             (setq fci-rule-column 79)))
-   #+END_SRC
-
 ** Cleaning screen                                                                              :ui:
 *** Disable welcom screen
     #+BEGIN_SRC emacs-lisp
