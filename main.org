@@ -1296,7 +1296,8 @@ Editor settings
           (progn
               <<org-bullets-use-package>>
               <<org-present-use-package>>
-              <<org-cliplink-use-package>>)
+              <<org-cliplink-use-package>>
+              <<helm-org-rifle>>)
           :config
           (progn
               (defun ayrc/orgmode-hook()
@@ -1353,6 +1354,15 @@ Editor settings
          :commands org-cliplink
          :bind (:map org-mode-map
                      ("C-c M-l" . org-cliplink)))
+   #+END_SRC
+
+** [[https://github.com/alphapapa/org-rifle][Helm]]
+   #+NAME: helm-org-rifle
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+     (use-package helm-org-rifle
+         :ensure t
+         :bind (:map org-mode-map
+                     ("C-c h i" . helm-org-rifle-current-buffer)))
    #+END_SRC
 
 * Clients
