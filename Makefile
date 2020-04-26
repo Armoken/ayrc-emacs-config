@@ -5,8 +5,10 @@ all: clean
 .PHONY: clean
 clean:
 	@echo "Removing el org-files and temporary files:"
-	@find "./rc" "./other" \
-		| grep --extended-regexp '.*\.el|.*~' \
+	@find . -path "./elpa" -prune \
+				-name "*.el" \
+			-or -name "*.elc" \
+			-or -name ".*~" \
 		| xargs --replace="%S" \
 				sh -c '{ echo -e "\t%S"; rm --recursive --force %S; }'
 
