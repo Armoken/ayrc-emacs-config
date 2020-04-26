@@ -30,11 +30,9 @@ FRAME: screen area that contains one or more Emacs windows"
 ;; Emacs finishes reading the init file).
 (setq package-enable-at-startup nil)
 
-(setq package-archives '(
-                         ("gnu"          . "http://elpa.gnu.org/packages/")
+(setq package-archives '(("gnu"          . "http://elpa.gnu.org/packages/")
                          ("melpa"        . "https://melpa.org/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")
-                         ))
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")))
 (package-initialize)
 
 
@@ -65,33 +63,13 @@ FRAME: screen area that contains one or more Emacs windows"
 
 ;; Load example use-conf if
 (defvar user-conf-template-filename "./other/user-conf-template.org")
-(defvar user-conf-filename "./rc/user-conf.org")
+(defvar user-conf-filename "./user-conf.org")
 (org-babel-load-file (if (file-exists-p (ayrc/expand-config-path
                                          user-conf-filename))
                              (ayrc/expand-config-path user-conf-filename)
                          (ayrc/expand-config-path user-conf-template-filename)))
 
-(mapc 'org-babel-load-file
-      (mapcar 'ayrc/expand-config-path
-              (list
-               ;; Core
-               "./rc/core.org"
-               "./rc/clients.org"
-
-               ;; Minumum
-               "./rc/langs/lisp.org"
-               "./rc/langs/shell.org"
-               "./rc/langs/other.org"
-               "./rc/langs/markup.org"
-               "./rc/langs/build.org"
-
-               ;; Optional
-               "./rc/langs/cc.org"
-               "./rc/langs/python.org"
-               "./rc/langs/tex.org"
-               ;; "./rc/langs/haskell.org"
-               ;; "./rc/langs/vhdl.org"
-               )))
+(org-babel-load-file (ayrc/expand-config-path "./main.org"))
 
 (setq custom-file (ayrc/expand-config-path "custom.el"))
 (if (file-exists-p custom-file)

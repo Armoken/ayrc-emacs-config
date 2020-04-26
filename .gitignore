@@ -15,7 +15,7 @@ srecode-map.el
 url/
 recentf
 
-rc/user-conf.el
+user-conf.el
 
 ## Github default gitignore for Emacs ##
  -*- mode: gitignore; -*-
