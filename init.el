@@ -61,15 +61,52 @@ FRAME: screen area that contains one or more Emacs windows"
     (expand-file-name
      path user-emacs-directory))
 
+(defun ayrc/org-babel-load-file (file)
+    "Load Emacs Lisp source code blocks in the Org FILE.
+This function exports the source code using `org-babel-tangle',
+compiles tangled code and then loads the resulting file
+using `load-file'.
+Its function used instead of original `org-babel-load-file' because of
+ `org-babel-load-file' compiles code on every load, even if original
+file doesn't changed."
+    (let* ((age           (lambda (file)
+                              (float-time
+                               (time-subtract (current-time)
+                                              (nth 5 (or (file-attributes (file-truename file))
+                                                         (file-attributes file)))))))
+           (base-name     (file-name-sans-extension file))
+           (exported-file (concat base-name ".el"))
+           (compiled-file (concat base-name ".elc"))
+           (is-compiled   nil))
+
+        (unless (and (file-exists-p exported-file)
+                     (> (funcall age file) (funcall age exported-file)))
+            ;; Tangle-file traversal returns reversed list of tangled files
+            ;; and we want to evaluate the first target.
+            (setq exported-file
+                  (car (last (org-babel-tangle-file file exported-file "emacs-lisp")))))
+
+        (unless (and (file-exists-p compiled-file)
+                     (> (funcall age file) (funcall age compiled-file)))
+            (byte-compile-file exported-file)
+            (setq is-compiled 't))
+
+        (load-file exported-file)
+        (message "%s %s"
+                 (if is-compiled
+                         (progn "Compiled and loaded")
+                     (progn "Loaded"))
+                 exported-file)))
+
 ;; Load example use-conf if
 (defvar user-conf-template-filename "./other/user-conf-template.org")
 (defvar user-conf-filename "./user-conf.org")
-(org-babel-load-file (if (file-exists-p (ayrc/expand-config-path
-                                         user-conf-filename))
-                             (ayrc/expand-config-path user-conf-filename)
-                         (ayrc/expand-config-path user-conf-template-filename)))
+(ayrc/org-babel-load-file (if (file-exists-p (ayrc/expand-config-path
+                                              user-conf-filename))
+                                  (ayrc/expand-config-path user-conf-filename)
+                              (ayrc/expand-config-path user-conf-template-filename)))
 
-(org-babel-load-file (ayrc/expand-config-path "./main.org"))
+(ayrc/org-babel-load-file (ayrc/expand-config-path "./main.org"))
 
 (setq custom-file (ayrc/expand-config-path "custom.el"))
 (if (file-exists-p custom-file)
