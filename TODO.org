@@ -1,18 +1,18 @@
 #+STARTUP: content
 
-* Use package tasks [39/83]
+* Use package tasks [45/83]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
 
-** Languages [28/37]
+** Languages [30/38]
 *** TODO Haskell [1/2]
 **** TODO hlint apply refact
 **** DONE Choose minimal core packages
 *** TODO Rust [/]
-*** TODO C/C++ [8/9]
+*** TODO C/C++ [8/10]
 **** TODO Malinka
-**** [[https://github.com/emacsorphanage/cpp-auto-include][Auto include]]
+**** TODO [[https://github.com/emacsorphanage/cpp-auto-include][Auto include]]
 **** DONE Add DAP template
      CLOSED: [2019-11-22 Fri 19:36]
 **** DONE Basic support
@@ -28,8 +28,10 @@
      CLOSED: [2018-08-04 Sat 08:44]
 **** DONE cquery
      CLOSED: [2018-08-04 Sat 08:44]
-*** TODO Python [7/8]
-**** TODO Install packages using poetry or pipenv
+*** TODO TeX/LaTeX [0/1]
+**** TODO [[https://github.com/latex-lsp/texlab][texlab (lsp)]]
+*** DONE Python [8/8]
+    CLOSED: [2020-04-27 Mon 13:02]
 **** DONE Pyenv support
      CLOSED: [2019-11-22 Fri 19:23]
 **** DONE pyls-lsp
@@ -41,10 +43,13 @@
 **** DONE Flycheck backends
 **** DONE Interactive function for prerequisite packages installation
      CLOSED: [2019-09-17 Tue 14:17]
+**** CANCELED Install packages using poetry or pipenv
+     CLOSED: [2020-04-27 Mon 13:00]
+
+     Python dev dependencies listed in main.org Langs/Python/Prerequisites
+     shouldn't be listed in Pipfile or pyproject.toml
 **** CANCELED Try traad - Dead
      CLOSED: [2019-09-15 Sun 22:00]
-*** TODO TeX/LaTeX [0/1]
-**** TODO [[https://github.com/latex-lsp/texlab][texlab (lsp)]]
 *** DONE VHDL
 *** CANCELED HTML [/]
     CLOSED: [2020-04-10 Fri 11:19]
@@ -75,28 +80,30 @@
 *** DONE GDB
     CLOSED: [2018-08-03 Fri 23:17]
 *** DONE Magit
-** Refactoring [1/4]
+** Refactoring [2/4]
 *** TODO [[https://github.com/lassik/emacs-format-all-the-code][format-all-the-code]] - Auto-format source code with one command
 *** TODO [[https://github.com/jacktasia/dumb-jump][dump-jump]] - an Emacs "jump to definition" package for 40+ languages
-*** TODO Move region of code using arrows like in elpy
+*** DONE Move region of code using arrows like in elpy
+    CLOSED: [2020-04-27 Mon 12:59]
 *** CANCELED [[https://github.com/tuhdo/semantic-refactor][semantic-refactor ]]                                     :useless:
     CLOSED: [2019-11-08 Fri 12:06]
 ** Performance [0/1]
 *** TODO Test startup time
-** UI [1/7]
+** UI [3/7]
 *** CURRENT Pixel scroll mode
 *** TODO [[https://github.com/nflath/hungry-delete][hungry-delete]]
 *** TODO [[https://github.com/bbatsov/persp-projectile][persp-projectile]]
-*** TODO [[https://github.com/emacs-dashboard/emacs-dashboard][emacs-dashboard]]
 *** TODO Layout switching
     https://github.com/a13/reverse-im.el
 
-*** TODO [#A] Fonts
-*** DONE [#A] Disable font scale on C-- and S-C-+
-** Other [4/26]
+*** DONE Fonts
+    CLOSED: [2020-04-27 Mon 12:54]
+*** DONE [[https://github.com/emacs-dashboard/emacs-dashboard][emacs-dashboard]]
+    CLOSED: [2020-04-27 Mon 12:52]
+*** DONE Disable font scale on C-x C-- and C-x C-+
+** Other [5/26]
 *** TODO Support of encrypted containers
 *** TODO https://github.com/raxod502/straight.el#integration-with-org
-*** TODO Hot reload of config parts
 *** TODO Check installed system executables [0/14]
 **** TODO python
 **** TODO pyenv
@@ -112,17 +119,14 @@
 **** TODO Git
 **** TODO SVN
 **** TODO gtags
-*** TODO Use system layout switching
-    Ideas:
-    1) Binary running from emacs to obtain layout
-    2) Process obtaining system layout and sending it to emacs (For personal usage)
-
 *** TODO Fix spell checking in text modes
     https://github.com/tmalsburg/guess-language.el
     http://manuel-uberti.github.io/emacs/2017/02/04/guess-language/
 
 *** TODO Set opening links in default browser
 *** TODO Update prerequisites header in config's template
+*** DONE Hot reload of config parts
+    CLOSED: [2020-04-27 Mon 12:59]
 *** DONE Plugin switching for syntax checkers
 *** DONE Yasnippet snippets autodownload
 *** DONE Ag or grep for helm project search
