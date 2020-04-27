@@ -1,6 +1,6 @@
 #+STARTUP: content
 
-* Use package tasks [45/83]
+* Use package tasks [46/83]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
@@ -89,12 +89,13 @@
     CLOSED: [2019-11-08 Fri 12:06]
 ** Performance [0/1]
 *** TODO Test startup time
-** UI [3/7]
+** UI [4/7]
 *** CURRENT Pixel scroll mode
-*** TODO [[https://github.com/nflath/hungry-delete][hungry-delete]]
 *** TODO [[https://github.com/bbatsov/persp-projectile][persp-projectile]]
 *** TODO Layout switching
     https://github.com/a13/reverse-im.el
+*** DONE [[https://github.com/nflath/hungry-delete][hungry-delete]]
+    CLOSED: [2020-04-27 Mon 15:39]
 
 *** DONE Fonts
     CLOSED: [2020-04-27 Mon 12:54]

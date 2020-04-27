@@ -261,6 +261,7 @@ Editor settings
           :init
           (dashboard-setup-startup-hook)
 
+          (diminish 'page-break-lines-mode)
           (setq initial-buffer-choice       (lambda ()  (get-buffer "*dashboard*"))
                 dashboard-set-footer        nil
                 dashboard-center-content    t
@@ -586,6 +587,7 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package hungry-delete
           :ensure t
+          :diminish hungry-delete-mode
           :commands (hungry-delete-mode))
     #+END_SRC
 
