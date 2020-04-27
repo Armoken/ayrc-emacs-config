@@ -555,7 +555,7 @@ Editor settings
      #+END_SRC
 
 ** Non global
-*** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]        :ui:
+*** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]                                                                       :ui:
     Minor modes for highlighting indentation
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -565,7 +565,7 @@ Editor settings
         :commands (highlight-indentation-mode))
     #+END_SRC
 
-*** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                :ui:
+*** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                                                                     :ui:
     This package provides the `adaptive-wrap-prefix-mode' minor mode which sets
     the wrap-prefix property on the fly so that single-long-line paragraphs get
     word-wrapped in a way similar to what you'd get with M-q using
@@ -580,6 +580,13 @@ Editor settings
           :config
           (progn
               (setq-default adaptive-wrap-extra-indent 2)))
+    #+END_SRC
+
+*** [[https://github.com/nflath/hungry-delete][Hungry delete]]                                                                          :hotkeys:
+    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+      (use-package hungry-delete
+          :ensure t
+          :commands (hungry-delete-mode))
     #+END_SRC
 
 *** [[https://github.com/hbin/smart-shift][Region shifting]]
@@ -1622,6 +1629,7 @@ Editor settings
           (semantic-mode             1)
           (yas-minor-mode            1)
           (hs-minor-mode             1)
+          (hungry-delete-mode        1)
 
           ;; Setup minor mods if any component need it
           (setq conf-variable-for-cc (list cc-eldoc-plugin
@@ -2131,6 +2139,7 @@ Editor settings
             (semantic-mode              1)
             (yas-minor-mode             1)
             (smart-shift-mode           1)
+            (hungry-delete-mode         1)
 
             (highlight-indentation-mode 1)
 
