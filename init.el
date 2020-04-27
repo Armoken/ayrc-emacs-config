@@ -61,7 +61,14 @@ FRAME: screen area that contains one or more Emacs windows"
     (expand-file-name
      path user-emacs-directory))
 
-(defun ayrc/org-babel-load-file (file)
+(defun ayrc/get-file-age (path-to-file)
+    "Get file age."
+    (float-time
+     (time-subtract (current-time)
+                    (nth 5 (or (file-attributes (file-truename path-to-file))
+                               (file-attributes path-to-file))))))
+
+(defun ayrc/org-babel-load-file (path-to-file)
     "Load Emacs Lisp source code blocks in the Org FILE.
 This function exports the source code using `org-babel-tangle',
 compiles tangled code and then loads the resulting file
@@ -69,25 +76,23 @@ using `load-file'.
 Its function used instead of original `org-babel-load-file' because of
  `org-babel-load-file' compiles code on every load, even if original
 file doesn't changed."
-    (let* ((age           (lambda (file)
-                              (float-time
-                               (time-subtract (current-time)
-                                              (nth 5 (or (file-attributes (file-truename file))
-                                                         (file-attributes file)))))))
-           (base-name     (file-name-sans-extension file))
+    (let* ((base-name     (file-name-sans-extension path-to-file))
            (exported-file (concat base-name ".el"))
            (compiled-file (concat base-name ".elc"))
            (is-compiled   nil))
 
         (unless (and (file-exists-p exported-file)
-                     (> (funcall age file) (funcall age exported-file)))
+                     (> (ayrc/get-file-age path-to-file)
+                        (ayrc/get-file-age exported-file)))
             ;; Tangle-file traversal returns reversed list of tangled files
             ;; and we want to evaluate the first target.
             (setq exported-file
-                  (car (last (org-babel-tangle-file file exported-file "emacs-lisp")))))
+                  (car (last (org-babel-tangle-file path-to-file
+                                                    exported-file
+                                                    "emacs-lisp")))))
 
         (unless (and (file-exists-p compiled-file)
-                     (> (funcall age file) (funcall age compiled-file)))
+                     (> (ayrc/get-file-age path-to-file) (ayrc/get-file-age compiled-file)))
             (byte-compile-file exported-file)
             (setq is-compiled 't))
 
@@ -98,7 +103,18 @@ file doesn't changed."
                      (progn "Loaded"))
                  exported-file)))
 
-;; Load example use-conf if
+
+;; Byte-compile init.el
+(let* ((path-to-init (ayrc/expand-config-path "init.el"))
+       (base-init-name     (file-name-sans-extension path-to-init))
+       (path-to-compiled-init (concat base-init-name ".elc")))
+    (unless (and (file-exists-p path-to-compiled-init)
+                 (> (ayrc/get-file-age path-to-init)
+                    (ayrc/get-file-age path-to-compiled-init)))
+        (byte-compile-file path-to-init)
+        (message "%s %s" "Compiled" path-to-init)))
+
+;; Load use-conf
 (defvar user-conf-template-filename "./other/user-conf-template.org")
 (defvar user-conf-filename "./user-conf.org")
 (ayrc/org-babel-load-file (if (file-exists-p (ayrc/expand-config-path
@@ -106,8 +122,10 @@ file doesn't changed."
                                   (ayrc/expand-config-path user-conf-filename)
                               (ayrc/expand-config-path user-conf-template-filename)))
 
+;; Load main config
 (ayrc/org-babel-load-file (ayrc/expand-config-path "./main.org"))
 
+;; Load custom.el
 (setq custom-file (ayrc/expand-config-path "custom.el"))
 (if (file-exists-p custom-file)
         (load custom-file))
