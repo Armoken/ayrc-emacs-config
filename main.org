@@ -6,6 +6,15 @@ Editor settings
 ** Global
 *** Theme
 **** Global theme
+     Also add it to ~/.Xresources to prevent blinking at startup:
+     Emacs.Background:                    #292b2e
+     Emacs.Foreground:                    #b2b2b2
+     Emacs.BorderColor:                   #292b2e
+     Emacs.SelectionForeground:           #b2b2b2
+     Emacs.mode-line.attributeForeground: #b2b2b2
+     Emacs.mode-line.attributeBackground: #292b2e
+     and run xrdb -merge ~/.Xresources
+
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb true
        (use-package spacemacs-theme
            :ensure t

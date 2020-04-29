@@ -2,13 +2,6 @@
 
 ;;; Commentary:
 ;;; Code:
-;; Settings that should be applied as quickly as possible to keep
-;; intact your eyes
-
-;; Setting background color from Spacemacs theme, to prevent blinking
-(set-background-color "#292b2e")
-(set-face-background 'mode-line "#292b2e")
-
 (defun ayrc/remove-gui-elements (&optional frame)
     "Remove some GUI elelements.
 It placed here, not in org file, to increase speed of removing them
@@ -21,6 +14,8 @@ FRAME: screen area that contains one or more Emacs windows"
 
 (ayrc/remove-gui-elements)
 (add-to-list 'after-make-frame-functions #'ayrc/remove-gui-elements)
+
+(add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
 
 ;; Setup package management system
 (require 'package)
@@ -49,7 +44,7 @@ FRAME: screen area that contains one or more Emacs windows"
 
 (eval-when-compile
     (require 'use-package))
-(setq use-package-compute-statistics nil)
+(setq use-package-compute-statistics t)
 
 (require 'diminish) ;; Used to reduce size of the mode name in modeline
 (require 'bind-key)
