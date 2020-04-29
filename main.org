@@ -4,9 +4,92 @@ Editor settings
 
 * Configuration
 ** Global
+*** Theme
+**** Global theme
+     #+BEGIN_SRC emacs-lisp :tangle yes :noweb true
+       (use-package spacemacs-theme
+           :ensure t
+           :no-require t
+           :pin melpa
+           :custom-face
+           (org-link    ((nil :height 1.2)))
+           (org-level-1 ((nil :height 1.2)))
+           (org-level-2 ((nil :height 1.2)))
+           (org-level-3 ((nil :height 1.2)))
+           (org-level-4 ((nil :height 1.2)))
+           (org-level-5 ((nil :height 1.2)))
+           (org-level-6 ((nil :height 1.2)))
+           (org-level-7 ((nil :height 1.2)))
+           (org-level-8 ((nil :height 1.2)))
+
+           (show-paren-match ((t (:background "purple4"))))
+           (show-paren-mismatch
+            ((((class color)) (:background "red" :foreground "white"))))
+
+           :init
+           (if (daemonp)
+                   (add-hook 'after-make-frame-functions
+                             (lambda (frame)
+                                 (select-frame frame)
+                                 (load-theme 'spacemacs-dark t)))
+               (load-theme 'spacemacs-dark t)))
+     #+END_SRC
+
+**** Modeline theme
+     #+BEGIN_SRC emacs-lisp :tangle yes :noweb true
+       (use-package spaceline
+           :ensure t
+           :functions (spaceline-toggle-buffer-size-off
+                       spaceline-toggle-hud-off
+                       spaceline-toggle-buffer-position-off
+                       spaceline-toggle-line-column-off
+                       spaceline-toggle-buffer-encoding-abbrev-off)
+           :init
+           (use-package spaceline-all-the-icons
+               :ensure t)
+
+           :config
+           (progn
+               (require 'spaceline-config)
+
+               ;; Spaceline themes: arrow, arrow-fade, bar, box, brace,
+               ;; butt, chamfer, contour, curve,
+               ;; rounded, roundstub, slant, wave, zigzag, nil,
+               (setq powerline-default-separator 'arrow-fade)
+
+               (spaceline-toggle-buffer-size-off)
+               (setq powerline-height 21)
+
+               ;; Hide anzu mode, because with spaceline it will desplayed twice
+               (setq anzu-cons-mode-line-p nil)
+
+               ;; HUD: shows the currently visible part of the buffer.
+               (spaceline-toggle-hud-off)
+
+               ;; buffer-position: shows the current position in the buffer
+               ;; as a percentage.
+               (spaceline-toggle-buffer-position-off)
+
+               (spaceline-define-segment my-current-line
+                   "The current line number."
+                   (if (eq major-mode 'pdf-view-mode)
+                           (spaceline--pdfview-page-number)
+                       (concat
+                        "%l/"
+                        (int-to-string (count-lines (point-min) (point-max)))
+                        ":%2c")))
+
+               (spaceline-toggle-line-column-off)
+               (spaceline-toggle-buffer-encoding-abbrev-off)
+               (spaceline-spacemacs-theme 'my-current-line)))
+
+     #+END_SRC
+
 *** Bookmarks
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-      (setq bookmark-save-flag 1)
+      (use-package bookmark
+          :config
+          (setq bookmark-save-flag 1))
     #+END_SRC
 
 *** Backups in /tmp
@@ -29,13 +112,13 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package exec-path-from-shell
           :ensure t
+          :commands (exec-path-from-shell-initialize
+                     exec-path-from-shell-copy-env)
           :config
-          (progn
-              (setq exec-path-from-shell-check-startup-files nil)
+          (setq exec-path-from-shell-check-startup-files nil)
 
-              (when (memq window-system '(mac ns x))
-                  (exec-path-from-shell-initialize)
-                  (exec-path-from-shell-copy-env "PYENV_ROOT"))))
+          (when (memq window-system '(mac ns x))
+              (add-to-list 'exec-path-from-shell-variables "PYENV_ROOT")))
     #+END_SRC
 
 *** Auto revert mode
@@ -163,34 +246,34 @@ Editor settings
 
 *** Scroll settings                                                                             :ui:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-      (setq scroll-preserve-screen-position t
-            scroll-margin 0
-            scroll-conservatively 101)
+      (use-package pixel-scroll
+          :bind (("M-n" . (lambda nil (interactive) (pixel-scroll-up 1)))
+                 ("M-p" . (lambda nil (interactive) (pixel-scroll-down 1))))
+          :init
+          (pixel-scroll-mode)
 
-      (pixel-scroll-mode)
+          :config
+          (setq scroll-preserve-screen-position t
+                scroll-margin 0
+                scroll-conservatively 101)
 
-      ;; Never go back to the old scrolling behaviour.
-      (setq pixel-dead-time 0)
+          ;; Never go back to the old scrolling behaviour.
+          (setq pixel-dead-time 0)
 
-      ;; Scroll by number of pixels instead of
-      ;; lines (t = frame-char-height pixels).
-      (setq pixel-resolution-fine-flag t)
+          ;; Scroll by number of pixels instead of
+          ;; lines (t = frame-char-height pixels).
+          (setq pixel-resolution-fine-flag t)
 
-      ;; Distance in pixel-resolution to scroll each mouse wheel event.
-      (setq mouse-wheel-scroll-amount '(1))
+          ;; Distance in pixel-resolution to scroll each mouse wheel event.
+          (setq mouse-wheel-scroll-amount '(1))
 
-      (setq mouse-wheel-progressive-speed nil)
+          (setq mouse-wheel-progressive-speed nil)
 
-      ;; No (less) lag while scrolling lots.
-      (setq fast-but-imprecise-scrolling t)
+          ;; No (less) lag while scrolling lots.
+          (setq fast-but-imprecise-scrolling t)
 
-      ;; Just don't even fontify if we're still catching up on user input.
-      (setq jit-lock-defer-time 0)
-
-      (global-set-key (kbd "M-n")
-                      '(lambda nil (interactive) (pixel-scroll-up 1)))
-      (global-set-key (kbd "M-p")
-                      '(lambda nil (interactive) (pixel-scroll-down 1)))
+          ;; Just don't even fontify if we're still catching up on user input.
+          (setq jit-lock-defer-time 0))
     #+END_SRC
 
 *** Highlighting                                                                                :ui:
@@ -207,12 +290,12 @@ Editor settings
 
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package paren
-         :config
-         (progn
-           (setq show-paren-delay 0)
-           (setq show-paren-style 'expression)
+           :init
+           (show-paren-mode)
 
-           (show-paren-mode)))
+           :config
+           (setq show-paren-delay 0)
+           (setq show-paren-style 'expression))
      #+END_SRC
 
 *** [[https://github.com/domtronn/all-the-icons.el][Icons]]                                                                                       :ui:
@@ -234,9 +317,8 @@ Editor settings
 
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package display-line-numbers
-	   :config
-	   (progn
-	       (setq display-line-numbers-width-start 5)))
+           :config
+           (setq display-line-numbers-width-start 5))
      #+END_SRC
 
 **** Modeline
@@ -250,18 +332,18 @@ Editor settings
       (use-package eldoc
           :diminish eldoc-mode
           :init
-          (progn
-              (global-eldoc-mode -1)))
+          (global-eldoc-mode -1))
     #+END_SRC
 
 *** [[https://github.com/emacs-dashboard/emacs-dashboard][Dashboard]]                                                                                   :ui:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package dashboard
           :ensure t
+          :diminish page-break-lines-mode
           :init
           (dashboard-setup-startup-hook)
 
-          (diminish 'page-break-lines-mode)
+          :config
           (setq initial-buffer-choice       (lambda ()  (get-buffer "*dashboard*"))
                 dashboard-set-footer        nil
                 dashboard-center-content    t
@@ -286,21 +368,19 @@ Editor settings
                       ("C-c p i" . projectile-invalidate-cache)
                       ("C-c p z" . projectile-cache-current-file))
           :init
-          (progn
-              <<helm-projectile-use-package>>
+          <<helm-projectile-use-package>>
+          (projectile-mode 1)
 
-              (projectile-mode 1))
           :config
-          (progn
-              (setq projectile-completion-system 'helm)
-              (setq projectile-switch-project-action 'helm-projectile)
+          (setq projectile-completion-system 'helm)
+          (setq projectile-switch-project-action 'helm-projectile)
 
-              (setq projectile-project-root-files-top-down-recurring
-                    (append
-                     '("compile_commands.json"
-                       ".cquery"
-                       ".ccls")
-                     projectile-project-root-files-top-down-recurring))))
+          (setq projectile-project-root-files-top-down-recurring
+                (append
+                 '("compile_commands.json"
+                   ".cquery"
+                   ".ccls")
+                 projectile-project-root-files-top-down-recurring)))
     #+END_SRC
 
 **** [[https://github.com/bbatsov/helm-projectile][Helm]]                           :interactive:ui:
@@ -324,13 +404,11 @@ Editor settings
            :init
            <<helm-projectile-rg>>
 
-           :preface
-           (progn
-               (defun ayrc/helm-projectile-grep-or-rg ()
-                   "Uses helm-projectile-grep, if ag doesn't present"
-                   (interactive)
-                   (if (executable-find "rg") (helm-projectile-rg)
-                       (helm-projectile-grep)))))
+           (defun ayrc/helm-projectile-grep-or-rg ()
+               "Uses helm-projectile-grep, if ag doesn't present"
+               (interactive)
+               (if (executable-find "rg") (helm-projectile-rg)
+                   (helm-projectile-grep))))
 
      #+END_SRC
 
@@ -349,12 +427,11 @@ Editor settings
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package neotree
-        :ensure t
-        :bind ("<f1>" . neotree-toggle)
-        :config
-        (progn
+          :ensure t
+          :bind ("<f1>" . neotree-toggle)
+          :config
           (setq neo-window-width 40)
-          (setq neo-theme (if (display-graphic-p) 'icons 'arrow))))
+          (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
     #+END_SRC
 
 *** [[https://emacs-helm.github.io/helm/][Helm]]                                                                                :hotkeys:ui:
@@ -364,6 +441,14 @@ Editor settings
       (use-package helm
           :ensure t
           :diminish helm-mode
+          :defines (helm-M-x-fuzzy-match
+                    helm-mode-fuzzy-match
+                    helm-imenu-fuzzy-match
+                    helm-apropos-fuzzy-match
+                    helm-recentf-fuzzy-match
+                    helm-semantic-fuzzy-match
+                    helm-lisp-fuzzy-completion
+                    helm-completion-in-region-fuzzy-match)
           :bind
           (("M-x"       . helm-M-x)
            ("C-x C-b"   . helm-mini)
@@ -393,38 +478,43 @@ Editor settings
 
           :init
           <<helm-rg>>
+
           (helm-mode 1)
 
           :config
-          (progn
-              (setq helm-M-x-fuzzy-match                  t
-                    helm-mode-fuzzy-match                 t
-                    helm-imenu-fuzzy-match                t
-                    helm-locate-fuzzy-match               t
-                    helm-apropos-fuzzy-match              t
-                    helm-recentf-fuzzy-match              t
-                    helm-semantic-fuzzy-match             t
-                    helm-lisp-fuzzy-completion            t
-                    helm-buffers-fuzzy-matching           t
-                    helm-ff-search-library-in-sexp        t
-                    helm-ff-file-name-history-use-recentf t
-                    helm-completion-in-region-fuzzy-match t
+          (setq helm-M-x-fuzzy-match                  t
+                helm-mode-fuzzy-match                 t
+                helm-imenu-fuzzy-match                t
+                helm-locate-fuzzy-match               t
+                helm-apropos-fuzzy-match              t
+                helm-recentf-fuzzy-match              t
+                helm-semantic-fuzzy-match             t
+                helm-lisp-fuzzy-completion            t
+                helm-buffers-fuzzy-matching           t
+                helm-ff-search-library-in-sexp        t
+                helm-ff-file-name-history-use-recentf t
+                helm-completion-in-region-fuzzy-match t
 
-                    ;; Open helm buffer inside current window, not occupy whole
-                    ;; other window
-                    helm-split-window-in-side-p           t
+                ;; Open helm buffer inside current window, not occupy whole
+                ;; other window
+                helm-split-window-inside-p           t
 
-                    ;; Move to end or beginning of source when reaching top or
-                    ;; bottom of source.
-                    helm-move-to-line-cycle-in-source     nil
+                ;; Move to end or beginning of source when reaching top or
+                ;; bottom of source.
+                helm-move-to-line-cycle-in-source     nil
 
-                    ;; Scroll 8 lines other window using M-<next>/M-<prior>
-                    helm-scroll-amount                    8
+                ;; Scroll 8 lines other window using M-<next>/M-<prior>
+                helm-scroll-amount                    8
 
-                    helm-ff-file-name-history-use-recentf t)
+                helm-ff-file-name-history-use-recentf t)
 
-              ;; Autoresize helm minibufer
-              (helm-autoresize-mode t)))
+          ;; Autoresize helm minibufer
+          (helm-autoresize-mode t))
+
+
+
+
+
     #+END_SRC
 
 **** [[https://github.com/cosmicexplorer/helm-rg][Ripgrep]]
@@ -434,6 +524,7 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (use-package helm-rg
            :ensure t
+           :after (helm)
            :commands (helm-rg))
      #+END_SRC
 
@@ -443,8 +534,8 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package undo-tree
           :ensure t
-          :bind (("C-x u" . undo-tree-visualize))
           :diminish undo-tree-mode
+          :bind (("C-x u" . undo-tree-visualize))
           :config
           (progn
               (global-undo-tree-mode)))
@@ -456,6 +547,7 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package anzu
           :ensure t
+          :defines (anzu-cons-mode-line-p)
           :diminish anzu-mode
           :bind (([remap query-replace]        . #'anzu-query-replace)
                  ([remap query-replace-regexp] . #'anzu-query-replace-regexp)
@@ -464,8 +556,7 @@ Editor settings
                  ([remap isearch-query-replace]        . #'anzu-isearch-query-replace)
                  ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp))
           :init
-          (progn
-              (global-anzu-mode)))
+          (global-anzu-mode))
     #+END_SRC
 
 *** [[https://github.com/abo-abo/hydra][Hydra]]                                                                               :hotkeys:ui:
@@ -473,7 +564,8 @@ Editor settings
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package hydra
-          :ensure t)
+          :ensure t
+          :commands (defhydra))
     #+END_SRC
 
 *** Hotkeys for changing size of buffers                                                   :hotkeys:
@@ -528,11 +620,7 @@ Editor settings
                  ("M-g P"   . avy-pop-mark)
                  ("M-g M-g" . avy-goto-line))
           :config
-          (progn
-              ;; case sensitive makes selection easier
-              (setq avy-case-fold-search nil)
-
-              (avy-setup-default)))
+          (setq avy-case-fold-search nil))
     #+END_SRC
 
 *** [[https://github.com/magnars/expand-region.el][Expand region]]                                                                          :hotkeys:
@@ -556,17 +644,20 @@ Editor settings
      #+END_SRC
 
 ** Non global
-*** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]                                                                       :ui:
+*** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]        :ui:
     Minor modes for highlighting indentation
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package highlight-indentation
-        :ensure t
-        :diminish highlight-indentation-mode
-        :commands (highlight-indentation-mode))
+          :ensure t
+          :diminish highlight-indentation-mode
+          :commands (highlight-indentation-mode)
+          :custom-face
+          (highlight-indentation                (("#e3e3d3")))
+          (highlight-indentation-current-column (("#c3b3b3"))))
     #+END_SRC
 
-*** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                                                                     :ui:
+*** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                :ui:
     This package provides the `adaptive-wrap-prefix-mode' minor mode which sets
     the wrap-prefix property on the fly so that single-long-line paragraphs get
     word-wrapped in a way similar to what you'd get with M-q using
@@ -583,7 +674,7 @@ Editor settings
               (setq-default adaptive-wrap-extra-indent 2)))
     #+END_SRC
 
-*** [[https://github.com/nflath/hungry-delete][Hungry delete]]                                                                          :hotkeys:
+*** [[https://github.com/nflath/hungry-delete][Hungry delete]]                             :hotkeys:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package hungry-delete
           :ensure t
@@ -694,13 +785,16 @@ Editor settings
                        ("C-c f TAB" . ayrc/outline-toggle-entry)
                        ("C-c f h"   . ayrc/outline-hide-all)
                        ("C-c f s"   . ayrc/outline-show-all))
-           :config
+           :hook (outline-minor-mode . ayrc/outline-hook)
+           :init
            (defvar ayrc/outline-toggle-all-flag nil "toggle all flag")
-           (make-variable-buffer-local 'ayrc/outline-toggle-all-flag)
-
            (defvar ayrc/cpos_save nil "current cursor position")
-           (make-variable-buffer-local 'ayrc/cpos_save)
 
+           (defun ayrc/outline-hook ()
+               (make-variable-buffer-local 'ayrc/outline-toggle-all-flag)
+               (make-variable-buffer-local 'ayrc/cpos_save))
+
+           :config
            (defun ayrc/outline-toggle-entry ()
                (interactive)
                "Toggle outline hiding for the entry under the cursor"
@@ -808,15 +902,10 @@ Editor settings
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package xref
+          :defines (xref-show-definitions-function)
           :init
           <<helm-xref-use-package>>
 
-          (if (< emacs-major-version 27)
-                  (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
-              (setq xref-show-xrefs-function 'helm-xref-show-xrefs-27
-                    xref-show-definitions-function 'helm-xref-show-defs-27))
-
-          :preface
           (defun ayrc/setup-xref-hotkeys ()
               (ayrc/local-set-keys '(("M-,"     . xref-pop-marker-stack)
                                      ("M-?"     . xref-find-definitions)
@@ -830,7 +919,12 @@ Editor settings
            :ensure t
            :commands (helm-xref-show-xrefs
                       helm-xref-show-xrefs-27
-                      helm-xref-show-defs-27))
+                      helm-xref-show-defs-27)
+           :init
+           (if (< emacs-major-version 27)
+                   (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
+               (setq xref-show-xrefs-function 'helm-xref-show-xrefs-27
+                     xref-show-definitions-function 'helm-xref-show-defs-27)))
      #+END_SRC
 
 *** [[http://github.com/joaotavora/yasnippet][Snippets]]
@@ -839,16 +933,14 @@ Editor settings
           :ensure t
           :diminish yas-minor-mode
           :init
-          (progn
-              <<snippets-collection>>)
+          <<snippets-collection>>
+
           :config
-          (progn
-              (setq yas-snippet-dirs
-                    (list
-                     yasnippet-snippets-dir
-                     (ayrc/expand-config-path "./personal-snippets") ;; Personal snippets
-                     ))
-              (yas-reload-all)))
+          (yasnippet-snippets-initialize)
+          (setq yas-snippet-dirs
+                (list (ayrc/expand-config-path "./personal-snippets")))
+
+          (yas-reload-all))
     #+END_SRC
 
 **** [[https://github.com/AndreaCrotti/yasnippet-snippets][Ready snippets collection]]
@@ -858,7 +950,7 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (use-package yasnippet-snippets
            :ensure t
-           :after yasnippet)
+           :commands (yasnippet-snippets-initialize))
      #+END_SRC
 
 *** Autocompletion
@@ -967,15 +1059,14 @@ Editor settings
           :diminish ggtags-mode
           :commands (ggtags-mode)
           :init
-          (progn
-              <<helm-gtags-use-package>>)
+          <<helm-gtags-use-package>>
+
           :config
-          (progn
-              (setq ggtags-update-on-save nil)
-              (setq ggtags-use-idutils t)
-              (setq ggtags-sort-by-nearness t)
-              (unbind-key "M-<" ggtags-mode-map)
-              (unbind-key "M->" ggtags-mode-map)))
+          (setq ggtags-update-on-save nil)
+          (setq ggtags-use-idutils t)
+          (setq ggtags-sort-by-nearness t)
+          (unbind-key "M-<" ggtags-mode-map)
+          (unbind-key "M->" ggtags-mode-map))
     #+END_SRC
 
 **** [[https://github.com/syohex/emacs-helm-gtags][Helm]]
@@ -986,14 +1077,13 @@ Editor settings
            :after ggtags
            :commands (helm-gtags-select helm-gtags-find-tag)
            :config
-           (progn
-               (setq helm-gtags-fuzzy-match t)
-               (setq helm-gtags-preselect t)
-               (setq helm-gtags-prefix-key "\C-cg")
-               (setq helm-gtags-path-style 'relative)
+           (setq helm-gtags-fuzzy-match t)
+           (setq helm-gtags-preselect t)
+           (setq helm-gtags-prefix-key "\C-cg")
+           (setq helm-gtags-path-style 'relative)
 
-               (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
-               (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
+           (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+           (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack))
      #+END_SRC
 
 *** [[https://github.com/Microsoft/language-server-protocol/][LSP]]
@@ -1008,9 +1098,8 @@ Editor settings
            :diminish eglot-mode
            :commands (eglot-mode eglot-ensure ayrc/eglot-hook)
            :hook (eglot-managed-mode . ayrc/eglot-hook)
-           :config
-           (progn
-               <<eglot-hook>>))
+           :init
+           <<eglot-hook>>)
      #+END_SRC
 
 ***** Hook
@@ -1032,16 +1121,15 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package lsp-mode
            :ensure t
+           :defines (lsp-eldoc-enable-signature-help
+                     lsp-eldoc-prefer-signature-help)
            :diminish lsp-mode
            :commands (lsp-mode lsp-deffered lsp-rename)
            :hook (lsp-mode . ayrc/lsp-hook)
            :init
-           (progn
-               <<lsp-ui-use-package>>
-               <<helm-lsp-use-package>>)
-           :config
-           (progn
-               <<lsp-hook>>))
+           <<lsp-ui-use-package>>
+           <<helm-lsp-use-package>>
+           <<lsp-hook>>)
      #+END_SRC
 
 ***** Hook
@@ -1079,8 +1167,7 @@ Editor settings
             :ensure t
             :bind
             ((:map lsp-mode-map
-                   ("C-c h w" . helm-lsp-workspace-symbol)))
-            :commands (helm-lsp-workspace-symbol))
+                   ("C-c h w" . helm-lsp-workspace-symbol))))
       #+END_SRC
 
 ***** [[https://github.com/emacs-lsp/lsp-ui][UI modules]]
@@ -1088,16 +1175,16 @@ Editor settings
       #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
         (use-package lsp-ui
             :ensure t
-            :hook (lsp-mode . lsp-ui-mode)
+            :defines (lsp-ui-flycheck-enable)
+            :commands (lsp-ui-mode)
             :config
-            (progn
-                (setq lsp-ui-peek-enable           nil
-                      lsp-ui-sideline-enable       nil
-                      lsp-ui-imenu-enable          t
-                      lsp-ui-doc-enable            t
-                      lsp-ui-flycheck-enable       t
-                      lsp-ui-doc-include-signature nil
-                      lsp-ui-sideline-show-symbol  nil)))
+            (setq lsp-ui-peek-enable           nil
+                  lsp-ui-sideline-enable       nil
+                  lsp-ui-imenu-enable          t
+                  lsp-ui-doc-enable            t
+                  lsp-ui-flycheck-enable       t
+                  lsp-ui-doc-include-signature nil
+                  lsp-ui-sideline-show-symbol  nil))
       #+END_SRC
 
 *** Debugging
@@ -1114,37 +1201,37 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package dap-mode
            :ensure t
+           :defines (dap-lldb-debug-program)
            :diminish dap-mode
            :hook (dap-mode . ayrc/dap-hook)
+           :init
+           (defun ayrc/dap-hook ()
+               (setq dap-lldb-debug-program '("/usr/bin/lldb-vscode"))
+               (add-hook 'dap-stopped-hook
+                         (lambda (arg) (call-interactively #'dap-hydra)))
+
+               ;; use tooltips for mouse hover
+               ;; if it is not enabled `dap-mode' will use the minibuffer.
+               (tooltip-mode 1)
+
+               (dap-ui-mode 1)
+
+               ;; enables mouse hover support
+               (dap-tooltip-mode 1))
+
            :config
-           (progn
-               (defun ayrc/dap-hook ()
-                   (setq dap-lldb-debug-program '("/usr/bin/lldb-vscode"))
-                   (add-hook 'dap-stopped-hook
-                             (lambda (arg) (call-interactively #'dap-hydra)))
-
-                   ;; use tooltips for mouse hover
-                   ;; if it is not enabled `dap-mode' will use the minibuffer.
-                   (tooltip-mode 1)
-
-                   (dap-ui-mode 1)
-
-                   ;; enables mouse hover support
-                   (dap-tooltip-mode 1)))
-           :preface
-           (progn
-               (defun ayrc/dap-remove-nth-first-templates (count)
-                   "For removing useless dap templates after loading of
+           (defun ayrc/dap-remove-nth-first-templates (count)
+               "For removing useless dap templates after loading of
                    language specific dap parts"
-                   (setq dap-debug-template-configurations
-                         (progn
-                             (let ((rest-of-debug-templates
-                                    (nthcdr
-                                     count
-                                     dap-debug-template-configurations)))
-                                 (if (listp rest-of-debug-templates)
-                                         '()
-                                     rest-of-debug-templates)))))))
+               (setq dap-debug-template-configurations
+                     (progn
+                         (let ((rest-of-debug-templates
+                                (nthcdr
+                                 count
+                                 dap-debug-template-configurations)))
+                             (if (listp rest-of-debug-templates)
+                                     '()
+                                 rest-of-debug-templates))))))
      #+END_SRC
 
 * Helpful functions
@@ -1364,6 +1451,10 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package magit
            :ensure t
+           :defines (magit-default-tracking-name-function
+                     magit-status-buffer-switch-function
+                     magit-save-some-buffers
+                     magit-set-upstream-on-push)
            :commands (magit-get-top-dir)
            :bind (("C-x g" . magit-status))
            :hook (git-commit-mode-hook . magit-commit-mode-init)
@@ -1432,7 +1523,8 @@ Editor settings
 ** [[https://github.com/Silex/docker.el][Docker]]
    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
      (use-package docker
-       :ensure t)
+         :ensure t
+         :bind ("C-c d" . docker))
    #+END_SRC
 
 ** [[https://github.com/chrisbarrett/kubernetes-el][Kubernetes]]
@@ -1543,14 +1635,14 @@ Editor settings
            (ayrc/lisp-hook)
 
            (hs-minor-mode t)
-           (turn-on-elisp-slime-nav-mode)
+           (elisp-slime-nav-mode)
 
            (ayrc/setup-company '(company-elisp :with company-yasnippet)))
 
        (defun ayrc/eval-expression-minibuffer-setup-hook ()
            (ayrc/lisp-hook)
 
-           (turn-on-elisp-slime-nav-mode)
+           (elisp-slime-nav-mode)
 
            (ayrc/setup-company '(company-elisp :with company-yasnippet)))
      #+END_SRC
@@ -1566,9 +1658,10 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
       (use-package geiser
           :ensure t
-          :preface
-          (progn
-              <<scheme-hook>>))
+          :defines (geiser-active-implementations)
+          :commands (geiser-mode)
+          :init
+          <<scheme-hook>>)
     #+END_SRC
 
 **** Hook
@@ -1594,28 +1687,27 @@ Editor settings
           :hook ((c-mode   . ayrc/c-hook)
                  (c++-mode . ayrc/c++-hook))
           :init
-          (progn
-              <<clang-format-use-package>>
-              <<irony-use-package>>
-              <<gtags-use-package>>
-              <<ccls-use-package>>
-              <<cmake-ide-use-package>>
-              <<modern-cpp-font-lock-use-package>>)
-          :config
-          (progn
-              <<cc-configuration>>
-              <<c-configuration>>
-              <<c++-configuration>>
+          <<clang-format-use-package>>
+          <<irony-use-package>>
+          <<gtags-use-package>>
+          <<ccls-use-package>>
+          <<cmake-ide-use-package>>
+          <<modern-cpp-font-lock-use-package>>
 
-              (setq c-basic-offset       4
-                    tab-width            4
-                    c-tab-always-indent  t
-                    c-default-style      '((c-mode    . "k&r")
-                                           (c++-mode  . "stroustrup")
-                                           (java-mode . "java"))
-                    c-doc-comment-style  '((java-mode . javadoc)
-                                           (c-mode    . javadoc)
-                                           (c++-mode  . javadoc)))))
+          <<cc-configuration>>
+          <<c-configuration>>
+          <<c++-configuration>>
+
+          :config
+          (setq c-basic-offset       4
+                tab-width            4
+                c-tab-always-indent  t
+                c-default-style      '((c-mode    . "k&r")
+                                       (c++-mode  . "stroustrup")
+                                       (java-mode . "java"))
+                c-doc-comment-style  '((java-mode . javadoc)
+                                       (c-mode    . javadoc)
+                                       (c++-mode  . javadoc))))
     #+END_SRC
 
 *** CC configuration
@@ -1634,30 +1726,30 @@ Editor settings
           (hungry-delete-mode        1)
 
           ;; Setup minor mods if any component need it
-          (setq conf-variable-for-cc (list cc-eldoc-plugin
-                                           cc-syntax-check-plugin
-                                           cc-autocompletion-plugin))
-          (if (member "irony" conf-variable-for-cc)
-                  (ayrc/irony-setup))
-          (if (member "gtags" conf-variable-for-cc)
-                  (ayrc/gtags-setup))
-          (if (member "ccls" conf-variable-for-cc)
-                  (ayrc/ccls-setup))
+          (let ((conf-variables-for-cc (list ayrc/cc-eldoc-plugin
+                                             ayrc/cc-syntax-check-plugin
+                                             ayrc/cc-autocompletion-plugin)))
+              (if (member "irony" conf-variables-for-cc)
+                      (ayrc/irony-setup))
+              (if (member "gtags" conf-variables-for-cc)
+                      (ayrc/gtags-setup))
+              (if (member "ccls" conf-variables-for-cc)
+                      (ayrc/ccls-setup)))
 
           ;; Autocompletion setup
-          (funcall (pcase cc-autocompletion-plugin
+          (funcall (pcase ayrc/cc-autocompletion-plugin
                        ("irony"  'ayrc/irony-autocompletion-setup)
                        ("gtags"  'ayrc/gtags-autocompletion-setup)
                        ("ccls"   'ayrc/ccls-autocompletion-setup)))
 
           ;; Syntax check setup
-          (funcall (pcase cc-syntax-check-plugin
+          (funcall (pcase ayrc/cc-syntax-check-plugin
                        ("irony"  'ayrc/irony-syntax-check-setup)
                        ("gtags"  'ayrc/gtags-syntax-check-setup)
                        ("ccls"   'ayrc/ccls-syntax-check-setup)))
 
           ;; Eldoc setup
-          (funcall (pcase cc-eldoc-plugin
+          (funcall (pcase ayrc/cc-eldoc-plugin
                        ("irony"  'ayrc/irony-eldoc-setup)
                        ("gtags"  'ayrc/gtags-eldoc-setup)
                        ("ccls"   'ayrc/ccls-eldoc-setup))))
@@ -1685,25 +1777,24 @@ Editor settings
        (use-package irony
            :ensure t
            :diminish irony-mode
+           :commands (irony-mode)
            :init
-           (progn
-               <<irony-autocompletion-use-package>>
-               <<irony-syntax-analytics-use-package>>
-               <<irony-eldoc-use-package>>)
-           :config
-           (progn
-               <<irony-autocompletion-config>>
-               <<irony-syntax-analytics-config>>
-               <<irony-eldoc-config>>
+           <<irony-autocompletion-use-package>>
+           <<irony-syntax-analytics-use-package>>
+           <<irony-eldoc-use-package>>
 
-               (defun ayrc/irony-setup ()
-                   (ayrc/local-set-keys '(("C-c C-r" . clang-format-region)))
+           <<irony-autocompletion-config>>
+           <<irony-syntax-analytics-config>>
+           <<irony-eldoc-config>>
 
-                   (setq irony-server-install-prefix
-                         (concat user-emacs-directory
-                                 "/contrib/servers/irony"))
+           (defun ayrc/irony-setup ()
+               (ayrc/local-set-keys '(("C-c C-r" . clang-format-region)))
 
-                   (irony-mode 1))))
+               (setq irony-server-install-prefix
+                     (concat user-emacs-directory
+                             "/contrib/servers/irony"))
+
+               (irony-mode 1)))
      #+END_SRC
 
 ***** Autocompletion
@@ -1720,7 +1811,9 @@ Editor settings
         #+NAME: irony-company-use-package
         #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
           (use-package company-irony
-              :ensure t)
+              :ensure t
+              :commands (company-irony
+                         company-irony-setup-begin-commands))
         #+END_SRC
 
 ******* [[https://github.com/hotpxl/company-irony-c-headers][Company C headers]]
@@ -1729,20 +1822,20 @@ Editor settings
         #+NAME: irony-company-c-headers-use-package
         #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
           (use-package company-irony-c-headers
-              :ensure t)
+              :ensure t
+              :commands (company-irony-c-headers))
         #+END_SRC
 
 ****** Configuration
        #+NAME: irony-autocompletion-config
        #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-         (setq company-irony-ignore-case 'smart)
-
-         ;; Use compilation database first, clang_complete as fallback.
-         (setq-default irony-cdb-compilation-databases
-                       '(irony-cdb-libclang
-                         irony-cdb-clang-complete))
-
          (defun ayrc/irony-autocompletion-setup ()
+             (setq company-irony-ignore-case 'smart
+
+                   ;; Use compilation database first, clang_complete as fallback.
+                   irony-cdb-compilation-databases '(irony-cdb-libclang
+                                                     irony-cdb-clang-complete))
+
              (ayrc/setup-company '(company-irony :with
                                                  company-irony-c-headers
                                                  company-yasnippet))
@@ -1757,7 +1850,8 @@ Editor settings
              ;; `company-begin-commands' in order to
              ;; trigger completion at interesting places, such as after
              ;; scope operator std::|
-             (company-irony-setup-begin-commands))
+             (company-irony-setup-begin-commands)
+             (message "SUKA"))
        #+END_SRC
 
 ***** [[https://github.com/Sarcasm/flycheck-irony][Syntax analytics]]
@@ -1766,14 +1860,15 @@ Editor settings
       #+NAME: irony-syntax-analytics-use-package
       #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
         (use-package flycheck-irony
-            :ensure t)
+            :ensure t
+            :commands (flycheck-irony-setup))
       #+END_SRC
 
       #+NAME: irony-syntax-analytics-config
       #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
         (defun ayrc/irony-syntax-check-setup ()
             (flycheck-mode        1)
-            (flycheck-irony-setup 1))
+            (flycheck-irony-setup))
       #+END_SRC
 
 ***** [[https://github.com/ikirill/irony-eldoc][Eldoc]]
@@ -1782,7 +1877,8 @@ Editor settings
       #+NAME: irony-eldoc-use-package
       #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
         (use-package irony-eldoc
-            :ensure t)
+            :ensure t
+            :commands (irony-eldoc))
       #+END_SRC
 
       #+NAME: irony-eldoc-config
@@ -1803,19 +1899,19 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (use-package ggtags
            :ensure t
-           :config
-           (progn
-               <<gtags-autocompletion-config>>
-               <<gtags-syntax-analytics-config>>
-               <<gtags-eldoc-config>>
+           :commands (ggtags-mode)
+           :init
+           <<gtags-autocompletion-config>>
+           <<gtags-syntax-analytics-config>>
+           <<gtags-eldoc-config>>
 
-               (defun gtags-setup ()
-                   (ayrc/local-set-keys '(("C-c C-r" . clang-format-region)))
+           (defun gtags-setup ()
+               (ayrc/local-set-keys '(("C-c C-r" . clang-format-region)))
 
-                   (setq-local imenu-create-index-function
-                               #'ggtags-build-imenu-index)
+               (setq-local imenu-create-index-function
+                           #'ggtags-build-imenu-index)
 
-                   (ggtags-mode 1))))
+               (ggtags-mode 1)))
      #+END_SRC
 
 ***** Autocompletion
@@ -1851,29 +1947,31 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (use-package ccls
            :ensure t
+           :defer t
+           :defines (ccls-extra-init-params)
            :diminish ccls-code-lens-mode
-           :config
-           (progn
-               <<ccls-autocompletion-config>>
-               <<ccls-syntax-analytics-config>>
-               <<ccls-eldoc-config>>
+           :init
+           <<ccls-autocompletion-config>>
+           <<ccls-syntax-analytics-config>>
+           <<ccls-eldoc-config>>
 
-               (defun ayrc/ccls-setup ()
-                   (setq ccls-executable (executable-find "ccls"))
+           (defun ayrc/ccls-setup ()
+               (require 'ccls)
+               (setq ccls-executable (executable-find "ccls"))
 
-                   ;; Log file
-                   ;; (setq ccls-args '("--log-file=/tmp/ccls-9999.log"))
+               ;; Log file
+               ;; (setq ccls-args '("--log-file=/tmp/ccls-9999.log"))
 
-                   (setq ccls-extra-init-params
-                         '(
-                           :index       (:comments 2)
-                           :completion  (:detailedLabel t)))
+               (setq ccls-extra-init-params
+                     '(
+                       :index       (:comments 2)
+                       :completion  (:detailedLabel t)))
 
-                   ;; Add a lot of highlight mistakes
-                   ;; (setq ccls-sem-highlight-method 'overlay)
+               ;; Add a lot of highlight mistakes
+               ;; (setq ccls-sem-highlight-method 'overlay)
 
-                   (lsp-deferred)
-                   <<ccls-debug-support>>)))
+               (lsp-deferred)
+               <<ccls-debug-support>>))
      #+END_SRC
 
 ***** Autocompletion
@@ -1981,7 +2079,8 @@ Editor settings
      Add language prerequisite to this list after its first mention in
      list after function definition below
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-     (setq ayrc/python-language-prerequisites '())
+       (defvar ayrc/python-language-prerequisites '()
+           "Dependencies for fully working python mode")
      #+END_SRC
 
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -2132,6 +2231,8 @@ Editor settings
              python-shell-interpreter        "ipython"
              python-shell-interpreter-args   "-i --simple-prompt")
 
+            (exec-path-from-shell-initialize)
+
             (display-line-numbers-mode  1)
             (visual-line-mode           1)
             (ws-butler-mode             1)
@@ -2168,6 +2269,7 @@ Editor settings
        #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
          (use-package pyenv-mode
              :ensure t
+             :defines (pyenv-show-active-python-in-modeline)
              :after (python-mode)
              :diminish pyenv-mode
              :config
@@ -2244,6 +2346,10 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package tex-mode
            :ensure t
+           :defines (TeX-auto-save
+                     TeX-parse-self
+                     TeX-save-query
+                     TeX-PDF-mode)
            :mode ("\\.tex\\'" . latex-mode)
            :commands (latex-mode
                       LaTeX-mode
@@ -2474,18 +2580,20 @@ Editor settings
                 ("\\.sh\\'"     . shell-script-mode))
          :hook (sh-mode . ayrc/shell-hook)
          :init
-         (progn
-             <<company-shell-use-package>>)
-         :preface
-         (progn
-             <<shell-hook>>))
+         <<company-shell-use-package>>
+         <<shell-hook>>
+
+         (setq explicit-shell-file-name "/bin/bash")
+         (setq shell-file-name "bash")
+         (setenv "SHELL" shell-file-name))
    #+END_SRC
 
 *** [[https://github.com/Alexander-Miller/company-shell][Autocompletion]]
     #+NAME: company-shell-use-package
     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
       (use-package company-shell
-          :ensure t)
+          :ensure t
+          :commands (company-shell))
     #+END_SRC
 
 *** Hook

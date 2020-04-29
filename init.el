@@ -49,6 +49,8 @@ FRAME: screen area that contains one or more Emacs windows"
 
 (eval-when-compile
     (require 'use-package))
+(setq use-package-compute-statistics nil)
+
 (require 'diminish) ;; Used to reduce size of the mode name in modeline
 (require 'bind-key)
 
@@ -114,6 +116,9 @@ file doesn't changed."
         (byte-compile-file path-to-init)
         (message "%s %s" "Compiled" path-to-init)))
 
+;; Load main config
+(ayrc/org-babel-load-file (ayrc/expand-config-path "./main.org"))
+
 ;; Load use-conf
 (defvar user-conf-template-filename "./other/user-conf-template.org")
 (defvar user-conf-filename "./user-conf.org")
@@ -121,9 +126,6 @@ file doesn't changed."
                                               user-conf-filename))
                                   (ayrc/expand-config-path user-conf-filename)
                               (ayrc/expand-config-path user-conf-template-filename)))
-
-;; Load main config
-(ayrc/org-babel-load-file (ayrc/expand-config-path "./main.org"))
 
 ;; Load custom.el
 (setq custom-file (ayrc/expand-config-path "custom.el"))
