@@ -58,39 +58,35 @@ Editor settings
                :ensure t)
 
            :config
-           (progn
-               (require 'spaceline-config)
+           (require 'spaceline-config)
 
-               ;; Spaceline themes: arrow, arrow-fade, bar, box, brace,
-               ;; butt, chamfer, contour, curve,
-               ;; rounded, roundstub, slant, wave, zigzag, nil,
-               (setq powerline-default-separator 'arrow-fade)
+           ;; Spaceline themes: arrow, arrow-fade, bar, box, brace,
+           ;; butt, chamfer, contour, curve,
+           ;; rounded, roundstub, slant, wave, zigzag, nil,
+           (setq powerline-default-separator 'arrow-fade)
 
-               (spaceline-toggle-buffer-size-off)
-               (setq powerline-height 21)
+           (spaceline-toggle-buffer-size-off)
+           (setq powerline-height 21)
 
-               ;; Hide anzu mode, because with spaceline it will desplayed twice
-               (setq anzu-cons-mode-line-p nil)
+           ;; HUD: shows the currently visible part of the buffer.
+           (spaceline-toggle-hud-off)
 
-               ;; HUD: shows the currently visible part of the buffer.
-               (spaceline-toggle-hud-off)
+           ;; buffer-position: shows the current position in the buffer
+           ;; as a percentage.
+           (spaceline-toggle-buffer-position-off)
 
-               ;; buffer-position: shows the current position in the buffer
-               ;; as a percentage.
-               (spaceline-toggle-buffer-position-off)
+           (spaceline-define-segment my-current-line
+               "The current line number."
+               (if (eq major-mode 'pdf-view-mode)
+                       (spaceline--pdfview-page-number)
+                   (concat
+                    "%l/"
+                    (int-to-string (count-lines (point-min) (point-max)))
+                    ":%2c")))
 
-               (spaceline-define-segment my-current-line
-                   "The current line number."
-                   (if (eq major-mode 'pdf-view-mode)
-                           (spaceline--pdfview-page-number)
-                       (concat
-                        "%l/"
-                        (int-to-string (count-lines (point-min) (point-max)))
-                        ":%2c")))
-
-               (spaceline-toggle-line-column-off)
-               (spaceline-toggle-buffer-encoding-abbrev-off)
-               (spaceline-spacemacs-theme 'my-current-line)))
+           (spaceline-toggle-line-column-off)
+           (spaceline-toggle-buffer-encoding-abbrev-off)
+           (spaceline-spacemacs-theme 'my-current-line))
 
      #+END_SRC
 
@@ -565,7 +561,13 @@ Editor settings
                  ([remap isearch-query-replace]        . #'anzu-isearch-query-replace)
                  ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp))
           :init
+          (use-package spaceline
+              :config
+              ;; Hide anzu mode, because with spaceline it will displayed twice
+              (setq anzu-cons-mode-line-p nil))
+
           (global-anzu-mode))
+
     #+END_SRC
 
 *** [[https://github.com/abo-abo/hydra][Hydra]]                                                                               :hotkeys:ui:
@@ -725,9 +727,44 @@ Editor settings
           :ensure t
           :diminish smartparens-mode
           :commands (smartparens-mode smartparens-strict-mode)
+          :bind (:map smartparens-mode-map
+                      ("C-M-a" . sp-beginning-of-sexp)
+                      ("C-M-e" . sp-end-of-sexp)
+
+                      ("C-<down>" . sp-down-sexp)
+                      ("C-<up>"   . sp-up-sexp)
+                      ("M-<down>" . sp-backward-down-sexp)
+                      ("M-<up>"   . sp-backward-up-sexp)
+
+                      ("C-M-f" . sp-forward-sexp)
+                      ("C-M-b" . sp-backward-sexp)
+
+                      ("C-M-n" . sp-next-sexp)
+                      ("C-M-p" . sp-previous-sexp)
+
+                      ("C-S-f" . sp-forward-symbol)
+                      ("C-S-b" . sp-backward-symbol)
+
+                      ("C-<right>" . sp-forward-slurp-sexp)
+                      ("M-<right>" . sp-forward-barf-sexp)
+                      ("C-<left>"  . sp-backward-slurp-sexp)
+                      ("M-<left>"  . sp-backward-barf-sexp)
+
+                      ("C-M-t" . sp-transpose-sexp)
+                      ("M-k"   . sp-backward-kill-sexp)
+                      ("C-M-w" . sp-copy-sexp)
+                      ("C-M-d" . delete-sexp)
+
+                      ("M-<backspace>" . backward-kill-word)
+                      ("C-<backspace>" . sp-backward-kill-word)
+                      ([remap sp-backward-kill-word] . backward-kill-word)
+
+                      ("M-[" . sp-backward-unwrap-sexp)
+                      ("M-]" . sp-unwrap-sexp)
+
+                      ("C-x C-t" . sp-transpose-hybrid-sexp))
           :config
-          (progn
-              (sp-pair "'" "'" :actions nil)))
+          (sp-pair "'" "'" :actions nil))
     #+END_SRC
 
 *** [[https://github.com/Malabarba/aggressive-indent-mode][Aggressive Indent]]
@@ -799,8 +836,8 @@ Editor settings
            (defvar ayrc/cpos_save nil "current cursor position")
 
            (defun ayrc/outline-hook ()
-               (make-variable-buffer-local 'ayrc/outline-toggle-all-flag)
-               (make-variable-buffer-local 'ayrc/cpos_save))
+               (make-local 'ayrc/outline-toggle-all-flag)
+               (make-local 'ayrc/cpos_save))
 
            :config
            (defun ayrc/outline-toggle-entry ()
@@ -1778,6 +1815,7 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (use-package irony
            :ensure t
+           :defines (irony-cdb-compilation-databases)
            :diminish irony-mode
            :commands (irony-mode)
            :init
@@ -2571,7 +2609,7 @@ Editor settings
 
 ** Shell
    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-     (use-package shell-script-mode
+     (use-package sh-script
          :mode (("\\.ebuild\\'" . shell-script-mode)
                 ("\\.sh\\'"     . shell-script-mode))
          :hook (sh-mode . ayrc/shell-hook)
@@ -2904,9 +2942,8 @@ Editor settings
     #+END_SRC
 
 ** XML
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-     (use-package nxml
-         :ensure t
+   #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+     (use-package nxml-mode
          :commands (nxml-mode)
          :mode ("\\.\\(xml\\|axml\\|xsl|xaml\\)$" . nxml-mode)
          :hook (nxml-mode . ayrc/nxml-hook)
@@ -3137,6 +3174,7 @@ Editor settings
 
           (setq cmake-tab-width 4))
     #+END_SRC
+
 ** Bitbake
    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
      (use-package bitbake
@@ -3146,25 +3184,25 @@ Editor settings
                 ("\\.bbappend$" . bitbake-mode)
                 ("\\.bbclass$" . bitbake-mode))
          :hook (bitbake-mode . ayrc/bitbake-hook)
-         :preface
-         (progn
-             <<bitbake-hook>>))
+         :init
+         <<bitbake-hook>>)
    #+END_SRC
+
 *** Hook
     #+NAME: bitbake-hook
     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
-       (defun ayrc/bitbake-hook ()
-           (display-line-numbers-mode 1)
-           (visual-line-mode          1)
-           (ws-butler-mode            1)
-           (smart-shift-mode          1)
-           (smartparens-mode          1)
-           (semantic-mode             1)
-           (abbrev-mode               1)
-           (yas-minor-mode            1)
+      (defun ayrc/bitbake-hook ()
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (ws-butler-mode            1)
+          (smart-shift-mode          1)
+          (smartparens-mode          1)
+          (semantic-mode             1)
+          (abbrev-mode               1)
+          (yas-minor-mode            1)
 
-           (ayrc/setup-company '(company-cmake :with company-yasnippet))
+          (ayrc/setup-company '(company-cmake :with company-yasnippet))
 
-           (hs-minor-mode             1)
-           (flycheck-mode             1))
+          (hs-minor-mode             1)
+          (flycheck-mode             1))
     #+END_SRC

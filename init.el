@@ -20,6 +20,9 @@ FRAME: screen area that contains one or more Emacs windows"
 ;; Setup package management system
 (require 'package)
 
+;; Turn off warnings
+(setq ad-redefinition-action 'accept)
+
 ;; Without that line, (package-initialize) is executed twice
 ;; (once during evaluation of the init file, and another after
 ;; Emacs finishes reading the init file).
@@ -66,7 +69,7 @@ FRAME: screen area that contains one or more Emacs windows"
                                (file-attributes path-to-file))))))
 
 (defun ayrc/org-babel-load-file (path-to-file)
-    "Load Emacs Lisp source code blocks in the Org FILE.
+    "Load Emacs Lisp source code blocks in the Org PATH-TO-FILE.
 This function exports the source code using `org-babel-tangle',
 compiles tangled code and then loads the resulting file
 using `load-file'.
@@ -101,18 +104,20 @@ file doesn't changed."
                  exported-file)))
 
 
-;; Byte-compile init.el
-(let* ((path-to-init (ayrc/expand-config-path "init.el"))
-       (base-init-name     (file-name-sans-extension path-to-init))
-       (path-to-compiled-init (concat base-init-name ".elc")))
-    (unless (and (file-exists-p path-to-compiled-init)
-                 (> (ayrc/get-file-age path-to-init)
-                    (ayrc/get-file-age path-to-compiled-init)))
-        (byte-compile-file path-to-init)
-        (message "%s %s" "Compiled" path-to-init)))
+(defun ayrc/load-file (path-to-file)
+    "Load Emacs Lisp source code in the PATH-TO-FILE.
+Its function used instead of original `load-file' because of
+`load-file' doesn't compiles code."
+    (let* ((base-file-name     (file-name-sans-extension path-to-file))
+           (path-to-compiled-file (concat base-file-name ".elc")))
+        (unless (and (file-exists-p path-to-compiled-file)
+                     (> (ayrc/get-file-age path-to-file)
+                        (ayrc/get-file-age path-to-compiled-file)))
+            (byte-compile-file path-to-file)
+            (message "%s %s" "Compiled" path-to-file))))
 
-;; Load main config
-(ayrc/org-babel-load-file (ayrc/expand-config-path "./main.org"))
+;; Byte-compile init.el
+(ayrc/load-file (ayrc/expand-config-path "init.el"))
 
 ;; Load use-conf
 (defvar user-conf-template-filename "./other/user-conf-template.org")
@@ -122,10 +127,13 @@ file doesn't changed."
                                   (ayrc/expand-config-path user-conf-filename)
                               (ayrc/expand-config-path user-conf-template-filename)))
 
+;; Load main config
+(ayrc/org-babel-load-file (ayrc/expand-config-path "./main.org"))
+
 ;; Load custom.el
 (setq custom-file (ayrc/expand-config-path "custom.el"))
 (if (file-exists-p custom-file)
-        (load custom-file))
+        (ayrc/load-file custom-file))
 
 (provide 'init)
 ;;; init.el ends here
