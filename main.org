@@ -740,9 +740,8 @@ Editor settings
           :commands (aggressive-indent-mode)
           :hook (aggressive-indent-mode . ayrc/aggressive-indent-hook)
           :diminish aggressive-indent-mode
-          :preface
-          (progn
-              <<aggressive-indent-hook>>))
+          :init
+          <<aggressive-indent-hook>>)
     #+END_SRC
 
 ***** Hook
@@ -876,11 +875,8 @@ Editor settings
            :commands (flycheck-mode)
            :hook (flycheck-mode . ayrc/flycheck-hook)
            :init
-           (progn
-               <<helm-flycheck-use-package>>)
-           :preface
-           (progn
-               <<flycheck-hook>>))
+           <<helm-flycheck-use-package>>
+           <<flycheck-hook>>)
      #+END_SRC
 
 ***** [[https://github.com/yasuyk/helm-flycheck][Helm]]
@@ -982,14 +978,11 @@ Editor settings
                  ("<tab>" . company-complete-selection))
            :hook (company-mode . ayrc/company-hook)
            :init
-           (progn
-               <<company-box-use-package>>
-               <<company-flx-use-package>>
-               <<company-quickhelp-use-package>>
-               <<company-setup-func>>)
-           :preface
-           (progn
-               <<company-hook>>))
+           <<company-box-use-package>>
+           <<company-flx-use-package>>
+           <<company-quickhelp-use-package>>
+           <<company-setup-func>>
+           <<company-hook>>)
      #+END_SRC
 
 ***** [[https://www.github.com/expez/company-quickhelp][Documentation]]
@@ -2216,12 +2209,9 @@ Editor settings
            :bind (:map python-mode-map
                        ("C-c i" . run-python))
            :init
-           (progn
-               <<venv-support-packages>>
-               <<sphinx-doc-use-package>>)
-           :preface
-           (progn
-               <<python-hook>>))
+           <<venv-support-packages>>
+           <<sphinx-doc-use-package>>
+           <<python-hook>>)
      #+END_SRC
 
 ***** Hook
@@ -2326,9 +2316,8 @@ Editor settings
            :mode (("requirements.txt$" . pip-requirements-mode)
                   ("requirements.pip$" . pip-requirements-mode))
            :hook (pip-requirements-mode . ayrc/pip-hook)
-           :preface
-           (progn
-               <<pip-requirements-hook>>))
+           :init
+           <<pip-requirements-hook>>)
      #+END_SRC
 
 ***** Hook
@@ -2368,16 +2357,14 @@ Editor settings
                   (LaTeX-mode     . ayrc/tex-hook)
                   (plain-tex-mode . ayrc/tex-hook))
            :init
-           (progn
-               <<auctex-use-package>>
-               <<auctex-company-use-package>>
-               <<latex-math-company-use-package>>
-               <<latex-math-preview-use-package>>
-               <<latex-preview-pane-use-package>>
-               <<latex-pretty-symbols-use-package>>)
-           :preface
-           (progn
-               <<tex-hook>>))
+           <<auctex-use-package>>
+           <<auctex-company-use-package>>
+           <<latex-math-company-use-package>>
+           <<latex-math-preview-use-package>>
+           <<latex-preview-pane-use-package>>
+           <<latex-pretty-symbols-use-package>>
+
+           <<tex-hook>>)
      #+END_SRC
 
 **** [[https://www.gnu.org/software/auctex/][AUCTEX]]
@@ -2635,9 +2622,8 @@ Editor settings
           :mode (("Dockerfile'"       . dockerfile-mode)
                  ("\\.Dockerfile\\'"  . dockerfile-mode))
           :hook (dockerfile-mode . ayrc/dockerfile-hook)
-          :preface
-          (progn
-              <<dockerfile-hook>>))
+          :init
+          <<dockerfile-hook>>)
     #+END_SRC
 
 ***** Hook
@@ -2663,11 +2649,8 @@ Editor settings
          :mode (("nginx\.conf\.?.*$" . nginx-mode))
          :hook (nginx-mode . ayrc/nginx-hook)
          :init
-         (progn
-             <<company-nginx-use-package>>)
-         :preface
-         (progn
-             <<nginx-hook>>))
+         <<company-nginx-use-package>>
+         <<nginx-hook>>)
    #+END_SRC
 
 *** [[https://github.com/stardiviner/company-nginx][Autocompletion]]
@@ -2712,9 +2695,8 @@ Editor settings
                 ("\\.network\\'"   . systemd-mode)
                 ("\\.link\\'"      . systemd-mode))
          :hook (systemd-mode . ayrc/systemd-hook)
-         :preface
-         (progn
-             <<systemd-hook>>))
+         :init
+         <<systemd-hook>>)
    #+END_SRC
 
 *** Hook
@@ -2740,9 +2722,8 @@ Editor settings
                 ("\\.ini\\'" . conf-windows-mode))
          :hook ((conf-toml-mode-hook    . ayrc/conf-hook)
                 (conf-windows-mode-hook . ayrc/conf-hook))
-         :preface
-         (progn
-             <<conf-hook>>))
+         :init
+         <<conf-hook>>)
    #+END_SRC
 
 *** Hook
@@ -2768,11 +2749,8 @@ Editor settings
          :mode (("\\.plantuml\\'" . plantuml-mode))
          :hook (plantuml-mode . ayrc/plantuml-hook)
          :init
-         (progn
-             <<flycheck-plantuml-use-package>>)
-         :preface
-         (progn
-             <<plantuml-hook>>))
+         <<flycheck-plantuml-use-package>>
+         <<plantuml-hook>>)
    #+END_SRC
 
 *** [[https://github.com/alexmurray/flycheck-plantuml][Flycheck]]
@@ -2807,13 +2785,12 @@ Editor settings
 
 ** [[https://github.com/preetpalS/emacs-dotenv-mode][Dotenv]]
    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-    (use-package dotenv-mode
-        :ensure t
-        :mode (("\\.env\\'" . dotenv-mode))
-        :hook (dotenv-mode . ayrc/dotenv-hook)
-        :preface
-        (progn
-            <<dotenv-hook>>))
+     (use-package dotenv-mode
+         :ensure t
+         :mode (("\\.env\\'" . dotenv-mode))
+         :hook (dotenv-mode . ayrc/dotenv-hook)
+         :init
+         <<dotenv-hook>>)
    #+END_SRC
 
 *** Hook
@@ -2844,11 +2821,8 @@ Editor settings
          :bind (:map json-mode-map
                      ("C-c C-r" . json-pretty-print))
          :init
-         (progn
-             <<flycheck-demjsonlint-use-package>>)
-         :preface
-         (progn
-             <<json-hook>>))
+         <<flycheck-demjsonlint-use-package>>
+         <<json-hook>>)
    #+END_SRC
 
 *** Flycheck
@@ -2891,9 +2865,8 @@ Editor settings
          :bind (:map yaml-mode-map
                      ("C-c f TAB" . indenation-toggle-fold))
          :hook (yaml-mode . ayrc/yaml-hook)
-         :preface
-         (progn
-             <<yaml-hook>>))
+         :init
+         <<yaml-hook>>)
    #+END_SRC
 
 *** Hook
@@ -2937,9 +2910,8 @@ Editor settings
          :commands (nxml-mode)
          :mode ("\\.\\(xml\\|axml\\|xsl|xaml\\)$" . nxml-mode)
          :hook (nxml-mode . ayrc/nxml-hook)
-         :preface
-         (progn
-             <<nxml-hook>>))
+         :init
+         <<nxml-hook>>)
    #+END_SRC
 
 *** Hook
@@ -2967,9 +2939,8 @@ Editor settings
          :commands (jinja2-mode)
          :mode (("\\.j2\\'" . jinja2-mode))
          :hook (jinja2-mode . ayrc/jinja2-hook)
-         :preface
-         (progn
-             <<jinja2-hook>>))
+         :init
+         <<jinja2-hook>>)
    #+END_SRC
 
 *** Hook
@@ -2990,13 +2961,12 @@ Editor settings
 
 ** RST
    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-      (use-package rst
-          :mode (("\\.txt$" . rst-mode)
-                 ("\\.rst$" . rst-mode))
-          :hook (rst-mode . ayrc/rst-hook)
-          :preface
-          (progn
-              <<rst-hook>>))
+     (use-package rst
+         :mode (("\\.txt$" . rst-mode)
+                ("\\.rst$" . rst-mode))
+         :hook (rst-mode . ayrc/rst-hook)
+         :init
+         <<rst-hook>>)
    #+END_SRC
 
 *** Hook
@@ -3029,12 +2999,9 @@ Editor settings
                 ("\\.markdown\\'" . markdown-mode))
          :hook (markdown-mode . ayrc/markdown-hook)
          :init
-         (progn
-             <<markdown-plus-use-package>>
-             <<markdown-preview-use-package>>)
-         :preface
-         (progn
-             <<markdown-hook>>))
+         <<markdown-plus-use-package>>
+         <<markdown-preview-use-package>>
+         <<markdown-hook>>)
    #+END_SRC
 
 *** [[https://github.com/milkypostman/markdown-mode-plus][Markdown+]]
@@ -3059,13 +3026,12 @@ Editor settings
                      markdown-preview-open-browser
                      markdown-preview-cleanup)
           :config
-          (progn
-              (add-to-list 'markdown-preview-stylesheets
-                           "https://raw.githubusercontent.com/richleland/pygments-css/master/emacs.css")
-              (add-to-list 'markdown-preview-javascript
-                           "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML")
-              (add-to-list 'markdown-preview-javascript
-                           '("http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" . async))))
+          (add-to-list 'markdown-preview-stylesheets
+                       "https://raw.githubusercontent.com/richleland/pygments-css/master/emacs.css")
+          (add-to-list 'markdown-preview-javascript
+                       "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML")
+          (add-to-list 'markdown-preview-javascript
+                       '("http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" . async)))
     #+END_SRC
 
 *** Hook
@@ -3096,9 +3062,8 @@ Editor settings
                 (makefile-bsdmake-mode  . ayrc/make-hook)
                 (makefile-automake-mode . ayrc/make-hook)
                 (makefile-mode          . ayrc/make-hook))
-         :preface
-         (progn
-             <<make-hook>>))
+         :init
+         <<make-hook>>)
    #+END_SRC
 
 *** [[https://github.com/nverno/company-makefile][Company]]                               :disabled:
@@ -3137,11 +3102,8 @@ Editor settings
                 ("\\.cmake\\'" . cmake-mode))
          :hook (cmake-mode . ayrc/cmake-hook)
          :init
-         (progn
-             <<cmake-font-lock-use-package>>)
-         :preface
-         (progn
-             <<cmake-hook>>))
+         <<cmake-font-lock-use-package>>
+         <<cmake-hook>>)
    #+END_SRC
 
 *** [[https://github.com/Lindydancer/cmake-font-lock][CMake Font-lock]]
