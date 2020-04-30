@@ -836,8 +836,8 @@ Editor settings
            (defvar ayrc/cpos_save nil "current cursor position")
 
            (defun ayrc/outline-hook ()
-               (make-local 'ayrc/outline-toggle-all-flag)
-               (make-local 'ayrc/cpos_save))
+               (make-local-variable 'ayrc/outline-toggle-all-flag)
+               (make-local-variable 'ayrc/cpos_save))
 
            :config
            (defun ayrc/outline-toggle-entry ()
