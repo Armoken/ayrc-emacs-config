@@ -3166,5 +3166,5 @@ Editor settings
            (ayrc/setup-company '(company-cmake :with company-yasnippet))
 
            (hs-minor-mode             1)
-           (flycheck-mode             1)
+           (flycheck-mode             1))
     #+END_SRC
