@@ -3175,3 +3175,34 @@ Editor settings
 
           (setq cmake-tab-width 4))
     #+END_SRC
+** Bitbake
+   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+     (use-package bitbake
+         :ensure t
+         :mode (("\\.bb$" . bitbake-mode)
+                ("\\.inc$" . bitbake-mode)
+                ("\\.bbappend$" . bitbake-mode)
+                ("\\.bbclass$" . bitbake-mode))
+         :hook (bitbake-mode . ayrc/bitbake-hook)
+         :preface
+         (progn
+             <<bitbake-hook>>))
+   #+END_SRC
+*** Hook
+    #+NAME: bitbake-hook
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+       (defun ayrc/bitbake-hook ()
+           (display-line-numbers-mode 1)
+           (visual-line-mode          1)
+           (ws-butler-mode            1)
+           (smart-shift-mode          1)
+           (smartparens-mode          1)
+           (semantic-mode             1)
+           (abbrev-mode               1)
+           (yas-minor-mode            1)
+
+           (ayrc/setup-company '(company-cmake :with company-yasnippet))
+
+           (hs-minor-mode             1)
+           (flycheck-mode             1)
+    #+END_SRC
