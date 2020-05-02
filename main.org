@@ -2301,6 +2301,7 @@ Editor settings
 
              py-outline-minor-mode-p         nil
              py-auto-fill-mode               nil
+             py-eldoc-mode-p                 nil
 
              python-shell-interpreter        "ipython"
              python-shell-interpreter-args   "-i --simple-prompt")
@@ -2323,7 +2324,7 @@ Editor settings
             (pipenv-mode                1)
             (pyenv-mode                 1)
             (sphinx-doc-mode            1)
-            (eldoc-mode                 1)
+            (eldoc-mode                -1)
 
             (require 'lsp-pyls)
             (require 'dap-python)
