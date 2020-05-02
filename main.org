@@ -87,7 +87,6 @@ Editor settings
            (spaceline-toggle-line-column-off)
            (spaceline-toggle-buffer-encoding-abbrev-off)
            (spaceline-spacemacs-theme 'my-current-line))
-
      #+END_SRC
 
 *** Bookmarks
@@ -579,6 +578,51 @@ Editor settings
           :commands (defhydra))
     #+END_SRC
 
+*** Subword mode                                                                           :hotkeys:
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+      (use-package subword
+          :diminish (subword-mode global-subword-mode)
+          :init
+          (defun ayrc/forward-word (&optional arg)
+              (interactive "p")
+              (let ((table (make-syntax-table)))
+                  (modify-syntax-entry ?_ "_" table)
+                  (with-syntax-table table
+                      (forward-word arg))))
+
+          (defun ayrc/backward-word (&optional arg)
+              (interactive "p")
+              (let ((table (make-syntax-table)))
+                  (modify-syntax-entry ?_ "_" table)
+                  (with-syntax-table table
+                      (backward-word arg))))
+
+          (defun ayrc/kill-word (&optional arg)
+              (interactive "p")
+              (let ((table (make-syntax-table)))
+                  (modify-syntax-entry ?_ "_" table)
+                  (with-syntax-table table
+                      (kill-word arg))))
+
+          (defun ayrc/backward-kill-word (&optional arg)
+              (interactive "p")
+              (let ((table (make-syntax-table)))
+                  (modify-syntax-entry ?_ "_" table)
+                  (with-syntax-table table
+                      (backward-kill-word arg))))
+
+          (defun ayrc/subword-hook ()
+              (global-set-key (kbd "M-f")           'ayrc/forward-word)
+              (global-set-key (kbd "M-b")           'ayrc/backward-word)
+              (global-set-key (kbd "M-d")           'ayrc/kill-word)
+              (global-set-key (kbd "M-DEL")         'ayrc/backward-kill-word)
+              (global-set-key (kbd "M-<backspace>") 'ayrc/backward-kill-word))
+          (add-hook 'global-subword-mode-hook 'ayrc/subword-hook)
+
+          (global-subword-mode 1))
+
+    #+END_SRC
+
 *** Hotkeys for changing size of buffers                                                   :hotkeys:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (global-set-key (kbd "<C-M-up>") 'shrink-window)
@@ -742,9 +786,6 @@ Editor settings
                       ("C-M-n" . sp-next-sexp)
                       ("C-M-p" . sp-previous-sexp)
 
-                      ("C-S-f" . sp-forward-symbol)
-                      ("C-S-b" . sp-backward-symbol)
-
                       ("C-<right>" . sp-forward-slurp-sexp)
                       ("M-<right>" . sp-forward-barf-sexp)
                       ("C-<left>"  . sp-backward-slurp-sexp)
@@ -754,10 +795,6 @@ Editor settings
                       ("M-k"   . sp-backward-kill-sexp)
                       ("C-M-w" . sp-copy-sexp)
                       ("C-M-d" . delete-sexp)
-
-                      ("M-<backspace>" . backward-kill-word)
-                      ("C-<backspace>" . sp-backward-kill-word)
-                      ([remap sp-backward-kill-word] . backward-kill-word)
 
                       ("M-[" . sp-backward-unwrap-sexp)
                       ("M-]" . sp-unwrap-sexp)
