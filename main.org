@@ -46,47 +46,186 @@ Editor settings
 
 **** Modeline theme
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb true
-       (use-package spaceline
+       (use-package doom-modeline
            :ensure t
-           :functions (spaceline-toggle-buffer-size-off
-                       spaceline-toggle-hud-off
-                       spaceline-toggle-buffer-position-off
-                       spaceline-toggle-line-column-off
-                       spaceline-toggle-buffer-encoding-abbrev-off)
            :init
-           (use-package spaceline-all-the-icons
-               :ensure t)
+           (require 'doom-modeline)
 
-           :config
-           (require 'spaceline-config)
+           ;; How tall the mode-line should be. It's only respected in GUI.
+           ;; If the actual char height is larger, it respects the actual height.
+           (setq doom-modeline-height             21
 
-           ;; Spaceline themes: arrow, arrow-fade, bar, box, brace,
-           ;; butt, chamfer, contour, curve,
-           ;; rounded, roundstub, slant, wave, zigzag, nil,
-           (setq powerline-default-separator 'arrow-fade)
+                 ;; How wide the mode-line bar should be. It's only respected in GUI.
+                 doom-modeline-bar-width          3
 
-           (spaceline-toggle-buffer-size-off)
-           (setq powerline-height 21)
+                 ;; The limit of the window width.
+                 ;; If `window-width' is smaller than the limit, some information won't be displayed.
+                 doom-modeline-window-width-limit fill-column
 
-           ;; HUD: shows the currently visible part of the buffer.
-           (spaceline-toggle-hud-off)
+                 ;; How to detect the project root.
+                 ;; The default priority of detection is `ffip'
+                 ;;                                         > `projectile'
+                 ;;                                         > `project'.
+                 ;; nil means to use `default-directory'.
+                 ;; The project management packages have some issues on detecting
+                 ;; project root. e.g. `projectile' doesn't handle symlink folders
+                 ;; well, while `project' is unable to hanle sub-projects.
+                 ;; You can specify one if you encounter the issue.
+                 doom-modeline-project-detection        'projectile
 
-           ;; buffer-position: shows the current position in the buffer
-           ;; as a percentage.
-           (spaceline-toggle-buffer-position-off)
+                 doom-modeline-buffer-file-name-style   'truncate-except-project
 
-           (spaceline-define-segment my-current-line
-               "The current line number."
-               (if (eq major-mode 'pdf-view-mode)
-                       (spaceline--pdfview-page-number)
+                 ;; Whether display icons in the mode-line.
+                 ;; Respects `all-the-icons-color-icons'.
+                 ;; While using the server mode in GUI, should set the value
+                 ;; explicitly.
+                 doom-modeline-icon                     (display-graphic-p)
+                 doom-modeline-major-mode-icon          t
+                 doom-modeline-major-mode-color-icon    t
+                 doom-modeline-buffer-state-icon        t
+                 doom-modeline-buffer-modification-icon t
+                 ;; Whether display the modal state icon.
+                 ;; Including `evil', `overwrite', `god', `ryo' and `xah-fly-keys',
+                 ;; etc.
+                 doom-modeline-modal-icon                 t
+                 ;; Whether display the perspective name. Non-nil to display in the
+                 ;; mode-line.
+                 doom-modeline-persp-name                 t
+                 ;; If non nil the default perspective name is displayed in the
+                 ;; mode-line.
+                 doom-modeline-display-default-persp-name t
+                 ;; If non nil the perspective name is displayed alongside a folder
+                 ;; icon.
+                 doom-modeline-persp-icon                 t
+                 ;; Whether display the `lsp' state. Non-nil to display in the
+                 ;; mode-line.
+                 doom-modeline-lsp                        t
+
+                 doom-modeline-unicode-fallback           nil
+                 doom-modeline-minor-modes                nil
+                 doom-modeline-enable-word-count          nil
+
+                 ;; Major modes in which to display word count continuously.
+                 ;; Also applies to any derived modes. Respects `doom-modeline-enable-word-count'.
+                 ;; If it brings the sluggish issue, disable `doom-modeline-enable-word-count' or
+                 ;; remove the modes from `doom-modeline-continuous-word-count-modes'.
+                 doom-modeline-continuous-word-count-modes '(markdown-mode
+                                                             gfm-mode
+                                                             org-mode)
+
+                 ;; Whether display the buffer encoding.
+                 doom-modeline-buffer-encoding              t
+
+                 ;; Whether display the indentation information.
+                 doom-modeline-indent-info                  t
+
+                 ;; If non-nil, only display one number for checker information if applicable.
+                 doom-modeline-checker-simple-format        t
+
+                 ;; The maximum number displayed for notifications.
+                 doom-modeline-number-limit                99
+
+                 ;; The maximum displayed length of the branch name of version
+                 ;; control.
+                 doom-modeline-vcs-max-length              12
+
+                 ;; Whether display the GitHub notifications. It requires `ghub' package.
+                 doom-modeline-github          nil
+                 doom-modeline-github-interval (* 30 60)
+
+                 ;; Whether display the mu4e notifications. It requires `mu4e-alert'
+                 ;; package.
+                 doom-modeline-mu4e       nil
+
+                 ;; Whether display the gnus notifications.
+                 doom-modeline-gnus       t
+                 ;; Wheter gnus should automatically be updated and how often
+                 ;; (set to nil to disable)
+                 doom-modeline-gnus-timer 2
+
+                 ;; Whether display the IRC notifications. It requires `circe'
+                 ;; or `erc' package.
+                 doom-modeline-irc         nil
+                 ;; Function to stylize the irc buffer names.
+                 doom-modeline-irc-stylize 'identity
+
+                 ;; Whether display the environment version.
+                 doom-modeline-env-version       nil
+                 ;; Or for individual languages
+                 doom-modeline-env-enable-python nil
+                 doom-modeline-env-enable-ruby   nil
+                 doom-modeline-env-enable-perl   nil
+                 doom-modeline-env-enable-go     nil
+                 doom-modeline-env-enable-elixir nil
+                 doom-modeline-env-enable-rust   nil
+
+                 ;; What to dispaly as the version while a new one is being loaded
+                 doom-modeline-env-load-string        "..."
+
+                 ;; Hooks that run before/after the modeline version string is
+                 ;; updated
+                 doom-modeline-before-update-env-hook nil
+                 doom-modeline-after-update-env-hook  nil)
+
+           (doom-modeline-def-segment ayrc/my-current-line
+               "The buffer position information."
+               (let* ((active (doom-modeline--active))
+                      (lines-count (int-to-string (count-lines (point-min) (point-max))))
+                      (lines-only (concat "%l/" (int-to-string (count-lines (point-min) (point-max)))))
+                      (lines-and-columns (concat "%l/" (int-to-string (count-lines (point-min) (point-max))) ":%c"))
+                      (lines-and-columns-as-one (concat "%l/" (int-to-string (count-lines (point-min) (point-max))) ":%C"))
+                      (lc '(line-number-mode
+                            (column-number-mode
+                             (doom-modeline-column-zero-based lines-and-columns lines-and-columns-as-one)
+                             lines-only)
+                            (column-number-mode (doom-modeline-column-zero-based ":%c" ":%C"))))
+                      (face (if active 'mode-line 'mode-line-inactive))
+                      (mouse-face 'mode-line-highlight)
+                      (local-map mode-line-column-line-number-mode-map))
                    (concat
-                    "%l/"
-                    (int-to-string (count-lines (point-min) (point-max)))
-                    ":%2c")))
+                    (doom-modeline-spc)
+                    (doom-modeline-spc)
 
-           (spaceline-toggle-line-column-off)
-           (spaceline-toggle-buffer-encoding-abbrev-off)
-           (spaceline-spacemacs-theme 'my-current-line))
+                    (propertize (format-mode-line lc)
+                                'face face
+                                'help-echo "Buffer position\n\
+       mouse-1: Display Line and Column Mode Menu"
+                                'mouse-face mouse-face
+                                'local-map local-map)
+
+                    (if (and active
+                             (bound-and-true-p nyan-mode)
+                             (>= (window-width) nyan-minimum-window-width))
+                            (concat
+                             (doom-modeline-spc)
+                             (doom-modeline-spc)
+                             (propertize (nyan-create) 'mouse-face mouse-face))
+                        (when doom-modeline-percent-position
+                            (concat
+                             (doom-modeline-spc)
+                             (propertize (format-mode-line '("" doom-modeline-percent-position "%%"))
+                                         'face face
+                                         'help-echo "Buffer percentage\n\
+       mouse-1: Display Line and Column Mode Menu"
+                                         'mouse-face mouse-face
+                                         'local-map local-map))))
+
+                    (when (or line-number-mode
+                              column-number-mode
+                              doom-modeline-percent-position)
+                        (doom-modeline-spc)))))
+
+           ;; Define your custom doom-modeline
+           (doom-modeline-def-modeline 'ayrc/my-simple-line
+               '(bar matches buffer-info remote-host ayrc/my-current-line parrot selection-info)
+               '(misc-info input-method buffer-encoding major-mode process vcs checker))
+
+           ;; Add to `doom-modeline-mode-hook` or other hooks
+           (defun ayrc/setup-custom-doom-modeline ()
+               (doom-modeline-set-modeline 'ayrc/my-simple-line 'default))
+           (add-hook 'doom-modeline-mode-hook 'ayrc/setup-custom-doom-modeline)
+
+           (doom-modeline-mode 1))
      #+END_SRC
 
 *** Bookmarks
@@ -560,11 +699,6 @@ Editor settings
                  ([remap isearch-query-replace]        . #'anzu-isearch-query-replace)
                  ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp))
           :init
-          (use-package spaceline
-              :config
-              ;; Hide anzu mode, because with spaceline it will displayed twice
-              (setq anzu-cons-mode-line-p nil))
-
           (global-anzu-mode))
 
     #+END_SRC

@@ -15,6 +15,8 @@ FRAME: screen area that contains one or more Emacs windows"
 (ayrc/remove-gui-elements)
 (add-to-list 'after-make-frame-functions #'ayrc/remove-gui-elements)
 
+;; Don’t compact font caches during GC.
+(setq inhibit-compacting-font-caches t)
 (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
 
 ;; Setup package management system
