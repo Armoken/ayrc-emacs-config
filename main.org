@@ -477,7 +477,7 @@ Editor settings
            (setq show-paren-style 'expression))
      #+END_SRC
 
-*** [[https://github.com/domtronn/all-the-icons.el][Icons]]                                                                                       :ui:
+*** [[https://github.com/domtronn/all-the-icons.el][Icons]]                                     :ui:
     A library for inserting Developer icons
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -521,7 +521,7 @@ Editor settings
           (global-eldoc-mode -1))
     #+END_SRC
 
-*** [[https://github.com/emacs-dashboard/emacs-dashboard][Dashboard]]                                                                                   :ui:
+*** [[https://github.com/emacs-dashboard/emacs-dashboard][Dashboard]]                           :ui:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package dashboard
           :ensure t
@@ -542,7 +542,7 @@ Editor settings
                                               (projects . 5))))
     #+END_SRC
 
-*** [[https://github.com/bbatsov/projectile][Project managment]]                                                                   :hotkeys:ui:
+*** [[https://github.com/bbatsov/projectile][Project managment]]                        :hotkeys:ui:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package projectile
           :ensure t
@@ -608,7 +608,7 @@ Editor settings
             :commands (helm-projectile-rg))
       #+END_SRC
 
-*** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                                                             :hotkeys:ui:
+*** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                :hotkeys:ui:
     A tree plugin like NerdTree for Vim
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -620,7 +620,7 @@ Editor settings
           (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
     #+END_SRC
 
-*** [[https://emacs-helm.github.io/helm/][Helm]]                                                                                :hotkeys:ui:
+*** [[https://emacs-helm.github.io/helm/][Helm]]                                        :hotkeys:ui:
     Incremental and narrowing framework
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -714,7 +714,7 @@ Editor settings
            :commands (helm-rg))
      #+END_SRC
 
-*** [[http://www.dr-qubit.org/undo-tree/undo-tree.el][Undo tree]]                                                                           :hotkeys:ui:
+*** [[http://www.dr-qubit.org/undo-tree/undo-tree.el][Undo tree]]                       :hotkeys:ui:
     Treat undo history as a tree
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -726,7 +726,7 @@ Editor settings
           (global-undo-tree-mode))
     #+END_SRC
 
-*** [[https://github.com/syohex/emacs-anzu][Display in the modeline search information]]                                          :hotkeys:ui:
+*** [[https://github.com/syohex/emacs-anzu][Display in the modeline search information]] :hotkeys:ui:
     Show number of matches in mode-line while searching
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -743,7 +743,7 @@ Editor settings
                  ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp)))
     #+END_SRC
 
-*** [[https://github.com/abo-abo/hydra][Hydra]]                                                                               :hotkeys:ui:
+*** [[https://github.com/abo-abo/hydra][Hydra]]                                         :hotkeys:ui:
     Make bindings that stick around
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -833,7 +833,7 @@ Editor settings
      (global-set-key (kbd "<f5>") (lambda () (interactive) (revert-buffer)))
    #+END_SRC
 
-*** [[https://github.com/abo-abo/avy][Jump to things in Emacs tree-style]]                                                     :hotkeys:
+*** [[https://github.com/abo-abo/avy][Jump to things in Emacs tree-style]]                 :hotkeys:
     Jump to arbitrary positions in visible text and select text quickly
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -853,12 +853,20 @@ Editor settings
           (setq avy-case-fold-search nil))
     #+END_SRC
 
-*** [[https://github.com/magnars/expand-region.el][Expand region]]                                                                          :hotkeys:
+*** [[https://github.com/magnars/expand-region.el][Expand region]]                         :hotkeys:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package expand-region
         :ensure t
         :commands (er/expand-region)
         :bind ("C-=" . er/expand-region))
+    #+END_SRC
+
+*** [[https://github.com/ieure/scratch-el][Scratch buffer]]                                :hotkeys:
+    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+      (use-package scratch
+          :ensure t
+          :defer t
+          :bind ("C-c s" . #'scratch))
     #+END_SRC
 
 *** Compilation                                                                            :hotkeys:
@@ -875,7 +883,7 @@ Editor settings
     #+END_SRC
 
 ** Non global
-*** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]                                                                       :ui:
+*** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]        :ui:
     Minor modes for highlighting indentation
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -888,7 +896,7 @@ Editor settings
           (highlight-indentation-current-column (("#c3b3b3"))))
     #+END_SRC
 
-*** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                                                                     :ui:
+*** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                :ui:
     This package provides the `adaptive-wrap-prefix-mode' minor mode which sets
     the wrap-prefix property on the fly so that single-long-line paragraphs get
     word-wrapped in a way similar to what you'd get with M-q using
@@ -905,7 +913,7 @@ Editor settings
               (setq-default adaptive-wrap-extra-indent 2)))
     #+END_SRC
 
-*** [[https://github.com/nflath/hungry-delete][Hungry delete]]                                                                          :hotkeys:
+*** [[https://github.com/nflath/hungry-delete][Hungry delete]]                             :hotkeys:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package hungry-delete
           :ensure t
