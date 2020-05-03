@@ -4,7 +4,46 @@ Editor settings
 
 * Configuration
 ** Global
-*** Theme
+*** Cleaning screen                                                                             :ui:
+    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+      (setq inhibit-splash-screen   t
+            inhibit-startup-message t)
+
+      ;; Disable dialog box
+      (setq use-dialog-box nil)
+
+      ;; Disable indicators
+      (setq-default indicate-empty-lines t)
+      (setq-default indicate-buffer-boundaries 'left)
+
+      ;; Remove *scratch* buffer
+      (if (get-buffer "*scratch*")
+              (kill-buffer "*scratch*"))
+
+      ;; Disable ring-bell-function
+      ;; That called when whenever function ‘ding’ is called.
+      (setq ring-bell-function 'ignore)
+    #+END_SRC
+
+*** Frame settings                                                                              :ui:
+    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+      (use-package frame
+          :init
+          ;; Disable cursor blink
+          (blink-cursor-mode 0)
+
+          (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
+
+          ;; Name of current buffer in window title
+          (setq frame-title-format "GNU Emacs: %b")
+
+          ;; Fullscreen at GUI startup
+          (setq frame-inhibit-implied-resize   t)
+          (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+          (add-to-list 'default-frame-alist '(fullscreen . maximized)))
+    #+END_SRC
+
+*** Theme                                                                                       :ui:
 **** Global theme
      Also add it to ~/.Xresources to prevent blinking at startup:
      Emacs.Background:                    #292b2e
@@ -48,124 +87,127 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb true
        (use-package doom-modeline
            :ensure t
+           :defines (nyan-minimum-window-width)
            :init
            (require 'doom-modeline)
 
-           ;; How tall the mode-line should be. It's only respected in GUI.
-           ;; If the actual char height is larger, it respects the actual height.
-           (setq doom-modeline-height             21
+           (setq
+            ;; How tall the mode-line should be. It's only respected in GUI.
+            ;; If the actual char height is larger, it respects the actual height.
+            doom-modeline-height             21
 
-                 ;; How wide the mode-line bar should be. It's only respected in GUI.
-                 doom-modeline-bar-width          3
+            ;; How wide the mode-line bar should be. It's only respected in GUI.
+            doom-modeline-bar-width          3
 
-                 ;; The limit of the window width.
-                 ;; If `window-width' is smaller than the limit, some information won't be displayed.
-                 doom-modeline-window-width-limit fill-column
+            ;; The limit of the window width.
+            ;; If `window-width' is smaller than the limit, some information won't
+            ;; be displayed.
+            doom-modeline-window-width-limit fill-column
 
-                 ;; How to detect the project root.
-                 ;; The default priority of detection is `ffip'
-                 ;;                                         > `projectile'
-                 ;;                                         > `project'.
-                 ;; nil means to use `default-directory'.
-                 ;; The project management packages have some issues on detecting
-                 ;; project root. e.g. `projectile' doesn't handle symlink folders
-                 ;; well, while `project' is unable to hanle sub-projects.
-                 ;; You can specify one if you encounter the issue.
-                 doom-modeline-project-detection        'projectile
+            ;; How to detect the project root.
+            ;; The default priority of detection is `ffip'
+            ;;                                         > `projectile'
+            ;;                                         > `project'.
+            ;; nil means to use `default-directory'.
+            ;; The project management packages have some issues on detecting
+            ;; project root. e.g. `projectile' doesn't handle symlink folders
+            ;; well, while `project' is unable to hanle sub-projects.
+            ;; You can specify one if you encounter the issue.
+            doom-modeline-project-detection        'projectile
 
-                 doom-modeline-buffer-file-name-style   'truncate-except-project
+            doom-modeline-buffer-file-name-style   'buffer-name
 
-                 ;; Whether display icons in the mode-line.
-                 ;; Respects `all-the-icons-color-icons'.
-                 ;; While using the server mode in GUI, should set the value
-                 ;; explicitly.
-                 doom-modeline-icon                     (display-graphic-p)
-                 doom-modeline-major-mode-icon          t
-                 doom-modeline-major-mode-color-icon    t
-                 doom-modeline-buffer-state-icon        t
-                 doom-modeline-buffer-modification-icon t
-                 ;; Whether display the modal state icon.
-                 ;; Including `evil', `overwrite', `god', `ryo' and `xah-fly-keys',
-                 ;; etc.
-                 doom-modeline-modal-icon                 t
-                 ;; Whether display the perspective name. Non-nil to display in the
-                 ;; mode-line.
-                 doom-modeline-persp-name                 t
-                 ;; If non nil the default perspective name is displayed in the
-                 ;; mode-line.
-                 doom-modeline-display-default-persp-name t
-                 ;; If non nil the perspective name is displayed alongside a folder
-                 ;; icon.
-                 doom-modeline-persp-icon                 t
-                 ;; Whether display the `lsp' state. Non-nil to display in the
-                 ;; mode-line.
-                 doom-modeline-lsp                        t
+            ;; Whether display icons in the mode-line.
+            ;; Respects `all-the-icons-color-icons'.
+            ;; While using the server mode in GUI, should set the value
+            ;; explicitly.
+            doom-modeline-icon                     (display-graphic-p)
+            doom-modeline-major-mode-icon          t
+            doom-modeline-major-mode-color-icon    t
+            doom-modeline-buffer-state-icon        t
+            doom-modeline-buffer-modification-icon t
+            ;; Whether display the modal state icon.
+            ;; Including `evil', `overwrite', `god', `ryo' and `xah-fly-keys',
+            ;; etc.
+            doom-modeline-modal-icon                 t
+            ;; Whether display the perspective name. Non-nil to display in the
+            ;; mode-line.
+            doom-modeline-persp-name                 t
+            ;; If non nil the default perspective name is displayed in the
+            ;; mode-line.
+            doom-modeline-display-default-persp-name t
+            ;; If non nil the perspective name is displayed alongside a folder
+            ;; icon.
+            doom-modeline-persp-icon                 t
+            ;; Whether display the `lsp' state. Non-nil to display in the
+            ;; mode-line.
+            doom-modeline-lsp                        t
 
-                 doom-modeline-unicode-fallback           nil
-                 doom-modeline-minor-modes                nil
-                 doom-modeline-enable-word-count          nil
+            doom-modeline-unicode-fallback           nil
+            doom-modeline-minor-modes                nil
+            doom-modeline-enable-word-count          nil
 
-                 ;; Major modes in which to display word count continuously.
-                 ;; Also applies to any derived modes. Respects `doom-modeline-enable-word-count'.
-                 ;; If it brings the sluggish issue, disable `doom-modeline-enable-word-count' or
-                 ;; remove the modes from `doom-modeline-continuous-word-count-modes'.
-                 doom-modeline-continuous-word-count-modes '(markdown-mode
-                                                             gfm-mode
-                                                             org-mode)
+            ;; Major modes in which to display word count continuously.
+            ;; Also applies to any derived modes. Respects `doom-modeline-enable-word-count'.
+            ;; If it brings the sluggish issue, disable `doom-modeline-enable-word-count' or
+            ;; remove the modes from `doom-modeline-continuous-word-count-modes'.
+            doom-modeline-continuous-word-count-modes '(markdown-mode
+                                                        gfm-mode
+                                                        org-mode)
 
-                 ;; Whether display the buffer encoding.
-                 doom-modeline-buffer-encoding              t
+            ;; Whether display the buffer encoding.
+            doom-modeline-buffer-encoding              t
 
-                 ;; Whether display the indentation information.
-                 doom-modeline-indent-info                  t
+            ;; Whether display the indentation information.
+            doom-modeline-indent-info                  t
 
-                 ;; If non-nil, only display one number for checker information if applicable.
-                 doom-modeline-checker-simple-format        t
+            ;; If non-nil, only display one number for checker information if applicable.
+            doom-modeline-checker-simple-format        t
 
-                 ;; The maximum number displayed for notifications.
-                 doom-modeline-number-limit                99
+            ;; The maximum number displayed for notifications.
+            doom-modeline-number-limit                99
 
-                 ;; The maximum displayed length of the branch name of version
-                 ;; control.
-                 doom-modeline-vcs-max-length              12
+            ;; The maximum displayed length of the branch name of version
+            ;; control.
+            doom-modeline-vcs-max-length              12
 
-                 ;; Whether display the GitHub notifications. It requires `ghub' package.
-                 doom-modeline-github          nil
-                 doom-modeline-github-interval (* 30 60)
+            ;; Whether display the GitHub notifications. It requires `ghub' package.
+            doom-modeline-github          nil
+            doom-modeline-github-interval (* 30 60)
 
-                 ;; Whether display the mu4e notifications. It requires `mu4e-alert'
-                 ;; package.
-                 doom-modeline-mu4e       nil
+            ;; Whether display the mu4e notifications. It requires `mu4e-alert'
+            ;; package.
+            doom-modeline-mu4e       nil
 
-                 ;; Whether display the gnus notifications.
-                 doom-modeline-gnus       t
-                 ;; Wheter gnus should automatically be updated and how often
-                 ;; (set to nil to disable)
-                 doom-modeline-gnus-timer 2
+            ;; Whether display the gnus notifications.
+            doom-modeline-gnus       t
+            ;; Wheter gnus should automatically be updated and how often
+            ;; (set to nil to disable)
+            doom-modeline-gnus-timer 2
 
-                 ;; Whether display the IRC notifications. It requires `circe'
-                 ;; or `erc' package.
-                 doom-modeline-irc         nil
-                 ;; Function to stylize the irc buffer names.
-                 doom-modeline-irc-stylize 'identity
+            ;; Whether display the IRC notifications. It requires `circe'
+            ;; or `erc' package.
+            doom-modeline-irc         nil
+            ;; Function to stylize the irc buffer names.
+            doom-modeline-irc-stylize 'identity
 
-                 ;; Whether display the environment version.
-                 doom-modeline-env-version       nil
-                 ;; Or for individual languages
-                 doom-modeline-env-enable-python nil
-                 doom-modeline-env-enable-ruby   nil
-                 doom-modeline-env-enable-perl   nil
-                 doom-modeline-env-enable-go     nil
-                 doom-modeline-env-enable-elixir nil
-                 doom-modeline-env-enable-rust   nil
+            ;; Whether display the environment version.
+            doom-modeline-env-version       nil
+            ;; Or for individual languages
+            doom-modeline-env-enable-python nil
+            doom-modeline-env-enable-ruby   nil
+            doom-modeline-env-enable-perl   nil
+            doom-modeline-env-enable-go     nil
+            doom-modeline-env-enable-elixir nil
+            doom-modeline-env-enable-rust   nil
 
-                 ;; What to dispaly as the version while a new one is being loaded
-                 doom-modeline-env-load-string        "..."
+            ;; What to dispaly as the version while a new one is being loaded
+            doom-modeline-env-load-string        "..."
 
-                 ;; Hooks that run before/after the modeline version string is
-                 ;; updated
-                 doom-modeline-before-update-env-hook nil
-                 doom-modeline-after-update-env-hook  nil)
+            ;; Hooks that run before/after the modeline version string is
+            ;; updated
+            doom-modeline-before-update-env-hook nil
+            doom-modeline-after-update-env-hook  nil)
 
            (doom-modeline-def-segment ayrc/my-current-line
                "The buffer position information."
@@ -217,8 +259,21 @@ Editor settings
 
            ;; Define your custom doom-modeline
            (doom-modeline-def-modeline 'ayrc/my-simple-line
-               '(bar matches buffer-info remote-host ayrc/my-current-line parrot selection-info)
-               '(misc-info input-method buffer-encoding major-mode process vcs checker))
+               '(bar
+                 matches
+                 buffer-info
+                 remote-host
+                 ayrc/my-current-line
+                 parrot
+                 selection-info)
+               '(misc-info
+                 input-method
+                 buffer-encoding
+                 major-mode
+                 process
+                 vcs
+                 lsp
+                 checker))
 
            ;; Add to `doom-modeline-mode-hook` or other hooks
            (defun ayrc/setup-custom-doom-modeline ()
@@ -231,22 +286,25 @@ Editor settings
 *** Bookmarks
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package bookmark
+          :defer t
           :config
           (setq bookmark-save-flag 1))
     #+END_SRC
 
 *** Backups in /tmp
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-      (setq backup-directory-alist
-            `((".*" . ,temporary-file-directory)))
-      (setq auto-save-file-name-transforms
-            `((".*" ,temporary-file-directory t)))
+      (use-package files
+          :init
+          (setq
+           backup-directory-alist         `((".*" . ,temporary-file-directory))
+           auto-save-file-name-transforms `((".*" ,temporary-file-directory t))))
     #+END_SRC
 
 *** [[Https://github.com/10sr/switch-buffer-functions-el][Hook Run When Current Buffer Changed]]
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package switch-buffer-functions
-          :ensure t)
+          :ensure t
+          :defer t)
     #+END_SRC
 
 *** [[https://github.com/purcell/exec-path-from-shell][Use user ${PATH} from shell]]
@@ -269,6 +327,7 @@ Editor settings
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package autorevert
+          :defer t
           :diminish auto-revert-mode)
     #+END_SRC
 
@@ -278,14 +337,11 @@ Editor settings
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package abbrev
+          :defer t
+          :commands (abbrev-mode)
           :diminish abbrev-mode
           :config
           (setq abbrev-file-name (ayrc/expand-config-path "./abbrev_defs")))
-    #+END_SRC
-
-*** Common clipboard with X Server
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-      (setq select-enable-clipboard t)
     #+END_SRC
 
 *** Visual line mode
@@ -316,15 +372,33 @@ Editor settings
       (setq-default indent-tabs-mode nil)
     #+END_SRC
 
-*** Delete Selection mode
-    If you enable Delete Selection mode, a minor mode,
-    then inserting text while the mark is active causes the selected text
-    to be deleted first. This also deactivates the mark. Many graphical
-    applications follow this convention, but Emacs does not.
+*** Selection
+**** Common clipboard with XServer/Wayland
+     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+       (setq select-enable-clipboard t)
 
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-      (delete-selection-mode t)
-    #+END_SRC
+       (use-package xclip
+           :if (eq system-type 'gnu/linux)
+           :ensure t
+           :init
+           (xclip-mode 1))
+
+       (use-package pbcopy
+           :if (eq system-type 'darwin)
+           :ensure t
+           :init
+           (turn-on-pbcopy))
+     #+END_SRC
+
+**** Delete Selection mode
+     If you enable Delete Selection mode, a minor mode,
+     then inserting text while the mark is active causes the selected text
+     to be deleted first. This also deactivates the mark. Many graphical
+     applications follow this convention, but Emacs does not.
+
+     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+       (delete-selection-mode t)
+     #+END_SRC
 
 *** Set newline at the end of file
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -341,50 +415,9 @@ Editor settings
           (editorconfig-mode))
     #+END_SRC
 
-*** Cleaning screen                                                                             :ui:
-**** Disable welcom screen
-     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-       (setq inhibit-splash-screen   t)
-       (setq inhibit-startup-message t)
-     #+END_SRC
-
-**** Disable dialog box
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-      (setq use-dialog-box nil)
-    #+END_SRC
-
-**** Disable indicators
-     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-       (setq-default indicate-empty-lines t)
-       (setq-default indicate-buffer-boundaries 'left)
-       (size-indication-mode nil) ;; Don't show current buffer size
-     #+END_SRC
-
-**** Disable cursor blink
-     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-       (blink-cursor-mode 0)
-     #+END_SRC
-
-**** Disable ring-bell-function
-     That called when whenever function ‘ding’ is called.
-
-     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-       (setq ring-bell-function 'ignore)
-     #+END_SRC
-
 *** Use 'y' and `n' instead of 'yes' and 'not'                                                  :ui:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (fset 'yes-or-no-p 'y-or-n-p)
-    #+END_SRC
-
-*** Fullscreen at GUI startup                                                                   :ui:
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-      (add-to-list 'default-frame-alist '(fullscreen . maximized))
-    #+END_SRC
-
-*** Name of current buffer in window title                                                      :ui:
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-      (setq frame-title-format "GNU Emacs: %b")
     #+END_SRC
 
 *** Scroll settings                                                                             :ui:
@@ -396,36 +429,39 @@ Editor settings
           (pixel-scroll-mode)
 
           :config
-          (setq scroll-preserve-screen-position t
-                scroll-margin 0
-                scroll-conservatively 101)
+          (setq
+           scroll-preserve-screen-position t
+           scroll-margin                   0
+           scroll-conservatively           10000
 
-          ;; Never go back to the old scrolling behaviour.
-          (setq pixel-dead-time 0)
+           ;; Never go back to the old scrolling behaviour.
+           pixel-dead-time                 0
 
-          ;; Scroll by number of pixels instead of
-          ;; lines (t = frame-char-height pixels).
-          (setq pixel-resolution-fine-flag t)
+           ;; Scroll by number of pixels instead of
+           ;; lines (t = frame-char-height pixels).
+           pixel-resolution-fine-flag      t
 
-          ;; Distance in pixel-resolution to scroll each mouse wheel event.
-          (setq mouse-wheel-scroll-amount '(1))
+           ;; Distance in pixel-resolution to scroll each mouse wheel event.
+           mouse-wheel-scroll-amount       '(1)
 
-          (setq mouse-wheel-progressive-speed nil)
+           mouse-wheel-progressive-speed   nil
 
-          ;; No (less) lag while scrolling lots.
-          (setq fast-but-imprecise-scrolling t)
+           ;; No (less) lag while scrolling lots.
+           fast-but-imprecise-scrolling    nil
 
-          ;; Just don't even fontify if we're still catching up on user input.
-          (setq jit-lock-defer-time 0))
+           ;; Don’t compact font caches during GC.
+           inhibit-compacting-font-caches  t
+
+           ;; Just don't even fontify if we're still catching up on user input.
+           jit-lock-defer-time             0))
     #+END_SRC
 
 *** Highlighting                                                                                :ui:
 **** Syntax                                                                                     :ui:
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package font-lock
-         :config
-         (progn
-           (setq font-lock-maximum-decoration t)))
+           :config
+           (setq font-lock-maximum-decoration t))
      #+END_SRC
 
 **** Expressions between {},[],()                                                               :ui:
@@ -446,12 +482,15 @@ Editor settings
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package all-the-icons
-        :ensure t)
+          :ensure t
+          :defer t)
     #+END_SRC
 
 *** Current line hightlight                                                                     :ui:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-      (global-hl-line-mode 1)
+      (use-package hl-line
+          :init
+          (global-hl-line-mode 1))
     #+END_SRC
 
 *** Line numbering                                                                              :ui:
@@ -460,14 +499,18 @@ Editor settings
 
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package display-line-numbers
+           :defer t
            :config
            (setq display-line-numbers-width-start 5))
      #+END_SRC
 
 **** Modeline
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-       (line-number-mode t)
-       (column-number-mode t)
+       (line-number-mode     t)
+       (column-number-mode   t)
+
+       ;; Don't show current buffer size
+       (size-indication-mode nil)
      #+END_SRC
 
 *** Eldoc                                                                                       :ui:
@@ -679,9 +722,8 @@ Editor settings
           :ensure t
           :diminish undo-tree-mode
           :bind (("C-x u" . undo-tree-visualize))
-          :config
-          (progn
-              (global-undo-tree-mode)))
+          :init
+          (global-undo-tree-mode))
     #+END_SRC
 
 *** [[https://github.com/syohex/emacs-anzu][Display in the modeline search information]]                                          :hotkeys:ui:
@@ -691,16 +733,14 @@ Editor settings
       (use-package anzu
           :ensure t
           :defines (anzu-cons-mode-line-p)
+          :defer t
           :diminish anzu-mode
           :bind (([remap query-replace]        . #'anzu-query-replace)
                  ([remap query-replace-regexp] . #'anzu-query-replace-regexp)
 
                  :map isearch-mode-map
                  ([remap isearch-query-replace]        . #'anzu-isearch-query-replace)
-                 ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp))
-          :init
-          (global-anzu-mode))
-
+                 ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp)))
     #+END_SRC
 
 *** [[https://github.com/abo-abo/hydra][Hydra]]                                                                               :hotkeys:ui:
@@ -709,6 +749,7 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package hydra
           :ensure t
+          :defer t
           :commands (defhydra))
     #+END_SRC
 
@@ -759,9 +800,9 @@ Editor settings
 
 *** Hotkeys for changing size of buffers                                                   :hotkeys:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-      (global-set-key (kbd "<C-M-up>") 'shrink-window)
-      (global-set-key (kbd "<C-M-down>") 'enlarge-window)
-      (global-set-key (kbd "<C-M-left>") 'shrink-window-horizontally)
+      (global-set-key (kbd "<C-M-up>")    'shrink-window)
+      (global-set-key (kbd "<C-M-down>")  'enlarge-window)
+      (global-set-key (kbd "<C-M-left>")  'shrink-window-horizontally)
       (global-set-key (kbd "<C-M-right>") 'enlarge-window-horizontally)
     #+END_SRC
 
@@ -820,20 +861,21 @@ Editor settings
         :bind ("C-=" . er/expand-region))
     #+END_SRC
 
-*** Compilation
-**** Press to compile                                                                      :hotkeys:
-     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-       (global-set-key (kbd "<f9>") 'compile)
-     #+END_SRC
+*** Compilation                                                                            :hotkeys:
+    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+      (use-package compile
+          :defer t
+          :bind (
+                 ;; Press to compile
+                 ("<f9>" . 'compile)
 
-**** Errors switching                                                                      :hotkeys:
-     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-       (global-set-key (kbd "<f7>") 'next-error)
-       (global-set-key (kbd "<f8>") 'previous-error)
-     #+END_SRC
+                 ;; Errors switching
+                 ("<f7>" . 'next-error)
+                 ("<f8>" . 'previous-error)))
+    #+END_SRC
 
 ** Non global
-*** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]        :ui:
+*** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]                                                                       :ui:
     Minor modes for highlighting indentation
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -846,7 +888,7 @@ Editor settings
           (highlight-indentation-current-column (("#c3b3b3"))))
     #+END_SRC
 
-*** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                :ui:
+*** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                                                                     :ui:
     This package provides the `adaptive-wrap-prefix-mode' minor mode which sets
     the wrap-prefix property on the fly so that single-long-line paragraphs get
     word-wrapped in a way similar to what you'd get with M-q using
@@ -863,7 +905,7 @@ Editor settings
               (setq-default adaptive-wrap-extra-indent 2)))
     #+END_SRC
 
-*** [[https://github.com/nflath/hungry-delete][Hungry delete]]                             :hotkeys:
+*** [[https://github.com/nflath/hungry-delete][Hungry delete]]                                                                          :hotkeys:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package hungry-delete
           :ensure t
@@ -919,11 +961,6 @@ Editor settings
 
                       ("C-M-n" . sp-next-sexp)
                       ("C-M-p" . sp-previous-sexp)
-
-                      ("C-<right>" . sp-forward-slurp-sexp)
-                      ("M-<right>" . sp-forward-barf-sexp)
-                      ("C-<left>"  . sp-backward-slurp-sexp)
-                      ("M-<left>"  . sp-backward-barf-sexp)
 
                       ("C-M-t" . sp-transpose-sexp)
                       ("M-k"   . sp-backward-kill-sexp)
@@ -997,6 +1034,7 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package outline
            :diminish outline-minor-mode
+           :commands (outline-minor-mode)
            :bind (:map outline-minor-mode-map
                        ("C-c f TAB" . ayrc/outline-toggle-entry)
                        ("C-c f h"   . ayrc/outline-hide-all)
@@ -1047,7 +1085,8 @@ Editor settings
 
 *** Spell checking
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-      (use-package flyspell)
+      (use-package flyspell
+          :defer t)
     #+END_SRC
 
 *** Static code analysis
@@ -1116,6 +1155,7 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package xref
           :defines (xref-show-definitions-function)
+          :defer t
           :init
           <<helm-xref-use-package>>
 
@@ -1144,6 +1184,7 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package yasnippet
           :ensure t
+          :commands (yas-minor-mode yas-global-mode)
           :diminish yas-minor-mode
           :init
           <<snippets-collection>>
@@ -1582,33 +1623,32 @@ Editor settings
 * Org-mode
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package org
+          :defer t
+          :hook (org-mode . ayrc/orgmode-hook)
           :init
-          (progn
-              <<org-bullets-use-package>>
-              <<org-present-use-package>>
-              <<org-cliplink-use-package>>
-              <<helm-org-rifle>>)
-          :config
-          (progn
-              (defun ayrc/orgmode-hook()
-                  (display-line-numbers-mode 1)
-                  (visual-line-mode          1)
-                  (ws-butler-mode            1)
-                  (smartparens-mode          1)
-                  (semantic-mode             1)
-                  (yas-minor-mode            1)
-                  (company-mode              1))
-              (add-hook 'org-mode-hook 'ayrc/orgmode-hook)
+          <<org-bullets-use-package>>
+          <<org-present-use-package>>
+          <<org-cliplink-use-package>>
+          <<helm-org-rifle>>
 
-              (setq org-log-done 'time)
-              (setq org-src-tab-acts-natively t)
-              (setq org-tags-column -100)
+          (defun ayrc/orgmode-hook()
+              (display-line-numbers-mode 1)
+              (visual-line-mode          1)
+              (ws-butler-mode            1)
+              (smartparens-mode          1)
+              (semantic-mode             1)
+              (yas-minor-mode            1)
+              (company-mode              1)
 
-              (setq org-todo-keywords
-                    '((sequence "TODO" "CURRENT" "|" "DONE" "CANCELED")))
-              (setq org-todo-keyword-faces
-                    '(("CURRENT" . "yellow")
-                      ("CANCELED" . (:foreground "RoyalBlue3" :weight bold))))))
+              (setq
+               org-log-done 'time
+               org-src-tab-acts-natively t
+               org-tags-column -100
+
+               org-todo-keywords '((sequence "TODO" "CURRENT" "|" "DONE" "CANCELED"))
+               org-todo-keyword-faces '(("CURRENT" . "yellow")
+                                        ("CANCELED" . (:foreground "RoyalBlue3"
+                                                                   :weight bold))))))
     #+END_SRC
 
 ** [[https://github.com/emacsorphanage/org-bullets][Bullets]]
@@ -1719,15 +1759,16 @@ Editor settings
 ** Dired
    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
      (use-package dired
-       :config
-       (progn
-         (setq dired-recursive-deletes 'top) ;; for deleting of empty dir
-         (setq dired-recursive-deletes 'always)
-         (setq dired-recursive-copies 'always)
+         :defer t
+         :config
+         (progn
+             (setq dired-recursive-deletes 'top) ;; for deleting of empty dir
+             (setq dired-recursive-deletes 'always)
+             (setq dired-recursive-copies 'always)
 
-         ;; if there is a dired buffer displayed in the next window, use its
-         ;; current subdir, instead of the current subdir of this dired buffe
-         (setq dired-dwim-target t)))
+             ;; if there is a dired buffer displayed in the next window, use its
+             ;; current subdir, instead of the current subdir of this dired buffe
+             (setq dired-dwim-target t)))
    #+END_SRC
 
 ** [[https://github.com/Silex/docker.el][Docker]]
@@ -1778,7 +1819,8 @@ Editor settings
      #+NAME: rainbow-delimiters-use-package
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (use-package rainbow-delimiters
-           :ensure t)
+           :ensure t
+           :commands (rainbow-delimiters-mode))
      #+END_SRC
 
 **** [[https://github.com/Lindydancer/lisp-extra-font-lock][Highlight bound variables and quoted expressions in lisp]]
@@ -1786,6 +1828,7 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (use-package lisp-extra-font-lock
            :ensure t
+           :commands (lisp-extra-font-lock-mode)
            :diminish lisp-extra-font-lock-mode)
      #+END_SRC
 
@@ -1835,6 +1878,7 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
        (use-package elisp-slime-nav
            :ensure t
+           :commands (elisp-slime-nav-mode)
            :diminish elisp-slime-nav-mode)
      #+END_SRC
 

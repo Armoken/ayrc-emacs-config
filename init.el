@@ -2,6 +2,7 @@
 
 ;;; Commentary:
 ;;; Code:
+;; UI settings that should be made as quickly as possible
 (defun ayrc/remove-gui-elements (&optional frame)
     "Remove some GUI elelements.
 It placed here, not in org file, to increase speed of removing them
@@ -11,13 +12,9 @@ FRAME: screen area that contains one or more Emacs windows"
     (tooltip-mode      -1)
     (tool-bar-mode     -1)
     (scroll-bar-mode   -1))
-
 (ayrc/remove-gui-elements)
 (add-to-list 'after-make-frame-functions #'ayrc/remove-gui-elements)
 
-;; Don’t compact font caches during GC.
-(setq inhibit-compacting-font-caches t)
-(add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
 
 ;; Setup package management system
 (require 'package)
