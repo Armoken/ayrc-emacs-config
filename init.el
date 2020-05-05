@@ -3,7 +3,7 @@
 ;;; Commentary:
 ;;; Code:
 ;;; UI settings that should be made as quickly as possible
-(defun ayrc/remove-gui-elements (&optional frame)
+(defun ayrc/remove-gui-elements (&optional _frame)
     "Remove some GUI elelements.
 It placed here, not in org file, to increase speed of removing them
 
@@ -49,24 +49,63 @@ FRAME: screen area that contains one or more Emacs windows"
     (require 'use-package))
 
 
+
+(defun ayrc/unquote (exp)
+    "Return EXP unquoted."
+    (declare (pure t) (side-effect-free t))
+    (while (memq (car-safe exp) '(quote function))
+        (setq exp (cadr exp)))
+    exp)
+
+
+(defvar ayrc--transient-counter 0)
+(defmacro ayrc/add-transient-hook! (hook-or-function &rest forms)
+    "Attaches a self-removing function to HOOK-OR-FUNCTION.
+FORMS are evaluated once, when that function/hook is first invoked, then never
+again.
+HOOK-OR-FUNCTION can be a quoted hook or a sharp-quoted function (which will be
+advised)."
+    (declare (indent 1))
+    (let ((append (if (eq (car forms) :after) (pop forms)))
+          ;; Avoid `make-symbol' and `gensym' here because an interned symbol is
+          ;; easier to debug in backtraces (and is visible to `describe-function')
+          (fn (intern (format "ayrc--transient-%d-h" (cl-incf ayrc--transient-counter)))))
+        `(let ((sym ,hook-or-function))
+             (defun ,fn (&rest _)
+                 ,(format "Transient hook for %S" (ayrc/unquote hook-or-function))
+                 ,@forms
+                 (let ((sym ,hook-or-function))
+                     (cond ((functionp sym) (advice-remove sym #',fn))
+                           ((symbolp sym)   (remove-hook sym #',fn))))
+                 (unintern ',fn nil))
+             (cond ((functionp sym)
+                    (advice-add ,hook-or-function ,(if append :after :before) #',fn))
+                   ((symbolp sym)
+                    (put ',fn 'permanent-local-hook t)
+                    (add-hook sym #',fn ,append))))))
+
+
 ;;; Increase startup speed using GC tuning
 (use-package gcmh
     :ensure t
     :defer t
+    :commands (gcmh-mode gcmh-idle-garbage-collect)
     :diminish gcmh-mode
     :init
-    (setq gc-cons-threshold  most-positive-fixnum ; 2^61 bytes
-          gc-cons-percentage 0.6)
+    (setq garbage-collection-messages t
+          gc-cons-threshold           104857600 ; 100 MB
+          gc-cons-percentage          0.5)
+
     (add-hook 'emacs-startup-hook
               (lambda ()
                   (require 'gcmh)
-                  (setq gcmh-idle-delay          10
-                        gcmh-high-cons-threshold 104857600 ; 100 MB
-                        gc-cons-threshold        104857600 ; 100 MB
-                        gc-cons-percentage       0.1)
-
-                  (gcmh-mode 1)
+                  (setq gcmh-verbose             t
+                        gcmh-idle-delay          10
+                        gcmh-high-cons-threshold 209715200 ; 200 MB
+                        gc-cons-percentage       0.01)
+                  (ayrc/add-transient-hook! 'pre-command-hook (gcmh-mode +1))
                   (add-hook 'focus-out-hook #'gcmh-idle-garbage-collect))))
+
 
 ;; Unset file-name-handler-alist temporarily
 ;; Emacs consults this variable every time a file is read or library loaded,

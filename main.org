@@ -1687,8 +1687,7 @@ Editor settings
    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
      (use-package org-bullets
          :ensure t
-         :after org
-         :commands org-bullets-mode
+         :commands (org-bullets-mode)
          :hook (org-mode . org-bullets-mode))
    #+END_SRC
 
@@ -1699,8 +1698,7 @@ Editor settings
    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
      (use-package org-present
          :ensure t
-         :after org
-         :commands org-present)
+         :commands (org-present))
    #+END_SRC
 
 ** [[http://github.com/rexim/org-cliplink][Cliplink]]
