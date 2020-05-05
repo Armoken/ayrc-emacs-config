@@ -1720,6 +1720,7 @@ Editor settings
    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
      (use-package helm-org-rifle
          :ensure t
+         :commands (helm-org-rifle-current-buffer)
          :bind (:map org-mode-map
                      ("C-c h i" . helm-org-rifle-current-buffer)))
    #+END_SRC

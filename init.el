@@ -18,7 +18,7 @@ FRAME: screen area that contains one or more Emacs windows"
 ;; Resizing the Emacs frame can be a terribly expensive part of changing the
 ;; font. By inhibiting this, we halve startup times, particularly when we use
 ;; fonts that are larger than the system default (which would resize the frame).
-;; (setq frame-inhibit-implied-resize t)
+(setq frame-inhibit-implied-resize t)
 
 
 ;;; Setup package management system
@@ -52,17 +52,20 @@ FRAME: screen area that contains one or more Emacs windows"
 ;;; Increase startup speed using GC tuning
 (use-package gcmh
     :ensure t
+    :defer t
     :diminish gcmh-mode
     :init
-    (setq gc-cons-percentage 0.6)
-    (gcmh-mode 1)
-
-    :config
-    (setq gcmh-idle-delay          10
-          gcmh-high-cons-threshold 16777216 ; 16mb
-          gc-cons-percentage       0.1)
+    (setq gc-cons-threshold  most-positive-fixnum ; 2^61 bytes
+          gc-cons-percentage 0.6)
     (add-hook 'emacs-startup-hook
               (lambda ()
+                  (require 'gcmh)
+                  (setq gcmh-idle-delay          10
+                        gcmh-high-cons-threshold 104857600 ; 100 MB
+                        gc-cons-threshold        104857600 ; 100 MB
+                        gc-cons-percentage       0.1)
+
+                  (gcmh-mode 1)
                   (add-hook 'focus-out-hook #'gcmh-idle-garbage-collect))))
 
 ;; Unset file-name-handler-alist temporarily
@@ -151,7 +154,8 @@ If COMPILE-ONLY passed than file will be only tangled and compiled"
 (ayrc/load-file (ayrc/expand-config-path "init.el") t)
 
 ;; Load use-conf
-(defvar ayrc/user-conf-template-filename (ayrc/expand-config-path "./other/user-conf-template.org"))
+(defvar ayrc/user-conf-template-filename
+    (ayrc/expand-config-path "./other/user-conf-template.org"))
 (defvar ayrc/user-conf-filename (ayrc/expand-config-path "./user-conf.org"))
 (ayrc/org-babel-load-file (if (file-exists-p ayrc/user-conf-filename)
                                   ayrc/user-conf-filename
