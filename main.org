@@ -4,6 +4,11 @@ Editor settings
 
 * Configuration
 ** Global
+*** Lexical casting
+    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+      ;; -*- lexical-binding: t; -*-
+    #+END_SRC
+
 *** Cleaning screen                                                                             :ui:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (setq inhibit-splash-screen   t
@@ -18,7 +23,7 @@ Editor settings
 
       ;; Remove *scratch* buffer
       (if (get-buffer "*scratch*")
-              (kill-buffer "*scratch*"))
+             (kill-buffer "*scratch*"))
 
       ;; Disable ring-bell-function
       ;; That called when whenever function ‘ding’ is called.
@@ -38,7 +43,6 @@ Editor settings
           (setq frame-title-format "GNU Emacs: %b")
 
           ;; Fullscreen at GUI startup
-          (setq frame-inhibit-implied-resize   t)
           (add-to-list 'initial-frame-alist '(fullscreen . maximized))
           (add-to-list 'default-frame-alist '(fullscreen . maximized)))
     #+END_SRC
@@ -212,18 +216,18 @@ Editor settings
            (doom-modeline-def-segment ayrc/my-current-line
                "The buffer position information."
                (let* ((active (doom-modeline--active))
-                      (lines-count (int-to-string (count-lines (point-min) (point-max))))
-                      (lines-only (concat "%l/" (int-to-string (count-lines (point-min) (point-max)))))
-                      (lines-and-columns (concat "%l/" (int-to-string (count-lines (point-min) (point-max))) ":%c"))
-                      (lines-and-columns-as-one (concat "%l/" (int-to-string (count-lines (point-min) (point-max))) ":%C"))
-                      (lc '(line-number-mode
-                            (column-number-mode
-                             (doom-modeline-column-zero-based lines-and-columns lines-and-columns-as-one)
-                             lines-only)
-                            (column-number-mode (doom-modeline-column-zero-based ":%c" ":%C"))))
-                      (face (if active 'mode-line 'mode-line-inactive))
-                      (mouse-face 'mode-line-highlight)
-                      (local-map mode-line-column-line-number-mode-map))
+                      (lines-count              (int-to-string (count-lines (point-min) (point-max))))
+                      (_lines-only               (concat "%l/" lines-count))
+                      (_lines-and-columns        (concat "%l/" lines-count ":%c"))
+                      (_lines-and-columns-as-one (concat "%l/" lines-count ":%C"))
+                      (lc                       '(line-number-mode
+                                                  (column-number-mode
+                                                   (doom-modeline-column-zero-based _lines-and-columns _lines-and-columns-as-one)
+                                                   _lines-only)
+                                                  (column-number-mode (doom-modeline-column-zero-based ":%c" ":%C"))))
+                      (face                     (if active 'mode-line 'mode-line-inactive))
+                      (mouse-face               'mode-line-highlight)
+                      (local-map                mode-line-column-line-number-mode-map))
                    (concat
                     (doom-modeline-spc)
                     (doom-modeline-spc)
@@ -429,6 +433,18 @@ Editor settings
           (pixel-scroll-mode)
 
           :config
+          (setq-default
+           ;; Disable bidirectional text rendering for a modest performance boost.
+           ;; I've set this to `nil' in the past, but the `bidi-display-reordering's
+           ;; docs say that is an undefined state and suggest this to be just as
+           ;; good:
+           bidi-display-reordering        'left-to-right
+           bidi-paragraph-direction       'left-to-right
+
+           ;; Reduce rendering/line scan work for Emacs by not rendering cursors or
+           ;; regions in non-focused windows.
+           cursor-in-non-selected-windows nil)
+
           (setq
            scroll-preserve-screen-position t
            scroll-margin                   0
@@ -446,14 +462,19 @@ Editor settings
 
            mouse-wheel-progressive-speed   nil
 
+           ;; More performant rapid scrolling over unfontified regions. May cause
+           ;; brief spells of inaccurate syntax highlighting right after scrolling,
+           ;; which should quickly self-correct.
            ;; No (less) lag while scrolling lots.
-           fast-but-imprecise-scrolling    nil
+           fast-but-imprecise-scrolling    t
 
            ;; Don’t compact font caches during GC.
            inhibit-compacting-font-caches  t
 
            ;; Just don't even fontify if we're still catching up on user input.
-           jit-lock-defer-time             0))
+           jit-lock-defer-time             0
+
+           highlight-nonselected-windows   nil))
     #+END_SRC
 
 *** Highlighting                                                                                :ui:
@@ -477,7 +498,7 @@ Editor settings
            (setq show-paren-style 'expression))
      #+END_SRC
 
-*** [[https://github.com/domtronn/all-the-icons.el][Icons]]                                     :ui:
+*** [[https://github.com/domtronn/all-the-icons.el][Icons]]                                                                                       :ui:
     A library for inserting Developer icons
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -521,7 +542,7 @@ Editor settings
           (global-eldoc-mode -1))
     #+END_SRC
 
-*** [[https://github.com/emacs-dashboard/emacs-dashboard][Dashboard]]                           :ui:
+*** [[https://github.com/emacs-dashboard/emacs-dashboard][Dashboard]]                                                                                   :ui:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package dashboard
           :ensure t
@@ -542,7 +563,7 @@ Editor settings
                                               (projects . 5))))
     #+END_SRC
 
-*** [[https://github.com/bbatsov/projectile][Project managment]]                        :hotkeys:ui:
+*** [[https://github.com/bbatsov/projectile][Project managment]]                                                                   :hotkeys:ui:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package projectile
           :ensure t
@@ -608,7 +629,7 @@ Editor settings
             :commands (helm-projectile-rg))
       #+END_SRC
 
-*** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                :hotkeys:ui:
+*** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                                                             :hotkeys:ui:
     A tree plugin like NerdTree for Vim
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -620,7 +641,7 @@ Editor settings
           (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
     #+END_SRC
 
-*** [[https://emacs-helm.github.io/helm/][Helm]]                                        :hotkeys:ui:
+*** [[https://emacs-helm.github.io/helm/][Helm]]                                                                                :hotkeys:ui:
     Incremental and narrowing framework
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -714,7 +735,7 @@ Editor settings
            :commands (helm-rg))
      #+END_SRC
 
-*** [[http://www.dr-qubit.org/undo-tree/undo-tree.el][Undo tree]]                       :hotkeys:ui:
+*** [[http://www.dr-qubit.org/undo-tree/undo-tree.el][Undo tree]]                                                                           :hotkeys:ui:
     Treat undo history as a tree
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -726,7 +747,7 @@ Editor settings
           (global-undo-tree-mode))
     #+END_SRC
 
-*** [[https://github.com/syohex/emacs-anzu][Display in the modeline search information]] :hotkeys:ui:
+*** [[https://github.com/syohex/emacs-anzu][Display in the modeline search information]]                                          :hotkeys:ui:
     Show number of matches in mode-line while searching
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -743,7 +764,7 @@ Editor settings
                  ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp)))
     #+END_SRC
 
-*** [[https://github.com/abo-abo/hydra][Hydra]]                                         :hotkeys:ui:
+*** [[https://github.com/abo-abo/hydra][Hydra]]                                                                               :hotkeys:ui:
     Make bindings that stick around
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -833,7 +854,7 @@ Editor settings
      (global-set-key (kbd "<f5>") (lambda () (interactive) (revert-buffer)))
    #+END_SRC
 
-*** [[https://github.com/abo-abo/avy][Jump to things in Emacs tree-style]]                 :hotkeys:
+*** [[https://github.com/abo-abo/avy][Jump to things in Emacs tree-style]]                                                     :hotkeys:
     Jump to arbitrary positions in visible text and select text quickly
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
@@ -853,7 +874,7 @@ Editor settings
           (setq avy-case-fold-search nil))
     #+END_SRC
 
-*** [[https://github.com/magnars/expand-region.el][Expand region]]                         :hotkeys:
+*** [[https://github.com/magnars/expand-region.el][Expand region]]                                                                          :hotkeys:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package expand-region
         :ensure t
@@ -861,7 +882,7 @@ Editor settings
         :bind ("C-=" . er/expand-region))
     #+END_SRC
 
-*** [[https://github.com/ieure/scratch-el][Scratch buffer]]                                :hotkeys:
+*** [[https://github.com/ieure/scratch-el][Scratch buffer]]                                                                         :hotkeys:
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package scratch
           :ensure t
@@ -1282,16 +1303,16 @@ Editor settings
             (company-mode 1)
             (or mode-specific-backends (setq mode-specific-backends '()))
 
-            (let ((backends (list
-                             (symbol-value 'mode-specific-backends)
-                             '(company-files        ;; files & directories
-                               company-dabbrev-code ;; dynamic code abbreviations
-                               company-keywords)    ;; keywords
+            (let ((_backends (list
+                              (symbol-value 'mode-specific-backends)
+                              '(company-files        ;; files & directories
+                                company-dabbrev-code ;; dynamic code abbreviations
+                                company-keywords)    ;; keywords
 
-                             '(company-abbrev       ;; abbreviations
-                               company-dabbrev))))  ;; dynamic abbreviat
+                              '(company-abbrev       ;; abbreviations
+                                company-dabbrev))))  ;; dynamic abbreviat
                 (make-local-variable 'company-backends)
-                (setq company-backends (-non-nil (symbol-value 'backends)))))
+                (setq company-backends (-non-nil (symbol-value '_backends)))))
       #+END_SRC
 
 ***** Hook
@@ -1467,7 +1488,7 @@ Editor settings
            (defun ayrc/dap-hook ()
                (setq dap-lldb-debug-program '("/usr/bin/lldb-vscode"))
                (add-hook 'dap-stopped-hook
-                         (lambda (arg) (call-interactively #'dap-hydra)))
+                         (lambda (_debug_session) (call-interactively #'dap-hydra)))
 
                ;; use tooltips for mouse hover
                ;; if it is not enabled `dap-mode' will use the minibuffer.
@@ -1556,13 +1577,13 @@ Editor settings
 
 ** CRLF to LF                                                                          :interactive:
    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-     (defun ayrc/dos2unix (buffer)
-       "Automate M-% C-q C-m RET C-q C-j RET"
-       (interactive "*b")
-       (save-excursion
-         (goto-char (point-min))
-         (while (search-forward (string ?\C-m) nil t)
-           (replace-match (string ?\C-j) nil t))))
+     (defun ayrc/dos2unix (_buffer)
+         "Automate M-% C-q C-m RET C-q C-j RET"
+         (interactive "*b")
+         (save-excursion
+             (goto-char (point-min))
+             (while (search-forward (string ?\C-m) nil t)
+                 (replace-match (string ?\C-j) nil t))))
    #+END_SRC
 
 ** Copy hooks
@@ -2530,6 +2551,7 @@ Editor settings
        #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
          (use-package pyenv-mode
              :ensure t
+             :defer t
              :defines (pyenv-show-active-python-in-modeline)
              :after (python-mode)
              :diminish pyenv-mode
@@ -2543,6 +2565,7 @@ Editor settings
        #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
          (use-package pipenv
              :ensure t
+             :defer t
              :after (python-mode)
              :diminish pipenv-mode
              :init
@@ -2555,6 +2578,7 @@ Editor settings
        #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
          (use-package poetry
              :ensure t
+             :defer t
              :after (python-mode))
        #+END_SRC
 

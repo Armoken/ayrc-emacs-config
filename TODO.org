@@ -1,6 +1,6 @@
 #+STARTUP: content
 
-* Use package tasks [50/84]
+* Use package tasks [50/85]
 :PROPERTIES:
 :COOKIE_DATA: todo recursive
 :END:
@@ -114,7 +114,7 @@
     CLOSED: [2020-04-27 Mon 19:10]
 
     Not maintained
-** Other [7/25]
+** Other [7/26]
 *** TODO Support of encrypted containers
 *** TODO Fix spell checking in text modes
     https://github.com/tmalsburg/guess-language.el
@@ -137,6 +137,7 @@
 **** TODO Git
 **** TODO SVN
 **** TODO gtags
+*** TODO [[https://github.com/manateelazycat/emacs-application-framework][Emacs Application Framework]]
 *** DONE Hot reload of config parts
     CLOSED: [2020-04-27 Mon 12:59]
 *** DONE Plugin switching for syntax checkers

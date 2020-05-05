@@ -1,8 +1,8 @@
+;; -*- lexical-binding: t; -*-
 ;;; init.el --- Summary
-
 ;;; Commentary:
 ;;; Code:
-;; UI settings that should be made as quickly as possible
+;;; UI settings that should be made as quickly as possible
 (defun ayrc/remove-gui-elements (&optional frame)
     "Remove some GUI elelements.
 It placed here, not in org file, to increase speed of removing them
@@ -15,8 +15,13 @@ FRAME: screen area that contains one or more Emacs windows"
 (ayrc/remove-gui-elements)
 (add-to-list 'after-make-frame-functions #'ayrc/remove-gui-elements)
 
+;; Resizing the Emacs frame can be a terribly expensive part of changing the
+;; font. By inhibiting this, we halve startup times, particularly when we use
+;; fonts that are larger than the system default (which would resize the frame).
+;; (setq frame-inhibit-implied-resize t)
 
-;; Setup package management system
+
+;;; Setup package management system
 (require 'package)
 
 ;; Turn off warnings
@@ -34,26 +39,50 @@ FRAME: screen area that contains one or more Emacs windows"
 
 
 ;; Bootstrap 'use-package'
-(unless (or (package-installed-p 'use-package)
-            (package-installed-p 'diminish)
-            (package-installed-p 'delight)
-            (package-installed-p 'bind-key))
+(unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package)
     (package-install 'diminish)
-    (package-install 'delight)
-    (package-install 'bind-key))
+    (package-install 'delight))
 
 (eval-when-compile
     (require 'use-package))
-(setq use-package-compute-statistics t)
 
-(require 'diminish) ;; Used to reduce size of the mode name in modeline
-(require 'bind-key)
 
-;; Loading orgmode plugin, that used for notes, plaining and literate programming
-(require 'org)
+;;; Increase startup speed using GC tuning
+(use-package gcmh
+    :ensure t
+    :diminish gcmh-mode
+    :init
+    (setq gc-cons-percentage 0.6)
+    (gcmh-mode 1)
 
+    :config
+    (setq gcmh-idle-delay          10
+          gcmh-high-cons-threshold 16777216 ; 16mb
+          gc-cons-percentage       0.1)
+    (add-hook 'emacs-startup-hook
+              (lambda ()
+                  (add-hook 'focus-out-hook #'gcmh-idle-garbage-collect))))
+
+;; Unset file-name-handler-alist temporarily
+;; Emacs consults this variable every time a file is read or library loaded,
+;; or when certain functions in the file API are used (like expand-file-name
+;; or file-truename).
+;; Emacs does to check if a special handler is needed to read that file, but
+;; none of them are (typically) necessary at startup
+(defvar ayrc--file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+(add-hook 'emacs-startup-hook
+          (lambda ()
+              ;; Restore hacked values
+              (setq file-name-handler-alist ayrc--file-name-handler-alist)))
+
+;; Disable scratch buffer
+(setq initial-major-mode 'fundamental-mode)
+
+
+;;; Load other parts of configuration
 (defun ayrc/expand-config-path (path)
     "Expand passed path relative to the EMACS user directory.
 `PATH' - passed path"
@@ -61,70 +90,72 @@ FRAME: screen area that contains one or more Emacs windows"
      path user-emacs-directory))
 
 (defun ayrc/get-file-age (path-to-file)
-    "Get file age."
+    "Get age of file to which PATH-TO-FILE pointing."
     (float-time
      (time-subtract (current-time)
                     (nth 5 (or (file-attributes (file-truename path-to-file))
                                (file-attributes path-to-file))))))
 
-(defun ayrc/org-babel-load-file (path-to-file)
-    "Load Emacs Lisp source code blocks in the Org PATH-TO-FILE.
+
+(defun ayrc/is-processing-required (path-to-src-file path-to-result-file)
+    "Check is need processing of source file for creating result file.
+Return t if result file (PATH-TO-RESULT-FILE) not exists
+or age of source file (PATH-TO-SRC-FILE) greater than age of
+ result file (PATH-TO-RESULT-FILE)"
+    (or (not (file-exists-p path-to-result-file))
+        (> (ayrc/get-file-age path-to-result-file)
+           (ayrc/get-file-age path-to-src-file))))
+
+(defun ayrc/load-file (path-to-file &optional compile-only)
+    "Load Emacs Lisp source code in the PATH-TO-FILE.
+Its function used instead of original `load-file' because of
+`load-file' doesn't compiles code.
+Load file if COMPILE-ONLY nil"
+    (let* ((base-file-name        (file-name-sans-extension path-to-file))
+           (path-to-compiled-file (concat base-file-name ".elc")))
+        (when (ayrc/is-processing-required path-to-file path-to-compiled-file)
+            (byte-compile-file path-to-file)
+            (message "Compiled %s" path-to-file))
+
+        (unless compile-only
+            (load-file path-to-file)
+            (message "Loaded %s" path-to-file))))
+
+(use-package org
+    :defer t
+    :commands (org-babel-tangle-file)
+    :init
+    (defun ayrc/org-babel-load-file (path-to-file &optional compile-only)
+        "Load Emacs Lisp source code blocks in the Org PATH-TO-FILE.
 This function exports the source code using `org-babel-tangle',
 compiles tangled code and then loads the resulting file
 using `load-file'.
 Its function used instead of original `org-babel-load-file' because of
  `org-babel-load-file' compiles code on every load, even if original
-file doesn't changed."
-    (let* ((base-name     (file-name-sans-extension path-to-file))
-           (exported-file (concat base-name ".el"))
-           (compiled-file (concat base-name ".elc"))
-           (is-compiled   nil))
+file doesn't changed.
+If COMPILE-ONLY passed than file will be only tangled and compiled"
+        (let* ((base-name     (file-name-sans-extension path-to-file))
+               (exported-file (concat base-name ".el")))
+            (when (ayrc/is-processing-required path-to-file exported-file)
+                ;; Tangle-file traversal returns reversed list of tangled files
+                ;; and we want to evaluate the first target.
+                (setq exported-file
+                      (car (last (org-babel-tangle-file path-to-file
+                                                        exported-file
+                                                        "emacs-lisp")))))
 
-        (unless (and (file-exists-p exported-file)
-                     (> (ayrc/get-file-age path-to-file)
-                        (ayrc/get-file-age exported-file)))
-            ;; Tangle-file traversal returns reversed list of tangled files
-            ;; and we want to evaluate the first target.
-            (setq exported-file
-                  (car (last (org-babel-tangle-file path-to-file
-                                                    exported-file
-                                                    "emacs-lisp")))))
+            (ayrc/load-file exported-file compile-only))))
 
-        (unless (and (file-exists-p compiled-file)
-                     (> (ayrc/get-file-age path-to-file) (ayrc/get-file-age compiled-file)))
-            (byte-compile-file exported-file)
-            (setq is-compiled 't))
-
-        (load-file exported-file)
-        (message "%s %s"
-                 (if is-compiled
-                         (progn "Compiled and loaded")
-                     (progn "Loaded"))
-                 exported-file)))
-
-
-(defun ayrc/load-file (path-to-file)
-    "Load Emacs Lisp source code in the PATH-TO-FILE.
-Its function used instead of original `load-file' because of
-`load-file' doesn't compiles code."
-    (let* ((base-file-name     (file-name-sans-extension path-to-file))
-           (path-to-compiled-file (concat base-file-name ".elc")))
-        (unless (and (file-exists-p path-to-compiled-file)
-                     (> (ayrc/get-file-age path-to-file)
-                        (ayrc/get-file-age path-to-compiled-file)))
-            (byte-compile-file path-to-file)
-            (message "%s %s" "Compiled" path-to-file))))
 
 ;; Byte-compile init.el
-(ayrc/load-file (ayrc/expand-config-path "init.el"))
+(ayrc/load-file (ayrc/expand-config-path "init.el") t)
 
 ;; Load use-conf
-(defvar user-conf-template-filename "./other/user-conf-template.org")
-(defvar user-conf-filename "./user-conf.org")
-(ayrc/org-babel-load-file (if (file-exists-p (ayrc/expand-config-path
-                                              user-conf-filename))
-                                  (ayrc/expand-config-path user-conf-filename)
-                              (ayrc/expand-config-path user-conf-template-filename)))
+(defvar ayrc/user-conf-template-filename (ayrc/expand-config-path "./other/user-conf-template.org"))
+(defvar ayrc/user-conf-filename (ayrc/expand-config-path "./user-conf.org"))
+(ayrc/org-babel-load-file (if (file-exists-p ayrc/user-conf-filename)
+                                  ayrc/user-conf-filename
+                              ayrc/user-conf-template-filename))
 
 ;; Load main config
 (ayrc/org-babel-load-file (ayrc/expand-config-path "./main.org"))

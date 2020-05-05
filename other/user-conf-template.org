@@ -1,6 +1,11 @@
+* Lexical casting
+  #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+    ;; -*- lexical-binding: t; -*-
+  #+END_SRC
+
 * Font
   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-    (setq default-frame-alist '((font . "Hack-10")))
+    (add-to-list 'default-frame-alist '(font . "Hack-10"))
   #+END_SRC
 
 * User personal info
