@@ -1303,16 +1303,15 @@ Editor settings
             (company-mode 1)
             (or mode-specific-backends (setq mode-specific-backends '()))
 
-            (let ((_backends (list
-                              (symbol-value 'mode-specific-backends)
-                              '(company-files        ;; files & directories
-                                company-dabbrev-code ;; dynamic code abbreviations
-                                company-keywords)    ;; keywords
+            (let ((backends (list mode-specific-backends
+                                  '(company-files        ;; files & directories
+                                    company-dabbrev-code ;; dynamic code abbreviations
+                                    company-keywords)    ;; keywords
 
-                              '(company-abbrev       ;; abbreviations
-                                company-dabbrev))))  ;; dynamic abbreviat
+                                  '(company-abbrev       ;; abbreviations
+                                    company-dabbrev))))  ;; dynamic abbreviat
                 (make-local-variable 'company-backends)
-                (setq company-backends (-non-nil (symbol-value '_backends)))))
+                (setq company-backends (-non-nil backends))))
       #+END_SRC
 
 ***** Hook
@@ -1652,32 +1651,36 @@ Editor settings
 * Org-mode
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package org
-          :defer t
+          :commands (org-mode)
           :hook (org-mode . ayrc/orgmode-hook)
+          :bind (:map org-mode-map
+                      ("C-c M-l" . org-cliplink)
+                      ("C-c h i" . helm-org-rifle-current-buffer))
           :init
           <<org-bullets-use-package>>
           <<org-present-use-package>>
           <<org-cliplink-use-package>>
           <<helm-org-rifle>>
 
-          (defun ayrc/orgmode-hook()
+          (defun ayrc/orgmode-hook ()
               (display-line-numbers-mode 1)
               (visual-line-mode          1)
               (ws-butler-mode            1)
               (smartparens-mode          1)
               (semantic-mode             1)
               (yas-minor-mode            1)
-              (company-mode              1)
+              (ayrc/setup-company))
 
-              (setq
-               org-log-done 'time
-               org-src-tab-acts-natively t
-               org-tags-column -100
+          :config
+          (setq
+           org-log-done 'time
+           org-src-tab-acts-natively t
+           org-tags-column -100
 
-               org-todo-keywords '((sequence "TODO" "CURRENT" "|" "DONE" "CANCELED"))
-               org-todo-keyword-faces '(("CURRENT" . "yellow")
-                                        ("CANCELED" . (:foreground "RoyalBlue3"
-                                                                   :weight bold))))))
+           org-todo-keywords '((sequence "TODO" "CURRENT" "|" "DONE" "CANCELED"))
+           org-todo-keyword-faces '(("CURRENT" . "yellow")
+                                    ("CANCELED" . (:foreground "RoyalBlue3"
+                                                               :weight bold)))))
     #+END_SRC
 
 ** [[https://github.com/emacsorphanage/org-bullets][Bullets]]
@@ -1708,9 +1711,7 @@ Editor settings
    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
      (use-package org-cliplink
          :ensure t
-         :commands org-cliplink
-         :bind (:map org-mode-map
-                     ("C-c M-l" . org-cliplink)))
+         :commands org-cliplink)
    #+END_SRC
 
 ** [[https://github.com/alphapapa/org-rifle][Helm]]
@@ -1718,9 +1719,7 @@ Editor settings
    #+BEGIN_SRC emacs-lisp :tangle no :noweb yes
      (use-package helm-org-rifle
          :ensure t
-         :commands (helm-org-rifle-current-buffer)
-         :bind (:map org-mode-map
-                     ("C-c h i" . helm-org-rifle-current-buffer)))
+         :commands (helm-org-rifle-current-buffer))
    #+END_SRC
 
 * Clients

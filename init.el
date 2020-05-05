@@ -49,42 +49,6 @@ FRAME: screen area that contains one or more Emacs windows"
     (require 'use-package))
 
 
-
-(defun ayrc/unquote (exp)
-    "Return EXP unquoted."
-    (declare (pure t) (side-effect-free t))
-    (while (memq (car-safe exp) '(quote function))
-        (setq exp (cadr exp)))
-    exp)
-
-
-(defvar ayrc--transient-counter 0)
-(defmacro ayrc/add-transient-hook! (hook-or-function &rest forms)
-    "Attaches a self-removing function to HOOK-OR-FUNCTION.
-FORMS are evaluated once, when that function/hook is first invoked, then never
-again.
-HOOK-OR-FUNCTION can be a quoted hook or a sharp-quoted function (which will be
-advised)."
-    (declare (indent 1))
-    (let ((append (if (eq (car forms) :after) (pop forms)))
-          ;; Avoid `make-symbol' and `gensym' here because an interned symbol is
-          ;; easier to debug in backtraces (and is visible to `describe-function')
-          (fn (intern (format "ayrc--transient-%d-h" (cl-incf ayrc--transient-counter)))))
-        `(let ((sym ,hook-or-function))
-             (defun ,fn (&rest _)
-                 ,(format "Transient hook for %S" (ayrc/unquote hook-or-function))
-                 ,@forms
-                 (let ((sym ,hook-or-function))
-                     (cond ((functionp sym) (advice-remove sym #',fn))
-                           ((symbolp sym)   (remove-hook sym #',fn))))
-                 (unintern ',fn nil))
-             (cond ((functionp sym)
-                    (advice-add ,hook-or-function ,(if append :after :before) #',fn))
-                   ((symbolp sym)
-                    (put ',fn 'permanent-local-hook t)
-                    (add-hook sym #',fn ,append))))))
-
-
 ;;; Increase startup speed using GC tuning
 (use-package gcmh
     :ensure t
@@ -96,15 +60,21 @@ advised)."
           gc-cons-threshold           104857600 ; 100 MB
           gc-cons-percentage          0.5)
 
-    (add-hook 'emacs-startup-hook
-              (lambda ()
-                  (require 'gcmh)
-                  (setq gcmh-verbose             t
-                        gcmh-idle-delay          10
-                        gcmh-high-cons-threshold 209715200 ; 200 MB
-                        gc-cons-percentage       0.01)
-                  (ayrc/add-transient-hook! 'pre-command-hook (gcmh-mode +1))
-                  (add-hook 'focus-out-hook #'gcmh-idle-garbage-collect))))
+    (defun ayrc/gcmh-pre-command-hook ()
+        (gcmh-mode 1)
+        (remove-hook 'pre-command-hook #'ayrc/gcmh-pre-command-hook))
+
+    (defun ayrc/gcmh-startup-hook ()
+        (require 'gcmh)
+        (setq gcmh-verbose             t
+              gcmh-idle-delay          10
+              gcmh-high-cons-threshold 209715200 ; 200 MB
+              gc-cons-percentage       0.01)
+        (add-hook 'focus-out-hook #'gcmh-idle-garbage-collect)
+
+        (add-hook 'pre-command-hook #'ayrc/gcmh-pre-command-hook))
+
+    (add-hook 'emacs-startup-hook #'ayrc/gcmh-startup-hook))
 
 
 ;; Unset file-name-handler-alist temporarily
@@ -156,6 +126,9 @@ Load file if COMPILE-ONLY nil"
     (let* ((base-file-name        (file-name-sans-extension path-to-file))
            (path-to-compiled-file (concat base-file-name ".elc")))
         (when (ayrc/is-processing-required path-to-file path-to-compiled-file)
+            (when (file-exists-p path-to-compiled-file)
+                (delete-file path-to-compiled-file))
+
             (byte-compile-file path-to-file)
             (message "Compiled %s" path-to-file))
 
@@ -179,6 +152,9 @@ If COMPILE-ONLY passed than file will be only tangled and compiled"
         (let* ((base-name     (file-name-sans-extension path-to-file))
                (exported-file (concat base-name ".el")))
             (when (ayrc/is-processing-required path-to-file exported-file)
+                (when (file-exists-p exported-file)
+                    (delete-file exported-file))
+
                 ;; Tangle-file traversal returns reversed list of tangled files
                 ;; and we want to evaluate the first target.
                 (setq exported-file
