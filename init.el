@@ -162,7 +162,9 @@ If COMPILE-ONLY passed than file will be only tangled and compiled"
                                                         exported-file
                                                         "emacs-lisp")))))
 
-            (ayrc/load-file exported-file compile-only))))
+            (ayrc/load-file exported-file compile-only)))
+    :config
+    (setq org-babel-use-quick-and-dirty-noweb-expansion t))
 
 
 ;; Byte-compile init.el

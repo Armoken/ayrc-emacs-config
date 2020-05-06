@@ -1,15 +1,15 @@
 * Lexical casting
-  #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+  #+BEGIN_SRC emacs-lisp :tangle yes
     ;; -*- lexical-binding: t; -*-
   #+END_SRC
 
 * Font
-  #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+  #+BEGIN_SRC emacs-lisp :tangle yes
     (add-to-list 'default-frame-alist '(font . "Hack-10"))
   #+END_SRC
 
 * User personal info
-  #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+  #+BEGIN_SRC emacs-lisp :tangle yes
   (setq user-full-name "Armoken")
   (setq user-mail-address "Alex.Armoken@gmail.com")
   #+END_SRC
@@ -17,7 +17,7 @@
 * C/C++
   Select "irony", "ccls", "gtags" for some editor part.
 
-  #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+  #+BEGIN_SRC emacs-lisp :tangle yes
     (defvar ayrc/cc-eldoc-plugin                         "ccls")
     (defvar ayrc/cc-syntax-check-plugin                  "ccls")
     (defvar ayrc/cc-autocompletion-plugin                "ccls")
