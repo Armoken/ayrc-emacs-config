@@ -1,5 +1,5 @@
-;; -*- lexical-binding: t; -*-
 ;;; init.el --- Summary
+;;; -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 ;;; UI settings that should be made as quickly as possible
@@ -41,7 +41,7 @@ FRAME: screen area that contains one or more Emacs windows"
     (add-hook 'emacs-startup-hook #'ayrc/fnhh-restore)
 
 
-;;; Load other parts of configuration
+    ;;; Load other parts of configuration
     (defun ayrc/expand-config-path (path)
         "Expand passed path relative to the EMACS user directory.
 `PATH' - passed path"
@@ -106,35 +106,29 @@ Load file if COMPILE-ONLY nil"
             (setq ayrc/is-double-loading t)
             (ayrc/load-file ayrc/path-to-init))
 
-    ;;; Setup package management system
-    (require 'package)
+    (defvar bootstrap-version)
+    (let ((bootstrap-file
+           (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+          (bootstrap-version 5))
+        (unless (file-exists-p bootstrap-file)
+            (with-current-buffer
+                    (url-retrieve-synchronously
+                     "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+                     'silent 'inhibit-cookies)
+                (goto-char (point-max))
+                (eval-print-last-sexp)))
+        (load bootstrap-file nil 'nomessage))
+
+    (setq straight-use-package-by-default t)
+    (straight-use-package 'use-package)
+    (straight-use-package 'diminish)
+    (straight-use-package 'delight)
 
     ;; Turn off warnings
     (setq ad-redefinition-action 'accept)
 
-    ;; Without that line, (package-initialize) is executed twice
-    ;; (once during evaluation of the init file, and another after
-    ;; Emacs finishes reading the init file).
-    (setq package-enable-at-startup nil)
-
-    (setq package-archives
-          '(("gnu"          . "http://elpa.gnu.org/packages/")
-            ("melpa"        . "https://melpa.org/packages/")
-            ("melpa-stable" . "https://stable.melpa.org/packages/")))
-    (package-initialize)
-
-
-    ;; Bootstrap 'use-package'
-    (unless (package-installed-p 'use-package)
-        (package-refresh-contents)
-        (package-install 'use-package)
-        (package-install 'diminish)
-        (package-install 'delight))
-
-    ;; (eval-when-compile
-    ;;     (require 'use-package))
-    (require 'use-package)
-    (setq use-package-compute-statistics t)
+    (eval-when-compile
+        (require 'use-package))
 
 
     ;;; Increase startup speed using GC tuning
@@ -183,13 +177,13 @@ Load file if COMPILE-ONLY nil"
         :init
         (defun ayrc/org-babel-load-file (path-to-file &optional compile-only)
             "Load Emacs Lisp source code blocks in the Org PATH-TO-FILE.
-This function exports the source code using `org-babel-tangle',
-compiles tangled code and then loads the resulting file
-using `load-file'.
-Its function used instead of original `org-babel-load-file' because of
- `org-babel-load-file' compiles code on every load, even if original
-file doesn't changed.
-If COMPILE-ONLY passed than file will be only tangled and compiled"
+            This function exports the source code using `org-babel-tangle',
+            compiles tangled code and then loads the resulting file
+            using `load-file'.
+            Its function used instead of original `org-babel-load-file' because of
+            `org-babel-load-file' compiles code on every load, even if original
+            file doesn't changed.
+            If COMPILE-ONLY passed than file will be only tangled and compiled"
             (let* ((base-name     (file-name-sans-extension path-to-file))
                    (exported-file (concat base-name ".el")))
                 (when (ayrc/is-processing-required path-to-file exported-file)
