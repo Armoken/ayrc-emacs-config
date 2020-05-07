@@ -775,7 +775,7 @@ Editor settings
     #+END_SRC
 
 *** Subword mode                                                                           :hotkeys:
-    #+BEGIN_SRC emacs-lisp :tangle no
+    #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package subword
           :defer t
           :commands (global-subword-mode)
@@ -936,6 +936,7 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package hungry-delete
           :ensure t
+          :defer t
           :diminish hungry-delete-mode
           :commands (hungry-delete-mode))
     #+END_SRC
@@ -975,9 +976,6 @@ Editor settings
           :diminish smartparens-mode
           :commands (smartparens-mode smartparens-strict-mode)
           :bind (:map smartparens-mode-map
-                      ("C-M-a" . sp-beginning-of-sexp)
-                      ("C-M-e" . sp-end-of-sexp)
-
                       ("C-<down>" . sp-down-sexp)
                       ("C-<up>"   . sp-up-sexp)
 
@@ -1216,9 +1214,9 @@ Editor settings
           <<snippets-collection>>
 
           :config
-          (yasnippet-snippets-initialize)
           (setq yas-snippet-dirs
                 (list (ayrc/expand-config-path "./personal-snippets")))
+          (yasnippet-snippets-initialize)
 
           (yas-reload-all))
     #+END_SRC
@@ -1230,7 +1228,7 @@ Editor settings
        (use-package yasnippet-snippets
            :ensure t
            :defer t
-           :after yasnippet-snippets
+           :after yasnippet
            :commands (yasnippet-snippets-initialize))
      #+END_SRC
 
