@@ -1389,8 +1389,6 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package lsp-mode
            :ensure t
-           :defines (lsp-eldoc-enable-signature-help
-                     lsp-eldoc-prefer-signature-help)
            :diminish lsp-mode
            :commands (lsp-mode lsp-deffered lsp-rename)
            :hook (lsp-mode . ayrc/lsp-hook)
@@ -2330,8 +2328,7 @@ Editor settings
       Python mode settings for Emacs
 
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-      (use-package python-mode
-          :ensure t
+      (use-package python
           :mode (("wscript"   . python-mode)
                  ("\\.py\\'"  . python-mode))
           :hook (python-mode . ayrc/python-hook)
@@ -2343,7 +2340,10 @@ Editor settings
           <<python-hook>>
 
           :config
-          <<python-install-pkgs>>)
+          <<python-install-pkgs>>
+
+          (setq python-shell-interpreter        "ipython"
+                python-shell-interpreter-args   "-i --simple-prompt"))
     #+END_SRC
 
 **** Prerequisites
@@ -2504,7 +2504,7 @@ Editor settings
         (use-package pyenv-mode
             :ensure t
             :defer t
-            :after python-mode
+            :after python
             :defines (pyenv-show-active-python-in-modeline)
             :diminish pyenv-mode
             :config
@@ -2516,7 +2516,7 @@ Editor settings
         (use-package pipenv
             :ensure t
             :defer t
-            :after python-mode
+            :after python
             :diminish pipenv-mode
             :init
             (setq pipenv-with-projectile nil))
@@ -2527,60 +2527,29 @@ Editor settings
         (use-package poetry
             :ensure t
             :defer t
-            :after python-mode)
+            :after python)
       #+END_SRC
-
-**** [[https://github.com/naiquevin/sphinx-doc.el][Sphinx doc in docstrings]]
-     Generate Sphinx friendly docstrings for Python functions
-
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref sphinx-doc-usepkg
-       (use-package sphinx-doc
-           :ensure t
-           :defer t
-           :after python-mode
-           :diminish sphinx-doc-mode
-           :commands (sphinx-doc-mode))
-     #+END_SRC
 
 **** Hook
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-hook
        (defun ayrc/python-hook ()
-           (setq
-            lsp-eldoc-render-all            nil
-            lsp-eldoc-enable-hover          nil
-            lsp-eldoc-enable-signature-help nil
-            lsp-eldoc-prefer-signature-help nil
-
-            py-outline-minor-mode-p         nil
-            py-auto-fill-mode               nil
-            py-eldoc-mode-p                 nil
-
-            python-shell-interpreter        "ipython"
-            python-shell-interpreter-args   "-i --simple-prompt")
-
            (exec-path-from-shell-initialize)
 
            (display-line-numbers-mode  1)
+           (highlight-indentation-mode 1)
            (visual-line-mode           1)
            (ws-butler-mode             1)
-           (smartparens-mode           1)
            (hs-minor-mode              1)
            (abbrev-mode                1)
            (semantic-mode              1)
            (yas-minor-mode             1)
+           (smartparens-mode           1)
            (smart-shift-mode           1)
-           (hungry-delete-mode         1)
-
-           (highlight-indentation-mode 1)
-
-           (pipenv-mode                1)
-           (pyenv-mode                 1)
-           (sphinx-doc-mode            1)
-           (eldoc-mode                -1)
 
            (require 'lsp-pyls)
            (require 'dap-python)
            (lsp-deferred))
+
      #+END_SRC
 
 ** [[https://github.com/Wilfred/pip-requirements.el][Pip requirments]]
