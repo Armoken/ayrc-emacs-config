@@ -88,13 +88,14 @@ Editor settings
      #+END_SRC
 
 **** Modeline theme
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package doom-modeline
            :ensure t
            :defines (nyan-minimum-window-width)
            :init
-           (require 'doom-modeline)
+           (doom-modeline-mode 1)
 
+           :config
            (setq
             ;; How tall the mode-line should be. It's only respected in GUI.
             ;; If the actual char height is larger, it respects the actual height.
@@ -213,79 +214,86 @@ Editor settings
             doom-modeline-before-update-env-hook nil
             doom-modeline-after-update-env-hook  nil)
 
-           (doom-modeline-def-segment ayrc/my-current-line
-               "The buffer position information."
-               (let* ((active (doom-modeline--active))
-                      (lines-count              (int-to-string (count-lines (point-min) (point-max))))
-                      (_lines-only               (concat "%l/" lines-count))
-                      (_lines-and-columns        (concat "%l/" lines-count ":%c"))
-                      (_lines-and-columns-as-one (concat "%l/" lines-count ":%C"))
-                      (lc                       '(line-number-mode
-                                                  (column-number-mode
-                                                   (doom-modeline-column-zero-based _lines-and-columns _lines-and-columns-as-one)
-                                                   _lines-only)
-                                                  (column-number-mode (doom-modeline-column-zero-based ":%c" ":%C"))))
-                      (face                     (if active 'mode-line 'mode-line-inactive))
-                      (mouse-face               'mode-line-highlight)
-                      (local-map                mode-line-column-line-number-mode-map))
-                   (concat
-                    (doom-modeline-spc)
-                    (doom-modeline-spc)
-
-                    (propertize (format-mode-line lc)
-                                'face face
-                                'help-echo "Buffer position\n\
-       mouse-1: Display Line and Column Mode Menu"
-                                'mouse-face mouse-face
-                                'local-map local-map)
-
-                    (if (and active
-                             (bound-and-true-p nyan-mode)
-                             (>= (window-width) nyan-minimum-window-width))
-                            (concat
-                             (doom-modeline-spc)
-                             (doom-modeline-spc)
-                             (propertize (nyan-create) 'mouse-face mouse-face))
-                        (when doom-modeline-percent-position
-                            (concat
-                             (doom-modeline-spc)
-                             (propertize (format-mode-line '("" doom-modeline-percent-position "%%"))
-                                         'face face
-                                         'help-echo "Buffer percentage\n\
-       mouse-1: Display Line and Column Mode Menu"
-                                         'mouse-face mouse-face
-                                         'local-map local-map))))
-
-                    (when (or line-number-mode
-                              column-number-mode
-                              doom-modeline-percent-position)
-                        (doom-modeline-spc)))))
-
-           ;; Define your custom doom-modeline
-           (doom-modeline-def-modeline 'ayrc/my-simple-line
-               '(bar
-                 matches
-                 buffer-info
-                 remote-host
-                 ayrc/my-current-line
-                 parrot
-                 selection-info)
-               '(misc-info
-                 input-method
-                 buffer-encoding
-                 major-mode
-                 process
-                 vcs
-                 lsp
-                 checker))
-
-           ;; Add to `doom-modeline-mode-hook` or other hooks
-           (defun ayrc/setup-custom-doom-modeline ()
-               (doom-modeline-set-modeline 'ayrc/my-simple-line 'default))
-           (add-hook 'doom-modeline-mode-hook 'ayrc/setup-custom-doom-modeline)
-
-           (doom-modeline-mode 1))
+           <<modeline-current-line-segment>>
+           <<modeline-custom-modeline-setup>>)
      #+END_SRC
+
+***** Current line segment
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref modeline-current-line-segment
+        (doom-modeline-def-segment ayrc/my-current-line
+            "The buffer position information."
+            (let* ((active                    (doom-modeline--active))
+                   (lines-count               (int-to-string (count-lines (point-min) (point-max))))
+                   (_lines-only               '(concat "%l/" lines-count))
+                   (_lines-and-columns        '(concat "%l/" lines-count ":%c"))
+                   (_lines-and-columns-as-one '(concat "%l/" lines-count ":%C"))
+                   (_columns-only             '(if doom-modeline-column-zero-based ":%c" ":%C"))
+                   (lc                        '(line-number-mode
+                                                (column-number-mode
+                                                 (doom-modeline-column-zero-based '_lines-and-columns '_lines-and-columns-as-one)
+                                                 '_lines-only)
+                                                (column-number-mode '_columns-only)))
+                   (face                      (if active 'mode-line 'mode-line-inactive))
+                   (mouse-face                'mode-line-highlight)
+                   (local-map                 mode-line-column-line-number-mode-map))
+                (ignore lines-count)
+                (concat
+                 (doom-modeline-spc)
+                 (doom-modeline-spc)
+
+                 (propertize (format-mode-line (eval (symbol-value lc)))
+                             'face face
+                             'help-echo "Buffer position\n\
+        mouse-1: Display Line and Column Mode Menu"
+                             'mouse-face mouse-face
+                             'local-map local-map)
+
+                 (if (and active
+                          (bound-and-true-p nyan-mode)
+                          (>= (window-width) nyan-minimum-window-width))
+                         (concat
+                          (doom-modeline-spc)
+                          (doom-modeline-spc)
+                          (propertize (nyan-create) 'mouse-face mouse-face))
+                     (when doom-modeline-percent-position
+                         (concat
+                          (doom-modeline-spc)
+                          (propertize (format-mode-line '("" doom-modeline-percent-position "%%"))
+                                      'face face
+                                      'help-echo "Buffer percentage\n\
+        mouse-1: Display Line and Column Mode Menu"
+                                      'mouse-face mouse-face
+                                      'local-map local-map))))
+
+                 (when (or line-number-mode
+                           column-number-mode
+                           doom-modeline-percent-position)
+                     (doom-modeline-spc)))))
+      #+END_SRC
+
+***** Custom modeline setup
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref modeline-custom-modeline-setup
+        (doom-modeline-def-modeline 'ayrc/my-simple-line
+            '(bar
+              matches
+              buffer-info
+              remote-host
+              ayrc/my-current-line
+              parrot
+              selection-info)
+            '(misc-info
+              input-method
+              buffer-encoding
+              major-mode
+              process
+              vcs
+              lsp
+              checker))
+
+        (defun ayrc/setup-custom-doom-modeline ()
+            (doom-modeline-set-modeline 'ayrc/my-simple-line t))
+        (add-hook 'doom-modeline-mode-hook 'ayrc/setup-custom-doom-modeline)
+      #+END_SRC
 
 *** Bookmarks
     #+BEGIN_SRC emacs-lisp :tangle yes
@@ -302,13 +310,6 @@ Editor settings
           (setq
            backup-directory-alist         `((".*" . ,temporary-file-directory))
            auto-save-file-name-transforms `((".*" ,temporary-file-directory t))))
-    #+END_SRC
-
-*** [[Https://github.com/10sr/switch-buffer-functions-el][Hook Run When Current Buffer Changed]]
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (use-package switch-buffer-functions
-          :ensure t
-          :defer t)
     #+END_SRC
 
 *** [[https://github.com/purcell/exec-path-from-shell][Use user ${PATH} from shell]]
@@ -481,6 +482,8 @@ Editor settings
 **** Syntax                                                                                     :ui:
      #+BEGIN_SRC emacs-lisp :tangle yes
        (use-package font-lock
+           :defer t
+           :commands (font-lock-mode global-font-lock-mode)
            :config
            (setq font-lock-maximum-decoration t))
      #+END_SRC
@@ -490,12 +493,14 @@ Editor settings
 
      #+BEGIN_SRC emacs-lisp :tangle yes
        (use-package paren
+           :defer t
+           :commands (show-paren-mode)
            :init
            (show-paren-mode)
 
            :config
-           (setq show-paren-delay 0)
-           (setq show-paren-style 'expression))
+           (setq show-paren-delay 0
+                 show-paren-style 'expression))
      #+END_SRC
 
 *** [[https://github.com/domtronn/all-the-icons.el][Icons]]                                                                                       :ui:
@@ -515,24 +520,20 @@ Editor settings
     #+END_SRC
 
 *** Line numbering                                                                              :ui:
-**** Left panel
-     Interface for display-line-numbers
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (use-package display-line-numbers
+          :defer t
+          :commands (display-line-numbers)
+          :init
+          (line-number-mode     t)
+          (column-number-mode   t)
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
-       (use-package display-line-numbers
-           :defer t
-           :config
-           (setq display-line-numbers-width-start 5))
-     #+END_SRC
+          ;; Don't show current buffer size
+          (size-indication-mode nil)
 
-**** Modeline
-     #+BEGIN_SRC emacs-lisp :tangle yes
-       (line-number-mode     t)
-       (column-number-mode   t)
-
-       ;; Don't show current buffer size
-       (size-indication-mode nil)
-     #+END_SRC
+          :config
+          (setq display-line-numbers-width-start 5))
+    #+END_SRC
 
 *** Eldoc                                                                                       :ui:
     #+BEGIN_SRC emacs-lisp :tangle yes
@@ -573,39 +574,44 @@ Editor settings
                       ("C-x p o" . projectile-switch-open-project)
                       ("C-x p s" . projectile-switch-project)
                       ("C-c p i" . projectile-invalidate-cache)
-                      ("C-c p z" . projectile-cache-current-file))
+                      ("C-c p z" . projectile-cache-current-file)
+
+                      ("C-c p s" . ayrc/helm-projectile-grep-or-rg)
+                      ("C-c p h" . helm-projectile)
+                      ("C-c p p" . helm-projectile-switch-project)
+                      ("C-c p f" . helm-projectile-find-file)
+                      ("C-c p F" . helm-projectile-find-file-in-known-projects)
+                      ("C-c p g" . helm-projectile-find-file-dwim)
+                      ("C-c p d" . helm-projectile-find-dir)
+                      ("C-c p e" . helm-projectile-recentf)
+                      ("C-c p a" . helm-projectile-find-other-file)
+                      ("C-c p b" . helm-projectile-switch-to-buffer))
           :init
           <<helm-projectile>>
           (projectile-mode 1)
 
           :config
-          (setq projectile-completion-system 'helm)
-          (setq projectile-switch-project-action 'helm-projectile)
-          (setq projectile-enable-caching t)
-          (setq projectile-project-root-files-top-down-recurring
-                (append
-                 '("compile_commands.json"
-                   ".cquery"
-                   ".ccls")
-                 projectile-project-root-files-top-down-recurring)))
+          (setq projectile-completion-system                     'helm
+                projectile-switch-project-action                 'helm-projectile
+                projectile-enable-caching                        t
+                projectile-project-root-files-top-down-recurring (append '("compile_commands.json" ".cquery" ".ccls" ".clangd")
+                                                                         projectile-project-root-files-top-down-recurring)))
     #+END_SRC
 
 **** [[https://github.com/bbatsov/helm-projectile][Helm]]                                                                           :interactive:ui:
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref helm-projectile
        (use-package helm-projectile
            :ensure t
-           :after projectile
-           :bind (:map projectile-mode-map
-                       ("C-c p s" . ayrc/helm-projectile-grep-or-rg)
-                       ("C-c p h" . helm-projectile)
-                       ("C-c p p" . helm-projectile-switch-project)
-                       ("C-c p f" . helm-projectile-find-file)
-                       ("C-c p F" . helm-projectile-find-file-in-known-projects)
-                       ("C-c p g" . helm-projectile-find-file-dwim)
-                       ("C-c p d" . helm-projectile-find-dir)
-                       ("C-c p e" . helm-projectile-recentf)
-                       ("C-c p a" . helm-projectile-find-other-file)
-                       ("C-c p b" . helm-projectile-switch-to-buffer))
+           :defer t
+           :commands (helm-projectile
+                      helm-projectile-switch-project
+                      helm-projectile-find-file
+                      helm-projectile-find-file-in-known-projects
+                      helm-projectile-find-file-dwim
+                      helm-projectile-find-dir
+                      helm-projectile-recentf
+                      helm-projectile-find-other-file
+                      helm-projectile-switch-to-buffer)
 
            :init
            <<projectile-helm-rg>>
@@ -672,7 +678,6 @@ Editor settings
            ("C-c h m"   . helm-man-woman)
            ("C-x C-f"   . helm-find-files)
            ("M-y"       . helm-show-kill-ring)
-           ;; make TAB work in terminal
 
            :map helm-map
            ;; rebind tab to do persistent action
@@ -710,6 +715,10 @@ Editor settings
                 ;; Scroll 8 lines other window using M-<next>/M-<prior>
                 helm-scroll-amount                    8
 
+                helm-autoresize-max-height            50
+                helm-autoresize-min-height            10
+
+
                 helm-ff-file-name-history-use-recentf t)
 
           ;; Autoresize helm minibufer
@@ -722,7 +731,6 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-rg
        (use-package helm-rg
            :ensure t
-           :after (helm)
            :commands (helm-rg))
      #+END_SRC
 
@@ -762,12 +770,15 @@ Editor settings
       (use-package hydra
           :ensure t
           :defer t
+          :after (:any dap)
           :commands (defhydra))
     #+END_SRC
 
 *** Subword mode                                                                           :hotkeys:
     #+BEGIN_SRC emacs-lisp :tangle no
       (use-package subword
+          :defer t
+          :commands (global-subword-mode)
           :diminish (subword-mode global-subword-mode)
           :init
           (defun ayrc/forward-word (&optional arg)
@@ -776,6 +787,7 @@ Editor settings
                   (modify-syntax-entry ?_ "_" table)
                   (with-syntax-table table
                       (forward-word arg))))
+          (global-set-key (kbd "M-f") 'ayrc/forward-word)
 
           (defun ayrc/backward-word (&optional arg)
               (interactive "p")
@@ -783,6 +795,7 @@ Editor settings
                   (modify-syntax-entry ?_ "_" table)
                   (with-syntax-table table
                       (backward-word arg))))
+          (global-set-key (kbd "M-b") 'ayrc/backward-word)
 
           (defun ayrc/kill-word (&optional arg)
               (interactive "p")
@@ -790,6 +803,7 @@ Editor settings
                   (modify-syntax-entry ?_ "_" table)
                   (with-syntax-table table
                       (kill-word arg))))
+          (global-set-key (kbd "M-d") 'ayrc/kill-word)
 
           (defun ayrc/backward-kill-word (&optional arg)
               (interactive "p")
@@ -797,17 +811,10 @@ Editor settings
                   (modify-syntax-entry ?_ "_" table)
                   (with-syntax-table table
                       (backward-kill-word arg))))
-
-          (defun ayrc/subword-hook ()
-              (global-set-key (kbd "M-f")           'ayrc/forward-word)
-              (global-set-key (kbd "M-b")           'ayrc/backward-word)
-              (global-set-key (kbd "M-d")           'ayrc/kill-word)
-              (global-set-key (kbd "M-DEL")         'ayrc/backward-kill-word)
-              (global-set-key (kbd "M-<backspace>") 'ayrc/backward-kill-word))
-          (add-hook 'global-subword-mode-hook 'ayrc/subword-hook)
+          (global-set-key (kbd "M-DEL")         'ayrc/backward-kill-word)
+          (global-set-key (kbd "M-<backspace>") 'ayrc/backward-kill-word)
 
           (global-subword-mode 1))
-
     #+END_SRC
 
 *** Hotkeys for changing size of buffers                                                   :hotkeys:
@@ -973,8 +980,6 @@ Editor settings
 
                       ("C-<down>" . sp-down-sexp)
                       ("C-<up>"   . sp-up-sexp)
-                      ("M-<down>" . sp-backward-down-sexp)
-                      ("M-<up>"   . sp-backward-up-sexp)
 
                       ("C-M-f" . sp-forward-sexp)
                       ("C-M-b" . sp-backward-sexp)
@@ -1114,6 +1119,7 @@ Editor settings
 
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package flymake
+           :defer t
            :diminish flymake-mode
            :commands (flymake-mode)
            :init
@@ -1125,6 +1131,8 @@ Editor settings
       #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-flymake-usepkg
         (use-package helm-flymake
             :ensure t
+            :defer t
+            :after flymake
             :bind (:map flymake-mode-map
                         ("C-c h f" . helm-flymake))
             :commands (helm-flymake))
@@ -1185,6 +1193,8 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-xref-usepkg
        (use-package helm-xref
            :ensure t
+           :defer t
+           :after xref
            :commands (helm-xref-show-xrefs
                       helm-xref-show-xrefs-27
                       helm-xref-show-defs-27)
@@ -1199,6 +1209,7 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package yasnippet
           :ensure t
+          :defer t
           :commands (yas-minor-mode yas-global-mode)
           :diminish yas-minor-mode
           :init
@@ -1218,6 +1229,8 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref snippets-collection
        (use-package yasnippet-snippets
            :ensure t
+           :defer t
+           :after yasnippet-snippets
            :commands (yasnippet-snippets-initialize))
      #+END_SRC
 
@@ -1383,6 +1396,8 @@ Editor settings
            :diminish lsp-mode
            :commands (lsp-mode lsp-deffered lsp-rename)
            :hook (lsp-mode . ayrc/lsp-hook)
+           :bind (:map lsp-mode-map
+                       ("C-c h w" . helm-lsp-workspace-symbol))
            :init
            <<lsp-ui-usepkg>>
            <<helm-lsp-usepkg>>
@@ -1420,15 +1435,17 @@ Editor settings
       #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-lsp-usepkg
         (use-package helm-lsp
             :ensure t
-            :bind
-            ((:map lsp-mode-map
-                   ("C-c h w" . helm-lsp-workspace-symbol))))
+            :defer t
+            :after lsp-mode
+            :commands (helm-lsp-workspace-symbol))
       #+END_SRC
 
 ***** [[https://github.com/emacs-lsp/lsp-ui][UI modules]]
       #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref lsp-ui-usepkg
         (use-package lsp-ui
             :ensure t
+            :defer t
+            :after lsp-mode
             :defines (lsp-ui-flycheck-enable)
             :commands (lsp-ui-mode)
             :config
@@ -1455,6 +1472,8 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle yes
        (use-package dap-mode
            :ensure t
+           :defer t
+           :after lsp-mode
            :defines (dap-lldb-debug-program)
            :diminish dap-mode
            :hook (dap-mode . ayrc/dap-hook)
@@ -1626,6 +1645,7 @@ Editor settings
 * Org-mode
     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package org
+          :defer t
           :commands (org-mode)
           :hook (org-mode . ayrc/orgmode-hook)
           :bind (:map org-mode-map
@@ -1644,7 +1664,9 @@ Editor settings
               (smartparens-mode          1)
               (semantic-mode             1)
               (yas-minor-mode            1)
-              (ayrc/setup-company))
+              (ayrc/setup-company)
+
+              (org-bullets-mode))
 
           :config
           (setq
@@ -1664,8 +1686,9 @@ Editor settings
    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref org-bullets-usepkg
      (use-package org-bullets
          :ensure t
-         :commands (org-bullets-mode)
-         :hook (org-mode . org-bullets-mode))
+         :defer t
+         :after org
+         :commands (org-bullets-mode))
    #+END_SRC
 
 ** [[https://github.com/rlister/org-present][Present]]
@@ -1674,6 +1697,8 @@ Editor settings
    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref org-present-usepkg
      (use-package org-present
          :ensure t
+         :defer t
+         :after org
          :commands (org-present))
    #+END_SRC
 
@@ -1683,13 +1708,17 @@ Editor settings
    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref org-cliplink-usepkg
      (use-package org-cliplink
          :ensure t
-         :commands org-cliplink)
+         :defer t
+         :after org
+         :commands (org-cliplink))
    #+END_SRC
 
 ** [[https://github.com/alphapapa/org-rifle][Helm]]
    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-org-rifle
      (use-package helm-org-rifle
          :ensure t
+         :defer t
+         :after org
          :commands (helm-org-rifle-current-buffer))
    #+END_SRC
 
@@ -2004,6 +2033,8 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref clang-format-usepkg
        (use-package clang-format
            :ensure t
+           :defer t
+           :after cc-mode
            :commands (clang-format clang-buffer clang-format-region))
      #+END_SRC
 
@@ -2017,6 +2048,8 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref irony-usepkg
        (use-package irony
            :ensure t
+           :defer t
+           :after cc-mode
            :defines (irony-cdb-compilation-databases)
            :diminish irony-mode
            :commands (irony-mode)
@@ -2052,6 +2085,8 @@ Editor settings
         #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref irony-company-usepkg
           (use-package company-irony
               :ensure t
+              :defer t
+              :after irony
               :commands (company-irony
                          company-irony-setup-begin-commands))
         #+END_SRC
@@ -2062,6 +2097,8 @@ Editor settings
         #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref irony-company-c-headers-usepkg
           (use-package company-irony-c-headers
               :ensure t
+              :defer t
+              :after irony
               :commands (company-irony-c-headers))
         #+END_SRC
 
@@ -2097,6 +2134,8 @@ Editor settings
       #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref irony-syntax-analytics-usepkg
         (use-package flycheck-irony
             :ensure t
+            :defer t
+            :after irony
             :commands (flycheck-irony-setup))
       #+END_SRC
 
@@ -2112,6 +2151,8 @@ Editor settings
       #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref irony-eldoc-usepkg
         (use-package irony-eldoc
             :ensure t
+            :defer t
+            :after irony
             :commands (irony-eldoc))
       #+END_SRC
 
@@ -2131,6 +2172,8 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref gtags-usepkg
        (use-package ggtags
            :ensure t
+           :defer t
+           :after cc-mode
            :commands (ggtags-mode)
            :init
            <<gtags-autocompletion-config>>
@@ -2176,6 +2219,7 @@ Editor settings
        (use-package ccls
            :ensure t
            :defer t
+           :after cc-mode
            :defines (ccls-extra-init-params)
            :diminish ccls-code-lens-mode
            :init
@@ -2241,6 +2285,8 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref cmake-ide-usepkg
        (use-package cmake-ide
            :ensure t
+           :defer t
+           :after cc-mode
            :commands (cmake-ide-setup))
      #+END_SRC
 
@@ -2262,6 +2308,8 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref modern-cpp-font-lock-usepkg
        (use-package modern-cpp-font-lock
            :ensure t
+           :defer t
+           :after cc-mode
            :diminish modern-c++-font-lock-mode
            :commands (modern-c++-font-lock-mode))
      #+END_SRC
@@ -2280,272 +2328,286 @@ Editor settings
      #+END_SRC
 
 ** Python
-*** Prerequisites
-    Installation path: pyenv -> python
-                             -> virtualenv
-                             -> install all packages by running function above
-**** System
-     #+NAME: python-system-prerequisites
-     #+CAPTION: System prerequisites for python packages
-     - [[https://www.python.org/][Python]] :: The Python programming language
-     - [[https://github.com/pyenv/pyenv][Pyenv]] :: [[https://github.com/pyenv/pyenv-installer][pyenv-installer]] and take a look at [[https://github.com/pyenv/pyenv/wiki/Common-build-problems][common build problems]]
-     - [[https://github.com/pypa/pipenv][Pipenv]] :: Python Development Workflow for Humans
-     - [[https://python-poetry.org/][Poetry]] :: Python dependency management and packaging made easy
+*** [[https://gitlab.com/python-mode-devs/python-mode][Python]]
+      Python mode settings for Emacs
 
-**** Language
-     #+NAME: python-language-prerequisites
-     #+CAPTION: Language prerequisites for python packages
+    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+      (use-package python-mode
+          :ensure t
+          :mode (("wscript"   . python-mode)
+                 ("\\.py\\'"  . python-mode))
+          :hook (python-mode . ayrc/python-hook)
+          :bind (:map python-mode-map
+                      ("C-c i" . run-python))
+          :init
+          <<venv-support-packages>>
+          <<sphinx-doc-usepkg>>
+          <<python-hook>>
 
-     Add language prerequisite to this list after its first mention in
-     list after function definition below
-     #+BEGIN_SRC emacs-lisp :tangle yes
-       (defvar ayrc/python-language-prerequisites '()
-           "Dependencies for fully working python mode")
-     #+END_SRC
+          :config
+          <<python-install-pkgs>>)
+    #+END_SRC
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
-       (defun ayrc/install-python-language-prerequisites ()
-           "Install python language prerequisites.
+**** Prerequisites
+     Installation path: pyenv -> python
+                              -> virtualenv
+                              -> install all packages by running function above
+***** System
+      #+NAME: python-system-prerequisites
+      #+CAPTION: System prerequisites for python packages
+      - [[https://www.python.org/][Python]] :: The Python programming language
+      - [[https://github.com/pyenv/pyenv][Pyenv]] :: [[https://github.com/pyenv/pyenv-installer][pyenv-installer]] and take a look at [[https://github.com/pyenv/pyenv/wiki/Common-build-problems][common build problems]]
+      - [[https://github.com/pypa/pipenv][Pipenv]] :: Python Development Workflow for Humans
+      - [[https://python-poetry.org/][Poetry]] :: Python dependency management and packaging made easy
 
-       Prerequisites listed in ayrc/python-language-prerequisites
-       global variable"
-           (interactive)
-           (when (and (buffer-modified-p)
-                      (y-or-n-p (format "Save file %s? " (buffer-file-name))))
-               (save-buffer))
+***** Language
+      #+NAME: python-language-prerequisites
+      #+CAPTION: Language prerequisites for python packages
 
-           (let* ((buf-name "*prerequisites-installation*")
-                  (buffer (get-buffer-create buf-name))
-                  (process (get-buffer-process buffer))
-                  (cmd-args (append (list "-m" "pip" "install")
-                                    ayrc/python-language-prerequisites)))
-               (when (and process
-                          (process-live-p process))
-                   (setq buffer (generate-new-buffer buf-name)))
+      Add language prerequisite to this list after its first mention in
+      list after function definition below:
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref python-install-pkgs
+        (defvar ayrc/python-language-prerequisites '()
+            "Dependencies for fully working python mode")
 
-               (with-current-buffer buffer
-                   (let ((inhibit-read-only t))
-                       (erase-buffer))
+        (defun ayrc/install-python-language-prerequisites ()
+            "Install python language prerequisites.
 
-                   (insert "Installing python language prerequisites\n")
+                Prerequisites listed in ayrc/python-language-prerequisites
+                global variable"
+            (interactive)
+            (when (and (buffer-modified-p)
+                       (y-or-n-p (format "Save file %s? " (buffer-file-name))))
+                (save-buffer))
 
-                   (pythonic-start-process
-                    :process "PrerequisitesInstaller"
-                    :buffer buffer
-                    :args cmd-args)
+            (let* ((buf-name "*prerequisites-installation*")
+                   (buffer (get-buffer-create buf-name))
+                   (process (get-buffer-process buffer))
+                   (cmd-args (append (list "-m" "pip" "install")
+                                     ayrc/python-language-prerequisites)))
+                (when (and process
+                           (process-live-p process))
+                    (setq buffer (generate-new-buffer buf-name)))
 
-                   (move-marker (process-mark (get-buffer-process buffer))
-                                (point-max)
-                                buffer)
+                (with-current-buffer buffer
+                    (let ((inhibit-read-only t))
+                        (erase-buffer))
 
-                   (comint-mode)
-                   (setq-local comint-prompt-read-only t)
-                   (pop-to-buffer buffer))))
-     #+END_SRC
+                    (insert "Installing python language prerequisites\n")
 
-     Prerequisites:
-***** [[https://github.com/palantir/python-language-server][pyls]]
-     #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'ayrc/python-language-prerequisites "python-language-server")
-     #+END_SRC
+                    (pythonic-start-process
+                     :process "PrerequisitesInstaller"
+                     :buffer buffer
+                     :args cmd-args)
 
-***** [[https://github.com/tomv564/pyls-mypy][pyls-mypy]]                                                                 :temporary_disabled:
-     #+BEGIN_SRC emacs-lisp :tangle no
-       (add-to-list 'ayrc/python-language-prerequisites "pyls-mypy")
-     #+END_SRC
+                    (move-marker (process-mark (get-buffer-process buffer))
+                                 (point-max)
+                                 buffer)
 
-***** [[https://github.com/tomv564/pyls-mypy][pyls-isort]]
-     #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'ayrc/python-language-prerequisites "pyls-isort")
-     #+END_SRC
+                    (comint-mode)
+                    (setq-local comint-prompt-read-only t)
+                    (pop-to-buffer buffer))))
 
-***** [[https://github.com/tomv564/pyls-mypy][pyls-black]]
-     #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'ayrc/python-language-prerequisites "pyls-black")
-     #+END_SRC
-
-***** [[https://www.pylint.org/][Pylint]]
-     #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'ayrc/python-language-prerequisites "pylint")
-     #+END_SRC
-
-***** [[https://github.com/davidhalter/jedi][Jedi]]
-     #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'ayrc/python-language-prerequisites "jedi")
-     #+END_SRC
-
-***** [[https://github.com/python-rope/rope][Rope]]
-     #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'ayrc/python-language-prerequisites "rope")
-     #+END_SRC
-
-***** [[https://github.com/PyCQA/pyflakes][pyflakes]]
-     #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'ayrc/python-language-prerequisites "pyflakes")
-     #+END_SRC
-
-***** [[https://github.com/PyCQA/mccabe][mccabe]]
-     #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'ayrc/python-language-prerequisites "mccabe")
-     #+END_SRC
-
-***** [[https://github.com/PyCQA/pycodestyle][pycodestyle]]
-     #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'ayrc/python-language-prerequisites "pycodestyle")
-     #+END_SRC
-
-***** [[https://github.com/PyCQA/pydocstyle][pydocstyle]]
-     #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'ayrc/python-language-prerequisites "pydocstyle")
-     #+END_SRC
-
-***** [[https://github.com/hhatto/autopep8][Autopep8]]
-     #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'ayrc/python-language-prerequisites "autopep8")
-     #+END_SRC
-
-***** [[https://github.com/google/yapf][Yapf]]
-     #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'ayrc/python-language-prerequisites "yapf")
-     #+END_SRC
-
-***** [[https://github.com/ipython/ipython][ipython]]
-     #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'ayrc/python-language-prerequisites "ipython")
-     #+END_SRC
-
-*** Configuration
-**** [[https://gitlab.com/python-mode-devs/python-mode][Python]]
-       Python mode settings for Emacs
-
-     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-       (use-package python-mode
-           :ensure t
-           :mode (("wscript"   . python-mode)
-                  ("\\.py\\'"  . python-mode))
-           :hook (python-mode . ayrc/python-hook)
-           :bind (:map python-mode-map
-                       ("C-c i" . run-python))
-           :init
-           <<venv-support-packages>>
-           <<sphinx-doc-usepkg>>
-           <<python-hook>>)
-     #+END_SRC
-
-***** Hook
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-hook
-        (defun ayrc/python-hook ()
-            (setq
-             lsp-eldoc-render-all            nil
-             lsp-eldoc-enable-hover          nil
-             lsp-eldoc-enable-signature-help nil
-             lsp-eldoc-prefer-signature-help nil
-
-             py-outline-minor-mode-p         nil
-             py-auto-fill-mode               nil
-             py-eldoc-mode-p                 nil
-
-             python-shell-interpreter        "ipython"
-             python-shell-interpreter-args   "-i --simple-prompt")
-
-            (exec-path-from-shell-initialize)
-
-            (display-line-numbers-mode  1)
-            (visual-line-mode           1)
-            (ws-butler-mode             1)
-            (smartparens-mode           1)
-            (hs-minor-mode              1)
-            (abbrev-mode                1)
-            (semantic-mode              1)
-            (yas-minor-mode             1)
-            (smart-shift-mode           1)
-            (hungry-delete-mode         1)
-
-            (highlight-indentation-mode 1)
-
-            (pipenv-mode                1)
-            (pyenv-mode                 1)
-            (sphinx-doc-mode            1)
-            (eldoc-mode                -1)
-
-            (require 'lsp-pyls)
-            (require 'dap-python)
-            (lsp-deferred))
+        <<python-pyls>>
+        <<python-pyls-isort>>
+        <<python-pyls-black>>
+        <<python-pylint>>
+        <<python-jedi>>
+        <<python-rope>>
+        <<python-pyflakes>>
+        <<python-mccabe>>
+        <<python-pycodestyle>>
+        <<python-pydocstyle>>
+        <<python-autopep8>>
+        <<python-yapf>>
+        <<python-ipython>>
       #+END_SRC
 
-***** Env setup modes
-       #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref venv-support-packages
-         <<pyenv-mode-usepkg>>
-         <<pipenv-mode-usepkg>>
-         <<poetry-usepkg>>
-       #+END_SRC
+      Prerequisites:
+****** [[https://github.com/palantir/python-language-server][pyls]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls
+      (add-to-list 'ayrc/python-language-prerequisites "python-language-server")
+      #+END_SRC
 
-****** [[https://github.com/pythonic-emacs/pyenv-mode][Pyenv]]
-       #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyenv-mode-usepkg
-         (use-package pyenv-mode
-             :ensure t
-             :defer t
-             :defines (pyenv-show-active-python-in-modeline)
-             :after (python-mode)
-             :diminish pyenv-mode
-             :config
-             (progn
-                 (setq pyenv-show-active-python-in-modeline t)))
-       #+END_SRC
+****** [[https://github.com/tomv564/pyls-mypy][pyls-mypy]]                      :temporary_disabled:
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls-mypy
+        (add-to-list 'ayrc/python-language-prerequisites "pyls-mypy")
+      #+END_SRC
 
-****** [[https://github.com/pwalsh/pipenv.el][Pipenv]]
-       #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pipenv-mode-usepkg
-         (use-package pipenv
-             :ensure t
-             :defer t
-             :after (python-mode)
-             :diminish pipenv-mode
-             :init
-             (progn
-                 (setq pipenv-with-projectile nil)))
-       #+END_SRC
+****** [[https://github.com/tomv564/pyls-mypy][pyls-isort]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls-isort
+      (add-to-list 'ayrc/python-language-prerequisites "pyls-isort")
+      #+END_SRC
 
-****** [[https://github.com/galaunay/poetry.el][Poetry]]
-       #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref poetry-usepkg
-         (use-package poetry
-             :ensure t
-             :defer t
-             :after (python-mode))
-       #+END_SRC
+****** [[https://github.com/tomv564/pyls-mypy][pyls-black]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls-black
+      (add-to-list 'ayrc/python-language-prerequisites "pyls-black")
+      #+END_SRC
 
-***** [[https://github.com/naiquevin/sphinx-doc.el][Sphinx doc in docstrings]]
-      Generate Sphinx friendly docstrings for Python functions
+****** [[https://www.pylint.org/][Pylint]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pylint
+      (add-to-list 'ayrc/python-language-prerequisites "pylint")
+      #+END_SRC
 
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref sphinx-doc-usepkg
-        (use-package sphinx-doc
+****** [[https://github.com/davidhalter/jedi][Jedi]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-jedi
+      (add-to-list 'ayrc/python-language-prerequisites "jedi")
+      #+END_SRC
+
+****** [[https://github.com/python-rope/rope][Rope]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-rope
+      (add-to-list 'ayrc/python-language-prerequisites "rope")
+      #+END_SRC
+
+****** [[https://github.com/PyCQA/pyflakes][pyflakes]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyflakes
+      (add-to-list 'ayrc/python-language-prerequisites "pyflakes")
+      #+END_SRC
+
+****** [[https://github.com/PyCQA/mccabe][mccabe]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-mccabe
+      (add-to-list 'ayrc/python-language-prerequisites "mccabe")
+      #+END_SRC
+
+****** [[https://github.com/PyCQA/pycodestyle][pycodestyle]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pycodestyle
+      (add-to-list 'ayrc/python-language-prerequisites "pycodestyle")
+      #+END_SRC
+
+****** [[https://github.com/PyCQA/pydocstyle][pydocstyle]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pydocstyle
+      (add-to-list 'ayrc/python-language-prerequisites "pydocstyle")
+      #+END_SRC
+
+****** [[https://github.com/hhatto/autopep8][Autopep8]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-autopep8
+      (add-to-list 'ayrc/python-language-prerequisites "autopep8")
+      #+END_SRC
+
+****** [[https://github.com/google/yapf][Yapf]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-yapf
+      (add-to-list 'ayrc/python-language-prerequisites "yapf")
+      #+END_SRC
+
+****** [[https://github.com/ipython/ipython][ipython]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-ipython
+      (add-to-list 'ayrc/python-language-prerequisites "ipython")
+      #+END_SRC
+
+**** Env setup modes
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref venv-support-packages
+        <<pyenv-mode-usepkg>>
+        <<pipenv-mode-usepkg>>
+        <<poetry-usepkg>>
+      #+END_SRC
+
+***** [[https://github.com/pythonic-emacs/pyenv-mode][Pyenv]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyenv-mode-usepkg
+        (use-package pyenv-mode
             :ensure t
-            :diminish sphinx-doc-mode
-            :commands (sphinx-doc-mode))
+            :defer t
+            :after python-mode
+            :defines (pyenv-show-active-python-in-modeline)
+            :diminish pyenv-mode
+            :config
+            (setq pyenv-show-active-python-in-modeline t))
       #+END_SRC
 
-**** [[https://github.com/Wilfred/pip-requirements.el][Pip requirments]]
-     Major mode for editing pip requirements files
+***** [[https://github.com/pwalsh/pipenv.el][Pipenv]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pipenv-mode-usepkg
+        (use-package pipenv
+            :ensure t
+            :defer t
+            :after python-mode
+            :diminish pipenv-mode
+            :init
+            (setq pipenv-with-projectile nil))
+      #+END_SRC
 
-     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-       (use-package pip-requirements
+***** [[https://github.com/galaunay/poetry.el][Poetry]]
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref poetry-usepkg
+        (use-package poetry
+            :ensure t
+            :defer t
+            :after python-mode)
+      #+END_SRC
+
+**** [[https://github.com/naiquevin/sphinx-doc.el][Sphinx doc in docstrings]]
+     Generate Sphinx friendly docstrings for Python functions
+
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref sphinx-doc-usepkg
+       (use-package sphinx-doc
            :ensure t
-           :mode (("requirements.txt$" . pip-requirements-mode)
-                  ("requirements.pip$" . pip-requirements-mode))
-           :hook (pip-requirements-mode . ayrc/pip-hook)
-           :init
-           <<pip-requirements-hook>>)
+           :defer t
+           :after python-mode
+           :diminish sphinx-doc-mode
+           :commands (sphinx-doc-mode))
      #+END_SRC
 
-***** Hook
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pip-requirements-hook
-        (defun ayrc/pip-hook ()
-            (display-line-numbers-mode 1)
-            (visual-line-mode          1)
-            (ws-butler-mode            1)
-            (smartparens-mode          1)
-            (semantic-mode             1)
-            (yas-minor-mode            1))
-      #+END_SRC
+**** Hook
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-hook
+       (defun ayrc/python-hook ()
+           (setq
+            lsp-eldoc-render-all            nil
+            lsp-eldoc-enable-hover          nil
+            lsp-eldoc-enable-signature-help nil
+            lsp-eldoc-prefer-signature-help nil
+
+            py-outline-minor-mode-p         nil
+            py-auto-fill-mode               nil
+            py-eldoc-mode-p                 nil
+
+            python-shell-interpreter        "ipython"
+            python-shell-interpreter-args   "-i --simple-prompt")
+
+           (exec-path-from-shell-initialize)
+
+           (display-line-numbers-mode  1)
+           (visual-line-mode           1)
+           (ws-butler-mode             1)
+           (smartparens-mode           1)
+           (hs-minor-mode              1)
+           (abbrev-mode                1)
+           (semantic-mode              1)
+           (yas-minor-mode             1)
+           (smart-shift-mode           1)
+           (hungry-delete-mode         1)
+
+           (highlight-indentation-mode 1)
+
+           (pipenv-mode                1)
+           (pyenv-mode                 1)
+           (sphinx-doc-mode            1)
+           (eldoc-mode                -1)
+
+           (require 'lsp-pyls)
+           (require 'dap-python)
+           (lsp-deferred))
+     #+END_SRC
+
+** [[https://github.com/Wilfred/pip-requirements.el][Pip requirments]]
+   Major mode for editing pip requirements files
+
+   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+     (use-package pip-requirements
+         :ensure t
+         :mode (("requirements.txt$" . pip-requirements-mode)
+                ("requirements.pip$" . pip-requirements-mode))
+         :hook (pip-requirements-mode . ayrc/pip-hook)
+         :init
+         <<pip-requirements-hook>>)
+   #+END_SRC
+
+*** Hook
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pip-requirements-hook
+      (defun ayrc/pip-hook ()
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (ws-butler-mode            1)
+          (smartparens-mode          1)
+          (semantic-mode             1)
+          (yas-minor-mode            1))
+    #+END_SRC
 
 ** TeX/LaTeX
 *** Prerequisites
@@ -2558,7 +2620,6 @@ Editor settings
 *** Configuration
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package tex-mode
-           :ensure t
            :defines (TeX-auto-save
                      TeX-parse-self
                      TeX-save-query
@@ -2587,8 +2648,9 @@ Editor settings
 
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref auctex-usepkg
        (use-package auctex
+           :ensure t
            :defer t
-           :ensure t)
+           :after tex-mode)
      #+END_SRC
 
 **** Preview
@@ -2598,7 +2660,8 @@ Editor settings
       #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref latex-preview-pane-usepkg
         (use-package latex-preview-pane
             :ensure t
-            :after (auctex)
+            :defer t
+            :after auctex
             :commands (latex-preview-pane-enable)
             :config (progn
                         (setq pdf-latex-command "xelatex")))
@@ -2618,8 +2681,9 @@ Editor settings
 
       #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref latex-math-preview-usepkg
         (use-package latex-math-preview
-            :after (auctex)
-            :ensure t)
+            :ensure t
+            :defer t
+            :after (auctex))
       #+END_SRC
 
 **** [[https://bitbucket.org/mortiferus/latex-pretty-symbols.el][Pretty symbols]]
@@ -2627,8 +2691,9 @@ Editor settings
 
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref latex-pretty-symbols-usepkg
        (use-package latex-pretty-symbols
-           :after (auctex)
-           :ensure t)
+           :ensure t
+           :defer t
+           :after auctex)
      #+END_SRC
 
 **** Autocompletion
@@ -2636,7 +2701,8 @@ Editor settings
       #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref latex-math-company-usepkg
         (use-package company-math
             :ensure t
-            :after (auctex company)
+            :defer t
+            :after auctex
             :commands (company-math-symbols-latex
                        company-latex-commands))
       #+END_SRC
@@ -2647,12 +2713,13 @@ Editor settings
       #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref auctex-company-usepkg
         (use-package company-auctex
             :ensure t
-            :after (auctex company)
+            :defer t
+            :after auctex
             :commands (company-auctex-init))
       #+END_SRC
 
 **** Hook
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref tex-hook
+      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref tex-hook
         (defun ayrc/tex-hook ()
             (setq TeX-auto-save  t
                   TeX-parse-self t
@@ -2797,6 +2864,8 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-shell-usepkg
       (use-package company-shell
           :ensure t
+          :defer t
+          :after sh-script
           :commands (company-shell))
     #+END_SRC
 
@@ -2863,6 +2932,7 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-nginx-usepkg
       (use-package company-nginx
           :ensure t
+          :defer t
           :after (nginx-mode))
     #+END_SRC
 
@@ -2959,6 +3029,8 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flycheck-plantuml-usepkg
       (use-package flycheck-plantuml
           :ensure t
+          :defer t
+          :after plantuml-mode
           :commands (flycheck-plantuml-setup))
     #+END_SRC
 
@@ -3028,6 +3100,8 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flycheck-demjsonlint-usepkg
       (use-package flycheck-demjsonlint
           :ensure t
+          :defer t
+          :after json-mode
           :after (json-mode flycheck))
     #+END_SRC
 
@@ -3202,6 +3276,8 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref markdown-plus-usepkg
       (use-package markdown-mode+
           :ensure t
+          :defer t
+          :after markdown-mode
           :commands (markdown-cleanup-list-numbers
                      markdown-export-latex
                      markdown-copy-html
@@ -3212,6 +3288,8 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref markdown-preview-usepkg
       (use-package markdown-preview-mode
           :ensure t
+          :defer t
+          :after markdown-mode
           :commands (markdown-preview-mode
                      markdown-preview-open-browser
                      markdown-preview-cleanup)
@@ -3299,6 +3377,8 @@ Editor settings
     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref cmake-font-lock-usepkg
       (use-package cmake-font-lock
           :ensure t
+          :defer t
+          :after cmake-mode
           :commands (cmake-font-lock-activate))
     #+END_SRC
 
