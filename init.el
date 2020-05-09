@@ -21,6 +21,24 @@ FRAME: screen area that contains one or more Emacs windows"
 (setq frame-inhibit-implied-resize t)
 
 
+;; Hack from 'https://github.com/a13/fnhh' to increase startup speed
+(defvar ayrc/fnhh-handler-alist nil
+    "A variable to store `file-name-handler-alist' initial value.")
+
+(defun ayrc/fnhh-restore ()
+    "Restore variables and hooks."
+    (when ayrc/fnhh-handler-alist
+        (customize-set-variable 'file-name-handler-alist
+                                (copy-alist ayrc/fnhh-handler-alist)
+                                "Restored by FNHH")
+        (setq ayrc/fnhh-handler-alist nil))
+    (remove-hook 'emacs-startup-hook #'ayrc/fnhh-restore))
+
+(setq ayrc/fnhh-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+(add-hook 'emacs-startup-hook #'ayrc/fnhh-restore)
+
+
 ;;; Setup package management system
 (require 'package)
 
