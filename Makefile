@@ -20,7 +20,6 @@ clean:
 					-or -name ".*~" \
 					-or -name "#*" \
 					-or -name "projectile.cache" \
-					-or -name "semanticdb" \
 				\) \
 		| xargs --replace="%S" \
 				sh -c '{ echo -e "\t%S"; rm --recursive --force %S; }'
