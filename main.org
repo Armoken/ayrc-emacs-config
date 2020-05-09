@@ -426,57 +426,78 @@ Editor settings
     #+END_SRC
 
 *** Scroll settings                                                                             :ui:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
       (use-package pixel-scroll
           :bind (("M-n" . (lambda nil (interactive) (pixel-scroll-up 1)))
-                 ("M-p" . (lambda nil (interactive) (pixel-scroll-down 1))))
+                 ("M-p" . (lambda nil (interactive) (pixel-scroll-down 1)))
+                 ([remap scroll-down-command] . #'golden-ratio-scroll-screen-down)
+                 ([remap scroll-up-command]   . #'golden-ratio-scroll-screen-up))
           :init
-          (pixel-scroll-mode)
+          <<golden-ratio-scroll-screen>>
+
+          (defun ayrc/pixel-scroll-pre-command-hook ()
+              (pixel-scroll-mode)
+              (remove-hook 'pre-command-hook #'ayrc/pixel-scroll-pre-command-hook))
+          (add-hook 'pre-command-hook #'ayrc/pixel-scroll-pre-command-hook)
 
           :config
-          (setq-default
-           ;; Disable bidirectional text rendering for a modest performance boost.
-           ;; I've set this to `nil' in the past, but the `bidi-display-reordering's
-           ;; docs say that is an undefined state and suggest this to be just as
-           ;; good:
-           bidi-display-reordering        'left-to-right
-           bidi-paragraph-direction       'left-to-right
-
-           ;; Reduce rendering/line scan work for Emacs by not rendering cursors or
-           ;; regions in non-focused windows.
-           cursor-in-non-selected-windows nil)
-
-          (setq
-           scroll-preserve-screen-position t
-           scroll-margin                   0
-           scroll-conservatively           10000
-
-           ;; Never go back to the old scrolling behaviour.
-           pixel-dead-time                 0
-
-           ;; Scroll by number of pixels instead of
-           ;; lines (t = frame-char-height pixels).
-           pixel-resolution-fine-flag      t
-
-           ;; Distance in pixel-resolution to scroll each mouse wheel event.
-           mouse-wheel-scroll-amount       '(1)
-
-           mouse-wheel-progressive-speed   nil
-
-           ;; More performant rapid scrolling over unfontified regions. May cause
-           ;; brief spells of inaccurate syntax highlighting right after scrolling,
-           ;; which should quickly self-correct.
-           ;; No (less) lag while scrolling lots.
-           fast-but-imprecise-scrolling    t
-
-           ;; Don’t compact font caches during GC.
-           inhibit-compacting-font-caches  t
-
-           ;; Just don't even fontify if we're still catching up on user input.
-           jit-lock-defer-time             0
-
-           highlight-nonselected-windows   nil))
+          <<scroll-perfomance>>
+          <<scroll-smoothness>>)
     #+END_SRC
+
+**** Perfomance
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref scroll-perfomance
+       ;; Reduce rendering/line scan work for Emacs by not rendering cursors or
+       ;; regions in non-focused windows.
+       (setq-default cursor-in-non-selected-windows nil)
+
+       (setq
+        ;; More performant rapid scrolling over unfontified regions. May cause
+        ;; brief spells of inaccurate syntax highlighting right after scrolling,
+        ;; which should quickly self-correct.
+        ;; No (less) lag while scrolling lots.
+        fast-but-imprecise-scrolling    t
+
+        ;; Don’t compact font caches during GC.
+        inhibit-compacting-font-caches  t
+
+        ;; Just don't even fontify if we're still catching up on user input.
+        jit-lock-defer-time             0
+
+        highlight-nonselected-windows   nil)
+     #+END_SRC
+
+**** Smoothness
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref scroll-smoothness
+       (setq scroll-preserve-screen-position nil
+             scroll-margin                   0
+             scroll-conservatively           10000
+
+             ;; Never go back to the old scrolling behaviour.
+             pixel-dead-time                 0
+
+             ;; Scroll by number of pixels instead of
+             ;; lines (t = frame-char-height pixels).
+             pixel-resolution-fine-flag      t
+
+             ;; Distance in pixel-resolution to scroll each mouse wheel event.
+             mouse-wheel-scroll-amount       '(1)
+
+             mouse-wheel-progressive-speed   nil)
+     #+END_SRC
+
+**** Golden ratio
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref golden-ratio-scroll-screen
+       (use-package golden-ratio-scroll-screen
+           :ensure t
+           :defer t
+           :after (pixel-scroll)
+           :custom-face
+           (golden-ratio-scroll-highlight-line-face
+            ((t (:background "#3c394a" :foreground "#5b576e"))))
+           :commands (golden-ratio-scroll-screen-down
+                      golden-ratio-scroll-screen-up))
+     #+END_SRC
 
 *** Highlighting                                                                                :ui:
 **** Syntax                                                                                     :ui:
