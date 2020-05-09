@@ -69,7 +69,7 @@ flycheck_*.el
 other/yasnippet
 bin/
 contrib/
-rc/user-conf.org
+user-conf.org
 
 .dap-breakpoints
 .lsp-session*
