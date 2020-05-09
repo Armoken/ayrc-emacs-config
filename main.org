@@ -1233,15 +1233,6 @@ Editor settings
      #+END_SRC
 
 *** Autocompletion
-**** Semantic
-     Required for helm-semantic
-
-     #+BEGIN_SRC emacs-lisp :tangle yes
-       (use-package semantic
-           :diminish semantic-mode
-           :commands (semantic-mode))
-     #+END_SRC
-
 **** [[http://company-mode.github.io/][Company]]
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package company
@@ -1256,7 +1247,13 @@ Editor settings
            <<company-flx-usepkg>>
            <<company-quickhelp-usepkg>>
            <<company-setup-func>>
-           <<company-hook>>)
+           <<company-hook>>
+
+           :config
+           (setq company-tooltip-align-annotations t
+                 company-idle-delay                0.1
+                 company-show-numbers              t
+                 company-minimum-prefix-length     1))
      #+END_SRC
 
 ***** [[https://www.github.com/expez/company-quickhelp][Documentation]]
@@ -1264,7 +1261,7 @@ Editor settings
         (use-package company-quickhelp
             :ensure t
             :after company
-            :hook (company-mode . company-quickhelp-mode)
+            :commands (company-quickhelp-mode)
             :bind (:map company-active-map
                         ("M-h" . #'company-quickhelp-manual-begin)))
       #+END_SRC
@@ -1274,7 +1271,7 @@ Editor settings
         (use-package company-flx
             :ensure t
             :after company
-            :hook (company-mode . company-flx-mode))
+            :commands (company-flx-mode))
       #+END_SRC
 
 ***** [[https://github.com/sebastiencs/company-box][Icons]]
@@ -1283,10 +1280,8 @@ Editor settings
             :ensure t
             :disabled
             :after company
-            :hook (company-mode . company-box-mode)
             :config
-            (progn
-                (setq company-box-icons-alist company-box-icons-all-the-icons)))
+            (setq company-box-icons-alist company-box-icons-all-the-icons))
        #+END_SRC
 
 ***** Setup function
@@ -1309,11 +1304,19 @@ Editor settings
 ***** Hook
       #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-hook
         (defun ayrc/company-hook ()
-            (setq company-tooltip-align-annotations t
-                  company-idle-delay                0.1
-                  company-show-numbers              t
-                  company-minimum-prefix-length     1))
+            (company-flx-mode)
+            ;; (company-box-mode)
+            (company-quickhelp-mode))
       #+END_SRC
+**** Semantic
+     Required for helm-semantic
+
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (use-package semantic
+           :after (company)
+           :diminish semantic-mode
+           :commands (semantic-mode))
+     #+END_SRC
 
 *** [[https://github.com/leoliu/ggtags][GTags]]
     Emacs frontend to GNU Global source code tagging system
@@ -1364,6 +1367,7 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package eglot
            :ensure t
+           :after (:any cc-mode python)
            :diminish eglot-mode
            :commands (eglot-mode eglot-ensure ayrc/eglot-hook)
            :hook (eglot-managed-mode . ayrc/eglot-hook)
@@ -1389,6 +1393,7 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
        (use-package lsp-mode
            :ensure t
+           :after (:any cc-mode python)
            :diminish lsp-mode
            :commands (lsp-mode lsp-deffered lsp-rename)
            :hook (lsp-mode . ayrc/lsp-hook)
@@ -1459,7 +1464,8 @@ Editor settings
      #+BEGIN_SRC emacs-lisp :tangle yes
        (use-package realgud
            :ensure t
-           :defer t)
+           :defer t
+           :after (:any cc-mode python))
      #+END_SRC
 
 **** [[https://github.com/yyoncho/dap-mode][DAP]]
@@ -1469,7 +1475,7 @@ Editor settings
        (use-package dap-mode
            :ensure t
            :defer t
-           :after lsp-mode
+           :after (lsp-mode)
            :defines (dap-lldb-debug-program)
            :diminish dap-mode
            :hook (dap-mode . ayrc/dap-hook)
@@ -1954,7 +1960,7 @@ Editor settings
                  ("\\.hpp\\'" . c++-mode)
                  ("\\.cpp\\'" . c++-mode))
           :hook ((c-mode   . ayrc/c-hook)
-                 (c++-mode . ayrc/c++-hook))
+                 (c++-mode . ayrc/cpp-hook))
           :init
           <<clang-format-usepkg>>
           <<irony-usepkg>>
@@ -2312,7 +2318,7 @@ Editor settings
 
 **** Hook
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref c++-configuration
-       (defun ayrc/c++-hook ()
+       (defun ayrc/cpp-hook ()
            (ayrc/cc-hook)
 
            (modern-c++-font-lock-mode 1)
@@ -2324,233 +2330,236 @@ Editor settings
      #+END_SRC
 
 ** Python
-*** [[https://gitlab.com/python-mode-devs/python-mode][Python]]
-      Python mode settings for Emacs
+   Python mode settings for Emacs
 
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
-      (use-package python
-          :mode (("wscript"   . python-mode)
-                 ("\\.py\\'"  . python-mode))
-          :hook (python-mode . ayrc/python-hook)
-          :bind (:map python-mode-map
-                      ("C-c i" . run-python))
-          :init
-          <<venv-support-packages>>
-          <<sphinx-doc-usepkg>>
-          <<python-hook>>
+   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+     (use-package python
+         :mode (("wscript"   . python-mode)
+                ("\\.py\\'"  . python-mode))
+         :hook (python-mode . ayrc/python-hook)
+         :bind (:map python-mode-map
+                     ("C-c i" . run-python))
+         :init
+         <<venv-support-packages>>
+         <<sphinx-doc-usepkg>>
+         <<python-hook>>
 
-          :config
-          <<python-install-pkgs>>
+         :config
+         <<python-install-pkgs>>
 
-          (setq python-shell-interpreter        "ipython"
-                python-shell-interpreter-args   "-i --simple-prompt"))
-    #+END_SRC
+         (setq
+          python-indent-offset                                 4
+          python-indent-guess-indent-offset-verbose            nil
+          python-shell-interpreter                             "ipython"
+          python-shell-interpreter-args                        "-i --simple-prompt"
+          python-shell-completion-native-disabled-interpreters '("python")))
+   #+END_SRC
 
-**** Prerequisites
-     Installation path: pyenv -> python
-                              -> virtualenv
-                              -> install all packages by running function above
-***** System
-      #+NAME: python-system-prerequisites
-      #+CAPTION: System prerequisites for python packages
-      - [[https://www.python.org/][Python]] :: The Python programming language
-      - [[https://github.com/pyenv/pyenv][Pyenv]] :: [[https://github.com/pyenv/pyenv-installer][pyenv-installer]] and take a look at [[https://github.com/pyenv/pyenv/wiki/Common-build-problems][common build problems]]
-      - [[https://github.com/pypa/pipenv][Pipenv]] :: Python Development Workflow for Humans
-      - [[https://python-poetry.org/][Poetry]] :: Python dependency management and packaging made easy
+*** Prerequisites
+    Installation path: pyenv -> python
+                             -> virtualenv
+                             -> install all packages by running function above
+**** System
+     #+NAME: python-system-prerequisites
+     #+CAPTION: System prerequisites for python packages
+     - [[https://www.python.org/][Python]] :: The Python programming language
+     - [[https://github.com/pyenv/pyenv][Pyenv]] :: [[https://github.com/pyenv/pyenv-installer][pyenv-installer]] and take a look at [[https://github.com/pyenv/pyenv/wiki/Common-build-problems][common build problems]]
+     - [[https://github.com/pypa/pipenv][Pipenv]] :: Python Development Workflow for Humans
+     - [[https://python-poetry.org/][Poetry]] :: Python dependency management and packaging made easy
 
-***** Language
-      #+NAME: python-language-prerequisites
-      #+CAPTION: Language prerequisites for python packages
+**** Language
+     #+NAME: python-language-prerequisites
+     #+CAPTION: Language prerequisites for python packages
 
-      Add language prerequisite to this list after its first mention in
-      list after function definition below:
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref python-install-pkgs
-        (defvar ayrc/python-language-prerequisites '()
-            "Dependencies for fully working python mode")
+     Add language prerequisite to this list after its first mention in
+     list after function definition below:
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref python-install-pkgs
+       (defvar ayrc/python-language-prerequisites '()
+           "Dependencies for fully working python mode")
 
-        (defun ayrc/install-python-language-prerequisites ()
-            "Install python language prerequisites.
+       (defun ayrc/install-python-language-prerequisites ()
+           "Install python language prerequisites.
 
-                Prerequisites listed in ayrc/python-language-prerequisites
-                global variable"
-            (interactive)
-            (when (and (buffer-modified-p)
-                       (y-or-n-p (format "Save file %s? " (buffer-file-name))))
-                (save-buffer))
+               Prerequisites listed in ayrc/python-language-prerequisites
+               global variable"
+           (interactive)
+           (when (and (buffer-modified-p)
+                      (y-or-n-p (format "Save file %s? " (buffer-file-name))))
+               (save-buffer))
 
-            (let* ((buf-name "*prerequisites-installation*")
-                   (buffer (get-buffer-create buf-name))
-                   (process (get-buffer-process buffer))
-                   (cmd-args (append (list "-m" "pip" "install")
-                                     ayrc/python-language-prerequisites)))
-                (when (and process
-                           (process-live-p process))
-                    (setq buffer (generate-new-buffer buf-name)))
+           (let* ((buf-name "*prerequisites-installation*")
+                  (buffer (get-buffer-create buf-name))
+                  (process (get-buffer-process buffer))
+                  (cmd-args (append (list "-m" "pip" "install")
+                                    ayrc/python-language-prerequisites)))
+               (when (and process
+                          (process-live-p process))
+                   (setq buffer (generate-new-buffer buf-name)))
 
-                (with-current-buffer buffer
-                    (let ((inhibit-read-only t))
-                        (erase-buffer))
+               (with-current-buffer buffer
+                   (let ((inhibit-read-only t))
+                       (erase-buffer))
 
-                    (insert "Installing python language prerequisites\n")
+                   (insert "Installing python language prerequisites\n")
 
-                    (pythonic-start-process
-                     :process "PrerequisitesInstaller"
-                     :buffer buffer
-                     :args cmd-args)
+                   (pythonic-start-process
+                    :process "PrerequisitesInstaller"
+                    :buffer buffer
+                    :args cmd-args)
 
-                    (move-marker (process-mark (get-buffer-process buffer))
-                                 (point-max)
-                                 buffer)
+                   (move-marker (process-mark (get-buffer-process buffer))
+                                (point-max)
+                                buffer)
 
-                    (comint-mode)
-                    (setq-local comint-prompt-read-only t)
-                    (pop-to-buffer buffer))))
+                   (comint-mode)
+                   (setq-local comint-prompt-read-only t)
+                   (pop-to-buffer buffer))))
 
-        <<python-pyls>>
-        <<python-pyls-isort>>
-        <<python-pyls-black>>
-        <<python-pylint>>
-        <<python-jedi>>
-        <<python-rope>>
-        <<python-pyflakes>>
-        <<python-mccabe>>
-        <<python-pycodestyle>>
-        <<python-pydocstyle>>
-        <<python-autopep8>>
-        <<python-yapf>>
-        <<python-ipython>>
-      #+END_SRC
-
-      Prerequisites:
-****** [[https://github.com/palantir/python-language-server][pyls]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls
-      (add-to-list 'ayrc/python-language-prerequisites "python-language-server")
-      #+END_SRC
-
-****** [[https://github.com/tomv564/pyls-mypy][pyls-mypy]]                      :temporary_disabled:
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls-mypy
-        (add-to-list 'ayrc/python-language-prerequisites "pyls-mypy")
-      #+END_SRC
-
-****** [[https://github.com/tomv564/pyls-mypy][pyls-isort]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls-isort
-      (add-to-list 'ayrc/python-language-prerequisites "pyls-isort")
-      #+END_SRC
-
-****** [[https://github.com/tomv564/pyls-mypy][pyls-black]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls-black
-      (add-to-list 'ayrc/python-language-prerequisites "pyls-black")
-      #+END_SRC
-
-****** [[https://www.pylint.org/][Pylint]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pylint
-      (add-to-list 'ayrc/python-language-prerequisites "pylint")
-      #+END_SRC
-
-****** [[https://github.com/davidhalter/jedi][Jedi]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-jedi
-      (add-to-list 'ayrc/python-language-prerequisites "jedi")
-      #+END_SRC
-
-****** [[https://github.com/python-rope/rope][Rope]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-rope
-      (add-to-list 'ayrc/python-language-prerequisites "rope")
-      #+END_SRC
-
-****** [[https://github.com/PyCQA/pyflakes][pyflakes]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyflakes
-      (add-to-list 'ayrc/python-language-prerequisites "pyflakes")
-      #+END_SRC
-
-****** [[https://github.com/PyCQA/mccabe][mccabe]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-mccabe
-      (add-to-list 'ayrc/python-language-prerequisites "mccabe")
-      #+END_SRC
-
-****** [[https://github.com/PyCQA/pycodestyle][pycodestyle]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pycodestyle
-      (add-to-list 'ayrc/python-language-prerequisites "pycodestyle")
-      #+END_SRC
-
-****** [[https://github.com/PyCQA/pydocstyle][pydocstyle]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pydocstyle
-      (add-to-list 'ayrc/python-language-prerequisites "pydocstyle")
-      #+END_SRC
-
-****** [[https://github.com/hhatto/autopep8][Autopep8]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-autopep8
-      (add-to-list 'ayrc/python-language-prerequisites "autopep8")
-      #+END_SRC
-
-****** [[https://github.com/google/yapf][Yapf]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-yapf
-      (add-to-list 'ayrc/python-language-prerequisites "yapf")
-      #+END_SRC
-
-****** [[https://github.com/ipython/ipython][ipython]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-ipython
-      (add-to-list 'ayrc/python-language-prerequisites "ipython")
-      #+END_SRC
-
-**** Env setup modes
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref venv-support-packages
-        <<pyenv-mode-usepkg>>
-        <<pipenv-mode-usepkg>>
-        <<poetry-usepkg>>
-      #+END_SRC
-
-***** [[https://github.com/pythonic-emacs/pyenv-mode][Pyenv]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyenv-mode-usepkg
-        (use-package pyenv-mode
-            :ensure t
-            :defer t
-            :after python
-            :defines (pyenv-show-active-python-in-modeline)
-            :diminish pyenv-mode
-            :config
-            (setq pyenv-show-active-python-in-modeline t))
-      #+END_SRC
-
-***** [[https://github.com/pwalsh/pipenv.el][Pipenv]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pipenv-mode-usepkg
-        (use-package pipenv
-            :ensure t
-            :defer t
-            :after python
-            :diminish pipenv-mode
-            :init
-            (setq pipenv-with-projectile nil))
-      #+END_SRC
-
-***** [[https://github.com/galaunay/poetry.el][Poetry]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref poetry-usepkg
-        (use-package poetry
-            :ensure t
-            :defer t
-            :after python)
-      #+END_SRC
-
-**** Hook
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-hook
-       (defun ayrc/python-hook ()
-           (exec-path-from-shell-initialize)
-
-           (display-line-numbers-mode  1)
-           (highlight-indentation-mode 1)
-           (visual-line-mode           1)
-           (ws-butler-mode             1)
-           (hs-minor-mode              1)
-           (abbrev-mode                1)
-           (semantic-mode              1)
-           (yas-minor-mode             1)
-           (smartparens-mode           1)
-           (smart-shift-mode           1)
-
-           (require 'lsp-pyls)
-           (require 'dap-python)
-           (lsp-deferred))
-
+       <<python-pyls>>
+       <<python-pyls-isort>>
+       <<python-pyls-black>>
+       <<python-pylint>>
+       <<python-jedi>>
+       <<python-rope>>
+       <<python-pyflakes>>
+       <<python-mccabe>>
+       <<python-pycodestyle>>
+       <<python-pydocstyle>>
+       <<python-autopep8>>
+       <<python-yapf>>
+       <<python-ipython>>
      #+END_SRC
+
+     Prerequisites:
+***** [[https://github.com/palantir/python-language-server][pyls]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls
+     (add-to-list 'ayrc/python-language-prerequisites "python-language-server")
+     #+END_SRC
+
+***** [[https://github.com/tomv564/pyls-mypy][pyls-mypy]]                       :temporary_disabled:
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls-mypy
+       (add-to-list 'ayrc/python-language-prerequisites "pyls-mypy")
+     #+END_SRC
+
+***** [[https://github.com/tomv564/pyls-mypy][pyls-isort]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls-isort
+     (add-to-list 'ayrc/python-language-prerequisites "pyls-isort")
+     #+END_SRC
+
+***** [[https://github.com/tomv564/pyls-mypy][pyls-black]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls-black
+     (add-to-list 'ayrc/python-language-prerequisites "pyls-black")
+     #+END_SRC
+
+***** [[https://www.pylint.org/][Pylint]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pylint
+     (add-to-list 'ayrc/python-language-prerequisites "pylint")
+     #+END_SRC
+
+***** [[https://github.com/davidhalter/jedi][Jedi]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-jedi
+     (add-to-list 'ayrc/python-language-prerequisites "jedi")
+     #+END_SRC
+
+***** [[https://github.com/python-rope/rope][Rope]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-rope
+     (add-to-list 'ayrc/python-language-prerequisites "rope")
+     #+END_SRC
+
+***** [[https://github.com/PyCQA/pyflakes][pyflakes]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyflakes
+     (add-to-list 'ayrc/python-language-prerequisites "pyflakes")
+     #+END_SRC
+
+***** [[https://github.com/PyCQA/mccabe][mccabe]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-mccabe
+     (add-to-list 'ayrc/python-language-prerequisites "mccabe")
+     #+END_SRC
+
+***** [[https://github.com/PyCQA/pycodestyle][pycodestyle]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pycodestyle
+     (add-to-list 'ayrc/python-language-prerequisites "pycodestyle")
+     #+END_SRC
+
+***** [[https://github.com/PyCQA/pydocstyle][pydocstyle]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pydocstyle
+     (add-to-list 'ayrc/python-language-prerequisites "pydocstyle")
+     #+END_SRC
+
+***** [[https://github.com/hhatto/autopep8][Autopep8]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-autopep8
+     (add-to-list 'ayrc/python-language-prerequisites "autopep8")
+     #+END_SRC
+
+***** [[https://github.com/google/yapf][Yapf]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-yapf
+     (add-to-list 'ayrc/python-language-prerequisites "yapf")
+     #+END_SRC
+
+***** [[https://github.com/ipython/ipython][ipython]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-ipython
+     (add-to-list 'ayrc/python-language-prerequisites "ipython")
+     #+END_SRC
+
+*** Env setup modes
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref venv-support-packages
+       <<pyenv-mode-usepkg>>
+       <<pipenv-mode-usepkg>>
+       <<poetry-usepkg>>
+     #+END_SRC
+
+**** [[https://github.com/pythonic-emacs/pyenv-mode][Pyenv]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyenv-mode-usepkg
+       (use-package pyenv-mode
+           :ensure t
+           :defer t
+           :after python
+           :defines (pyenv-show-active-python-in-modeline)
+           :diminish pyenv-mode
+           :config
+           (setq pyenv-show-active-python-in-modeline t))
+     #+END_SRC
+
+**** [[https://github.com/pwalsh/pipenv.el][Pipenv]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pipenv-mode-usepkg
+       (use-package pipenv
+           :ensure t
+           :defer t
+           :after python
+           :diminish pipenv-mode
+           :init
+           (setq pipenv-with-projectile nil))
+     #+END_SRC
+
+**** [[https://github.com/galaunay/poetry.el][Poetry]]
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref poetry-usepkg
+       (use-package poetry
+           :ensure t
+           :defer t
+           :after python)
+     #+END_SRC
+
+*** Hook
+    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-hook
+      (defun ayrc/python-hook ()
+          (exec-path-from-shell-initialize)
+
+          (display-line-numbers-mode  1)
+          (highlight-indentation-mode 1)
+          (visual-line-mode           1)
+          (ws-butler-mode             1)
+          (hs-minor-mode              1)
+          (abbrev-mode                1)
+          (semantic-mode              1)
+          (yas-minor-mode             1)
+          (smartparens-mode           1)
+          (smart-shift-mode           1)
+
+          (require 'lsp-pyls)
+          (require 'dap-python)
+          (lsp-deferred))
+
+    #+END_SRC
 
 ** [[https://github.com/Wilfred/pip-requirements.el][Pip requirments]]
    Major mode for editing pip requirements files
