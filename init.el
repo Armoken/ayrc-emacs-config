@@ -63,35 +63,31 @@ FRAME: screen area that contains one or more Emacs windows"
     (package-install 'diminish)
     (package-install 'delight))
 
-(eval-when-compile
-    (require 'use-package))
+;; (eval-when-compile
+;;     (require 'use-package))
+(require 'use-package)
+(setq use-package-compute-statistics t)
 
 
 ;;; Increase startup speed using GC tuning
 (use-package gcmh
     :ensure t
-    :defer t
-    :commands (gcmh-mode gcmh-idle-garbage-collect)
+    :demand t
     :diminish gcmh-mode
-    :init
-    (setq garbage-collection-messages t
-          gc-cons-threshold           104857600 ; 100 MB
-          gc-cons-percentage          0.5)
+    :config
+    (setq gcmh-idle-delay             3600      ; 1 hour
+          gcmh-low-cons-threshold     104857600 ; 100 MB
+          gcmh-high-cons-threshold    209715200 ; 200 MB
+          gcmh-verbose                nil
 
-    (defun ayrc/gcmh-pre-command-hook ()
-        (gcmh-mode 1)
-        (remove-hook 'pre-command-hook #'ayrc/gcmh-pre-command-hook))
+          garbage-collection-messages t
+          gc-cons-percentage          0.5)
+    (setq gc-cons-threshold gcmh-low-cons-threshold)
 
     (defun ayrc/gcmh-startup-hook ()
-        (require 'gcmh)
-        (setq gcmh-verbose             t
-              gcmh-idle-delay          10
-              gcmh-high-cons-threshold 209715200 ; 200 MB
-              gc-cons-percentage       0.01)
-        (add-hook 'focus-out-hook #'gcmh-idle-garbage-collect)
-
-        (add-hook 'pre-command-hook #'ayrc/gcmh-pre-command-hook))
-
+        (setq gc-cons-threshold  gcmh-high-cons-threshold
+              gc-cons-percentage 0.1)
+        (add-hook 'focus-out-hook #'gcmh-idle-garbage-collect))
     (add-hook 'emacs-startup-hook #'ayrc/gcmh-startup-hook))
 
 
