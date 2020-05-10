@@ -112,34 +112,28 @@ Load file if COMPILE-ONLY nil"
     ;; Turn off warnings
     (setq ad-redefinition-action 'accept)
 
-    ;; Without that line, (package-initialize) is executed twice
-    ;; (once during evaluation of the init file, and another after
-    ;; Emacs finishes reading the init file).
-    (setq package-enable-at-startup nil)
 
-    (setq package-archives
-          '(("gnu"          . "http://elpa.gnu.org/packages/")
-            ("melpa"        . "https://melpa.org/packages/")
-            ("melpa-stable" . "https://stable.melpa.org/packages/")))
-    (package-initialize)
+    (setq straight-use-package-by-default t)
 
+    (defvar bootstrap-version)
+    (let ((bootstrap-file
+	   (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	  (bootstrap-version 5))
+      (unless (file-exists-p bootstrap-file)
+	(with-current-buffer
+	    (url-retrieve-synchronously
+	     "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	     'silent 'inhibit-cookies)
+	  (goto-char (point-max))
+	  (eval-print-last-sexp)))
+      (load bootstrap-file nil 'nomessage))
 
-    ;; Bootstrap 'use-package'
-    (unless (package-installed-p 'use-package)
-        (package-refresh-contents)
-        (package-install 'use-package)
-        (package-install 'diminish)
-        (package-install 'delight))
+    (straight-use-package 'use-package)
 
-    ;; (eval-when-compile
-    ;;     (require 'use-package))
-    (require 'use-package)
     (setq use-package-compute-statistics t)
-
 
     ;;; Increase startup speed using GC tuning
     (use-package gcmh
-        :ensure t
         :demand t
         :diminish gcmh-mode
         :config
@@ -178,7 +172,6 @@ Load file if COMPILE-ONLY nil"
 
 
     (use-package org
-        :defer t
         :commands (org-babel-tangle-file)
         :init
         (defun ayrc/org-babel-load-file (path-to-file &optional compile-only)
