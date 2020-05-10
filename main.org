@@ -1992,7 +1992,7 @@ Editor settings
 
           <<cc-configuration>>
           <<c-configuration>>
-          <<c++-configuration>>
+          <<cpp-configuration>>
 
           :config
           (setq c-basic-offset       4
@@ -2338,7 +2338,7 @@ Editor settings
      #+END_SRC
 
 **** Hook
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref c++-configuration
+     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref cpp-configuration
        (defun ayrc/cpp-hook ()
            (ayrc/cc-hook)
 
