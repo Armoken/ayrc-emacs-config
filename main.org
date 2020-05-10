@@ -997,9 +997,6 @@ Editor settings
           :diminish smartparens-mode
           :commands (smartparens-mode smartparens-strict-mode)
           :bind (:map smartparens-mode-map
-                      ("C-<down>" . sp-down-sexp)
-                      ("C-<up>"   . sp-up-sexp)
-
                       ("C-M-f" . sp-forward-sexp)
                       ("C-M-b" . sp-backward-sexp)
 
