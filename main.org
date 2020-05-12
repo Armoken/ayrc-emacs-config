@@ -478,24 +478,26 @@ Editor settings
 
 **** Smoothness
      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref scroll-smoothness
-       (setq ;; scroll-preserve-screen-position nil
-             ;; scroll-margin                   0
-             ;; scroll-conservatively           10000
-             mouse-wheel-scroll-amount '(1 ((shift) . 1))
-             mouse-wheel-progressive-speed nil
-             mouse-wheel-follow-mouse 't
-             scroll-step 1
-             ;; Never go back to the old scrolling behaviour.
-             pixel-dead-time                 0
+       (setq
+        ;; scroll-preserve-screen-position nil
+        scroll-step                   1
+        scroll-margin                 0
+        scroll-conservatively         0
 
-             ;; Scroll by number of pixels instead of
-             ;; lines (t = frame-char-height pixels).
-             pixel-resolution-fine-flag      t
+        ;; Never go back to the old scrolling behaviour.
+        pixel-dead-time               0
 
-             ;; Distance in pixel-resolution to scroll each mouse wheel event.
-             mouse-wheel-scroll-amount       '(1)
+        ;; don't pause display on input
+        redisplay-dont-pause          t
+        pixel-wait                    0
+        ;; Scroll by number of pixels instead of
+        ;; lines (t = frame-char-height pixels).
+        pixel-resolution-fine-flag    t
 
-             mouse-wheel-progressive-speed   nil)
+        ;; Distance in pixel-resolution to scroll each mouse wheel event.
+        mouse-wheel-scroll-amount     '(1 ((shift) . 1))
+        mouse-wheel-follow-mouse      t
+        mouse-wheel-progressive-speed nil)
      #+END_SRC
 
 **** Golden ratio

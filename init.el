@@ -97,16 +97,16 @@ if COMPILE-ONLY nil"
 
 ;;; Load subinit.el
 (defvar ayrc/path-to-subinit (ayrc/expand-config-path "subinit.el"))
-(defvar ayrc/path-to-compiled-init (expand-file-name "subinit.elc"
-                                                     ayrc/path-to-build-dir))
+(defvar ayrc/path-to-compiled-subinit (expand-file-name "subinit.elc"
+                                                        ayrc/path-to-build-dir))
 
 (if (ayrc/is-processing-required ayrc/path-to-subinit
-                                 ayrc/path-to-compiled-init)
+                                 ayrc/path-to-compiled-subinit)
         (progn
             (load-file ayrc/path-to-subinit)
             (ayrc/byte-compile-file ayrc/path-to-subinit
-                                    ayrc/path-to-compiled-init))
-    (load-file ayrc/path-to-compiled-init))
+                                    ayrc/path-to-compiled-subinit))
+    (load-file ayrc/path-to-compiled-subinit))
 
 
 ;;; Compile init.el

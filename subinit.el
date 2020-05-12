@@ -36,7 +36,7 @@
       ;; Turn off warnings
       ad-redefinition-action    'accept
 
-      package-archives          '(("gnu"          . "http://elpa.gnu.org/packages/")
+      package-archives          '(("gnu"          . "https://elpa.gnu.org/packages/")
                                   ("melpa"        . "https://melpa.org/packages/")
                                   ("melpa-stable" . "https://stable.melpa.org/packages/")))
 (package-initialize)
@@ -134,6 +134,8 @@
                                                   ayrc/path-to-build-dir))
        (path-to-autoloadables   (expand-file-name (concat autoloadables-base-name ".el")
                                                   ayrc/path-to-build-dir))
+       (path-to-compiled-autoloadables (expand-file-name (concat autoloadables-base-name ".elc")
+                                                         ayrc/path-to-build-dir))
        (path-to-autoloads       (expand-file-name (concat autoloadables-base-name "-autoloads.el")
                                                   ayrc/path-to-build-dir)))
     (when (ayrc/is-processing-required path-to-config config-in-build-dir)
@@ -186,7 +188,8 @@
                 (kill-buffer autoloads-buffer))
 
             ;; Byte compile autoloadables
-            (byte-compile path-to-autoloadables)))
+            (ayrc/byte-compile-file path-to-autoloadables
+                                    path-to-compiled-autoloadables)))
 
     (load-file path-to-autoloads)
     (ayrc/load-file path-to-main-file ayrc/path-to-build-dir))
