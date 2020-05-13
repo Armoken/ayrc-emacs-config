@@ -32,13 +32,15 @@
      straight-use-package-by-default         nil
      straight-recipe-repositories            '(org-elpa melpa gnu-elpa-mirror emacsmirror-mirror)
      straight-check-for-modifications        '()
+     straight-base-dir                       ayrc/path-to-non-config-files-dir
+     straight-profiles                       '((nil . "../../../freezed-pkgs-versions.el"))
 
      ;; Turn off warnings
      ad-redefinition-action                  'accept))
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" ayrc/path-to-non-config-files-dir))
       (bootstrap-version 5))
     (unless (file-exists-p bootstrap-file)
         (with-current-buffer
@@ -101,7 +103,7 @@
 
 ;; Load use-conf
 (defvar ayrc/user-conf-template-filename
-    (ayrc/expand-config-path "./other/user-conf-template.org"))
+    (ayrc/expand-config-path "./user-conf-template.org"))
 (defvar ayrc/user-conf-filename
     (ayrc/expand-config-path "./user-conf.org"))
 (let* ((path-to-selected-config  (if (file-exists-p ayrc/user-conf-filename)
@@ -132,7 +134,7 @@
     (ayrc/load-file path-to-main-file ayrc/path-to-build-dir))
 
 ;; Load main config
-(let* ((config-name             "main.org")
+(let* ((config-name             "README.org")
        (path-to-config          (ayrc/expand-config-path config-name))
        (config-in-build-dir     (expand-file-name config-name ayrc/path-to-build-dir))
 

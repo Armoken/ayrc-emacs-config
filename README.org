@@ -1,4 +1,4 @@
-#+TITLE: Main
+#+TITLE: README
 
 Editor settings
 
@@ -910,6 +910,9 @@ Editor settings
           :bind ("C-c s" . #'scratch))
     #+END_SRC
 
+*** TODO [[https://github.com/nex3/perspective-el][perspective-el]]
+*** TODO [[https://github.com/manateelazycat/emacs-application-framework][Emacs Application Framework]]
+
 *** Compilation                                                                            :hotkeys:
     #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package compile
@@ -1130,6 +1133,10 @@ Editor settings
           :defer t)
     #+END_SRC
 
+**** TODO Fix spell checking in text modes
+     https://github.com/tmalsburg/guess-language.el
+     http://manuel-uberti.github.io/emacs/2017/02/04/guess-language/
+
 *** Static code analysis
 **** Flymake
      A universal on-the-fly syntax checker
@@ -1189,6 +1196,12 @@ Editor settings
             (setq flycheck-idle-change-delay 0)
             (setq flycheck-check-syntax-automatically '(save mode-enabled)))
       #+END_SRC
+
+*** TODO [[https://github.com/jacktasia/dumb-jump][dump-jump]]
+    An Emacs "jump to definition" package for 40+ languages
+
+*** TODO [[https://github.com/lassik/emacs-format-all-the-code][format-all-the-code]]
+    Auto-format source code with one command
 
 *** XREF
     Cross-referencing commands
@@ -1522,7 +1535,7 @@ Editor settings
 
 * Helpful functions
 ** Reload configuration                                                                :interactive:
-   #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/reload-configuration ()
          "Reload configuration starting from ~/.emacs.d/init.el"
@@ -1531,7 +1544,7 @@ Editor settings
    #+END_SRC
 
 ** Rename current buffer and file                                                      :interactive:
-   #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/rename-current-file-and-buffer ()
        "Rename the current buffer and file it is visiting."
@@ -1548,7 +1561,7 @@ Editor settings
    #+END_SRC
 
 ** Edit files as root                                                                  :interactive:
-   #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/sudo-edit (&optional arg)
        "Edit currently visited file as root.
@@ -1565,7 +1578,7 @@ Editor settings
    #+END_SRC
 
 ** Copy the current buffer file name to the clipboard                                  :interactive:
-   #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/copy-file-name-to-clipboard ()
        "Copy the current buffer file name to the clipboard."
@@ -1579,7 +1592,7 @@ Editor settings
    #+END_SRC
 
 ** CRLF to LF                                                                          :interactive:
-   #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/dos2unix (_buffer)
          "Automate M-% C-q C-m RET C-q C-j RET"
@@ -1591,7 +1604,7 @@ Editor settings
    #+END_SRC
 
 ** Copy hooks
-   #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/copy-hooks-to (from-hook to-hook)
        (dolist (hook from-hook)
@@ -1599,7 +1612,7 @@ Editor settings
    #+END_SRC
 
 ** Find path to executable
-   #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/executable-find (command)
          "Search for COMMAND in `exec-path' and return the absolute file name.
@@ -1610,7 +1623,7 @@ Editor settings
    #+END_SRC
 
 ** Set multiple local bindings
-   #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/local-set-keys (key-commands)
          "Set multiple local bindings with KEY-COMMANDS list."
@@ -1622,7 +1635,7 @@ Editor settings
    #+END_SRC
 
 ** Functions for making text pretty                                                    :interactive:
-   #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/tabify-buffer ()
          "Replace spaces by from buffer."
@@ -1699,6 +1712,7 @@ Editor settings
                                                                :weight bold)))))
     #+END_SRC
 
+** TODO Support of encrypted containers
 ** [[https://github.com/emacsorphanage/org-bullets][Bullets]]
    Show bullets in org-mode as UTF-8 characters
 
@@ -1742,6 +1756,8 @@ Editor settings
    #+END_SRC
 
 * Clients
+** TODO [[https://github.com/rejeep/prodigy.el][Prodigy]]
+** TODO Gnus or mu4e
 ** VCS
 *** [[https://github.com/magit/magit][Git]]                                                                             :global_hotkeys:
      #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1866,7 +1882,7 @@ Editor settings
      #+END_SRC
 
 **** Hook
-     #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+     #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
        ;;;###autoload
        (defun ayrc/lisp-hook ()
            (display-line-numbers-mode 1)
@@ -1914,7 +1930,7 @@ Editor settings
      #+END_SRC
 
 **** Hook
-     #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+     #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
        ;;;###autoload
        (defun ayrc/emacs-lisp-hook ()
            (ayrc/lisp-hook)
@@ -1948,7 +1964,7 @@ Editor settings
      #+END_SRC
 
 **** Hook
-     #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+     #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
        ;;;###autoload
        (defun ayrc/scheme-hook ()
            (ayrc/lisp-hook)
@@ -1994,7 +2010,7 @@ Editor settings
     #+END_SRC
 
 *** CC configuration
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/cc-hook ()
           (display-line-numbers-mode 1)
@@ -2302,7 +2318,7 @@ Editor settings
      #+END_SRC
 
 *** C configuration
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/c-hook ()
           (ayrc/cc-hook)
@@ -2327,7 +2343,7 @@ Editor settings
      #+END_SRC
 
 **** Hook
-     #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+     #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
        ;;;###autoload
        (defun ayrc/cpp-hook ()
            (ayrc/cc-hook)
@@ -2402,7 +2418,7 @@ Editor settings
        <<python-ipython>>
      #+END_SRC
 
-     #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+     #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
        ;;;###autoload
        (defun ayrc/install-python-language-prerequisites ()
            "Install python language prerequisites.
@@ -2553,7 +2569,7 @@ Editor settings
      #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/python-hook ()
           (exec-path-from-shell-initialize)
@@ -2587,7 +2603,7 @@ Editor settings
    #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/pip-hook ()
           (display-line-numbers-mode 1)
@@ -2706,7 +2722,7 @@ Editor settings
       #+END_SRC
 
 **** Hook
-      #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el :noweb yes
+      #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el :noweb yes
         ;;;###autoload
         (defun ayrc/tex-hook ()
             (setq TeX-auto-save  t
@@ -2857,7 +2873,7 @@ Editor settings
     #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/shell-hook()
           (setq indent-tabs-mode t)
@@ -2889,7 +2905,7 @@ Editor settings
     #+END_SRC
 
 ***** Hook
-      #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+      #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
         ;;;###autoload
         (defun ayrc/dockerfile-hook ()
             (display-line-numbers-mode 1)
@@ -2923,7 +2939,7 @@ Editor settings
     #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/nginx-hook ()
           (display-line-numbers-mode 1)
@@ -2959,7 +2975,7 @@ Editor settings
    #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/systemd-hook ()
           (display-line-numbers-mode 1)
@@ -2984,7 +3000,7 @@ Editor settings
    #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/conf-hook ()
           (display-line-numbers-mode 1)
@@ -3019,7 +3035,7 @@ Editor settings
     #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/plantuml-hook ()
           (display-line-numbers-mode 1)
@@ -3047,7 +3063,7 @@ Editor settings
    #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/dotenv-hook ()
           (display-line-numbers-mode 1)
@@ -3087,7 +3103,7 @@ Editor settings
     #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/json-hook ()
           (display-line-numbers-mode 1)
@@ -3121,7 +3137,7 @@ Editor settings
    #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/yaml-hook ()
           (display-line-numbers-mode  1)
@@ -3162,7 +3178,7 @@ Editor settings
    #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/nxml-hook ()
           (display-line-numbers-mode 1)
@@ -3189,7 +3205,7 @@ Editor settings
    #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/jinja2-hook ()
           (display-line-numbers-mode 1)
@@ -3213,7 +3229,7 @@ Editor settings
    #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/rst-hook ()
           (display-line-numbers-mode 1)
@@ -3279,7 +3295,7 @@ Editor settings
     #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/markdown-hook ()
           (display-line-numbers-mode 1)
@@ -3318,7 +3334,7 @@ Editor settings
     #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/make-hook ()
           (setq indent-tabs-mode t)
@@ -3358,7 +3374,7 @@ Editor settings
     #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/cmake-hook ()
           (display-line-numbers-mode 1)
@@ -3391,7 +3407,7 @@ Editor settings
    #+END_SRC
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle main-loaddefs.el
+    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/bitbake-hook ()
           (display-line-numbers-mode 1)

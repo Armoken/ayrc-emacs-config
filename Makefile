@@ -16,10 +16,9 @@ clean:
 .PHONY: drop
 drop: clean
 	@echo "Removing installed packages:"
-	@rm --recursive --force --verbose   "./straight/modified" \
-										"./straight/build" \
-										"./straight/repos" \
-										"./straight/build-cache.el"
+	@rm --recursive --force --verbose "./runtime-artifacts/straight"
+
+
 .PHONY: full-drop
 full-drop: clean
 	@echo "Removing session configs:"
