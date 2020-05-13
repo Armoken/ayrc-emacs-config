@@ -16,12 +16,10 @@ clean:
 .PHONY: drop
 drop: clean
 	@echo "Removing installed packages:"
-	@find "runtime-artifacts/elpa" -maxdepth 1 \
-		| sort \
-		| xargs --replace="%S" \
-				sh -c '{ echo -e "\t%S"; rm --recursive --force %S; }'
-
-
+	@rm --recursive --force --verbose   "./straight/modified" \
+										"./straight/build" \
+										"./straight/repos" \
+										"./straight/build-cache.el"
 .PHONY: full-drop
 full-drop: clean
 	@echo "Removing session configs:"

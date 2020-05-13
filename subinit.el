@@ -24,36 +24,45 @@
 
 
 ;;; Setup package management system
-(require 'package)
-(setq package-user-dir          (expand-file-name "elpa" ayrc/path-to-non-config-files-dir)
-      package-gnupghome-dir     (expand-file-name "gnupg" package-user-dir)
+(with-no-warnings
+    (setq
+     straight-use-symlinks                   t
+     straight-cache-autoloads                t
+     straight-enable-use-package-integration t
+     straight-use-package-by-default         nil
+     straight-recipe-repositories            '(org-elpa melpa gnu-elpa-mirror emacsmirror-mirror)
+     straight-check-for-modifications        '()
 
-      ;; Without that line, (package-initialize) is executed twice
-      ;; (once during evaluation of the init file, and another after
-      ;; Emacs finishes reading the init file).
-      package-enable-at-startup nil
+     ;; Turn off warnings
+     ad-redefinition-action                  'accept))
 
-      ;; Turn off warnings
-      ad-redefinition-action    'accept
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+        (with-current-buffer
+                (url-retrieve-synchronously
+                 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+                 'silent 'inhibit-cookies)
+            (goto-char (point-max))
+            (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
 
-      package-archives          '(("gnu"          . "https://elpa.gnu.org/packages/")
-                                  ("melpa"        . "https://melpa.org/packages/")
-                                  ("melpa-stable" . "https://stable.melpa.org/packages/")))
-(package-initialize)
 
 ;; Bootstrap 'use-package'
-(unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package)
-    (package-install 'no-littering)
-    (package-install 'diminish)
-    (package-install 'delight))
+(straight-use-package 'use-package)
+(straight-use-package 'bind-key)
+(straight-use-package 'diminish)
+(straight-use-package 'delight)
+
 (eval-when-compile
     (require 'use-package))
 (require 'bind-key)
 
 
 ;; Keep clean config dir
+(straight-use-package 'no-littering)
 (with-no-warnings
     (setq no-littering-etc-directory ayrc/path-to-session-cache-dir)
     (setq no-littering-var-directory ayrc/path-to-session-cache-dir))
@@ -62,7 +71,7 @@
 
 ;;; Increase startup speed using GC tuning
 (use-package gcmh
-    :ensure t
+    :straight t
     :demand t
     :diminish gcmh-mode
     :config
@@ -137,11 +146,14 @@
        (path-to-compiled-autoloadables (expand-file-name (concat autoloadables-base-name ".elc")
                                                          ayrc/path-to-build-dir))
        (path-to-autoloads       (expand-file-name (concat autoloadables-base-name "-autoloads.el")
-                                                  ayrc/path-to-build-dir)))
+                                                  ayrc/path-to-build-dir))
+
+       (is-autoloads-updated    nil))
     (when (ayrc/is-processing-required path-to-config config-in-build-dir)
         (dolist (path-to-file (list config-in-build-dir
                                     path-to-main-file
                                     path-to-autoloadables
+                                    path-to-compiled-autoloadables
                                     path-to-autoloads))
             (when (file-exists-p path-to-file)
                 (delete-file path-to-file)))
@@ -187,12 +199,16 @@
                     (write-file generated-autoload-file))
                 (kill-buffer autoloads-buffer))
 
-            ;; Byte compile autoloadables
-            (ayrc/byte-compile-file path-to-autoloadables
-                                    path-to-compiled-autoloadables)))
+            (setq is-autoloads-updated t)))
 
     (load-file path-to-autoloads)
-    (ayrc/load-file path-to-main-file ayrc/path-to-build-dir))
+
+    (let ((use-package-always-demand is-autoloads-updated))
+        (ayrc/load-file path-to-main-file ayrc/path-to-build-dir))
+
+    (when is-autoloads-updated
+        (ayrc/byte-compile-file path-to-autoloadables
+                                path-to-compiled-autoloadables)))
 
 
 ;; Load custom.el

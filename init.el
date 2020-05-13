@@ -68,12 +68,12 @@ if COMPILE-ONLY nil"
            (path-to-compiled-file (concat path-to-build-dir
                                           base-file-name
                                           ".elc")))
+        (unless compile-only
+            (load-file path-to-file))
+
         (when (ayrc/is-processing-required path-to-file
                                            path-to-compiled-file)
-            (ayrc/byte-compile-file path-to-file path-to-compiled-file))
-
-        (unless compile-only
-            (load-file path-to-compiled-file))))
+            (ayrc/byte-compile-file path-to-file path-to-compiled-file))))
 
 
 (defvar ayrc/path-to-non-config-files-dir
