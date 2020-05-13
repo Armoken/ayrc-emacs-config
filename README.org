@@ -1,10 +1,11 @@
 #+TITLE: README
+#+OPTIONS: \n:t
 
 Editor settings
 
 * Configuration
 ** Global
-*** Lexical casting
+*** Lexical binding
     #+BEGIN_SRC emacs-lisp :tangle yes
       ;; -*- lexical-binding: t; -*-
     #+END_SRC
@@ -50,12 +51,14 @@ Editor settings
 *** Theme                                                                                       :ui:
 **** Global theme
      Also add it to ~/.Xresources to prevent blinking at startup:
-     Emacs.Background:                    #292b2e
-     Emacs.Foreground:                    #b2b2b2
-     Emacs.BorderColor:                   #292b2e
-     Emacs.SelectionForeground:           #b2b2b2
-     Emacs.mode-line.attributeForeground: #b2b2b2
-     Emacs.mode-line.attributeBackground: #292b2e
+     #+BEGIN_SRC text
+       Emacs.Background:                    #292b2e
+       Emacs.Foreground:                    #b2b2b2
+       Emacs.BorderColor:                   #292b2e
+       Emacs.SelectionForeground:           #b2b2b2
+       Emacs.mode-line.attributeForeground: #b2b2b2
+       Emacs.mode-line.attributeBackground: #292b2e
+     #+END_SRC
      and run xrdb -merge ~/.Xresources
 
      #+BEGIN_SRC emacs-lisp :tangle yes
