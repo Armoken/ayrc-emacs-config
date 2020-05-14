@@ -6,12 +6,12 @@ Editor settings
 * Configuration
 ** Global
 *** Lexical binding
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       ;; -*- lexical-binding: t; -*-
-    #+END_SRC
+    #+end_src
 
 *** Cleaning screen                                                                             :ui:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (setq inhibit-splash-screen   t
             inhibit-startup-message t)
 
@@ -22,17 +22,13 @@ Editor settings
       (setq-default indicate-empty-lines t)
       (setq-default indicate-buffer-boundaries 'left)
 
-      ;; Remove *scratch* buffer
-      (if (get-buffer "*scratch*")
-             (kill-buffer "*scratch*"))
-
       ;; Disable ring-bell-function
       ;; That called when whenever function ‘ding’ is called.
       (setq ring-bell-function 'ignore)
-    #+END_SRC
+    #+end_src
 
 *** Frame settings                                                                              :ui:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package frame
           :init
           ;; Disable cursor blink
@@ -46,22 +42,22 @@ Editor settings
           ;; Fullscreen at GUI startup
           (add-to-list 'initial-frame-alist '(fullscreen . maximized))
           (add-to-list 'default-frame-alist '(fullscreen . maximized)))
-    #+END_SRC
+    #+end_src
 
 *** Theme                                                                                       :ui:
 **** Global theme
      Also add it to ~/.Xresources to prevent blinking at startup:
-     #+BEGIN_SRC text
+     #+begin_src text
        Emacs.Background:                    #292b2e
        Emacs.Foreground:                    #b2b2b2
        Emacs.BorderColor:                   #292b2e
        Emacs.SelectionForeground:           #b2b2b2
        Emacs.mode-line.attributeForeground: #b2b2b2
        Emacs.mode-line.attributeBackground: #292b2e
-     #+END_SRC
+     #+end_src
      and run xrdb -merge ~/.Xresources
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+begin_src emacs-lisp :tangle yes
        (use-package spacemacs-common
            :straight spacemacs-theme
            :demand t
@@ -87,10 +83,10 @@ Editor settings
                                  (select-frame frame)
                                  (load-theme 'spacemacs-dark t)))
                (load-theme 'spacemacs-dark t)))
-     #+END_SRC
+     #+end_src
 
 **** Modeline theme
-     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+     #+begin_src emacs-lisp :tangle yes :noweb yes
        (use-package doom-modeline
            :straight t
            :config
@@ -216,10 +212,10 @@ Editor settings
            <<modeline-custom-modeline-setup>>
 
            (doom-modeline-mode 1))
-     #+END_SRC
+     #+end_src
 
 ***** Current line segment
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref modeline-current-line-segment
+      #+begin_src emacs-lisp :tangle no :noweb-ref modeline-current-line-segment
         (doom-modeline-def-segment
          ayrc/my-current-line
          "The buffer position information."
@@ -253,10 +249,10 @@ Editor settings
                         column-number-mode
                         doom-modeline-percent-position)
                   (doom-modeline-spc)))))
-      #+END_SRC
+      #+end_src
 
 ***** Custom modeline setup
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref modeline-custom-modeline-setup
+      #+begin_src emacs-lisp :tangle no :noweb-ref modeline-custom-modeline-setup
         (doom-modeline-def-modeline 'ayrc/my-simple-line
                                     '(
                                       bar
@@ -282,40 +278,40 @@ Editor settings
         (defun ayrc/setup-custom-doom-modeline ()
             (doom-modeline-set-modeline 'ayrc/my-simple-line 'default))
         (add-hook 'doom-modeline-mode-hook 'ayrc/setup-custom-doom-modeline)
-      #+END_SRC
+      #+end_src
 
 *** Bookmarks
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package bookmark
           :config
           (setq bookmark-save-flag    1
                 bookmark-default-file (expand-file-name
-                                       "bookmarks.el"
+                                       "bookmarks"
                                        ayrc/path-to-session-configs-dir)))
-    #+END_SRC
+    #+end_src
 
 *** Recent files
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb no
+    #+begin_src emacs-lisp :tangle yes :noweb no
       (use-package recentf
           :config
           (setq recentf-save-file (expand-file-name
                                    "recentf-save.el"
                                    ayrc/path-to-session-configs-dir)))
-    #+END_SRC
+    #+end_src
 
 *** Backups in /tmp
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package files
           :init
           (setq
            backup-directory-alist         `((".*" . ,temporary-file-directory))
            auto-save-file-name-transforms `((".*" ,temporary-file-directory t))))
-    #+END_SRC
+    #+end_src
 
 *** [[https://github.com/purcell/exec-path-from-shell][Use user ${PATH} from shell]]
     Make Emacs use the $PATH set up by the user's shell
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package exec-path-from-shell
           :straight t
           :commands (exec-path-from-shell-initialize
@@ -325,33 +321,33 @@ Editor settings
 
           (when (memq window-system '(mac ns x))
               (add-to-list 'exec-path-from-shell-variables "PYENV_ROOT")))
-    #+END_SRC
+    #+end_src
 
 *** Auto revert mode
     Revert buffers when files on disk change
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package autorevert
           :defer t
           :diminish auto-revert-mode)
-    #+END_SRC
+    #+end_src
 
 *** Abbrev mode
     Word abbreviations mode. In Abbrev mode, inserting an abbreviation causes
     it to expand and be replaced by its expansion
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package abbrev
           :defer t
           :commands (abbrev-mode)
           :diminish abbrev-mode)
-    #+END_SRC
+    #+end_src
 
 *** Visual line mode
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (setq word-wrap t)
       (diminish 'visual-line-mode)
-    #+END_SRC
+    #+end_src
 
 *** Disable automatic line breaking
     When Auto Fill mode is enabled, inserting a space at a column
@@ -360,24 +356,24 @@ Editor settings
 
     This minor-mode have bad behavior almost in all modes.
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (diminish 'auto-fill-function)
 
       (auto-fill-mode            -1)
       (remove-hook 'text-mode-hook #'turn-on-auto-fill)
-    #+END_SRC
+    #+end_src
 
 *** Indents
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (setq-default tab-width 4)
       (setq-default pc-basic-offset 4)
       (setq-default standart-indent 4)
       (setq-default indent-tabs-mode nil)
-    #+END_SRC
+    #+end_src
 
 *** Selection
 **** Common clipboard with XServer/Wayland
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+begin_src emacs-lisp :tangle yes
        (setq select-enable-clipboard t)
 
        (use-package xclip
@@ -391,7 +387,7 @@ Editor settings
            :straight t
            :init
            (turn-on-pbcopy))
-     #+END_SRC
+     #+end_src
 
 **** Delete Selection mode
      If you enable Delete Selection mode, a minor mode,
@@ -399,32 +395,32 @@ Editor settings
      to be deleted first. This also deactivates the mark. Many graphical
      applications follow this convention, but Emacs does not.
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+begin_src emacs-lisp :tangle yes
        (delete-selection-mode t)
-     #+END_SRC
+     #+end_src
 
 *** Set newline at the end of file
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (setq require-final-newline t)
       (setq next-line-add-newlines t)
-    #+END_SRC
+    #+end_src
 
 *** [[https://github.com/editorconfig/editorconfig-emacs][EditorConfig]]
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package editorconfig
           :straight t
           :diminish editorconfig-mode
           :init
           (editorconfig-mode))
-    #+END_SRC
+    #+end_src
 
 *** Use 'y' and `n' instead of 'yes' and 'not'                                                  :ui:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (fset 'yes-or-no-p 'y-or-n-p)
-    #+END_SRC
+    #+end_src
 
 *** Scroll settings                                                                             :ui:
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+    #+begin_src emacs-lisp :tangle yes :noweb yes
       (use-package pixel-scroll
           :bind (("M-n" . (lambda nil (interactive) (pixel-scroll-up 1)))
                  ("M-p" . (lambda nil (interactive) (pixel-scroll-down 1)))
@@ -441,10 +437,10 @@ Editor settings
           :config
           <<scroll-perfomance>>
           <<scroll-smoothness>>)
-    #+END_SRC
+    #+end_src
 
 **** Perfomance
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref scroll-perfomance
+     #+begin_src emacs-lisp :tangle no :noweb-ref scroll-perfomance
        ;; Reduce rendering/line scan work for Emacs by not rendering cursors or
        ;; regions in non-focused windows.
        (setq-default cursor-in-non-selected-windows nil)
@@ -463,10 +459,10 @@ Editor settings
         jit-lock-defer-time             0
 
         highlight-nonselected-windows   nil)
-     #+END_SRC
+     #+end_src
 
 **** Smoothness
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref scroll-smoothness
+     #+begin_src emacs-lisp :tangle no :noweb-ref scroll-smoothness
        (setq
         ;; scroll-preserve-screen-position nil
         scroll-step                   1
@@ -485,10 +481,10 @@ Editor settings
         mouse-wheel-scroll-amount     '(1 ((shift) . 1))
         mouse-wheel-follow-mouse      t
         mouse-wheel-progressive-speed nil)
-     #+END_SRC
+     #+end_src
 
 **** Golden ratio
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref golden-ratio-scroll-screen
+     #+begin_src emacs-lisp :tangle no :noweb-ref golden-ratio-scroll-screen
        (use-package golden-ratio-scroll-screen
            :straight t
            :defer t
@@ -498,22 +494,22 @@ Editor settings
             ((t (:background "#3c394a" :foreground "#5b576e"))))
            :commands (golden-ratio-scroll-screen-down
                       golden-ratio-scroll-screen-up))
-     #+END_SRC
+     #+end_src
 
 *** Highlighting                                                                                :ui:
 **** Syntax                                                                                     :ui:
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+begin_src emacs-lisp :tangle yes
        (use-package font-lock
            :defer t
            :commands (font-lock-mode global-font-lock-mode)
            :config
            (setq font-lock-maximum-decoration t))
-     #+END_SRC
+     #+end_src
 
 **** Expressions between {},[],()                                                               :ui:
      Highlight matching paren
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+begin_src emacs-lisp :tangle yes
        (use-package paren
            :defer t
            :commands (show-paren-mode)
@@ -523,28 +519,29 @@ Editor settings
            :config
            (setq show-paren-delay 0
                  show-paren-style 'expression))
-     #+END_SRC
+     #+end_src
 
 *** [[https://github.com/domtronn/all-the-icons.el][Icons]]                                                                                       :ui:
     A library for inserting Developer icons
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package all-the-icons
           :straight t
           :defer t)
-    #+END_SRC
+    #+end_src
 
 *** Current line hightlight                                                                     :ui:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package hl-line
           :init
           (global-hl-line-mode 1))
-    #+END_SRC
+    #+end_src
 
 *** Line numbering                                                                              :ui:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package display-line-numbers
           :defer t
+          :after (:any company)
           :commands (display-line-numbers)
           :init
           (line-number-mode     t)
@@ -555,18 +552,18 @@ Editor settings
 
           :config
           (setq display-line-numbers-width-start 5))
-    #+END_SRC
+    #+end_src
 
 *** Eldoc                                                                                       :ui:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package eldoc
           :diminish eldoc-mode
           :init
           (global-eldoc-mode -1))
-    #+END_SRC
+    #+end_src
 
 *** [[https://github.com/emacs-dashboard/emacs-dashboard][Dashboard]]                                                                                   :ui:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package dashboard
           :straight t
           :diminish page-break-lines-mode
@@ -584,10 +581,10 @@ Editor settings
                 dashboard-items             '((recents  . 5)
                                               (bookmarks . 5)
                                               (projects . 5))))
-    #+END_SRC
+    #+end_src
 
 *** [[https://github.com/bbatsov/projectile][Project managment]]                                                                   :hotkeys:ui:
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+    #+begin_src emacs-lisp :tangle yes :noweb yes
       (use-package projectile
           :straight t
           :delight '(:eval (format "[P<%s>]" (projectile-project-name)))
@@ -621,10 +618,10 @@ Editor settings
                 projectile-known-projects-file (expand-file-name
                                                 "known-projects.el"
                                                 ayrc/path-to-session-configs-dir)))
-    #+END_SRC
+    #+end_src
 
 **** [[https://github.com/bbatsov/helm-projectile][Helm]]                                                                           :interactive:ui:
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref helm-projectile
+     #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref helm-projectile
        (use-package helm-projectile
            :straight t
            :defer t
@@ -646,33 +643,33 @@ Editor settings
                (interactive)
                (if (executable-find "rg") (helm-projectile-rg)
                    (helm-projectile-grep))))
-     #+END_SRC
+     #+end_src
 
 ***** [[https://github.com/cosmicexplorer/helm-rg][Ripgrep]]
       A helm interface to ripgrep
 
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref projectile-helm-rg
+      #+begin_src emacs-lisp :tangle no :noweb-ref projectile-helm-rg
         (use-package helm-rg
             :straight t
             :commands (helm-projectile-rg))
-      #+END_SRC
+      #+end_src
 
 *** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                                                             :hotkeys:ui:
     A tree plugin like NerdTree for Vim
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package neotree
           :straight t
           :bind ("<f1>" . neotree-toggle)
           :config
           (setq neo-window-width 40)
           (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
-    #+END_SRC
+    #+end_src
 
 *** [[https://emacs-helm.github.io/helm/][Helm]]                                                                                :hotkeys:ui:
     Incremental and narrowing framework
 
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+    #+begin_src emacs-lisp :tangle yes :noweb yes
       (use-package helm
           :straight t
           :diminish helm-mode
@@ -748,33 +745,34 @@ Editor settings
 
           ;; Autoresize helm minibufer
           (helm-autoresize-mode t))
-    #+END_SRC
+    #+end_src
 
 **** [[https://github.com/cosmicexplorer/helm-rg][Ripgrep]]
      A helm interface to ripgrep
 
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-rg
+     #+begin_src emacs-lisp :tangle no :noweb-ref helm-rg
        (use-package helm-rg
            :straight t
            :commands (helm-rg))
-     #+END_SRC
+     #+end_src
 
 *** [[http://www.dr-qubit.org/undo-tree/undo-tree.el][Undo tree]]                                                                           :hotkeys:ui:
     Treat undo history as a tree
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package undo-tree
           :straight t
+          :after (:any company)
           :diminish undo-tree-mode
           :bind (("C-x u" . undo-tree-visualize))
           :init
           (global-undo-tree-mode))
-    #+END_SRC
+    #+end_src
 
 *** [[https://github.com/syohex/emacs-anzu][Display in the modeline search information]]                                          :hotkeys:ui:
     Show number of matches in mode-line while searching
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package anzu
           :straight t
           :defines (anzu-cons-mode-line-p)
@@ -786,23 +784,24 @@ Editor settings
                  :map isearch-mode-map
                  ([remap isearch-query-replace]        . #'anzu-isearch-query-replace)
                  ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp)))
-    #+END_SRC
+    #+end_src
 
 *** [[https://github.com/abo-abo/hydra][Hydra]]                                                                               :hotkeys:ui:
     Make bindings that stick around
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package hydra
           :straight t
           :defer t
           :after (:any dap)
           :commands (defhydra))
-    #+END_SRC
+    #+end_src
 
 *** Subword mode                                                                           :hotkeys:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package subword
           :defer t
+          :after (:any company)
           :commands (global-subword-mode)
           :diminish (subword-mode global-subword-mode)
           :init
@@ -840,47 +839,47 @@ Editor settings
           (global-set-key (kbd "M-<backspace>") 'ayrc/backward-kill-word)
 
           (global-subword-mode 1))
-    #+END_SRC
+    #+end_src
 
 *** Hotkeys for changing size of buffers                                                   :hotkeys:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (global-set-key (kbd "<C-M-up>")    'shrink-window)
       (global-set-key (kbd "<C-M-down>")  'enlarge-window)
       (global-set-key (kbd "<C-M-left>")  'shrink-window-horizontally)
       (global-set-key (kbd "<C-M-right>") 'enlarge-window-horizontally)
-    #+END_SRC
+    #+end_src
 
 *** Layout switching                                                                       :hotkeys:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (global-set-key (kbd "<AltGr>") 'toggle-input-method)
-    #+END_SRC
+    #+end_src
 
 *** Movement between windows with M-arrow-keys (except org-mode)                           :hotkeys:
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+begin_src emacs-lisp :tangle yes
       (if (equal nil (equal major-mode 'org-mode))
           (windmove-default-keybindings 'meta))
-     #+END_SRC
+     #+end_src
 
 *** Add newline and indent on enter press                                                  :hotkeys:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (global-set-key (kbd "RET") 'newline-and-indent)
-    #+END_SRC
+    #+end_src
 
 *** Scroll screen without changing cursor position                                         :hotkeys:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (global-set-key (kbd "M-n") (lambda () (interactive) (scroll-up 1)))
       (global-set-key (kbd "M-p") (lambda () (interactive) (scroll-down 1)))
-    #+END_SRC
+    #+end_src
 
 *** Revert buffer                                                                          :hotkeys:
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle yes
      (global-set-key (kbd "<f5>") (lambda () (interactive) (revert-buffer)))
-   #+END_SRC
+   #+end_src
 
 *** [[https://github.com/abo-abo/avy][Jump to things in Emacs tree-style]]                                                     :hotkeys:
     Jump to arbitrary positions in visible text and select text quickly
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package avy
           :straight t
           :bind (("C-;"     . avy-goto-char-2)
@@ -895,31 +894,34 @@ Editor settings
                  ("M-g M-g" . avy-goto-line))
           :config
           (setq avy-case-fold-search nil))
-    #+END_SRC
+    #+end_src
 
 *** [[https://github.com/magnars/expand-region.el][Expand region]]                                                                          :hotkeys:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package expand-region
         :straight t
+        :after (:any company)
         :commands (er/expand-region)
         :bind ("C-=" . er/expand-region))
-    #+END_SRC
+    #+end_src
 
 *** [[https://github.com/ieure/scratch-el][Scratch buffer]]                                                                         :hotkeys:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package scratch
           :straight t
+          :after (:any company)
           :defer t
           :bind ("C-c s" . #'scratch))
-    #+END_SRC
+    #+end_src
 
 *** TODO [[https://github.com/nex3/perspective-el][perspective-el]]
 *** TODO [[https://github.com/manateelazycat/emacs-application-framework][Emacs Application Framework]]
 
 *** Compilation                                                                            :hotkeys:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package compile
           :defer t
+          :after (:any company)
           :bind (
                  ;; Press to compile
                  ("<f9>" . 'compile)
@@ -927,21 +929,22 @@ Editor settings
                  ;; Errors switching
                  ("<f7>" . 'next-error)
                  ("<f8>" . 'previous-error)))
-    #+END_SRC
+    #+end_src
 
 ** Non global
 *** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]                                                                       :ui:
     Minor modes for highlighting indentation
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package highlight-indentation
           :straight t
+          :after (:any company)
           :diminish highlight-indentation-mode
           :commands (highlight-indentation-mode)
           :custom-face
           (highlight-indentation                (("#e3e3d3")))
           (highlight-indentation-current-column (("#c3b3b3"))))
-    #+END_SRC
+    #+end_src
 
 *** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                                                                     :ui:
     This package provides the `adaptive-wrap-prefix-mode' minor mode which sets
@@ -949,60 +952,66 @@ Editor settings
     word-wrapped in a way similar to what you'd get with M-q using
     adaptive-fill-mode, but without actually changing the buffer's text.
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package adaptive-wrap
           :straight t
+          :after (:any company)
           :diminish adaptive-wrap-prefix-mode
           :hook (visual-line-mode . adaptive-wrap-prefix-mode)
           :commands (adaptive-wrap-prefix-mode)
           :config
           (progn
               (setq-default adaptive-wrap-extra-indent 2)))
-    #+END_SRC
+    #+end_src
 
 *** [[https://github.com/nflath/hungry-delete][Hungry delete]]                                                                          :hotkeys:
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package hungry-delete
           :straight t
           :defer t
+          :after (:any company)
           :diminish hungry-delete-mode
           :commands (hungry-delete-mode))
-    #+END_SRC
+    #+end_src
 
 *** [[https://github.com/hbin/smart-shift][Region shifting]]
     Smart shift text left/right.
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package smart-shift
-        :straight t
-        :diminish smart-shift-mode
-        :bind
-        (:map smart-shift-mode-map
-              ("<C-up>" . smart-shift-up)
-              ("<C-down>" . smart-shift-down)
-              ("<C-left>" . smart-shift-left)
-              ("<C-right>" . smart-shift-right)))
-    #+END_SRC
+          :straight t
+          :after (:any company)
+          :diminish smart-shift-mode
+          :bind
+          (:map smart-shift-mode-map
+                ("<C-up>" . smart-shift-up)
+                ("<C-down>" . smart-shift-down)
+                ("<C-left>" . smart-shift-left)
+                ("<C-right>" . smart-shift-right)))
+    #+end_src
 
 *** [[https://github.com/lewang/ws-butler][Fixing up whitespaces only for touched lines]]
     Unobtrusively remove trailing whitespace
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package ws-butler
+          :after (:any company)
           :diminish ws-butler-mode
           :straight t
           :commands (ws-butler-mode))
-    #+END_SRC
+    #+end_src
 
 *** [[https://github.com/Fuco1/smartparens][Automatically pairs braces and quotes]]
     Minor mode for Emacs that deals with parens pairs and tries to be smart
     about it
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package smartparens
           :straight t
+          :after (:any company)
+          :functions (sp-pair)
           :diminish smartparens-mode
-          :commands (smartparens-mode smartparens-strict-mode)
+          :commands (smartparens-mode smartparens-strict-mode sp-pair)
           :bind (:map smartparens-mode-map
                       ("C-M-f" . sp-forward-sexp)
                       ("C-M-b" . sp-backward-sexp)
@@ -1021,32 +1030,34 @@ Editor settings
                       ("C-x C-t" . sp-transpose-hybrid-sexp))
           :config
           (sp-pair "'" "'" :actions nil))
-    #+END_SRC
+    #+end_src
 
 *** [[https://github.com/Malabarba/aggressive-indent-mode][Aggressive Indent]]
     Emacs minor mode that keeps your code always indented.
     More reliable than electric-indent-mode.
 
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+    #+begin_src emacs-lisp :tangle yes :noweb yes
       (use-package aggressive-indent
           :straight t
+          :after (:any company)
           :commands (aggressive-indent-mode)
           :hook (aggressive-indent-mode . ayrc/aggressive-indent-hook)
           :diminish aggressive-indent-mode
           :init
           <<aggressive-indent-hook>>)
-    #+END_SRC
+    #+end_src
 
 ***** Hook
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref aggressive-indent-hook
+      #+begin_src emacs-lisp :tangle no :noweb-ref aggressive-indent-hook
         (defun ayrc/aggressive-indent-hook ()
             (electric-indent-local-mode -1))
-      #+END_SRC
+      #+end_src
 
 *** Folding
 **** Hideshow                                                                          :interactive:
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+begin_src emacs-lisp :tangle yes
        (use-package hideshow
+           :after (:any company)
            :diminish hs-minor-mode
            :commands (hs-minor-mode)
            :bind
@@ -1075,11 +1086,12 @@ Editor settings
                                   "<!--"
                                   'nxml-forward-element
                                   nil))))
-     #+END_SRC
+     #+end_src
 
 **** Outline mode                                                                      :interactive:
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+begin_src emacs-lisp :tangle yes
        (use-package outline
+           :after (:any company)
            :diminish outline-minor-mode
            :commands (outline-minor-mode)
            :bind (:map outline-minor-mode-map
@@ -1128,13 +1140,14 @@ Editor settings
                (if ayrc/outline-toggle-all-flag
                        (ayrc/outline-show-all)
                    (ayrc/outline-hide-all))))
-     #+END_SRC
+     #+end_src
 
 *** Spell checking
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+begin_src emacs-lisp :tangle yes
       (use-package flyspell
-          :defer t)
-    #+END_SRC
+          :defer t
+          :after (:any company))
+    #+end_src
 
 **** TODO Fix spell checking in text modes
      https://github.com/tmalsburg/guess-language.el
@@ -1144,61 +1157,51 @@ Editor settings
 **** Flymake
      A universal on-the-fly syntax checker
 
-     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+     #+begin_src emacs-lisp :tangle yes :noweb yes
        (use-package flymake
            :defer t
+           :after (:any company)
            :diminish flymake-mode
-           :commands (flymake-mode)
-           :init
-           (progn
-               <<helm-flymake-usepkg>>))
-     #+END_SRC
-
-***** [[https://github.com/tam17aki/helm-flymake][Helm]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-flymake-usepkg
-        (use-package helm-flymake
-            :straight t
-            :defer t
-            :after flymake
-            :bind (:map flymake-mode-map
-                        ("C-c h f" . helm-flymake))
-            :commands (helm-flymake))
-      #+END_SRC
+           :commands (flymake-mode))
+     #+end_src
 
 **** [[http://www.flycheck.org][Flycheck]]
      On-the-fly syntax checking
 
-     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+     #+begin_src emacs-lisp :tangle yes :noweb yes
+       <<helm-flycheck-usepkg>>
+
        (use-package flycheck
            :straight t
+           :after (:any company)
            :diminish flycheck-mode
            :commands (flycheck-mode)
+           :bind (:map flycheck-mode-map
+                       ("C-c h f" . helm-flycheck))
            :hook (flycheck-mode . ayrc/flycheck-hook)
            :init
-           <<helm-flycheck-usepkg>>
-           <<flycheck-hook>>)
-     #+END_SRC
+           <<flycheck-hook>>
+           :config
+           (setq flycheck-checker-error-threshold    700
+                 flycheck-standard-error-navigation  nil
+                 flycheck-idle-change-delay          0
+                 flycheck-check-syntax-automatically '(save mode-enabled)))
+     #+end_src
 
 ***** [[https://github.com/yasuyk/helm-flycheck][Helm]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-flycheck-usepkg
+      #+begin_src emacs-lisp :tangle no :noweb-ref helm-flycheck-usepkg
         (use-package helm-flycheck
             :straight t
-            :after flycheck
-            :bind (:map flycheck-mode-map
-                        ("C-c h f" . helm-flycheck))
+            :defer t
+            :after (flycheck)
             :commands (helm-flycheck))
-      #+END_SRC
+      #+end_src
 
 ***** Hook
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flycheck-hook
+      #+begin_src emacs-lisp :tangle no :noweb-ref flycheck-hook
         (defun ayrc/flycheck-hook ()
-            (flymake-mode -1)
-
-            (setq flycheck-checker-error-threshold 700)
-            (setq flycheck-standard-error-navigation nil)
-            (setq flycheck-idle-change-delay 0)
-            (setq flycheck-check-syntax-automatically '(save mode-enabled)))
-      #+END_SRC
+            (flymake-mode -1))
+      #+end_src
 
 *** TODO [[https://github.com/jacktasia/dumb-jump][dump-jump]]
     An Emacs "jump to definition" package for 40+ languages
@@ -1209,70 +1212,75 @@ Editor settings
 *** XREF
     Cross-referencing commands
 
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+    #+begin_src emacs-lisp :tangle yes :noweb yes
+      <<helm-xref-usepkg>>
+
       (use-package xref
           :defines (xref-show-definitions-function)
+          :after (:any company)
           :defer t
           :init
-          <<helm-xref-usepkg>>
 
           (defun ayrc/setup-xref-hotkeys ()
               (ayrc/local-set-keys '(("M-,"     . xref-pop-marker-stack)
                                      ("M-?"     . xref-find-definitions)
-                                     ("C-M-."   . xref-find-apropos)))))
-    #+END_SRC
+                                     ("C-M-."   . xref-find-apropos))))
+          :config
+          (if (< emacs-major-version 27)
+                  (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
+              (setq xref-show-xrefs-function 'helm-xref-show-xrefs-27
+                    xref-show-definitions-function 'helm-xref-show-defs-27)))
+    #+end_src
 
 **** [[https://github.com/brotzeit/helm-xref][Helm]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-xref-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb-ref helm-xref-usepkg
        (use-package helm-xref
            :straight t
            :defer t
-           :after xref
+           :after (:any xref)
            :commands (helm-xref-show-xrefs
                       helm-xref-show-xrefs-27
-                      helm-xref-show-defs-27)
-           :init
-           (if (< emacs-major-version 27)
-                   (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
-               (setq xref-show-xrefs-function 'helm-xref-show-xrefs-27
-                     xref-show-definitions-function 'helm-xref-show-defs-27)))
-     #+END_SRC
+                      helm-xref-show-defs-27))
+     #+end_src
 
 *** [[http://github.com/joaotavora/yasnippet][Snippets]]
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+    #+begin_src emacs-lisp :tangle yes :noweb yes
+      <<snippets-collection>>
+
       (use-package yasnippet
           :straight t
+          :after (:any company)
           :defer t
-          :commands (yas-minor-mode yas-global-mode)
+          :functions (yas-reload-all)
+          :commands (yas-minor-mode yas-global-mode yas-reload-all)
           :diminish yas-minor-mode
-          :init
-          <<snippets-collection>>
-
           :config
           (setq yas-snippet-dirs
                 (list (ayrc/expand-config-path "./personal-snippets")))
           (yasnippet-snippets-initialize)
 
           (yas-reload-all))
-    #+END_SRC
+    #+end_src
 
 **** [[https://github.com/AndreaCrotti/yasnippet-snippets][Ready snippets collection]]
      A collection of yasnippet snippets for many languages
 
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref snippets-collection
+     #+begin_src emacs-lisp :tangle no :noweb-ref snippets-collection
        (use-package yasnippet-snippets
            :straight t
-           :defer t
-           :after yasnippet
+           :demand t
+           :after (:any yasnippet)
            :commands (yasnippet-snippets-initialize))
-     #+END_SRC
+     #+end_src
 
 *** Autocompletion
 **** [[http://company-mode.github.io/][Company]]
-     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+     #+begin_src emacs-lisp :tangle yes :noweb yes
        (use-package company
            :straight t
            :diminish company-mode
+           :defer t
+           :commands (company-mode)
            :bind
            (:map company-active-map
                  ("<tab>" . company-complete-selection))
@@ -1281,46 +1289,46 @@ Editor settings
            <<company-box-usepkg>>
            <<company-flx-usepkg>>
            <<company-quickhelp-usepkg>>
-           <<company-setup-func>>
-           <<company-hook>>
 
            :config
            (setq company-tooltip-align-annotations t
                  company-idle-delay                0.1
                  company-show-numbers              t
                  company-minimum-prefix-length     1))
-     #+END_SRC
+     #+end_src
 
 ***** [[https://www.github.com/expez/company-quickhelp][Documentation]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-quickhelp-usepkg
+      #+begin_src emacs-lisp :tangle no :noweb-ref company-quickhelp-usepkg
         (use-package company-quickhelp
             :straight t
             :after company
-            :commands (company-quickhelp-mode)
+            :functions (company-quickhelp-manual-begin)
+            :commands (company-quickhelp-local-mode)
             :bind (:map company-active-map
                         ("M-h" . #'company-quickhelp-manual-begin)))
-      #+END_SRC
+      #+end_src
 
 ***** [[https://github.com/PythonNut/company-flx][Fuzzy matching]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-flx-usepkg
+      #+begin_src emacs-lisp :tangle no :noweb-ref company-flx-usepkg
         (use-package company-flx
             :straight t
-            :after company
+            :after (company)
             :commands (company-flx-mode))
-      #+END_SRC
+      #+end_src
 
 ***** [[https://github.com/sebastiencs/company-box][Icons]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-box-usepkg
+      #+begin_src emacs-lisp :tangle no :noweb-ref company-box-usepkg
         (use-package company-box
             :straight t
             :disabled
-            :after company
+            :after (company)
             :config
             (setq company-box-icons-alist company-box-icons-all-the-icons))
-       #+END_SRC
+       #+end_src
 
 ***** Setup function
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-setup-func
+      #+begin_src emacs-lisp :tangle README-loaddefs.el
+        ;;;###autoload
         (defun ayrc/setup-company (&optional mode-specific-backends)
             (company-mode 1)
             (or mode-specific-backends (setq mode-specific-backends '()))
@@ -1334,24 +1342,27 @@ Editor settings
                                     company-dabbrev))))  ;; dynamic abbreviat
                 (make-local-variable 'company-backends)
                 (setq company-backends (-non-nil backends))))
-      #+END_SRC
+      #+end_src
 
 ***** Hook
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-hook
+      #+begin_src emacs-lisp :tangle README-loaddefs.el
+        ;;;###autoload
         (defun ayrc/company-hook ()
+            ;; (message "BLYAAAAAAAA--- %s" (buffer-name (current-buffer)))
             (company-flx-mode)
             ;; (company-box-mode)
-            (company-quickhelp-mode))
-      #+END_SRC
+            (company-quickhelp-local-mode))
+      #+end_src
+
 **** Semantic
      Required for helm-semantic
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+begin_src emacs-lisp :tangle yes
        (use-package semantic
-           :after (company)
+           :after (:any company)
            :diminish semantic-mode
            :commands (semantic-mode))
-     #+END_SRC
+     #+end_src
 
 *** [[https://github.com/leoliu/ggtags][GTags]]
     Emacs frontend to GNU Global source code tagging system
@@ -1361,9 +1372,10 @@ Editor settings
     - [[https://www.gnu.org/software/global/][GNU Global]] :: intall it and put [[file:~/.emacs.d/other/etc/gtags.conf][gtags configuration]] into HOME/.globalrc
                     or gtags.conf into project root
 
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+    #+begin_src emacs-lisp :tangle yes :noweb yes
       (use-package ggtags
           :straight t
+          :after (:any company)
           :diminish ggtags-mode
           :commands (ggtags-mode)
           :init
@@ -1375,10 +1387,10 @@ Editor settings
           (setq ggtags-sort-by-nearness t)
           (unbind-key "M-<" ggtags-mode-map)
           (unbind-key "M->" ggtags-mode-map))
-    #+END_SRC
+    #+end_src
 
 **** [[https://github.com/syohex/emacs-helm-gtags][Helm]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-gtags-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb-ref helm-gtags-usepkg
        (use-package helm-gtags
            :straight t
            :after ggtags
@@ -1391,7 +1403,7 @@ Editor settings
 
            (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
            (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack))
-     #+END_SRC
+     #+end_src
 
 *** [[https://github.com/Microsoft/language-server-protocol/][LSP]]
     A common protocol for language servers
@@ -1399,19 +1411,17 @@ Editor settings
 **** [[https://github.com/joaotavora/eglot][Eglot]]
      A client for Language Server Protocol servers
 
-     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+     #+begin_src emacs-lisp :tangle yes :noweb yes
        (use-package eglot
            :straight t
-           :after (:any cc-mode python)
+           :after (:any company)
            :diminish eglot-mode
            :commands (eglot-mode eglot-ensure ayrc/eglot-hook)
-           :hook (eglot-managed-mode . ayrc/eglot-hook)
-           :init
-           <<eglot-hook>>)
-     #+END_SRC
+           :hook (eglot-managed-mode . ayrc/eglot-hook))
+     #+end_src
 
 ***** Hook
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref eglot-hook
+      #+begin_src emacs-lisp :tangle README-loaddefs.el
         (defun ayrc/eglot-hook ()
             (ayrc/local-set-keys '(("C-c r"   . eglot-rename)
                                    ("C-c C-r" . eglot-format)
@@ -1420,15 +1430,15 @@ Editor settings
 
             (add-to-list 'eglot-stay-out-of 'company)
             (ayrc/setup-company '(company-capf :with company-yasnippet)))
-      #+END_SRC
+      #+end_src
 
 **** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
      Emacs client/library for the Language Server Protocol
 
-     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+     #+begin_src emacs-lisp :tangle yes :noweb yes
        (use-package lsp-mode
            :straight t
-           :after (:any cc-mode python)
+           :after (:any company)
            :diminish lsp-mode
            :commands (lsp-mode lsp-deffered lsp-rename)
            :hook (lsp-mode . ayrc/lsp-hook)
@@ -1436,12 +1446,11 @@ Editor settings
                        ("C-c h w" . helm-lsp-workspace-symbol))
            :init
            <<lsp-ui-usepkg>>
-           <<helm-lsp-usepkg>>
-           <<lsp-hook>>)
-     #+END_SRC
+           <<helm-lsp-usepkg>>)
+     #+end_src
 
 ***** Hook
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref lsp-hook
+      #+begin_src emacs-lisp :tangle README-loaddefs.el
         (defun ayrc/lsp-hook ()
             (setq
              lsp-enable-folding                         t
@@ -1465,22 +1474,23 @@ Editor settings
 
             (lsp-ui-mode   1)
             (dap-mode      1))
-      #+END_SRC
+      #+end_src
 
 ***** [[https://github.com/yyoncho/helm-lsp][Helm]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-lsp-usepkg
+      #+begin_src emacs-lisp :tangle no :noweb-ref helm-lsp-usepkg
         (use-package helm-lsp
             :straight t
             :defer t
-            :after lsp-mode
+            :after (lsp-mode)
             :commands (helm-lsp-workspace-symbol))
-      #+END_SRC
+      #+end_src
 
 ***** [[https://github.com/emacs-lsp/lsp-ui][UI modules]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref lsp-ui-usepkg
+      #+begin_src emacs-lisp :tangle no :noweb-ref lsp-ui-usepkg
         (use-package lsp-ui
             :straight t
             :defer t
+            :after (lsp-mode)
             :defines (lsp-ui-flycheck-enable)
             :commands (lsp-ui-mode)
             :config
@@ -1491,13 +1501,13 @@ Editor settings
                   lsp-ui-flycheck-enable       t
                   lsp-ui-doc-include-signature nil
                   lsp-ui-sideline-show-symbol  nil))
-      #+END_SRC
+      #+end_src
 
 *** Debugging
 **** [[https://github.com/yyoncho/dap-mode][DAP]]
      Debug Adapter Protocol mode
 
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+begin_src emacs-lisp :tangle yes
        (use-package dap-mode
            :straight t
            :defer t
@@ -1534,20 +1544,20 @@ Editor settings
                              (if (listp rest-of-debug-templates)
                                      '()
                                  rest-of-debug-templates))))))
-     #+END_SRC
+     #+end_src
 
 * Helpful functions
 ** Reload configuration                                                                :interactive:
-   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+   #+begin_src emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/reload-configuration ()
          "Reload configuration starting from ~/.emacs.d/init.el"
          (interactive)
          (load-file (ayrc/expand-config-path "./init.el")))
-   #+END_SRC
+   #+end_src
 
 ** Rename current buffer and file                                                      :interactive:
-   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+   #+begin_src emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/rename-current-file-and-buffer ()
        "Rename the current buffer and file it is visiting."
@@ -1561,10 +1571,10 @@ Editor settings
               (t
                (rename-file filename new-name t)
                (set-visited-file-name new-name t t)))))))
-   #+END_SRC
+   #+end_src
 
 ** Edit files as root                                                                  :interactive:
-   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+   #+begin_src emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/sudo-edit (&optional arg)
        "Edit currently visited file as root.
@@ -1578,10 +1588,10 @@ Editor settings
                               (ido-read-file-name "Find file(as root): ")))
          (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
-   #+END_SRC
+   #+end_src
 
 ** Copy the current buffer file name to the clipboard                                  :interactive:
-   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+   #+begin_src emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/copy-file-name-to-clipboard ()
        "Copy the current buffer file name to the clipboard."
@@ -1592,10 +1602,10 @@ Editor settings
          (when filename
            (kill-new filename)
            (message "Copied buffer file name '%s' to the clipboard." filename))))
-   #+END_SRC
+   #+end_src
 
 ** CRLF to LF                                                                          :interactive:
-   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+   #+begin_src emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/dos2unix (_buffer)
          "Automate M-% C-q C-m RET C-q C-j RET"
@@ -1604,18 +1614,18 @@ Editor settings
              (goto-char (point-min))
              (while (search-forward (string ?\C-m) nil t)
                  (replace-match (string ?\C-j) nil t))))
-   #+END_SRC
+   #+end_src
 
 ** Copy hooks
-   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+   #+begin_src emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/copy-hooks-to (from-hook to-hook)
        (dolist (hook from-hook)
          (add-hook to-hook hook)))
-   #+END_SRC
+   #+end_src
 
 ** Find path to executable
-   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+   #+begin_src emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/executable-find (command)
          "Search for COMMAND in `exec-path' and return the absolute file name.
@@ -1623,10 +1633,10 @@ Editor settings
          ;; Use 1 rather than file-executable-p to better match the behavior of
          ;; call-process.
          (locate-file command exec-path exec-suffixes 1))
-   #+END_SRC
+   #+end_src
 
 ** Set multiple local bindings
-   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+   #+begin_src emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/local-set-keys (key-commands)
          "Set multiple local bindings with KEY-COMMANDS list."
@@ -1635,10 +1645,10 @@ Editor settings
                  (define-key local-map
                      (kbd (car kc))
                      (cdr kc)))))
-   #+END_SRC
+   #+end_src
 
 ** Functions for making text pretty                                                    :interactive:
-   #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+   #+begin_src emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/tabify-buffer ()
          "Replace spaces by from buffer."
@@ -1675,10 +1685,10 @@ Editor settings
          (ayrc/indent-buffer)
          (delete-trailing-whitespace)
          nil)
-   #+END_SRC
+   #+end_src
 
 * Org-mode
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+    #+begin_src emacs-lisp :tangle yes :noweb yes
       (use-package org
           :defer t
           :commands (org-mode)
@@ -1713,57 +1723,57 @@ Editor settings
            org-todo-keyword-faces '(("CURRENT" . "yellow")
                                     ("CANCELED" . (:foreground "RoyalBlue3"
                                                                :weight bold)))))
-    #+END_SRC
+    #+end_src
 
 ** TODO Support of encrypted containers
 ** [[https://github.com/emacsorphanage/org-bullets][Bullets]]
    Show bullets in org-mode as UTF-8 characters
 
-   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref org-bullets-usepkg
+   #+begin_src emacs-lisp :tangle no :noweb-ref org-bullets-usepkg
      (use-package org-bullets
          :straight t
          :defer t
          :after org
          :commands (org-bullets-mode))
-   #+END_SRC
+   #+end_src
 
 ** [[https://github.com/rlister/org-present][Present]]
    Minimalist presentation minor-mode for Emacs org-mode
 
-   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref org-present-usepkg
+   #+begin_src emacs-lisp :tangle no :noweb-ref org-present-usepkg
      (use-package org-present
          :straight t
          :defer t
          :after org
          :commands (org-present))
-   #+END_SRC
+   #+end_src
 
 ** [[http://github.com/rexim/org-cliplink][Cliplink]]
    Insert org-mode links from the clipboard
 
-   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref org-cliplink-usepkg
+   #+begin_src emacs-lisp :tangle no :noweb-ref org-cliplink-usepkg
      (use-package org-cliplink
          :straight t
          :defer t
          :after org
          :commands (org-cliplink))
-   #+END_SRC
+   #+end_src
 
 ** [[https://github.com/alphapapa/org-rifle][Helm]]
-   #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref helm-org-rifle
+   #+begin_src emacs-lisp :tangle no :noweb-ref helm-org-rifle
      (use-package helm-org-rifle
          :straight t
          :defer t
          :after org
          :commands (helm-org-rifle-current-buffer))
-   #+END_SRC
+   #+end_src
 
 * Clients
 ** TODO [[https://github.com/rejeep/prodigy.el][Prodigy]]
 ** TODO Gnus or mu4e
 ** VCS
 *** [[https://github.com/magit/magit][Git]]                                                                             :global_hotkeys:
-     #+BEGIN_SRC emacs-lisp :tangle yes
+     #+begin_src emacs-lisp :tangle yes
        (use-package magit
            :straight t
            :defines (magit-default-tracking-name-function
@@ -1812,10 +1822,10 @@ Editor settings
                      magit-save-some-buffers t
                      ;; ask me if I want a tracking upstream
                      magit-set-upstream-on-push 'askifnotset)))
-	  #+END_SRC
+	  #+end_src
 
 ** Dired
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle yes
      (use-package dired
          :defer t
          :config
@@ -1827,25 +1837,25 @@ Editor settings
              ;; if there is a dired buffer displayed in the next window, use its
              ;; current subdir, instead of the current subdir of this dired buffe
              (setq dired-dwim-target t)))
-   #+END_SRC
+   #+end_src
 
 ** [[https://github.com/Silex/docker.el][Docker]]
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle yes
      (use-package docker
          :straight t
          :bind ("C-c d" . docker))
-   #+END_SRC
+   #+end_src
 
 ** [[https://github.com/chrisbarrett/kubernetes-el][Kubernetes]]
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle yes
      (use-package kubernetes
        :straight t
        :commands (kubernetes-overview))
-   #+END_SRC
+   #+end_src
 
 * Languages
 ** Lisp dialects
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+   #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package lisp-mode
          :mode (("\\.el\\'"   .  emacs-lisp-mode)
                 ("\\.rkt\\'"   . scheme-mode)
@@ -1864,28 +1874,30 @@ Editor settings
              <<lisp-extra-font-lock-usepkg>>
              <<elisp-slime-nav-usepkg>>
              <<geiser-usepkg>>))
-   #+END_SRC
+   #+end_src
 
 *** Common configuration for all lisp dialects
 **** [[https://github.com/Fanael/rainbow-delimiters][Highlights delimiters]]
      Such as parentheses, brackets or braces according to their depth
 
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref rainbow-delimiters-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb-ref rainbow-delimiters-usepkg
        (use-package rainbow-delimiters
            :straight t
+           :after (:any company)
            :commands (rainbow-delimiters-mode))
-     #+END_SRC
+     #+end_src
 
 **** [[https://github.com/Lindydancer/lisp-extra-font-lock][Highlight bound variables and quoted expressions in lisp]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref lisp-extra-font-lock-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb-ref lisp-extra-font-lock-usepkg
        (use-package lisp-extra-font-lock
            :straight t
+           :after (:any company)
            :commands (lisp-extra-font-lock-mode)
            :diminish lisp-extra-font-lock-mode)
-     #+END_SRC
+     #+end_src
 
 **** Hook
-     #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+     #+begin_src emacs-lisp :tangle README-loaddefs.el
        ;;;###autoload
        (defun ayrc/lisp-hook ()
            (display-line-numbers-mode 1)
@@ -1921,19 +1933,20 @@ Editor settings
 
            (add-hook 'write-contents-functions
                      'ayrc/cleanup-buffer-notabs nil t))
-     #+END_SRC
+     #+end_src
 
 *** Emacs Lisp
 **** [[https://github.com/purcell/elisp-slime-nav][Navigation of source with M-. & M-,]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref elisp-slime-nav-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb-ref elisp-slime-nav-usepkg
        (use-package elisp-slime-nav
            :straight t
+           :after (:any company)
            :commands (elisp-slime-nav-mode)
            :diminish elisp-slime-nav-mode)
-     #+END_SRC
+     #+end_src
 
 **** Hook
-     #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+     #+begin_src emacs-lisp :tangle README-loaddefs.el
        ;;;###autoload
        (defun ayrc/emacs-lisp-hook ()
            (ayrc/lisp-hook)
@@ -1950,7 +1963,7 @@ Editor settings
            (elisp-slime-nav-mode)
 
            (ayrc/setup-company '(company-elisp :with company-yasnippet)))
-     #+END_SRC
+     #+end_src
 
 *** [[http://www.nongnu.org/geiser/][Scheme]]
     #+NAME: scheme-system-prerequisites
@@ -1959,28 +1972,28 @@ Editor settings
                 language
     - [[https://www.gnu.org/software/guile/][Guile]] :: GNU Ubiquitous Intelligent Language for Extensions
 
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref geiser-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref geiser-usepkg
        (use-package geiser
            :straight t
-           :defines (geiser-active-implementations)
+           :after (:any company)
+           :custom (geiser-active-implementations '(racket guile))
            :commands (geiser-mode))
-     #+END_SRC
+     #+end_src
 
 **** Hook
-     #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+     #+begin_src emacs-lisp :tangle README-loaddefs.el
        ;;;###autoload
        (defun ayrc/scheme-hook ()
            (ayrc/lisp-hook)
 
            (hs-minor-mode 1)
            (geiser-mode   1)
-           (setq geiser-active-implementations '(racket guile))
 
            (ayrc/setup-company '(company-capf :with company-yasnippet)))
-     #+END_SRC
+     #+end_src
 
 ** C/C++
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+    #+begin_src emacs-lisp :tangle yes :noweb yes
       (use-package cc-mode
           :mode (("\\.h\\'"   . c-mode)
                  ("\\.c\\'"   . c-mode)
@@ -2010,10 +2023,10 @@ Editor settings
                 c-doc-comment-style  '((java-mode . javadoc)
                                        (c-mode    . javadoc)
                                        (c++-mode  . javadoc))))
-    #+END_SRC
+    #+end_src
 
 *** CC configuration
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/cc-hook ()
           (display-line-numbers-mode 1)
@@ -2055,18 +2068,18 @@ Editor settings
                        ("irony"  'ayrc/irony-eldoc-setup)
                        ("gtags"  'ayrc/gtags-eldoc-setup)
                        ("ccls"   'ayrc/ccls-eldoc-setup))))
-    #+END_SRC
+    #+end_src
 
 **** [[https://github.com/sonatard/clang-format][Clang Format]]
      Format code using clang-format
 
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref clang-format-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb-ref clang-format-usepkg
        (use-package clang-format
            :straight t
            :defer t
            :after cc-mode
            :commands (clang-format clang-buffer clang-format-region))
-     #+END_SRC
+     #+end_src
 
 **** [[https://github.com/Sarcasm/irony-mode][Irony]]
      A C/C++ minor mode for Emacs powered by libclang
@@ -2075,7 +2088,7 @@ Editor settings
      #+CAPTION: System prerequisites for Irony packages
      - [[https://github.com/Sarcasm/irony-mode][irony-server]] :: A C/C++ minor mode for Emacs powered by libclang
 
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref irony-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref irony-usepkg
        (use-package irony
            :straight t
            :defer t
@@ -2100,40 +2113,40 @@ Editor settings
                              "/contrib/servers/irony"))
 
                (irony-mode 1)))
-     #+END_SRC
+     #+end_src
 
 ***** Autocompletion
 ****** Packages
-       #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref irony-autocompletion-usepkg
+       #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref irony-autocompletion-usepkg
          <<irony-company-usepkg>>
          <<irony-company-c-headers-usepkg>>
-       #+END_SRC
+       #+end_src
 
 ******* [[https://github.com/Sarcasm/company-irony][Company]]
         Company mode completion back-end for Irony
 
-        #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref irony-company-usepkg
+        #+begin_src emacs-lisp :tangle no :noweb-ref irony-company-usepkg
           (use-package company-irony
               :straight t
               :defer t
               :after irony
               :commands (company-irony
                          company-irony-setup-begin-commands))
-        #+END_SRC
+        #+end_src
 
 ******* [[https://github.com/hotpxl/company-irony-c-headers][Company C headers]]
         Company mode backend for C/C++ header files with Irony
 
-        #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref irony-company-c-headers-usepkg
+        #+begin_src emacs-lisp :tangle no :noweb-ref irony-company-c-headers-usepkg
           (use-package company-irony-c-headers
               :straight t
               :defer t
               :after irony
               :commands (company-irony-c-headers))
-        #+END_SRC
+        #+end_src
 
 ****** Configuration
-       #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref irony-autocompletion-config
+       #+begin_src emacs-lisp :tangle no :noweb-ref irony-autocompletion-config
          (defun ayrc/irony-autocompletion-setup ()
              (setq company-irony-ignore-case 'smart
 
@@ -2156,41 +2169,41 @@ Editor settings
              ;; trigger completion at interesting places, such as after
              ;; scope operator std::|
              (company-irony-setup-begin-commands))
-       #+END_SRC
+       #+end_src
 
 ***** [[https://github.com/Sarcasm/flycheck-irony][Syntax analytics]]
       C, C++ and Objective-C support for Flycheck, using Irony Mode
 
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref irony-syntax-analytics-usepkg
+      #+begin_src emacs-lisp :tangle no :noweb-ref irony-syntax-analytics-usepkg
         (use-package flycheck-irony
             :straight t
             :defer t
             :after irony
             :commands (flycheck-irony-setup))
-      #+END_SRC
+      #+end_src
 
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref irony-syntax-analytics-config
+      #+begin_src emacs-lisp :tangle no :noweb-ref irony-syntax-analytics-config
         (defun ayrc/irony-syntax-check-setup ()
             (flycheck-mode        1)
             (flycheck-irony-setup))
-      #+END_SRC
+      #+end_src
 
 ***** [[https://github.com/ikirill/irony-eldoc][Eldoc]]
       Irony mode support for eldoc-mode
 
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref irony-eldoc-usepkg
+      #+begin_src emacs-lisp :tangle no :noweb-ref irony-eldoc-usepkg
         (use-package irony-eldoc
             :straight t
             :defer t
             :after irony
             :commands (irony-eldoc))
-      #+END_SRC
+      #+end_src
 
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref irony-eldoc-config
+      #+begin_src emacs-lisp :tangle no :noweb-ref irony-eldoc-config
         (defun ayrc/irony-eldoc-setup ()
             (eldoc-mode  1)
             (irony-eldoc 1))
-      #+END_SRC
+      #+end_src
 
 **** [[https://github.com/leoliu/ggtags][GTags]]
      Emacs frontend to GNU Global source code tagging system
@@ -2199,7 +2212,7 @@ Editor settings
      #+CAPTION: System prerequisites for GTags packages
      - [[https://www.gnu.org/software/global/global.html][GNU Global]] :: tag system to find an object location in various sources
 
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref gtags-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref gtags-usepkg
        (use-package ggtags
            :straight t
            :defer t
@@ -2217,25 +2230,25 @@ Editor settings
                            #'ggtags-build-imenu-index)
 
                (ggtags-mode 1)))
-     #+END_SRC
+     #+end_src
 
 ***** Autocompletion
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref gtags-autocompletion-config
+      #+begin_src emacs-lisp :tangle no :noweb-ref gtags-autocompletion-config
         (defun ayrc/gtags-autocompletion-setup ()
             (ayrc/setup-company '(company-gtags :with company-yasnippet)))
-      #+END_SRC
+      #+end_src
 
 ***** Syntax analytics
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref gtags-syntax-analytics-config
+      #+begin_src emacs-lisp :tangle no :noweb-ref gtags-syntax-analytics-config
         (defun ayrc/gtags-syntax-check-setup ()
             (flycheck-mode 1))
-      #+END_SRC
+      #+end_src
 
 ***** Eldoc
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref gtags-eldoc-config
+      #+begin_src emacs-lisp :tangle no :noweb-ref gtags-eldoc-config
         (defun ayrc/gtags-eldoc-setup ()
             (eldoc-mode 1))
-      #+END_SRC
+      #+end_src
 
 **** [[https://github.com/MaskRay/emacs-ccls][ccls]]
      Emacs client for ccls, a C/C++ language server
@@ -2245,7 +2258,7 @@ Editor settings
      - [[https://github.com/MaskRay/ccls][ccls]] :: C/C++/ObjC language server supporting cross references,
                hierarchies, completion and semantic highlighting
 
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref ccls-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref ccls-usepkg
        (use-package ccls
            :straight t
            :defer t
@@ -2274,26 +2287,26 @@ Editor settings
 
                (lsp-deferred)
                <<ccls-debug-support>>))
-     #+END_SRC
+     #+end_src
 
 ***** Autocompletion
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref ccls-autocompletion-config
+      #+begin_src emacs-lisp :tangle no :noweb-ref ccls-autocompletion-config
         (defun ayrc/ccls-autocompletion-setup ())
-      #+END_SRC
+      #+end_src
 
 ***** Syntax analytics
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref ccls-syntax-analytics-config
+      #+begin_src emacs-lisp :tangle no :noweb-ref ccls-syntax-analytics-config
         (defun ayrc/ccls-syntax-check-setup ())
-      #+END_SRC
+      #+end_src
 
 ***** Eldoc
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref ccls-eldoc-config
+      #+begin_src emacs-lisp :tangle no :noweb-ref ccls-eldoc-config
         (defun ayrc/ccls-eldoc-setup ()
             (eldoc-mode 1))
-      #+END_SRC
+      #+end_src
 
 ***** Debug support
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref ccls-debug-support
+      #+begin_src emacs-lisp :tangle no :noweb-ref ccls-debug-support
         (require 'dap-lldb)
         (ayrc/dap-remove-nth-first-templates 1)
 
@@ -2307,21 +2320,21 @@ Editor settings
                       "--first_flag"
                       "--second_flag" "third_argumnt")
                :name "LLDB::Run"))
-      #+END_SRC
+      #+end_src
 
 **** [[https://github.com/atilaneves/cmake-ide][CMake IDE]]
      Use Emacs as a C/C++ IDE
 
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref cmake-ide-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb-ref cmake-ide-usepkg
        (use-package cmake-ide
            :straight t
            :defer t
            :after cc-mode
            :commands (cmake-ide-setup))
-     #+END_SRC
+     #+end_src
 
 *** C configuration
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/c-hook ()
           (ayrc/cc-hook)
@@ -2330,23 +2343,23 @@ Editor settings
                 flycheck-clang-language-standard "c99"
                 irony-additional-clang-options   '("-Wall"
                                                    "-Wextra")))
-    #+END_SRC
+    #+end_src
 
 *** C++ configuration
 **** [[https://github.com/ludwigpacifici/modern-cpp-font-lock][Font-lock]]
      C++ font-lock for Emacs
 
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref modern-cpp-font-lock-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb-ref modern-cpp-font-lock-usepkg
        (use-package modern-cpp-font-lock
            :straight t
            :defer t
            :after cc-mode
            :diminish modern-c++-font-lock-mode
            :commands (modern-c++-font-lock-mode))
-     #+END_SRC
+     #+end_src
 
 **** Hook
-     #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+     #+begin_src emacs-lisp :tangle README-loaddefs.el
        ;;;###autoload
        (defun ayrc/cpp-hook ()
            (ayrc/cc-hook)
@@ -2357,12 +2370,12 @@ Editor settings
                  flycheck-clang-language-standard "c++17"
                  irony-additional-clang-options   '("-Wall"
                                                     "-Wextra")))
-     #+END_SRC
+     #+end_src
 
 ** Python
    Python mode settings for Emacs
 
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+   #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package python
          :mode (("wscript"   . python-mode)
                 ("\\.py\\'"  . python-mode))
@@ -2382,7 +2395,7 @@ Editor settings
           python-shell-interpreter                             "ipython"
           python-shell-interpreter-args                        "-i --simple-prompt"
           python-shell-completion-native-disabled-interpreters '("python")))
-   #+END_SRC
+   #+end_src
 
 *** Prerequisites
     Installation path: pyenv -> python
@@ -2402,7 +2415,7 @@ Editor settings
 
      Add language prerequisite to this list after its first mention in
      list after function definition below:
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref python-install-pkgs
+     #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref python-install-pkgs
        (defvar ayrc/python-language-prerequisites '()
            "Dependencies for fully working python mode")
 
@@ -2419,9 +2432,9 @@ Editor settings
        <<python-autopep8>>
        <<python-yapf>>
        <<python-ipython>>
-     #+END_SRC
+     #+end_src
 
-     #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+     #+begin_src emacs-lisp :tangle README-loaddefs.el
        ;;;###autoload
        (defun ayrc/install-python-language-prerequisites ()
            "Install python language prerequisites.
@@ -2460,88 +2473,88 @@ Editor settings
                    (comint-mode)
                    (setq-local comint-prompt-read-only t)
                    (pop-to-buffer buffer))))
-     #+END_SRC
+     #+end_src
 
      Prerequisites:
 ***** [[https://github.com/palantir/python-language-server][pyls]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls
+     #+begin_src emacs-lisp :tangle no :noweb-ref python-pyls
      (add-to-list 'ayrc/python-language-prerequisites "python-language-server")
-     #+END_SRC
+     #+end_src
 
 ***** [[https://github.com/tomv564/pyls-mypy][pyls-mypy]]                       :temporary_disabled:
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls-mypy
+     #+begin_src emacs-lisp :tangle no :noweb-ref python-pyls-mypy
        (add-to-list 'ayrc/python-language-prerequisites "pyls-mypy")
-     #+END_SRC
+     #+end_src
 
 ***** [[https://github.com/tomv564/pyls-mypy][pyls-isort]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls-isort
+     #+begin_src emacs-lisp :tangle no :noweb-ref python-pyls-isort
      (add-to-list 'ayrc/python-language-prerequisites "pyls-isort")
-     #+END_SRC
+     #+end_src
 
 ***** [[https://github.com/tomv564/pyls-mypy][pyls-black]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyls-black
+     #+begin_src emacs-lisp :tangle no :noweb-ref python-pyls-black
      (add-to-list 'ayrc/python-language-prerequisites "pyls-black")
-     #+END_SRC
+     #+end_src
 
 ***** [[https://www.pylint.org/][Pylint]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pylint
+     #+begin_src emacs-lisp :tangle no :noweb-ref python-pylint
      (add-to-list 'ayrc/python-language-prerequisites "pylint")
-     #+END_SRC
+     #+end_src
 
 ***** [[https://github.com/davidhalter/jedi][Jedi]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-jedi
+     #+begin_src emacs-lisp :tangle no :noweb-ref python-jedi
      (add-to-list 'ayrc/python-language-prerequisites "jedi")
-     #+END_SRC
+     #+end_src
 
 ***** [[https://github.com/python-rope/rope][Rope]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-rope
+     #+begin_src emacs-lisp :tangle no :noweb-ref python-rope
      (add-to-list 'ayrc/python-language-prerequisites "rope")
-     #+END_SRC
+     #+end_src
 
 ***** [[https://github.com/PyCQA/pyflakes][pyflakes]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pyflakes
+     #+begin_src emacs-lisp :tangle no :noweb-ref python-pyflakes
      (add-to-list 'ayrc/python-language-prerequisites "pyflakes")
-     #+END_SRC
+     #+end_src
 
 ***** [[https://github.com/PyCQA/mccabe][mccabe]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-mccabe
+     #+begin_src emacs-lisp :tangle no :noweb-ref python-mccabe
      (add-to-list 'ayrc/python-language-prerequisites "mccabe")
-     #+END_SRC
+     #+end_src
 
 ***** [[https://github.com/PyCQA/pycodestyle][pycodestyle]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pycodestyle
+     #+begin_src emacs-lisp :tangle no :noweb-ref python-pycodestyle
      (add-to-list 'ayrc/python-language-prerequisites "pycodestyle")
-     #+END_SRC
+     #+end_src
 
 ***** [[https://github.com/PyCQA/pydocstyle][pydocstyle]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-pydocstyle
+     #+begin_src emacs-lisp :tangle no :noweb-ref python-pydocstyle
      (add-to-list 'ayrc/python-language-prerequisites "pydocstyle")
-     #+END_SRC
+     #+end_src
 
 ***** [[https://github.com/hhatto/autopep8][Autopep8]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-autopep8
+     #+begin_src emacs-lisp :tangle no :noweb-ref python-autopep8
      (add-to-list 'ayrc/python-language-prerequisites "autopep8")
-     #+END_SRC
+     #+end_src
 
 ***** [[https://github.com/google/yapf][Yapf]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-yapf
+     #+begin_src emacs-lisp :tangle no :noweb-ref python-yapf
      (add-to-list 'ayrc/python-language-prerequisites "yapf")
-     #+END_SRC
+     #+end_src
 
 ***** [[https://github.com/ipython/ipython][ipython]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref python-ipython
+     #+begin_src emacs-lisp :tangle no :noweb-ref python-ipython
      (add-to-list 'ayrc/python-language-prerequisites "ipython")
-     #+END_SRC
+     #+end_src
 
 *** Env setup modes
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb yes :noweb-ref venv-support-packages
+     #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref venv-support-packages
        <<pyenv-mode-usepkg>>
        <<pipenv-mode-usepkg>>
        <<poetry-usepkg>>
-     #+END_SRC
+     #+end_src
 
 **** [[https://github.com/pythonic-emacs/pyenv-mode][Pyenv]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pyenv-mode-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb-ref pyenv-mode-usepkg
        (use-package pyenv-mode
            :straight t
            :defer t
@@ -2550,10 +2563,10 @@ Editor settings
            :diminish pyenv-mode
            :config
            (setq pyenv-show-active-python-in-modeline t))
-     #+END_SRC
+     #+end_src
 
 **** [[https://github.com/pwalsh/pipenv.el][Pipenv]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref pipenv-mode-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb-ref pipenv-mode-usepkg
        (use-package pipenv
            :straight t
            :defer t
@@ -2561,18 +2574,18 @@ Editor settings
            :diminish pipenv-mode
            :init
            (setq pipenv-with-projectile nil))
-     #+END_SRC
+     #+end_src
 
 **** [[https://github.com/galaunay/poetry.el][Poetry]]
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref poetry-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb-ref poetry-usepkg
        (use-package poetry
            :straight t
            :defer t
            :after python)
-     #+END_SRC
+     #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/python-hook ()
           (exec-path-from-shell-initialize)
@@ -2592,21 +2605,21 @@ Editor settings
           (require 'dap-python)
           (lsp-deferred))
 
-    #+END_SRC
+    #+end_src
 
 ** [[https://github.com/Wilfred/pip-requirements.el][Pip requirments]]
    Major mode for editing pip requirements files
 
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+   #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package pip-requirements
          :straight t
          :mode (("requirements.txt$" . pip-requirements-mode)
                 ("requirements.pip$" . pip-requirements-mode))
          :hook (pip-requirements-mode . ayrc/pip-hook))
-   #+END_SRC
+   #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/pip-hook ()
           (display-line-numbers-mode 1)
@@ -2615,7 +2628,7 @@ Editor settings
           (smartparens-mode          1)
           (semantic-mode             1)
           (yas-minor-mode            1))
-    #+END_SRC
+    #+end_src
 
 ** TeX/LaTeX
 *** Prerequisites
@@ -2626,11 +2639,10 @@ Editor settings
     - [[http://www.nongnu.org/chktex/][chktex]] :: Checks latex source for common mistakes
 
 *** Configuration
-     #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+     #+begin_src emacs-lisp :tangle yes :noweb yes
        (use-package tex-mode
            :defines (TeX-auto-save
                      TeX-parse-self
-                     TeX-save-query
                      TeX-PDF-mode)
            :mode ("\\.tex\\'" . latex-mode)
            :commands (latex-mode
@@ -2647,23 +2659,23 @@ Editor settings
            <<latex-math-preview-usepkg>>
            <<latex-preview-pane-usepkg>>
            <<latex-pretty-symbols-usepkg>>)
-     #+END_SRC
+     #+end_src
 
 **** [[https://www.gnu.org/software/auctex/][AUCTEX]]
      Sophisticated document creation
 
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref auctex-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb-ref auctex-usepkg
        (use-package auctex
            :straight t
            :defer t
            :after tex-mode)
-     #+END_SRC
+     #+end_src
 
 **** Preview
 ***** [[https://www.emacswiki.org/emacs/LaTeXPreviewPane][Preview pane]]
       Minor mode that enables you to preview your LaTeX files directly in Emacs
 
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref latex-preview-pane-usepkg
+      #+begin_src emacs-lisp :tangle no :noweb-ref latex-preview-pane-usepkg
         (use-package latex-preview-pane
             :straight t
             :defer t
@@ -2671,66 +2683,65 @@ Editor settings
             :commands (latex-preview-pane-enable)
             :config (progn
                         (setq pdf-latex-command "xelatex")))
-      #+END_SRC
+      #+end_src
 
 ***** Separated preview
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref latex-separated-preview-setup
+      #+begin_src emacs-lisp :tangle no :noweb-ref latex-separated-preview-setup
         (setq-default
          preview-scale 1.4
          preview-scale-function '(lambda ()
                                      (* (/ 10.0 (preview-document-pt))
                                         preview-scale)))
-      #+END_SRC
+      #+end_src
 
 ***** [[https://gitlab.com/latex-math-preview/latex-math-preview][Math preview]]
       Previews a mathematical expression pointed by the cursor
 
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref latex-math-preview-usepkg
+      #+begin_src emacs-lisp :tangle no :noweb-ref latex-math-preview-usepkg
         (use-package latex-math-preview
             :straight t
             :defer t
             :after (auctex))
-      #+END_SRC
+      #+end_src
 
 **** [[https://bitbucket.org/mortiferus/latex-pretty-symbols.el][Pretty symbols]]
      Makes emacs display unicode characters instead of latex commands
 
-     #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref latex-pretty-symbols-usepkg
+     #+begin_src emacs-lisp :tangle no :noweb-ref latex-pretty-symbols-usepkg
        (use-package latex-pretty-symbols
            :straight t
            :defer t
            :after auctex)
-     #+END_SRC
+     #+end_src
 
 **** Autocompletion
 ***** [[https://github.com/vspinu/company-math][Latex math symbols]]
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref latex-math-company-usepkg
+      #+begin_src emacs-lisp :tangle no :noweb-ref latex-math-company-usepkg
         (use-package company-math
             :straight t
             :defer t
             :after auctex
             :commands (company-math-symbols-latex
                        company-latex-commands))
-      #+END_SRC
+      #+end_src
 
 ***** [[https://github.com/alexeyr/company-auctex][Auctex company]]
       company-mode autocompletion for auctex
 
-      #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref auctex-company-usepkg
+      #+begin_src emacs-lisp :tangle no :noweb-ref auctex-company-usepkg
         (use-package company-auctex
             :straight t
             :defer t
             :after auctex
             :commands (company-auctex-init))
-      #+END_SRC
+      #+end_src
 
 **** Hook
-      #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el :noweb yes
+      #+begin_src emacs-lisp :tangle README-loaddefs.el :noweb yes
         ;;;###autoload
         (defun ayrc/tex-hook ()
             (setq TeX-auto-save  t
                   TeX-parse-self t
-                  TeX-save-query nil
                   TeX-PDF-mode   t)
 
             (setq-default TeX-PDF-mode t)
@@ -2761,7 +2772,7 @@ Editor settings
             (company-auctex-init)
 
             (LaTeX-preview-setup))
-      #+END_SRC
+      #+end_src
 
 ** Haskell
 *** Prerequisites
@@ -2793,7 +2804,7 @@ Editor settings
   | [[https://github.com/flycheck/flycheck-haskell][flycheck-haskell]] | Flycheck mode for haskell                                          |
 
 *** Haskell
-    #+BEGIN_SRC emacs-lisp :tangle no
+    #+begin_src emacs-lisp :tangle no
       (use-package haskell-mode
           :straight t
           :defer t
@@ -2842,18 +2853,18 @@ Editor settings
                                         company-yasnippet)))
 
               (add-hook 'haskell-mode-hook 'haskell-hook)))
-    #+END_SRC
+    #+end_src
 
 ** VHDL
    VHDL mode for Emacs
 
-   #+BEGIN_SRC emacs-lisp :tangle no
+   #+begin_src emacs-lisp :tangle no
      (use-package vhdl-mode
          :defer t)
-   #+END_SRC
+   #+end_src
 
 ** Shell
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+   #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package sh-script
          :mode (("\\.ebuild\\'" . shell-script-mode)
                 ("\\.sh\\'"     . shell-script-mode))
@@ -2864,19 +2875,19 @@ Editor settings
          (setq explicit-shell-file-name "/bin/bash")
          (setq shell-file-name "bash")
          (setenv "SHELL" shell-file-name))
-   #+END_SRC
+   #+end_src
 
 *** [[https://github.com/Alexander-Miller/company-shell][Autocompletion]]
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-shell-usepkg
+    #+begin_src emacs-lisp :tangle no :noweb-ref company-shell-usepkg
       (use-package company-shell
           :straight t
           :defer t
           :after sh-script
           :commands (company-shell))
-    #+END_SRC
+    #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/shell-hook()
           (setq indent-tabs-mode t)
@@ -2894,21 +2905,21 @@ Editor settings
           (flycheck-mode             1)
 
           (ayrc/setup-company '(company-shell company-yasnippet)))
-    #+END_SRC
+    #+end_src
 
 ** Virtualization
 *** Containers
 **** [[https://github.com/spotify/dockerfile-mode][Docker]]
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+    #+begin_src emacs-lisp :tangle yes :noweb yes
       (use-package dockerfile-mode
           :straight t
           :mode (("Dockerfile'"       . dockerfile-mode)
                  ("\\.Dockerfile\\'"  . dockerfile-mode))
           :hook (dockerfile-mode . ayrc/dockerfile-hook))
-    #+END_SRC
+    #+end_src
 
 ***** Hook
-      #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+      #+begin_src emacs-lisp :tangle README-loaddefs.el
         ;;;###autoload
         (defun ayrc/dockerfile-hook ()
             (display-line-numbers-mode 1)
@@ -2921,28 +2932,28 @@ Editor settings
             (yas-minor-mode            1)
 
             (ayrc/setup-company))
-      #+END_SRC
+      #+end_src
 
 ** [[https://github.com/ajc/nginx-mode][Nginx]]
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+   #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package nginx-mode
          :straight t
          :mode (("nginx\.conf\.?.*$" . nginx-mode))
          :hook (nginx-mode . ayrc/nginx-hook)
          :init
          <<company-nginx-usepkg>>)
-   #+END_SRC
+   #+end_src
 
 *** [[https://github.com/stardiviner/company-nginx][Autocompletion]]
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref company-nginx-usepkg
+    #+begin_src emacs-lisp :tangle no :noweb-ref company-nginx-usepkg
       (use-package company-nginx
           :straight t
           :defer t
           :after (nginx-mode))
-    #+END_SRC
+    #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/nginx-hook ()
           (display-line-numbers-mode 1)
@@ -2956,10 +2967,10 @@ Editor settings
 
           (ayrc/setup-company)
           (company-nginx-keywords))
-    #+END_SRC
+    #+end_src
 
 ** [[https://github.com/holomorph/systemd-mode][Systemd]]
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+   #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package systemd
          :straight t
          :mode (("\\.service\\'"   . systemd-mode)
@@ -2975,10 +2986,10 @@ Editor settings
                 ("\\.network\\'"   . systemd-mode)
                 ("\\.link\\'"      . systemd-mode))
          :hook (systemd-mode . ayrc/systemd-hook))
-   #+END_SRC
+   #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/systemd-hook ()
           (display-line-numbers-mode 1)
@@ -2991,19 +3002,19 @@ Editor settings
           (yas-minor-mode            1)
 
           (ayrc/setup-company))
-    #+END_SRC
+    #+end_src
 
 ** [[https://github.com/emacs-mirror/emacs/blob/master/lisp/textmodes/conf-mode.el][Conf]]
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+   #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package conf-mode
          :mode (("\\.toml\\'" . conf-toml-mode)
                 ("\\.ini\\'" . conf-windows-mode))
          :hook ((conf-toml-mode-hook    . ayrc/conf-hook)
                 (conf-windows-mode-hook . ayrc/conf-hook)))
-   #+END_SRC
+   #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/conf-hook ()
           (display-line-numbers-mode 1)
@@ -3016,29 +3027,29 @@ Editor settings
           (yas-minor-mode            1)
 
           (ayrc/setup-company))
-    #+END_SRC
+    #+end_src
 
 ** [[https://github.com/skuro/plantuml-mode][Plantuml]]
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+   #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package plantuml-mode
          :straight t
          :mode (("\\.plantuml\\'" . plantuml-mode))
          :hook (plantuml-mode . ayrc/plantuml-hook)
          :init
          <<flycheck-plantuml-usepkg>>)
-   #+END_SRC
+   #+end_src
 
 *** [[https://github.com/alexmurray/flycheck-plantuml][Flycheck]]
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flycheck-plantuml-usepkg
+    #+begin_src emacs-lisp :tangle no :noweb-ref flycheck-plantuml-usepkg
       (use-package flycheck-plantuml
           :straight t
           :defer t
           :after plantuml-mode
           :commands (flycheck-plantuml-setup))
-    #+END_SRC
+    #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/plantuml-hook ()
           (display-line-numbers-mode 1)
@@ -3055,18 +3066,18 @@ Editor settings
 
           (setq plantuml-jar-path "/usr/share/plantuml/lib/plantuml.jar")
           (setq plantuml-output-type "svg"))
-    #+END_SRC
+    #+end_src
 
 ** [[https://github.com/preetpalS/emacs-dotenv-mode][Dotenv]]
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb no
+   #+begin_src emacs-lisp :tangle yes :noweb no
      (use-package dotenv-mode
          :straight t
          :mode (("\\.env\\'" . dotenv-mode))
          :hook (dotenv-mode . ayrc/dotenv-hook))
-   #+END_SRC
+   #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/dotenv-hook ()
           (display-line-numbers-mode 1)
@@ -3079,14 +3090,14 @@ Editor settings
           (yas-minor-mode            1)
 
           (ayrc/setup-company))
-    #+END_SRC
+    #+end_src
 
 ** JSON
     #+NAME: json-system-prerequisites
     #+CAPTION: System prerequisites for json packages
     - [[https://github.com/dmeranda/demjson][demjson]] :: Python module for JSON data encoding, including jsonlint
 
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+   #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package json-mode
          :mode (("\\.json\\'" . json-mode))
          :hook (json-mode . ayrc/json-hook)
@@ -3094,19 +3105,19 @@ Editor settings
                      ("C-c C-r" . json-pretty-print))
          :init
          <<flycheck-demjsonlint-usepkg>>)
-   #+END_SRC
+   #+end_src
 
 *** Flycheck
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref flycheck-demjsonlint-usepkg
+    #+begin_src emacs-lisp :tangle no :noweb-ref flycheck-demjsonlint-usepkg
       (use-package flycheck-demjsonlint
           :straight t
           :defer t
           :after json-mode
           :after (json-mode flycheck))
-    #+END_SRC
+    #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/json-hook ()
           (display-line-numbers-mode 1)
@@ -3122,14 +3133,14 @@ Editor settings
           (hs-minor-mode             1)
 
           (setq js-indent-level 4))
-    #+END_SRC
+    #+end_src
 
 ** [[https://github.com/yoshiki/yaml-mode][Yaml]]
     #+NAME: yaml-system-prerequisites
     #+CAPTION: System prerequisites for yaml packages
     - [[https://github.com/adrienverge/yamllint][yamllint]] :: A linter for YAML files
 
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb no
+   #+begin_src emacs-lisp :tangle yes :noweb no
      (use-package yaml-mode
          :straight t
          :mode (("\\.yml\\'"  . yaml-mode)
@@ -3137,10 +3148,10 @@ Editor settings
          :bind (:map yaml-mode-map
                      ("C-c f TAB" . indenation-toggle-fold))
          :hook (yaml-mode . ayrc/yaml-hook))
-   #+END_SRC
+   #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/yaml-hook ()
           (display-line-numbers-mode  1)
@@ -3170,18 +3181,18 @@ Editor settings
           (ayrc/setup-company)
 
           (setq yaml-indent-offset 2))
-    #+END_SRC
+    #+end_src
 
 ** XML
-   #+BEGIN_SRC emacs-lisp :tangle no :noweb no
+   #+begin_src emacs-lisp :tangle no :noweb no
      (use-package nxml-mode
          :commands (nxml-mode)
          :mode ("\\.\\(xml\\|axml\\|xsl|xaml\\)$" . nxml-mode)
          :hook (nxml-mode . ayrc/nxml-hook))
-   #+END_SRC
+   #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/nxml-hook ()
           (display-line-numbers-mode 1)
@@ -3196,19 +3207,19 @@ Editor settings
           (hs-minor-mode             1)
 
           (ayrc/setup-company '(company-nxml :with company-yasnippet)))
-    #+END_SRC
+    #+end_src
 
 ** [[http://github.com/paradoxxxzero/jinja2-mode][Jinja2]]
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb no
+   #+begin_src emacs-lisp :tangle yes :noweb no
      (use-package jinja2-mode
          :straight t
          :commands (jinja2-mode)
          :mode (("\\.j2\\'" . jinja2-mode))
          :hook (jinja2-mode . ayrc/jinja2-hook))
-   #+END_SRC
+   #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/jinja2-hook ()
           (display-line-numbers-mode 1)
@@ -3221,18 +3232,18 @@ Editor settings
           (yas-minor-mode            1)
 
           (ayrc/setup-company))
-    #+END_SRC
+    #+end_src
 
 ** RST
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb no
+   #+begin_src emacs-lisp :tangle yes :noweb no
      (use-package rst
          :mode (("\\.txt$" . rst-mode)
                 ("\\.rst$" . rst-mode))
          :hook (rst-mode . ayrc/rst-hook))
-   #+END_SRC
+   #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/rst-hook ()
           (display-line-numbers-mode 1)
@@ -3245,14 +3256,14 @@ Editor settings
           (yas-minor-mode            1)
 
           (ayrc/setup-company))
-    #+END_SRC
+    #+end_src
 
 ** [[https://jblevins.org/projects/markdown-mode/][Markdown]]
     #+NAME: markdown-system-prerequisites
     #+CAPTION: System prerequisites for markdown packages
     - [[https://github.com/trentm/python-markdown2][python-markdown2]] :: A fast and complete implementation of Markdown
 
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+   #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package markdown-mode
          :straight t
          :commands (markdown-mode gfm-mode)
@@ -3263,12 +3274,12 @@ Editor settings
          :init
          <<markdown-plus-usepkg>>
          <<markdown-preview-usepkg>>)
-   #+END_SRC
+   #+end_src
 
 *** [[https://github.com/milkypostman/markdown-mode-plus][Markdown+]]
     Additional functions for Emacs [markdown-mode]
 
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref markdown-plus-usepkg
+    #+begin_src emacs-lisp :tangle no :noweb-ref markdown-plus-usepkg
       (use-package markdown-mode+
           :straight t
           :defer t
@@ -3277,10 +3288,10 @@ Editor settings
                      markdown-export-latex
                      markdown-copy-html
                      markdown-copy-rtf))
-    #+END_SRC
+    #+end_src
 
 *** [[https://github.com/ancane/markdown-preview-mode][Preview]]
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref markdown-preview-usepkg
+    #+begin_src emacs-lisp :tangle no :noweb-ref markdown-preview-usepkg
       (use-package markdown-preview-mode
           :straight t
           :defer t
@@ -3295,10 +3306,10 @@ Editor settings
                        "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML")
           (add-to-list 'markdown-preview-javascript
                        '("http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" . async)))
-    #+END_SRC
+    #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/markdown-hook ()
           (display-line-numbers-mode 1)
@@ -3313,10 +3324,10 @@ Editor settings
           (ayrc/setup-company)
 
           (setq markdown-command "markdown2"))
-    #+END_SRC
+    #+end_src
 
 ** Make
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb no
+   #+begin_src emacs-lisp :tangle yes :noweb no
      (use-package make-mode
          :mode (("[Mm]akefile\\'" . makefile-gmake-mode))
          :hook ((makefile-mode          . ayrc/make-hook)
@@ -3325,19 +3336,19 @@ Editor settings
                 (makefile-bsdmake-mode  . ayrc/make-hook)
                 (makefile-automake-mode . ayrc/make-hook)
                 (makefile-mode          . ayrc/make-hook)))
-   #+END_SRC
+   #+end_src
 
 *** [[https://github.com/nverno/company-makefile][Company]]                                                                               :disabled:
     Package is not ready yet.
 
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref make-company-completion
+    #+begin_src emacs-lisp :tangle no :noweb-ref make-company-completion
       (use-package company-makefile
           :straight t
           :commands (company-makefile-init company-makefile-capf))
-    #+END_SRC
+    #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/make-hook ()
           (setq indent-tabs-mode t)
@@ -3352,10 +3363,10 @@ Editor settings
           (yas-minor-mode            1)
 
           (ayrc/setup-company '(company-capf :with company-yasnippet)))
-    #+END_SRC
+    #+end_src
 
 ** [[https://gitlab.kitware.com/cmake/cmake/blob/master/Auxiliary/cmake-mode.el][CMake]]
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb yes
+   #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package cmake-mode
          :straight t
          :mode (("/CMakeLists\\.txt\\'" . cmake-mode)
@@ -3363,21 +3374,21 @@ Editor settings
          :hook (cmake-mode . ayrc/cmake-hook)
          :init
          <<cmake-font-lock-usepkg>>)
-   #+END_SRC
+   #+end_src
 
 *** [[https://github.com/Lindydancer/cmake-font-lock][CMake Font-lock]]
     Emacs Font-lock rules for CMake
 
-    #+BEGIN_SRC emacs-lisp :tangle no :noweb-ref cmake-font-lock-usepkg
+    #+begin_src emacs-lisp :tangle no :noweb-ref cmake-font-lock-usepkg
       (use-package cmake-font-lock
           :straight t
           :defer t
           :after cmake-mode
           :commands (cmake-font-lock-activate))
-    #+END_SRC
+    #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/cmake-hook ()
           (display-line-numbers-mode 1)
@@ -3396,10 +3407,10 @@ Editor settings
           (cmake-font-lock-activate)
 
           (setq cmake-tab-width 4))
-    #+END_SRC
+    #+end_src
 
 ** Bitbake
-   #+BEGIN_SRC emacs-lisp :tangle yes :noweb no
+   #+begin_src emacs-lisp :tangle yes :noweb no
      (use-package bitbake
          :straight t
          :mode (("\\.bb$" . bitbake-mode)
@@ -3407,10 +3418,10 @@ Editor settings
                 ("\\.bbappend$" . bitbake-mode)
                 ("\\.bbclass$" . bitbake-mode))
          :hook (bitbake-mode . ayrc/bitbake-hook))
-   #+END_SRC
+   #+end_src
 
 *** Hook
-    #+BEGIN_SRC emacs-lisp :tangle README-loaddefs.el
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/bitbake-hook ()
           (display-line-numbers-mode 1)
@@ -3426,4 +3437,4 @@ Editor settings
 
           (hs-minor-mode             1)
           (flycheck-mode             1))
-    #+END_SRC
+    #+end_src

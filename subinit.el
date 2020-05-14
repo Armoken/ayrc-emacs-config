@@ -4,6 +4,10 @@
 ;; Disable scratch buffer
 (setq initial-major-mode 'fundamental-mode)
 
+;; Remove *scratch* buffer
+(if (get-buffer "*scratch*")
+        (kill-buffer "*scratch*"))
+
 
 ;; Hack from 'https://github.com/a13/fnhh' to increase startup speed
 (defvar ayrc/fnhh-handler-alist nil
@@ -58,8 +62,14 @@
 (straight-use-package 'diminish)
 (straight-use-package 'delight)
 
-(eval-when-compile
-    (require 'use-package))
+(if t
+        (eval-when-compile
+            (require 'use-package))
+    (progn
+        (require 'use-package)
+        (setq use-package-compute-statistics    t
+              use-package-minimum-reported-time 0.001
+              use-package-verbose               t)))
 (require 'bind-key)
 
 
@@ -76,21 +86,8 @@
     :straight t
     :demand t
     :diminish gcmh-mode
-    :config
-    (setq gcmh-idle-delay             3600      ; 1 hour
-          gcmh-low-cons-threshold     104857600 ; 100 MB
-          gcmh-high-cons-threshold    209715200 ; 200 MB
-          gcmh-verbose                nil
-
-          garbage-collection-messages t
-          gc-cons-percentage          0.7)
-    (setq gc-cons-threshold gcmh-low-cons-threshold)
-
-    (defun ayrc/gcmh-startup-hook ()
-        (setq gc-cons-threshold  gcmh-high-cons-threshold
-              gc-cons-percentage 0.5)
-        (add-hook 'focus-out-hook #'gcmh-idle-garbage-collect))
-    (add-hook 'emacs-startup-hook #'ayrc/gcmh-startup-hook))
+    :init
+    (gcmh-mode 1))
 
 (use-package org
     :defer t
@@ -134,6 +131,8 @@
     (ayrc/load-file path-to-main-file ayrc/path-to-build-dir))
 
 ;; Load main config
+(eval-when-compile
+    (require 'autoload))
 (let* ((config-name             "README.org")
        (path-to-config          (ayrc/expand-config-path config-name))
        (config-in-build-dir     (expand-file-name config-name ayrc/path-to-build-dir))
@@ -170,7 +169,8 @@
                  (org-babel-tangle-file config-in-build-dir))
             (message "EXPORTED %s" output-filename))
 
-        (require 'autoload)
+        (unless (featurep 'autoload)
+            (require 'autoload))
         (let* ((generated-autoload-file path-to-autoloads)
                (section-text            nil))
             ;; Copy only section text
@@ -180,6 +180,7 @@
                 (autoload-generate-file-autoloads path-to-autoloadables autoloads-buffer)
                 (with-current-buffer autoloads-buffer
                     (goto-char (point-min))
+
                     (let ((section-start (search-forward generate-autoload-section-header))
                           (section-end   (search-forward generate-autoload-section-trailer)))
                         (setq section-text (buffer-substring section-start
