@@ -1455,7 +1455,7 @@ Editor settings
             (setq
              lsp-enable-folding                         t
              lsp-enable-indentation                     t
-             lsp-enable-file-watchers                   t
+             lsp-enable-file-watchers                   nil
              lsp-auto-configure                         nil
              lsp-enable-snippet                         nil
              lsp-keep-workspace-alive                   nil)
