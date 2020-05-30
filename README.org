@@ -3,1548 +3,1548 @@
 
 Editor settings
 
-* Configuration
-** Global
-*** Lexical binding
-    #+begin_src emacs-lisp :tangle yes
-      ;; -*- lexical-binding: t; -*-
+* Global configuration
+** Lexical binding
+   #+begin_src emacs-lisp :tangle yes
+     ;; -*- lexical-binding: t; -*-
+   #+end_src
+
+** Cleaning screen                                                                              :ui:
+   #+begin_src emacs-lisp :tangle yes
+     (setq inhibit-splash-screen   t
+           inhibit-startup-message t)
+
+     ;; Disable dialog box
+     (setq use-dialog-box nil)
+
+     ;; Disable indicators
+     (setq-default indicate-empty-lines t)
+     (setq-default indicate-buffer-boundaries 'left)
+
+     ;; Disable ring-bell-function
+     ;; That called when whenever function ‘ding’ is called.
+     (setq ring-bell-function 'ignore)
+   #+end_src
+
+** Frame settings                                                                               :ui:
+   #+begin_src emacs-lisp :tangle yes
+     (use-package frame
+         :init
+         ;; Disable cursor blink
+         (blink-cursor-mode 0)
+
+         (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
+
+         ;; Name of current buffer in window title
+         (setq frame-title-format "GNU Emacs: %b")
+
+         ;; Fullscreen at GUI startup
+         (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+         (add-to-list 'default-frame-alist '(fullscreen . maximized)))
+   #+end_src
+
+** Theme                                                                                        :ui:
+*** Global theme
+    Also add it to ~/.Xresources to prevent blinking at startup:
+    #+begin_src text
+      Emacs.Background:                    #292b2e
+      Emacs.Foreground:                    #b2b2b2
+      Emacs.BorderColor:                   #292b2e
+      Emacs.SelectionForeground:           #b2b2b2
+      Emacs.mode-line.attributeForeground: #b2b2b2
+      Emacs.mode-line.attributeBackground: #292b2e
     #+end_src
+    and run xrdb -merge ~/.Xresources
 
-*** Cleaning screen                                                                             :ui:
     #+begin_src emacs-lisp :tangle yes
-      (setq inhibit-splash-screen   t
-            inhibit-startup-message t)
+      (use-package spacemacs-common
+          :straight spacemacs-theme
+          :demand t
+          :custom-face
+          (org-link    ((nil :height 1.2)))
+          (org-level-1 ((nil :height 1.2)))
+          (org-level-2 ((nil :height 1.2)))
+          (org-level-3 ((nil :height 1.2)))
+          (org-level-4 ((nil :height 1.2)))
+          (org-level-5 ((nil :height 1.2)))
+          (org-level-6 ((nil :height 1.2)))
+          (org-level-7 ((nil :height 1.2)))
+          (org-level-8 ((nil :height 1.2)))
 
-      ;; Disable dialog box
-      (setq use-dialog-box nil)
+          (show-paren-match ((t (:background "purple4"))))
+          (show-paren-mismatch
+           ((((class color)) (:background "red" :foreground "white"))))
 
-      ;; Disable indicators
-      (setq-default indicate-empty-lines t)
-      (setq-default indicate-buffer-boundaries 'left)
-
-      ;; Disable ring-bell-function
-      ;; That called when whenever function ‘ding’ is called.
-      (setq ring-bell-function 'ignore)
-    #+end_src
-
-*** Frame settings                                                                              :ui:
-    #+begin_src emacs-lisp :tangle yes
-      (use-package frame
           :init
-          ;; Disable cursor blink
-          (blink-cursor-mode 0)
-
-          (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
-
-          ;; Name of current buffer in window title
-          (setq frame-title-format "GNU Emacs: %b")
-
-          ;; Fullscreen at GUI startup
-          (add-to-list 'initial-frame-alist '(fullscreen . maximized))
-          (add-to-list 'default-frame-alist '(fullscreen . maximized)))
+          (if (daemonp)
+                  (add-hook 'after-make-frame-functions
+                            (lambda (frame)
+                                (select-frame frame)
+                                (load-theme 'spacemacs-dark t)))
+              (load-theme 'spacemacs-dark t)))
     #+end_src
 
-*** Theme                                                                                       :ui:
-**** Global theme
-     Also add it to ~/.Xresources to prevent blinking at startup:
-     #+begin_src text
-       Emacs.Background:                    #292b2e
-       Emacs.Foreground:                    #b2b2b2
-       Emacs.BorderColor:                   #292b2e
-       Emacs.SelectionForeground:           #b2b2b2
-       Emacs.mode-line.attributeForeground: #b2b2b2
-       Emacs.mode-line.attributeBackground: #292b2e
-     #+end_src
-     and run xrdb -merge ~/.Xresources
-
-     #+begin_src emacs-lisp :tangle yes
-       (use-package spacemacs-common
-           :straight spacemacs-theme
-           :demand t
-           :custom-face
-           (org-link    ((nil :height 1.2)))
-           (org-level-1 ((nil :height 1.2)))
-           (org-level-2 ((nil :height 1.2)))
-           (org-level-3 ((nil :height 1.2)))
-           (org-level-4 ((nil :height 1.2)))
-           (org-level-5 ((nil :height 1.2)))
-           (org-level-6 ((nil :height 1.2)))
-           (org-level-7 ((nil :height 1.2)))
-           (org-level-8 ((nil :height 1.2)))
-
-           (show-paren-match ((t (:background "purple4"))))
-           (show-paren-mismatch
-            ((((class color)) (:background "red" :foreground "white"))))
-
-           :init
-           (if (daemonp)
-                   (add-hook 'after-make-frame-functions
-                             (lambda (frame)
-                                 (select-frame frame)
-                                 (load-theme 'spacemacs-dark t)))
-               (load-theme 'spacemacs-dark t)))
-     #+end_src
-
-**** Modeline theme
-     #+begin_src emacs-lisp :tangle yes :noweb yes
-       (use-package doom-modeline
-           :straight t
-           :config
-           (setq
-            ;; How tall the mode-line should be. It's only respected in GUI.
-            ;; If the actual char height is larger, it respects the actual height.
-            doom-modeline-height             21
-
-            ;; How wide the mode-line bar should be. It's only respected in GUI.
-            doom-modeline-bar-width          3
-
-            ;; The limit of the window width.
-            ;; If `window-width' is smaller than the limit, some information won't
-            ;; be displayed.
-            doom-modeline-window-width-limit fill-column
-
-            ;; How to detect the project root.
-            ;; The default priority of detection is `ffip'
-            ;;                                         > `projectile'
-            ;;                                         > `project'.
-            ;; nil means to use `default-directory'.
-            ;; The project management packages have some issues on detecting
-            ;; project root. e.g. `projectile' doesn't handle symlink folders
-            ;; well, while `project' is unable to hanle sub-projects.
-            ;; You can specify one if you encounter the issue.
-            doom-modeline-project-detection        'projectile
-
-            doom-modeline-buffer-file-name-style   'buffer-name
-
-            ;; Whether display icons in the mode-line.
-            ;; Respects `all-the-icons-color-icons'.
-            ;; While using the server mode in GUI, should set the value
-            ;; explicitly.
-            doom-modeline-icon                     (display-graphic-p)
-            doom-modeline-major-mode-icon          t
-            doom-modeline-major-mode-color-icon    t
-            doom-modeline-buffer-state-icon        t
-            doom-modeline-buffer-modification-icon t
-            ;; Whether display the modal state icon.
-            ;; Including `evil', `overwrite', `god', `ryo' and `xah-fly-keys',
-            ;; etc.
-            doom-modeline-modal-icon                 t
-            ;; Whether display the perspective name. Non-nil to display in the
-            ;; mode-line.
-            doom-modeline-persp-name                 t
-            ;; If non nil the default perspective name is displayed in the
-            ;; mode-line.
-            doom-modeline-display-default-persp-name t
-            ;; If non nil the perspective name is displayed alongside a folder
-            ;; icon.
-            doom-modeline-persp-icon                 t
-            ;; Whether display the `lsp' state. Non-nil to display in the
-            ;; mode-line.
-            doom-modeline-lsp                        t
-
-            doom-modeline-unicode-fallback           nil
-            doom-modeline-minor-modes                nil
-            doom-modeline-enable-word-count          nil
-
-            ;; Major modes in which to display word count continuously.
-            ;; Also applies to any derived modes. Respects `doom-modeline-enable-word-count'.
-            ;; If it brings the sluggish issue, disable `doom-modeline-enable-word-count' or
-            ;; remove the modes from `doom-modeline-continuous-word-count-modes'.
-            doom-modeline-continuous-word-count-modes '(markdown-mode
-                                                        gfm-mode
-                                                        org-mode)
-
-            ;; Whether display the buffer encoding.
-            doom-modeline-buffer-encoding              t
-
-            ;; Whether display the indentation information.
-            doom-modeline-indent-info                  t
-
-            ;; If non-nil, only display one number for checker information if applicable.
-            doom-modeline-checker-simple-format        t
-
-            ;; The maximum number displayed for notifications.
-            doom-modeline-number-limit                99
-
-            ;; The maximum displayed length of the branch name of version
-            ;; control.
-            doom-modeline-vcs-max-length              12
-
-            ;; Whether display the GitHub notifications. It requires `ghub' package.
-            doom-modeline-github          nil
-            doom-modeline-github-interval (* 30 60)
-
-            ;; Whether display the mu4e notifications. It requires `mu4e-alert'
-            ;; package.
-            doom-modeline-mu4e       nil
-
-            ;; Whether display the gnus notifications.
-            doom-modeline-gnus       t
-            ;; Wheter gnus should automatically be updated and how often
-            ;; (set to nil to disable)
-            doom-modeline-gnus-timer 2
-
-            ;; Whether display the IRC notifications. It requires `circe'
-            ;; or `erc' package.
-            doom-modeline-irc         nil
-            ;; Function to stylize the irc buffer names.
-            doom-modeline-irc-stylize 'identity
-
-            ;; Whether display the environment version.
-            doom-modeline-env-version       nil
-            ;; Or for individual languages
-            doom-modeline-env-enable-python nil
-            doom-modeline-env-enable-ruby   nil
-            doom-modeline-env-enable-perl   nil
-            doom-modeline-env-enable-go     nil
-            doom-modeline-env-enable-elixir nil
-            doom-modeline-env-enable-rust   nil
-
-            ;; What to dispaly as the version while a new one is being loaded
-            doom-modeline-env-load-string        "..."
-
-            ;; Hooks that run before/after the modeline version string is
-            ;; updated
-            doom-modeline-before-update-env-hook nil
-            doom-modeline-after-update-env-hook  nil)
-
-           <<modeline-current-line-segment>>
-           <<modeline-custom-modeline-setup>>
-
-           (doom-modeline-mode 1))
-     #+end_src
-
-***** Current line segment
-      #+begin_src emacs-lisp :tangle no :noweb-ref modeline-current-line-segment
-        (doom-modeline-def-segment
-         ayrc/my-current-line
-         "The buffer position information."
-         (let* ((active     (doom-modeline--active))
-                (face       (if active 'mode-line 'mode-line-inactive))
-                (mouse-face 'mode-line-highlight)
-                (local-map  mode-line-column-line-number-mode-map))
-             (concat
-              (doom-modeline-spc)
-              (doom-modeline-spc)
-
-              (propertize (format-mode-line
-                           (concat "%l/"
-                                   (int-to-string (count-lines (point-min) (point-max)))
-                                   ":%c"))
-                          'face face
-                          'help-echo "Buffer position"
-                          'mouse-face mouse-face
-                          'local-map local-map)
-
-              (when doom-modeline-percent-position
-                  (concat
-                   (doom-modeline-spc)
-                   (propertize (format-mode-line '("" doom-modeline-percent-position "%%"))
-                               'face face
-                               'help-echo "Buffer percentage"
-                               'mouse-face mouse-face
-                               'local-map local-map)))
-
-              (when (or line-number-mode
-                        column-number-mode
-                        doom-modeline-percent-position)
-                  (doom-modeline-spc)))))
-      #+end_src
-
-***** Custom modeline setup
-      #+begin_src emacs-lisp :tangle no :noweb-ref modeline-custom-modeline-setup
-        (doom-modeline-def-modeline 'ayrc/my-simple-line
-                                    '(
-                                      bar
-                                      matches
-                                      buffer-info
-                                      remote-host
-                                      ayrc/my-current-line
-                                      parrot
-                                      selection-info
-                                      )
-                                    '(
-                                      misc-info
-                                      input-method
-                                      buffer-encoding
-                                      major-mode
-                                      process
-                                      vcs
-                                      lsp
-                                      checker
-                                      )
-                                    )
-
-        (defun ayrc/setup-custom-doom-modeline ()
-            (doom-modeline-set-modeline 'ayrc/my-simple-line 'default))
-        (add-hook 'doom-modeline-mode-hook 'ayrc/setup-custom-doom-modeline)
-      #+end_src
-
-*** Bookmarks
-    #+begin_src emacs-lisp :tangle yes
-      (use-package bookmark
+*** Modeline theme
+    #+begin_src emacs-lisp :tangle yes :noweb yes
+      (use-package doom-modeline
+          :straight t
           :config
-          (setq bookmark-save-flag    1
-                bookmark-default-file (expand-file-name
-                                       "bookmarks"
-                                       ayrc/path-to-session-configs-dir)))
-    #+end_src
-
-*** Recent files
-    #+begin_src emacs-lisp :tangle yes :noweb no
-      (use-package recentf
-          :config
-          (setq recentf-save-file (expand-file-name
-                                   "recentf-save.el"
-                                   ayrc/path-to-session-configs-dir)))
-    #+end_src
-
-*** Backups in /tmp
-    #+begin_src emacs-lisp :tangle yes
-      (use-package files
-          :init
           (setq
-           backup-directory-alist         `((".*" . ,temporary-file-directory))
-           auto-save-file-name-transforms `((".*" ,temporary-file-directory t))))
+           ;; How tall the mode-line should be. It's only respected in GUI.
+           ;; If the actual char height is larger, it respects the actual height.
+           doom-modeline-height             10
+
+           ;; How wide the mode-line bar should be. It's only respected in GUI.
+           doom-modeline-bar-width          3
+
+           ;; The limit of the window width.
+           ;; If `window-width' is smaller than the limit, some information won't
+           ;; be displayed.
+           doom-modeline-window-width-limit fill-column
+
+           ;; How to detect the project root.
+           ;; The default priority of detection is `ffip'
+           ;;                                         > `projectile'
+           ;;                                         > `project'.
+           ;; nil means to use `default-directory'.
+           ;; The project management packages have some issues on detecting
+           ;; project root. e.g. `projectile' doesn't handle symlink folders
+           ;; well, while `project' is unable to hanle sub-projects.
+           ;; You can specify one if you encounter the issue.
+           doom-modeline-project-detection        'projectile
+
+           doom-modeline-buffer-file-name-style   'buffer-name
+
+           ;; Whether display icons in the mode-line.
+           ;; Respects `all-the-icons-color-icons'.
+           ;; While using the server mode in GUI, should set the value
+           ;; explicitly.
+           doom-modeline-icon                     (display-graphic-p)
+           doom-modeline-major-mode-icon          t
+           doom-modeline-major-mode-color-icon    t
+           doom-modeline-buffer-state-icon        t
+           doom-modeline-buffer-modification-icon t
+           ;; Whether display the modal state icon.
+           ;; Including `evil', `overwrite', `god', `ryo' and `xah-fly-keys',
+           ;; etc.
+           doom-modeline-modal-icon                 t
+           ;; Whether display the perspective name. Non-nil to display in the
+           ;; mode-line.
+           doom-modeline-persp-name                 t
+           ;; If non nil the default perspective name is displayed in the
+           ;; mode-line.
+           doom-modeline-display-default-persp-name t
+           ;; If non nil the perspective name is displayed alongside a folder
+           ;; icon.
+           doom-modeline-persp-icon                 t
+           ;; Whether display the `lsp' state. Non-nil to display in the
+           ;; mode-line.
+           doom-modeline-lsp                        t
+
+           doom-modeline-unicode-fallback           nil
+           doom-modeline-minor-modes                nil
+           doom-modeline-enable-word-count          nil
+
+           ;; Major modes in which to display word count continuously.
+           ;; Also applies to any derived modes. Respects `doom-modeline-enable-word-count'.
+           ;; If it brings the sluggish issue, disable `doom-modeline-enable-word-count' or
+           ;; remove the modes from `doom-modeline-continuous-word-count-modes'.
+           doom-modeline-continuous-word-count-modes '(markdown-mode
+                                                       gfm-mode
+                                                       org-mode)
+
+           ;; Whether display the buffer encoding.
+           doom-modeline-buffer-encoding              t
+
+           ;; Whether display the indentation information.
+           doom-modeline-indent-info                  t
+
+           ;; If non-nil, only display one number for checker information if applicable.
+           doom-modeline-checker-simple-format        t
+
+           ;; The maximum number displayed for notifications.
+           doom-modeline-number-limit                99
+
+           ;; The maximum displayed length of the branch name of version
+           ;; control.
+           doom-modeline-vcs-max-length              12
+
+           ;; Whether display the GitHub notifications. It requires `ghub' package.
+           doom-modeline-github          nil
+           doom-modeline-github-interval (* 30 60)
+
+           ;; Whether display the mu4e notifications. It requires `mu4e-alert'
+           ;; package.
+           doom-modeline-mu4e       nil
+
+           ;; Whether display the gnus notifications.
+           doom-modeline-gnus       t
+           ;; Wheter gnus should automatically be updated and how often
+           ;; (set to nil to disable)
+           doom-modeline-gnus-timer 2
+
+           ;; Whether display the IRC notifications. It requires `circe'
+           ;; or `erc' package.
+           doom-modeline-irc         nil
+           ;; Function to stylize the irc buffer names.
+           doom-modeline-irc-stylize 'identity
+
+           ;; Whether display the environment version.
+           doom-modeline-env-version       nil
+           ;; Or for individual languages
+           doom-modeline-env-enable-python nil
+           doom-modeline-env-enable-ruby   nil
+           doom-modeline-env-enable-perl   nil
+           doom-modeline-env-enable-go     nil
+           doom-modeline-env-enable-elixir nil
+           doom-modeline-env-enable-rust   nil
+
+           ;; What to dispaly as the version while a new one is being loaded
+           doom-modeline-env-load-string        "..."
+
+           ;; Hooks that run before/after the modeline version string is
+           ;; updated
+           doom-modeline-before-update-env-hook nil
+           doom-modeline-after-update-env-hook  nil)
+
+          <<modeline-current-line-segment>>
+          <<modeline-custom-modeline-setup>>
+
+          (doom-modeline-mode 1))
     #+end_src
 
-*** [[https://github.com/purcell/exec-path-from-shell][Use user ${PATH} from shell]]
-    Make Emacs use the $PATH set up by the user's shell
+**** Current line segment
+     #+begin_src emacs-lisp :tangle no :noweb-ref modeline-current-line-segment
+       (doom-modeline-def-segment
+        ayrc/my-current-line
+        "The buffer position information."
+        (let* ((active     (doom-modeline--active))
+               (face       (if active 'mode-line 'mode-line-inactive))
+               (mouse-face 'mode-line-highlight)
+               (local-map  mode-line-column-line-number-mode-map))
+            (concat
+             (doom-modeline-spc)
+             (doom-modeline-spc)
 
+             (propertize (format-mode-line
+                          (concat "%l/"
+                                  (int-to-string (count-lines (point-min) (point-max)))
+                                  ":%c"))
+                         'face face
+                         'help-echo "Buffer position"
+                         'mouse-face mouse-face
+                         'local-map local-map)
+
+             (when doom-modeline-percent-position
+                 (concat
+                  (doom-modeline-spc)
+                  (propertize (format-mode-line '("" doom-modeline-percent-position "%%"))
+                              'face face
+                              'help-echo "Buffer percentage"
+                              'mouse-face mouse-face
+                              'local-map local-map)))
+
+             (when (or line-number-mode
+                       column-number-mode
+                       doom-modeline-percent-position)
+                 (doom-modeline-spc)))))
+     #+end_src
+
+**** Custom modeline setup
+     #+begin_src emacs-lisp :tangle no :noweb-ref modeline-custom-modeline-setup
+       (doom-modeline-def-modeline 'ayrc/my-simple-line
+                                   '(
+                                     bar
+                                     matches
+                                     buffer-info
+                                     remote-host
+                                     ayrc/my-current-line
+                                     parrot
+                                     selection-info
+                                     )
+                                   '(
+                                     misc-info
+                                     input-method
+                                     buffer-encoding
+                                     major-mode
+                                     process
+                                     vcs
+                                     lsp
+                                     checker
+                                     )
+                                   )
+
+       (defun ayrc/setup-custom-doom-modeline ()
+           (doom-modeline-set-modeline 'ayrc/my-simple-line 'default))
+       (add-hook 'doom-modeline-mode-hook 'ayrc/setup-custom-doom-modeline)
+     #+end_src
+
+** Bookmarks
+   #+begin_src emacs-lisp :tangle yes
+     (use-package bookmark
+         :config
+         (setq bookmark-save-flag    1
+               bookmark-default-file (expand-file-name
+                                      "bookmarks"
+                                      ayrc/path-to-session-configs-dir)))
+   #+end_src
+
+** Recent files
+   #+begin_src emacs-lisp :tangle yes :noweb no
+     (use-package recentf
+         :config
+         (setq recentf-save-file (expand-file-name
+                                  "recentf-save.el"
+                                  ayrc/path-to-session-configs-dir)))
+   #+end_src
+
+** Backups in /tmp
+   #+begin_src emacs-lisp :tangle yes
+     (use-package files
+         :init
+         (setq
+          backup-directory-alist         `((".*" . ,temporary-file-directory))
+          auto-save-file-name-transforms `((".*" ,temporary-file-directory t))))
+   #+end_src
+
+** [[https://github.com/purcell/exec-path-from-shell][Use user ${PATH} from shell]]
+   Make Emacs use the $PATH set up by the user's shell
+
+   #+begin_src emacs-lisp :tangle yes
+     (use-package exec-path-from-shell
+         :straight t
+         :after (:any python)
+         :commands (exec-path-from-shell-initialize
+                    exec-path-from-shell-copy-env)
+         :config
+         (setq exec-path-from-shell-check-startup-files nil)
+
+         (when (memq window-system '(mac ns x))
+             (add-to-list 'exec-path-from-shell-variables "PYENV_ROOT")))
+   #+end_src
+
+** Auto revert mode
+   Revert buffers when files on disk change
+
+   #+begin_src emacs-lisp :tangle yes
+     (use-package autorevert
+         :defer t
+         :diminish auto-revert-mode)
+   #+end_src
+
+** Abbrev mode
+   Word abbreviations mode. In Abbrev mode, inserting an abbreviation causes
+   it to expand and be replaced by its expansion
+
+   #+begin_src emacs-lisp :tangle yes
+     (use-package abbrev
+         :defer t
+         :commands (abbrev-mode)
+         :diminish abbrev-mode)
+   #+end_src
+
+** Visual line mode
+   #+begin_src emacs-lisp :tangle yes
+     (setq word-wrap t)
+     (diminish 'visual-line-mode)
+   #+end_src
+
+** Disable automatic line breaking
+   When Auto Fill mode is enabled, inserting a space at a column
+   beyond ‘current-fill-column’ automatically breaks the line at a
+   previous space.
+
+   This minor-mode have bad behavior almost in all modes.
+
+   #+begin_src emacs-lisp :tangle yes
+     (diminish 'auto-fill-function)
+
+     (auto-fill-mode            -1)
+     (remove-hook 'text-mode-hook #'turn-on-auto-fill)
+   #+end_src
+
+** Indents
+   #+begin_src emacs-lisp :tangle yes
+     (setq-default tab-width 4)
+     (setq-default pc-basic-offset 4)
+     (setq-default standart-indent 4)
+     (setq-default indent-tabs-mode nil)
+   #+end_src
+
+** Selection
+*** Common clipboard with XServer/Wayland
     #+begin_src emacs-lisp :tangle yes
-      (use-package exec-path-from-shell
+      (setq select-enable-clipboard t)
+
+      (use-package xclip
+          :if (eq system-type 'gnu/linux)
           :straight t
-          :commands (exec-path-from-shell-initialize
-                     exec-path-from-shell-copy-env)
-          :config
-          (setq exec-path-from-shell-check-startup-files nil)
+          :init
+          (xclip-mode 1))
 
-          (when (memq window-system '(mac ns x))
-              (add-to-list 'exec-path-from-shell-variables "PYENV_ROOT")))
+      (use-package pbcopy
+          :if (eq system-type 'darwin)
+          :straight t
+          :init
+          (turn-on-pbcopy))
     #+end_src
 
-*** Auto revert mode
-    Revert buffers when files on disk change
+*** Delete Selection mode
+    If you enable Delete Selection mode, a minor mode,
+    then inserting text while the mark is active causes the selected text
+    to be deleted first. This also deactivates the mark. Many graphical
+    applications follow this convention, but Emacs does not.
 
     #+begin_src emacs-lisp :tangle yes
-      (use-package autorevert
+      (delete-selection-mode t)
+    #+end_src
+
+** Set newline at the end of file
+   #+begin_src emacs-lisp :tangle yes
+     (setq require-final-newline t)
+     (setq next-line-add-newlines t)
+   #+end_src
+
+** [[https://github.com/editorconfig/editorconfig-emacs][EditorConfig]]
+   #+begin_src emacs-lisp :tangle yes
+     (use-package editorconfig
+         :straight t
+         :diminish editorconfig-mode
+         :init
+         (editorconfig-mode))
+   #+end_src
+
+** Use 'y' and `n' instead of 'yes' and 'not'                                                   :ui:
+   #+begin_src emacs-lisp :tangle yes
+     (fset 'yes-or-no-p 'y-or-n-p)
+   #+end_src
+
+** Scroll settings                                                                              :ui:
+   #+begin_src emacs-lisp :tangle yes :noweb yes
+     (use-package pixel-scroll
+         :bind (("M-n" . (lambda nil (interactive) (pixel-scroll-up 1)))
+                ("M-p" . (lambda nil (interactive) (pixel-scroll-down 1)))
+                ([remap scroll-down-command] . #'golden-ratio-scroll-screen-down)
+                ([remap scroll-up-command]   . #'golden-ratio-scroll-screen-up))
+         :init
+         <<golden-ratio-scroll-screen>>
+
+         (defun ayrc/pixel-scroll-pre-command-hook ()
+             (pixel-scroll-mode)
+             (remove-hook 'pre-command-hook #'ayrc/pixel-scroll-pre-command-hook))
+         (add-hook 'pre-command-hook #'ayrc/pixel-scroll-pre-command-hook)
+
+         :config
+         <<scroll-perfomance>>
+         <<scroll-smoothness>>)
+   #+end_src
+
+*** Perfomance
+    #+begin_src emacs-lisp :tangle no :noweb-ref scroll-perfomance
+      ;; Reduce rendering/line scan work for Emacs by not rendering cursors or
+      ;; regions in non-focused windows.
+      (setq-default cursor-in-non-selected-windows nil)
+
+      (setq
+       ;; More performant rapid scrolling over unfontified regions. May cause
+       ;; brief spells of inaccurate syntax highlighting right after scrolling,
+       ;; which should quickly self-correct.
+       ;; No (less) lag while scrolling lots.
+       fast-but-imprecise-scrolling    t
+
+       ;; Don’t compact font caches during GC.
+       inhibit-compacting-font-caches  t
+
+       ;; Just don't even fontify if we're still catching up on user input.
+       jit-lock-defer-time             0
+
+       highlight-nonselected-windows   nil)
+    #+end_src
+
+*** Smoothness
+    #+begin_src emacs-lisp :tangle no :noweb-ref scroll-smoothness
+      (setq
+       ;; scroll-preserve-screen-position nil
+       scroll-step                   1
+       scroll-margin                 0
+       scroll-conservatively         0
+
+       ;; Never go back to the old scrolling behaviour.
+       pixel-dead-time               0
+
+       pixel-wait                    0
+       ;; Scroll by number of pixels instead of
+       ;; lines (t = frame-char-height pixels).
+       pixel-resolution-fine-flag    t
+
+       ;; Distance in pixel-resolution to scroll each mouse wheel event.
+       mouse-wheel-scroll-amount     '(1 ((shift) . 1))
+       mouse-wheel-follow-mouse      t
+       mouse-wheel-progressive-speed nil)
+    #+end_src
+
+*** Golden ratio
+    #+begin_src emacs-lisp :tangle no :noweb-ref golden-ratio-scroll-screen
+      (use-package golden-ratio-scroll-screen
+          :straight t
           :defer t
-          :diminish auto-revert-mode)
+          :after (pixel-scroll)
+          :custom-face
+          (golden-ratio-scroll-highlight-line-face
+           ((t (:background "#3c394a" :foreground "#5b576e"))))
+          :commands (golden-ratio-scroll-screen-down
+                     golden-ratio-scroll-screen-up))
     #+end_src
 
-*** Abbrev mode
-    Word abbreviations mode. In Abbrev mode, inserting an abbreviation causes
-    it to expand and be replaced by its expansion
-
+** Highlighting                                                                                 :ui:
+*** Syntax                                                                                      :ui:
     #+begin_src emacs-lisp :tangle yes
-      (use-package abbrev
+      (use-package font-lock
           :defer t
-          :commands (abbrev-mode)
-          :diminish abbrev-mode)
-    #+end_src
-
-*** Visual line mode
-    #+begin_src emacs-lisp :tangle yes
-      (setq word-wrap t)
-      (diminish 'visual-line-mode)
-    #+end_src
-
-*** Disable automatic line breaking
-    When Auto Fill mode is enabled, inserting a space at a column
-    beyond ‘current-fill-column’ automatically breaks the line at a
-    previous space.
-
-    This minor-mode have bad behavior almost in all modes.
-
-    #+begin_src emacs-lisp :tangle yes
-      (diminish 'auto-fill-function)
-
-      (auto-fill-mode            -1)
-      (remove-hook 'text-mode-hook #'turn-on-auto-fill)
-    #+end_src
-
-*** Indents
-    #+begin_src emacs-lisp :tangle yes
-      (setq-default tab-width 4)
-      (setq-default pc-basic-offset 4)
-      (setq-default standart-indent 4)
-      (setq-default indent-tabs-mode nil)
-    #+end_src
-
-*** Selection
-**** Common clipboard with XServer/Wayland
-     #+begin_src emacs-lisp :tangle yes
-       (setq select-enable-clipboard t)
-
-       (use-package xclip
-           :if (eq system-type 'gnu/linux)
-           :straight t
-           :init
-           (xclip-mode 1))
-
-       (use-package pbcopy
-           :if (eq system-type 'darwin)
-           :straight t
-           :init
-           (turn-on-pbcopy))
-     #+end_src
-
-**** Delete Selection mode
-     If you enable Delete Selection mode, a minor mode,
-     then inserting text while the mark is active causes the selected text
-     to be deleted first. This also deactivates the mark. Many graphical
-     applications follow this convention, but Emacs does not.
-
-     #+begin_src emacs-lisp :tangle yes
-       (delete-selection-mode t)
-     #+end_src
-
-*** Set newline at the end of file
-    #+begin_src emacs-lisp :tangle yes
-      (setq require-final-newline t)
-      (setq next-line-add-newlines t)
-    #+end_src
-
-*** [[https://github.com/editorconfig/editorconfig-emacs][EditorConfig]]
-    #+begin_src emacs-lisp :tangle yes
-      (use-package editorconfig
-          :straight t
-          :diminish editorconfig-mode
-          :init
-          (editorconfig-mode))
-    #+end_src
-
-*** Use 'y' and `n' instead of 'yes' and 'not'                                                  :ui:
-    #+begin_src emacs-lisp :tangle yes
-      (fset 'yes-or-no-p 'y-or-n-p)
-    #+end_src
-
-*** Scroll settings                                                                             :ui:
-    #+begin_src emacs-lisp :tangle yes :noweb yes
-      (use-package pixel-scroll
-          :bind (("M-n" . (lambda nil (interactive) (pixel-scroll-up 1)))
-                 ("M-p" . (lambda nil (interactive) (pixel-scroll-down 1)))
-                 ([remap scroll-down-command] . #'golden-ratio-scroll-screen-down)
-                 ([remap scroll-up-command]   . #'golden-ratio-scroll-screen-up))
-          :init
-          <<golden-ratio-scroll-screen>>
-
-          (defun ayrc/pixel-scroll-pre-command-hook ()
-              (pixel-scroll-mode)
-              (remove-hook 'pre-command-hook #'ayrc/pixel-scroll-pre-command-hook))
-          (add-hook 'pre-command-hook #'ayrc/pixel-scroll-pre-command-hook)
-
+          :commands (font-lock-mode global-font-lock-mode)
           :config
-          <<scroll-perfomance>>
-          <<scroll-smoothness>>)
+          (setq font-lock-maximum-decoration t))
     #+end_src
 
-**** Perfomance
-     #+begin_src emacs-lisp :tangle no :noweb-ref scroll-perfomance
-       ;; Reduce rendering/line scan work for Emacs by not rendering cursors or
-       ;; regions in non-focused windows.
-       (setq-default cursor-in-non-selected-windows nil)
-
-       (setq
-        ;; More performant rapid scrolling over unfontified regions. May cause
-        ;; brief spells of inaccurate syntax highlighting right after scrolling,
-        ;; which should quickly self-correct.
-        ;; No (less) lag while scrolling lots.
-        fast-but-imprecise-scrolling    t
-
-        ;; Don’t compact font caches during GC.
-        inhibit-compacting-font-caches  t
-
-        ;; Just don't even fontify if we're still catching up on user input.
-        jit-lock-defer-time             0
-
-        highlight-nonselected-windows   nil)
-     #+end_src
-
-**** Smoothness
-     #+begin_src emacs-lisp :tangle no :noweb-ref scroll-smoothness
-       (setq
-        ;; scroll-preserve-screen-position nil
-        scroll-step                   1
-        scroll-margin                 0
-        scroll-conservatively         0
-
-        ;; Never go back to the old scrolling behaviour.
-        pixel-dead-time               0
-
-        pixel-wait                    0
-        ;; Scroll by number of pixels instead of
-        ;; lines (t = frame-char-height pixels).
-        pixel-resolution-fine-flag    t
-
-        ;; Distance in pixel-resolution to scroll each mouse wheel event.
-        mouse-wheel-scroll-amount     '(1 ((shift) . 1))
-        mouse-wheel-follow-mouse      t
-        mouse-wheel-progressive-speed nil)
-     #+end_src
-
-**** Golden ratio
-     #+begin_src emacs-lisp :tangle no :noweb-ref golden-ratio-scroll-screen
-       (use-package golden-ratio-scroll-screen
-           :straight t
-           :defer t
-           :after (pixel-scroll)
-           :custom-face
-           (golden-ratio-scroll-highlight-line-face
-            ((t (:background "#3c394a" :foreground "#5b576e"))))
-           :commands (golden-ratio-scroll-screen-down
-                      golden-ratio-scroll-screen-up))
-     #+end_src
-
-*** Highlighting                                                                                :ui:
-**** Syntax                                                                                     :ui:
-     #+begin_src emacs-lisp :tangle yes
-       (use-package font-lock
-           :defer t
-           :commands (font-lock-mode global-font-lock-mode)
-           :config
-           (setq font-lock-maximum-decoration t))
-     #+end_src
-
-**** Expressions between {},[],()                                                               :ui:
-     Highlight matching paren
-
-     #+begin_src emacs-lisp :tangle yes
-       (use-package paren
-           :defer t
-           :commands (show-paren-mode)
-           :init
-           (show-paren-mode)
-
-           :config
-           (setq show-paren-delay 0
-                 show-paren-style 'expression))
-     #+end_src
-
-*** [[https://github.com/domtronn/all-the-icons.el][Icons]]                                                                                       :ui:
-    A library for inserting Developer icons
+*** Expressions between {},[],()                                                                :ui:
+    Highlight matching paren
 
     #+begin_src emacs-lisp :tangle yes
-      (use-package all-the-icons
-          :straight t
-          :defer t)
-    #+end_src
-
-*** Current line hightlight                                                                     :ui:
-    #+begin_src emacs-lisp :tangle yes
-      (use-package hl-line
-          :init
-          (global-hl-line-mode 1))
-    #+end_src
-
-*** Line numbering                                                                              :ui:
-    #+begin_src emacs-lisp :tangle yes
-      (use-package display-line-numbers
+      (use-package paren
           :defer t
-          :after (:any company)
-          :commands (display-line-numbers)
+          :commands (show-paren-mode)
           :init
-          (line-number-mode     t)
-          (column-number-mode   t)
-
-          ;; Don't show current buffer size
-          (size-indication-mode nil)
+          (show-paren-mode)
 
           :config
-          (setq display-line-numbers-width-start 5))
+          (setq show-paren-delay 0
+                show-paren-style 'expression))
     #+end_src
 
-*** Eldoc                                                                                       :ui:
-    #+begin_src emacs-lisp :tangle yes
-      (use-package eldoc
-          :diminish eldoc-mode
-          :init
-          (global-eldoc-mode -1))
-    #+end_src
+** [[https://github.com/domtronn/all-the-icons.el][Icons]]                                      :ui:
+   A library for inserting Developer icons
 
-*** [[https://github.com/emacs-dashboard/emacs-dashboard][Dashboard]]                                                                                   :ui:
-    #+begin_src emacs-lisp :tangle yes
-      (use-package dashboard
+   #+begin_src emacs-lisp :tangle yes
+     (use-package all-the-icons
+         :straight t
+         :defer t)
+   #+end_src
+
+** Current line hightlight                                                                      :ui:
+   #+begin_src emacs-lisp :tangle yes
+     (use-package hl-line
+         :init
+         (global-hl-line-mode 1))
+   #+end_src
+
+** Line numbering                                                                               :ui:
+   #+begin_src emacs-lisp :tangle yes
+     (use-package display-line-numbers
+         :defer t
+         :after (:any company)
+         :commands (display-line-numbers)
+         :init
+         (line-number-mode     t)
+         (column-number-mode   t)
+
+         ;; Don't show current buffer size
+         (size-indication-mode nil)
+
+         :config
+         (setq display-line-numbers-width-start 5))
+   #+end_src
+
+** Eldoc                                                                                        :ui:
+   #+begin_src emacs-lisp :tangle yes
+     (use-package eldoc
+         :diminish eldoc-mode
+         :init
+         (global-eldoc-mode -1))
+   #+end_src
+
+** [[https://github.com/emacs-dashboard/emacs-dashboard][Dashboard]]                            :ui:
+   #+begin_src emacs-lisp :tangle yes
+     (use-package dashboard
+         :straight t
+         :diminish page-break-lines-mode
+         :init
+         (dashboard-setup-startup-hook)
+
+         :config
+         (setq initial-buffer-choice       (lambda ()  (get-buffer "*dashboard*"))
+               dashboard-set-footer        nil
+               dashboard-center-content    t
+               dashboard-show-shortcuts    t
+               dashboard-set-file-icons    t
+               dashboard-set-heading-icons t
+               dashboard-banner-logo-title "Welcome to Emacs"
+               dashboard-items             '((recents  . 5)
+                                             (bookmarks . 5)
+                                             (projects . 5))))
+   #+end_src
+
+** [[https://github.com/bbatsov/projectile][Project managment]]                         :hotkeys:ui:
+   #+begin_src emacs-lisp :tangle yes :noweb yes
+     (use-package projectile
+         :straight t
+         :delight '(:eval (format "[P<%s>]" (projectile-project-name)))
+         :bind (:map projectile-mode-map
+                     ("<f9>"    . projectile-compile-project)
+                     ("C-x p o" . projectile-switch-open-project)
+                     ("C-x p s" . projectile-switch-project)
+                     ("C-c p i" . projectile-invalidate-cache)
+                     ("C-c p z" . projectile-cache-current-file)
+
+                     ("C-c p s" . ayrc/helm-projectile-grep-or-rg)
+                     ("C-c p h" . helm-projectile)
+                     ("C-c p p" . helm-projectile-switch-project)
+                     ("C-c p f" . helm-projectile-find-file)
+                     ("C-c p F" . helm-projectile-find-file-in-known-projects)
+                     ("C-c p g" . helm-projectile-find-file-dwim)
+                     ("C-c p d" . helm-projectile-find-dir)
+                     ("C-c p e" . helm-projectile-recentf)
+                     ("C-c p a" . helm-projectile-find-other-file)
+                     ("C-c p b" . helm-projectile-switch-to-buffer))
+         :init
+         <<helm-projectile>>
+         (projectile-mode 1)
+
+         :config
+         (setq projectile-completion-system                     'helm
+               projectile-switch-project-action                 'helm-projectile
+               projectile-enable-caching                        t
+               projectile-project-root-files-top-down-recurring (append '("compile_commands.json" ".cquery" ".ccls" ".clangd")
+                                                                        projectile-project-root-files-top-down-recurring)
+               projectile-known-projects-file (expand-file-name
+                                               "known-projects.el"
+                                               ayrc/path-to-session-configs-dir)))
+   #+end_src
+
+*** [[https://github.com/bbatsov/helm-projectile][Helm]]                            :interactive:ui:
+    #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref helm-projectile
+      (use-package helm-projectile
           :straight t
-          :diminish page-break-lines-mode
-          :init
-          (dashboard-setup-startup-hook)
-
-          :config
-          (setq initial-buffer-choice       (lambda ()  (get-buffer "*dashboard*"))
-                dashboard-set-footer        nil
-                dashboard-center-content    t
-                dashboard-show-shortcuts    t
-                dashboard-set-file-icons    t
-                dashboard-set-heading-icons t
-                dashboard-banner-logo-title "Welcome to Emacs"
-                dashboard-items             '((recents  . 5)
-                                              (bookmarks . 5)
-                                              (projects . 5))))
-    #+end_src
-
-*** [[https://github.com/bbatsov/projectile][Project managment]]                                                                   :hotkeys:ui:
-    #+begin_src emacs-lisp :tangle yes :noweb yes
-      (use-package projectile
-          :straight t
-          :delight '(:eval (format "[P<%s>]" (projectile-project-name)))
-          :bind (:map projectile-mode-map
-                      ("<f9>"    . projectile-compile-project)
-                      ("C-x p o" . projectile-switch-open-project)
-                      ("C-x p s" . projectile-switch-project)
-                      ("C-c p i" . projectile-invalidate-cache)
-                      ("C-c p z" . projectile-cache-current-file)
-
-                      ("C-c p s" . ayrc/helm-projectile-grep-or-rg)
-                      ("C-c p h" . helm-projectile)
-                      ("C-c p p" . helm-projectile-switch-project)
-                      ("C-c p f" . helm-projectile-find-file)
-                      ("C-c p F" . helm-projectile-find-file-in-known-projects)
-                      ("C-c p g" . helm-projectile-find-file-dwim)
-                      ("C-c p d" . helm-projectile-find-dir)
-                      ("C-c p e" . helm-projectile-recentf)
-                      ("C-c p a" . helm-projectile-find-other-file)
-                      ("C-c p b" . helm-projectile-switch-to-buffer))
-          :init
-          <<helm-projectile>>
-          (projectile-mode 1)
-
-          :config
-          (setq projectile-completion-system                     'helm
-                projectile-switch-project-action                 'helm-projectile
-                projectile-enable-caching                        t
-                projectile-project-root-files-top-down-recurring (append '("compile_commands.json" ".cquery" ".ccls" ".clangd")
-                                                                         projectile-project-root-files-top-down-recurring)
-                projectile-known-projects-file (expand-file-name
-                                                "known-projects.el"
-                                                ayrc/path-to-session-configs-dir)))
-    #+end_src
-
-**** [[https://github.com/bbatsov/helm-projectile][Helm]]                                                                           :interactive:ui:
-     #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref helm-projectile
-       (use-package helm-projectile
-           :straight t
-           :defer t
-           :commands (helm-projectile
-                      helm-projectile-switch-project
-                      helm-projectile-find-file
-                      helm-projectile-find-file-in-known-projects
-                      helm-projectile-find-file-dwim
-                      helm-projectile-find-dir
-                      helm-projectile-recentf
-                      helm-projectile-find-other-file
-                      helm-projectile-switch-to-buffer)
-
-           :init
-           <<projectile-helm-rg>>
-
-           (defun ayrc/helm-projectile-grep-or-rg ()
-               "Uses helm-projectile-grep, if ag doesn't present"
-               (interactive)
-               (if (executable-find "rg") (helm-projectile-rg)
-                   (helm-projectile-grep))))
-     #+end_src
-
-***** [[https://github.com/cosmicexplorer/helm-rg][Ripgrep]]
-      A helm interface to ripgrep
-
-      #+begin_src emacs-lisp :tangle no :noweb-ref projectile-helm-rg
-        (use-package helm-rg
-            :straight t
-            :commands (helm-projectile-rg))
-      #+end_src
-
-*** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                                                             :hotkeys:ui:
-    A tree plugin like NerdTree for Vim
-
-    #+begin_src emacs-lisp :tangle yes
-      (use-package neotree
-          :straight t
-          :bind ("<f1>" . neotree-toggle)
-          :config
-          (setq neo-window-width 40)
-          (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
-    #+end_src
-
-*** [[https://emacs-helm.github.io/helm/][Helm]]                                                                                :hotkeys:ui:
-    Incremental and narrowing framework
-
-    #+begin_src emacs-lisp :tangle yes :noweb yes
-      (use-package helm
-          :straight t
-          :diminish helm-mode
-          :defines (helm-M-x-fuzzy-match
-                    helm-mode-fuzzy-match
-                    helm-imenu-fuzzy-match
-                    helm-apropos-fuzzy-match
-                    helm-recentf-fuzzy-match
-                    helm-semantic-fuzzy-match
-                    helm-lisp-fuzzy-completion
-                    helm-completion-in-region-fuzzy-match)
-          :bind
-          (("M-x"       . helm-M-x)
-           ("C-x C-b"   . helm-mini)
-           ("C-x b"     . helm-mini)
-           ("C-c h /"   . helm-find)
-           ("C-c h h"   . helm-info)
-           ("C-c h o"   . helm-occur)
-           ("C-c h c"   . helm-semantic)
-           ("C-c h i"   . helm-imenu)
-           ("C-c h s"   . helm-rg)
-
-           ;; Pre-configured helm to build regexps.
-           ("C-c h r"   . helm-regexp)
-           ("C-c h l"   . helm-bookmarks)
-           ("C-c h a"   . helm-apropos)
-           ("C-c h x"   . helm-register)
-           ("C-c h m"   . helm-man-woman)
-           ("C-x C-f"   . helm-find-files)
-           ("M-y"       . helm-show-kill-ring)
-
-           :map helm-map
-           ;; rebind tab to do persistent action
-           ("<tab>"     . helm-execute-persistent-action)
-           ("C-i"       . helm-execute-persistent-action)
-           ("C-z"       . helm-select-action))
+          :defer t
+          :commands (helm-projectile
+                     helm-projectile-switch-project
+                     helm-projectile-find-file
+                     helm-projectile-find-file-in-known-projects
+                     helm-projectile-find-file-dwim
+                     helm-projectile-find-dir
+                     helm-projectile-recentf
+                     helm-projectile-find-other-file
+                     helm-projectile-switch-to-buffer)
 
           :init
-          <<helm-rg>>
+          <<projectile-helm-rg>>
 
-          (helm-mode 1)
-
-          :config
-          (setq helm-M-x-fuzzy-match                  t
-                helm-completion-style                 'helm-fuzzy
-                helm-imenu-fuzzy-match                t
-                helm-locate-fuzzy-match               t
-                helm-apropos-fuzzy-match              t
-                helm-recentf-fuzzy-match              t
-                helm-semantic-fuzzy-match             t
-                helm-lisp-fuzzy-completion            t
-                helm-buffers-fuzzy-matching           t
-                helm-ff-search-library-in-sexp        t
-                helm-ff-file-name-history-use-recentf t
-                helm-completion-in-region-fuzzy-match t
-
-                ;; Open helm buffer inside current window, not occupy whole
-                ;; other window
-                helm-split-window-inside-p           t
-
-                ;; Move to end or beginning of source when reaching top or
-                ;; bottom of source.
-                helm-move-to-line-cycle-in-source     nil
-
-                ;; Scroll 8 lines other window using M-<next>/M-<prior>
-                helm-scroll-amount                    8
-
-                helm-autoresize-max-height            50
-                helm-autoresize-min-height            10
-
-
-                helm-ff-file-name-history-use-recentf t)
-
-          ;; Autoresize helm minibufer
-          (helm-autoresize-mode t))
+          (defun ayrc/helm-projectile-grep-or-rg ()
+              "Uses helm-projectile-grep, if ag doesn't present"
+              (interactive)
+              (if (executable-find "rg") (helm-projectile-rg)
+                  (helm-projectile-grep))))
     #+end_src
 
 **** [[https://github.com/cosmicexplorer/helm-rg][Ripgrep]]
      A helm interface to ripgrep
 
-     #+begin_src emacs-lisp :tangle no :noweb-ref helm-rg
+     #+begin_src emacs-lisp :tangle no :noweb-ref projectile-helm-rg
        (use-package helm-rg
            :straight t
-           :commands (helm-rg))
+           :commands (helm-projectile-rg))
      #+end_src
 
-*** [[http://www.dr-qubit.org/undo-tree/undo-tree.el][Undo tree]]                                                                           :hotkeys:ui:
-    Treat undo history as a tree
+** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                 :hotkeys:ui:
+   A tree plugin like NerdTree for Vim
 
-    #+begin_src emacs-lisp :tangle yes
-      (use-package undo-tree
-          :straight t
-          :after (:any company)
-          :diminish undo-tree-mode
-          :bind (("C-x u" . undo-tree-visualize))
-          :init
-          (global-undo-tree-mode))
-    #+end_src
-
-*** [[https://github.com/syohex/emacs-anzu][Display in the modeline search information]]                                          :hotkeys:ui:
-    Show number of matches in mode-line while searching
-
-    #+begin_src emacs-lisp :tangle yes
-      (use-package anzu
-          :straight t
-          :defines (anzu-cons-mode-line-p)
-          :defer t
-          :diminish anzu-mode
-          :bind (([remap query-replace]        . #'anzu-query-replace)
-                 ([remap query-replace-regexp] . #'anzu-query-replace-regexp)
-
-                 :map isearch-mode-map
-                 ([remap isearch-query-replace]        . #'anzu-isearch-query-replace)
-                 ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp)))
-    #+end_src
-
-*** [[https://github.com/abo-abo/hydra][Hydra]]                                                                               :hotkeys:ui:
-    Make bindings that stick around
-
-    #+begin_src emacs-lisp :tangle yes
-      (use-package hydra
-          :straight t
-          :defer t
-          :after (:any dap)
-          :commands (defhydra))
-    #+end_src
-
-*** Subword mode                                                                           :hotkeys:
-    #+begin_src emacs-lisp :tangle yes
-      (use-package subword
-          :defer t
-          :after (:any company)
-          :commands (global-subword-mode)
-          :diminish (subword-mode global-subword-mode)
-          :init
-          (defun ayrc/forward-word (&optional arg)
-              (interactive "p")
-              (let ((table (make-syntax-table)))
-                  (modify-syntax-entry ?_ "_" table)
-                  (with-syntax-table table
-                      (forward-word arg))))
-          (global-set-key (kbd "M-f") 'ayrc/forward-word)
-
-          (defun ayrc/backward-word (&optional arg)
-              (interactive "p")
-              (let ((table (make-syntax-table)))
-                  (modify-syntax-entry ?_ "_" table)
-                  (with-syntax-table table
-                      (backward-word arg))))
-          (global-set-key (kbd "M-b") 'ayrc/backward-word)
-
-          (defun ayrc/kill-word (&optional arg)
-              (interactive "p")
-              (let ((table (make-syntax-table)))
-                  (modify-syntax-entry ?_ "_" table)
-                  (with-syntax-table table
-                      (kill-word arg))))
-          (global-set-key (kbd "M-d") 'ayrc/kill-word)
-
-          (defun ayrc/backward-kill-word (&optional arg)
-              (interactive "p")
-              (let ((table (make-syntax-table)))
-                  (modify-syntax-entry ?_ "_" table)
-                  (with-syntax-table table
-                      (backward-kill-word arg))))
-          (global-set-key (kbd "M-DEL")         'ayrc/backward-kill-word)
-          (global-set-key (kbd "M-<backspace>") 'ayrc/backward-kill-word)
-
-          (global-subword-mode 1))
-    #+end_src
-
-*** Hotkeys for changing size of buffers                                                   :hotkeys:
-    #+begin_src emacs-lisp :tangle yes
-      (global-set-key (kbd "<C-M-up>")    'shrink-window)
-      (global-set-key (kbd "<C-M-down>")  'enlarge-window)
-      (global-set-key (kbd "<C-M-left>")  'shrink-window-horizontally)
-      (global-set-key (kbd "<C-M-right>") 'enlarge-window-horizontally)
-    #+end_src
-
-*** Layout switching                                                                       :hotkeys:
-    #+begin_src emacs-lisp :tangle yes
-      (global-set-key (kbd "<AltGr>") 'toggle-input-method)
-    #+end_src
-
-*** Movement between windows with M-arrow-keys (except org-mode)                           :hotkeys:
-     #+begin_src emacs-lisp :tangle yes
-      (if (equal nil (equal major-mode 'org-mode))
-          (windmove-default-keybindings 'meta))
-     #+end_src
-
-*** Add newline and indent on enter press                                                  :hotkeys:
-    #+begin_src emacs-lisp :tangle yes
-      (global-set-key (kbd "RET") 'newline-and-indent)
-    #+end_src
-
-*** Scroll screen without changing cursor position                                         :hotkeys:
-    #+begin_src emacs-lisp :tangle yes
-      (global-set-key (kbd "M-n") (lambda () (interactive) (scroll-up 1)))
-      (global-set-key (kbd "M-p") (lambda () (interactive) (scroll-down 1)))
-    #+end_src
-
-*** Revert buffer                                                                          :hotkeys:
    #+begin_src emacs-lisp :tangle yes
-     (global-set-key (kbd "<f5>") (lambda () (interactive) (revert-buffer)))
+     (use-package neotree
+         :straight t
+         :bind ("<f1>" . neotree-toggle)
+         :config
+         (setq neo-window-width 40)
+         (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
    #+end_src
 
-*** [[https://github.com/abo-abo/avy][Jump to things in Emacs tree-style]]                                                     :hotkeys:
-    Jump to arbitrary positions in visible text and select text quickly
+** [[https://emacs-helm.github.io/helm/][Helm]]                                         :hotkeys:ui:
+   Incremental and narrowing framework
 
-    #+begin_src emacs-lisp :tangle yes
-      (use-package avy
+   #+begin_src emacs-lisp :tangle yes :noweb yes
+     (use-package helm
+         :straight t
+         :diminish helm-mode
+         :defines (helm-M-x-fuzzy-match
+                   helm-mode-fuzzy-match
+                   helm-imenu-fuzzy-match
+                   helm-apropos-fuzzy-match
+                   helm-recentf-fuzzy-match
+                   helm-semantic-fuzzy-match
+                   helm-lisp-fuzzy-completion
+                   helm-completion-in-region-fuzzy-match)
+         :bind
+         (("M-x"       . helm-M-x)
+          ("C-x C-b"   . helm-mini)
+          ("C-x b"     . helm-mini)
+          ("C-c h /"   . helm-find)
+          ("C-c h h"   . helm-info)
+          ("C-c h o"   . helm-occur)
+          ("C-c h c"   . helm-semantic)
+          ("C-c h i"   . helm-imenu)
+          ("C-c h s"   . helm-rg)
+
+          ;; Pre-configured helm to build regexps.
+          ("C-c h r"   . helm-regexp)
+          ("C-c h l"   . helm-bookmarks)
+          ("C-c h a"   . helm-apropos)
+          ("C-c h x"   . helm-register)
+          ("C-c h m"   . helm-man-woman)
+          ("C-x C-f"   . helm-find-files)
+          ("M-y"       . helm-show-kill-ring)
+
+          :map helm-map
+          ;; rebind tab to do persistent action
+          ("<tab>"     . helm-execute-persistent-action)
+          ("C-i"       . helm-execute-persistent-action)
+          ("C-z"       . helm-select-action))
+
+         :init
+         <<helm-rg>>
+
+         (helm-mode 1)
+
+         :config
+         (setq helm-M-x-fuzzy-match                  t
+               helm-completion-style                 'helm-fuzzy
+               helm-imenu-fuzzy-match                t
+               helm-locate-fuzzy-match               t
+               helm-apropos-fuzzy-match              t
+               helm-recentf-fuzzy-match              t
+               helm-semantic-fuzzy-match             t
+               helm-lisp-fuzzy-completion            t
+               helm-buffers-fuzzy-matching           t
+               helm-ff-search-library-in-sexp        t
+               helm-ff-file-name-history-use-recentf t
+               helm-completion-in-region-fuzzy-match t
+
+               ;; Open helm buffer inside current window, not occupy whole
+               ;; other window
+               helm-split-window-inside-p           t
+
+               ;; Move to end or beginning of source when reaching top or
+               ;; bottom of source.
+               helm-move-to-line-cycle-in-source     nil
+
+               ;; Scroll 8 lines other window using M-<next>/M-<prior>
+               helm-scroll-amount                    8
+
+               helm-autoresize-max-height            50
+               helm-autoresize-min-height            10
+
+
+               helm-ff-file-name-history-use-recentf t)
+
+         ;; Autoresize helm minibufer
+         (helm-autoresize-mode t))
+   #+end_src
+
+*** [[https://github.com/cosmicexplorer/helm-rg][Ripgrep]]
+    A helm interface to ripgrep
+
+    #+begin_src emacs-lisp :tangle no :noweb-ref helm-rg
+      (use-package helm-rg
           :straight t
-          :bind (("C-;"     . avy-goto-char-2)
-                 ("C-'"     . avy-goto-line)
-                 ("M-g c"   . avy-goto-char)
-                 ("M-g e"   . avy-goto-word-0)
-                 ("M-g g"   . avy-goto-line)
-                 ("M-g w"   . avy-goto-word-1)
-                 ("M-g ("   . avy-goto-open-paren)
-                 ("M-g )"   . avy-goto-close-paren)
-                 ("M-g P"   . avy-pop-mark)
-                 ("M-g M-g" . avy-goto-line))
-          :config
-          (setq avy-case-fold-search nil))
+          :commands (helm-rg))
     #+end_src
 
-*** [[https://github.com/magnars/expand-region.el][Expand region]]                                                                          :hotkeys:
+** [[http://www.dr-qubit.org/undo-tree/undo-tree.el][Undo tree]]                        :hotkeys:ui:
+   Treat undo history as a tree
+
+   #+begin_src emacs-lisp :tangle yes
+     (use-package undo-tree
+         :straight t
+         :after (:any company)
+         :diminish undo-tree-mode
+         :bind (("C-x u" . undo-tree-visualize))
+         :init
+         (global-undo-tree-mode))
+   #+end_src
+
+** [[https://github.com/syohex/emacs-anzu][Display in the modeline search information]] :hotkeys:ui:
+   Show number of matches in mode-line while searching
+
+   #+begin_src emacs-lisp :tangle yes
+     (use-package anzu
+         :straight t
+         :defines (anzu-cons-mode-line-p)
+         :defer t
+         :diminish anzu-mode
+         :bind (([remap query-replace]        . #'anzu-query-replace)
+                ([remap query-replace-regexp] . #'anzu-query-replace-regexp)
+
+                :map isearch-mode-map
+                ([remap isearch-query-replace]        . #'anzu-isearch-query-replace)
+                ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp)))
+   #+end_src
+
+** [[https://github.com/abo-abo/hydra][Hydra]]                                          :hotkeys:ui:
+   Make bindings that stick around
+
+   #+begin_src emacs-lisp :tangle yes
+     (use-package hydra
+         :straight t
+         :defer t
+         :after (:any dap)
+         :commands (defhydra))
+   #+end_src
+
+** Subword mode                                                                            :hotkeys:
+   #+begin_src emacs-lisp :tangle yes
+     (use-package subword
+         :defer t
+         :after (:any company)
+         :commands (global-subword-mode)
+         :diminish (subword-mode global-subword-mode)
+         :init
+         (defun ayrc/forward-word (&optional arg)
+             (interactive "p")
+             (let ((table (make-syntax-table)))
+                 (modify-syntax-entry ?_ "_" table)
+                 (with-syntax-table table
+                     (forward-word arg))))
+         (global-set-key (kbd "M-f") 'ayrc/forward-word)
+
+         (defun ayrc/backward-word (&optional arg)
+             (interactive "p")
+             (let ((table (make-syntax-table)))
+                 (modify-syntax-entry ?_ "_" table)
+                 (with-syntax-table table
+                     (backward-word arg))))
+         (global-set-key (kbd "M-b") 'ayrc/backward-word)
+
+         (defun ayrc/kill-word (&optional arg)
+             (interactive "p")
+             (let ((table (make-syntax-table)))
+                 (modify-syntax-entry ?_ "_" table)
+                 (with-syntax-table table
+                     (kill-word arg))))
+         (global-set-key (kbd "M-d") 'ayrc/kill-word)
+
+         (defun ayrc/backward-kill-word (&optional arg)
+             (interactive "p")
+             (let ((table (make-syntax-table)))
+                 (modify-syntax-entry ?_ "_" table)
+                 (with-syntax-table table
+                     (backward-kill-word arg))))
+         (global-set-key (kbd "M-DEL")         'ayrc/backward-kill-word)
+         (global-set-key (kbd "M-<backspace>") 'ayrc/backward-kill-word)
+
+         (global-subword-mode 1))
+   #+end_src
+
+** Hotkeys for changing size of buffers                                                    :hotkeys:
+   #+begin_src emacs-lisp :tangle yes
+     (global-set-key (kbd "<C-M-up>")    'shrink-window)
+     (global-set-key (kbd "<C-M-down>")  'enlarge-window)
+     (global-set-key (kbd "<C-M-left>")  'shrink-window-horizontally)
+     (global-set-key (kbd "<C-M-right>") 'enlarge-window-horizontally)
+   #+end_src
+
+** Layout switching                                                                        :hotkeys:
+   #+begin_src emacs-lisp :tangle yes
+     (global-set-key (kbd "<AltGr>") 'toggle-input-method)
+   #+end_src
+
+** Movement between windows with M-arrow-keys (except org-mode)                            :hotkeys:
     #+begin_src emacs-lisp :tangle yes
-      (use-package expand-region
-        :straight t
-        :after (:any company)
-        :commands (er/expand-region)
-        :bind ("C-=" . er/expand-region))
+     (if (equal nil (equal major-mode 'org-mode))
+         (windmove-default-keybindings 'meta))
     #+end_src
 
-*** [[https://github.com/ieure/scratch-el][Scratch buffer]]                                                                         :hotkeys:
+** Add newline and indent on enter press                                                   :hotkeys:
+   #+begin_src emacs-lisp :tangle yes
+     (global-set-key (kbd "RET") 'newline-and-indent)
+   #+end_src
+
+** Scroll screen without changing cursor position                                          :hotkeys:
+   #+begin_src emacs-lisp :tangle yes
+     (global-set-key (kbd "M-n") (lambda () (interactive) (scroll-up 1)))
+     (global-set-key (kbd "M-p") (lambda () (interactive) (scroll-down 1)))
+   #+end_src
+
+** Revert buffer                                                                           :hotkeys:
+  #+begin_src emacs-lisp :tangle yes
+    (global-set-key (kbd "<f5>") (lambda () (interactive) (revert-buffer)))
+  #+end_src
+
+** [[https://github.com/abo-abo/avy][Jump to things in Emacs tree-style]]                  :hotkeys:
+   Jump to arbitrary positions in visible text and select text quickly
+
+   #+begin_src emacs-lisp :tangle yes
+     (use-package avy
+         :straight t
+         :bind (("C-;"     . avy-goto-char-2)
+                ("C-'"     . avy-goto-line)
+                ("M-g c"   . avy-goto-char)
+                ("M-g e"   . avy-goto-word-0)
+                ("M-g g"   . avy-goto-line)
+                ("M-g w"   . avy-goto-word-1)
+                ("M-g ("   . avy-goto-open-paren)
+                ("M-g )"   . avy-goto-close-paren)
+                ("M-g P"   . avy-pop-mark)
+                ("M-g M-g" . avy-goto-line))
+         :config
+         (setq avy-case-fold-search nil))
+   #+end_src
+
+** [[https://github.com/magnars/expand-region.el][Expand region]]                          :hotkeys:
+   #+begin_src emacs-lisp :tangle yes
+     (use-package expand-region
+       :straight t
+       :after (:any company)
+       :commands (er/expand-region)
+       :bind ("C-=" . er/expand-region))
+   #+end_src
+
+** [[https://github.com/ieure/scratch-el][Scratch buffer]]                                 :hotkeys:
+   #+begin_src emacs-lisp :tangle yes
+     (use-package scratch
+         :straight t
+         :after (:any company)
+         :defer t
+         :bind ("C-c s" . #'scratch))
+   #+end_src
+
+** TODO [[https://github.com/nex3/perspective-el][perspective-el]]
+** TODO [[https://github.com/manateelazycat/emacs-application-framework][Emacs Application Framework]]
+
+** Compilation                                                                             :hotkeys:
+   #+begin_src emacs-lisp :tangle yes
+     (use-package compile
+         :defer t
+         :after (:any company)
+         :bind (
+                ;; Press to compile
+                ("<f9>" . 'compile)
+
+                ;; Errors switching
+                ("<f7>" . 'next-error)
+                ("<f8>" . 'previous-error)))
+   #+end_src
+
+* Non global minor modes
+** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]         :ui:
+   Minor modes for highlighting indentation
+
+   #+begin_src emacs-lisp :tangle yes
+     (use-package highlight-indentation
+         :straight t
+         :after (:any company)
+         :diminish highlight-indentation-mode
+         :commands (highlight-indentation-mode)
+         :custom-face
+         (highlight-indentation                (("#e3e3d3")))
+         (highlight-indentation-current-column (("#c3b3b3"))))
+   #+end_src
+
+** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                 :ui:
+   This package provides the `adaptive-wrap-prefix-mode' minor mode which sets
+   the wrap-prefix property on the fly so that single-long-line paragraphs get
+   word-wrapped in a way similar to what you'd get with M-q using
+   adaptive-fill-mode, but without actually changing the buffer's text.
+
+   #+begin_src emacs-lisp :tangle yes
+     (use-package adaptive-wrap
+         :straight t
+         :after (:any company)
+         :diminish adaptive-wrap-prefix-mode
+         :hook (visual-line-mode . adaptive-wrap-prefix-mode)
+         :commands (adaptive-wrap-prefix-mode)
+         :config
+         (progn
+             (setq-default adaptive-wrap-extra-indent 2)))
+   #+end_src
+
+** [[https://github.com/nflath/hungry-delete][Hungry delete]]                              :hotkeys:
+   #+begin_src emacs-lisp :tangle yes
+     (use-package hungry-delete
+         :straight t
+         :defer t
+         :after (:any company)
+         :diminish hungry-delete-mode
+         :commands (hungry-delete-mode))
+   #+end_src
+
+** [[https://github.com/hbin/smart-shift][Region shifting]]
+   Smart shift text left/right.
+
+   #+begin_src emacs-lisp :tangle yes
+     (use-package smart-shift
+         :straight t
+         :after (:any company)
+         :diminish smart-shift-mode
+         :bind
+         (:map smart-shift-mode-map
+               ("<C-up>" . smart-shift-up)
+               ("<C-down>" . smart-shift-down)
+               ("<C-left>" . smart-shift-left)
+               ("<C-right>" . smart-shift-right)))
+   #+end_src
+
+** [[https://github.com/lewang/ws-butler][Fixing up whitespaces only for touched lines]]
+   Unobtrusively remove trailing whitespace
+
+   #+begin_src emacs-lisp :tangle yes
+     (use-package ws-butler
+         :after (:any company)
+         :diminish ws-butler-mode
+         :straight t
+         :commands (ws-butler-mode))
+   #+end_src
+
+** [[https://github.com/Fuco1/smartparens][Automatically pairs braces and quotes]]
+   Minor mode for Emacs that deals with parens pairs and tries to be smart
+   about it
+
+   #+begin_src emacs-lisp :tangle yes
+     (use-package smartparens
+         :straight t
+         :after (:any company)
+         :functions (sp-pair)
+         :diminish smartparens-mode
+         :commands (smartparens-mode smartparens-strict-mode sp-pair)
+         :bind (:map smartparens-mode-map
+                     ("C-M-f" . sp-forward-sexp)
+                     ("C-M-b" . sp-backward-sexp)
+
+                     ("C-M-n" . sp-next-sexp)
+                     ("C-M-p" . sp-previous-sexp)
+
+                     ("C-M-t" . sp-transpose-sexp)
+                     ("M-k"   . sp-backward-kill-sexp)
+                     ("C-M-w" . sp-copy-sexp)
+                     ("C-M-d" . delete-sexp)
+
+                     ("M-[" . sp-backward-unwrap-sexp)
+                     ("M-]" . sp-rewrap-sexp)
+
+                     ("C-x C-t" . sp-transpose-hybrid-sexp))
+         :config
+         (require 'smartparens-config))
+   #+end_src
+
+** [[https://github.com/Malabarba/aggressive-indent-mode][Aggressive Indent]]
+   Emacs minor mode that keeps your code always indented.
+   More reliable than electric-indent-mode.
+
+   #+begin_src emacs-lisp :tangle yes :noweb yes
+     (use-package aggressive-indent
+         :straight t
+         :after (:any company)
+         :commands (aggressive-indent-mode)
+         :hook (aggressive-indent-mode . ayrc/aggressive-indent-hook)
+         :diminish aggressive-indent-mode
+         :init
+         <<aggressive-indent-hook>>)
+   #+end_src
+
+**** Hook
+     #+begin_src emacs-lisp :tangle no :noweb-ref aggressive-indent-hook
+       (defun ayrc/aggressive-indent-hook ()
+           (electric-indent-local-mode -1))
+     #+end_src
+
+** Folding
+*** Hideshow                                                                           :interactive:
     #+begin_src emacs-lisp :tangle yes
-      (use-package scratch
-          :straight t
+      (use-package hideshow
           :after (:any company)
-          :defer t
-          :bind ("C-c s" . #'scratch))
-    #+end_src
-
-*** TODO [[https://github.com/nex3/perspective-el][perspective-el]]
-*** TODO [[https://github.com/manateelazycat/emacs-application-framework][Emacs Application Framework]]
-
-*** Compilation                                                                            :hotkeys:
-    #+begin_src emacs-lisp :tangle yes
-      (use-package compile
-          :defer t
-          :after (:any company)
-          :bind (
-                 ;; Press to compile
-                 ("<f9>" . 'compile)
-
-                 ;; Errors switching
-                 ("<f7>" . 'next-error)
-                 ("<f8>" . 'previous-error)))
-    #+end_src
-
-** Non global
-*** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]                                                                       :ui:
-    Minor modes for highlighting indentation
-
-    #+begin_src emacs-lisp :tangle yes
-      (use-package highlight-indentation
-          :straight t
-          :after (:any company)
-          :diminish highlight-indentation-mode
-          :commands (highlight-indentation-mode)
-          :custom-face
-          (highlight-indentation                (("#e3e3d3")))
-          (highlight-indentation-current-column (("#c3b3b3"))))
-    #+end_src
-
-*** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                                                                     :ui:
-    This package provides the `adaptive-wrap-prefix-mode' minor mode which sets
-    the wrap-prefix property on the fly so that single-long-line paragraphs get
-    word-wrapped in a way similar to what you'd get with M-q using
-    adaptive-fill-mode, but without actually changing the buffer's text.
-
-    #+begin_src emacs-lisp :tangle yes
-      (use-package adaptive-wrap
-          :straight t
-          :after (:any company)
-          :diminish adaptive-wrap-prefix-mode
-          :hook (visual-line-mode . adaptive-wrap-prefix-mode)
-          :commands (adaptive-wrap-prefix-mode)
+          :diminish hs-minor-mode
+          :commands (hs-minor-mode)
+          :bind
+          (:map hs-minor-mode-map
+                ("C-c f TAB" . hs-toggle-hiding)
+                ("C-c f h"   . hs-hide-all)
+                ("C-c f s"   . hs-show-all))
+          :init
+          (progn
+              ;; For yaml mode and others
+              (defun ayrc/indenation-toggle-fold ()
+                  "Toggle fold all lines larger than indentation on current line"
+                  (interactive)
+                  (let ((col 1))
+                      (save-excursion
+                          (back-to-indentation)
+                          (setq col (+ 1 (current-column)))
+                          (set-selective-display
+                           (if selective-display nil (or col 1)))))))
           :config
           (progn
-              (setq-default adaptive-wrap-extra-indent 2)))
+              (add-to-list 'hs-special-modes-alist
+                           (list 'nxml-mode
+                                 "<!--\\|<[^/>]*[^/]>"
+                                 "-->\\|</[^/>]*[^/]>"
+                                 "<!--"
+                                 'nxml-forward-element
+                                 nil))))
     #+end_src
 
-*** [[https://github.com/nflath/hungry-delete][Hungry delete]]                                                                          :hotkeys:
+*** Outline mode                                                                       :interactive:
     #+begin_src emacs-lisp :tangle yes
-      (use-package hungry-delete
-          :straight t
+      (use-package outline
+          :after (:any company)
+          :diminish outline-minor-mode
+          :commands (outline-minor-mode)
+          :bind (:map outline-minor-mode-map
+                      ("C-c f TAB" . ayrc/outline-toggle-entry)
+                      ("C-c f h"   . ayrc/outline-hide-all)
+                      ("C-c f s"   . ayrc/outline-show-all))
+          :hook (outline-minor-mode . ayrc/outline-hook)
+          :init
+          (defvar ayrc/outline-toggle-all-flag nil "toggle all flag")
+          (defvar ayrc/cpos_save nil "current cursor position")
+
+          (defun ayrc/outline-hook ()
+              (make-local-variable 'ayrc/outline-toggle-all-flag)
+              (make-local-variable 'ayrc/cpos_save))
+
+          :config
+          (defun ayrc/outline-toggle-entry ()
+              (interactive)
+              "Toggle outline hiding for the entry under the cursor"
+              (if (progn
+                      (setq ayrc/cpos_save (point))
+                      (end-of-line)
+                      (get-char-property (point) 'invisible))
+                      (progn
+                          (outline-show-subtree)
+                          (goto-char ayrc/cpos_save))
+                  (progn
+                      (outline-hide-subtree)
+                      (goto-char ayrc/cpos_save))))
+
+          (defun ayrc/outline-show-all ()
+              (interactive)
+              "Show all outline hidings for the entire file"
+              (setq ayrc/outline-toggle-all-flag nil)
+              (outline-show-all))
+
+          (defun ayrc/outline-hide-all ()
+              (interactive)
+              "Hide all outline hidings for the entire file"
+              (setq ayrc/outline-toggle-all-flag t)
+              (outline-hide-sublevels 1))
+
+          (defun ayrc/outline-toggle-all ()
+              (interactive)
+              "Toggle outline hiding for the entire file"
+              (if ayrc/outline-toggle-all-flag
+                      (ayrc/outline-show-all)
+                  (ayrc/outline-hide-all))))
+    #+end_src
+
+** Spell checking
+   #+begin_src emacs-lisp :tangle yes
+     (use-package flyspell
+         :defer t
+         :after (:any company))
+   #+end_src
+
+*** TODO Fix spell checking in text modes
+    https://github.com/tmalsburg/guess-language.el
+    http://manuel-uberti.github.io/emacs/2017/02/04/guess-language/
+
+** Static code analysis
+*** Flymake
+    A universal on-the-fly syntax checker
+
+    #+begin_src emacs-lisp :tangle yes :noweb yes
+      (use-package flymake
           :defer t
           :after (:any company)
-          :diminish hungry-delete-mode
-          :commands (hungry-delete-mode))
+          :diminish flymake-mode
+          :commands (flymake-mode))
     #+end_src
 
-*** [[https://github.com/hbin/smart-shift][Region shifting]]
-    Smart shift text left/right.
+*** [[http://www.flycheck.org][Flycheck]]
+    On-the-fly syntax checking
 
-    #+begin_src emacs-lisp :tangle yes
-      (use-package smart-shift
+    #+begin_src emacs-lisp :tangle yes :noweb yes
+      <<helm-flycheck-usepkg>>
+
+      (use-package flycheck
           :straight t
           :after (:any company)
-          :diminish smart-shift-mode
+          :diminish flycheck-mode
+          :commands (flycheck-mode)
+          :bind (:map flycheck-mode-map
+                      ("C-c h f" . helm-flycheck))
+          :hook (flycheck-mode . ayrc/flycheck-hook)
+          :init
+          <<flycheck-hook>>
+          :config
+          (setq flycheck-checker-error-threshold    700
+                flycheck-standard-error-navigation  nil
+                flycheck-idle-change-delay          0
+                flycheck-check-syntax-automatically '(save mode-enabled)))
+    #+end_src
+
+**** [[https://github.com/yasuyk/helm-flycheck][Helm]]
+     #+begin_src emacs-lisp :tangle no :noweb-ref helm-flycheck-usepkg
+       (use-package helm-flycheck
+           :straight t
+           :defer t
+           :after (flycheck)
+           :commands (helm-flycheck))
+     #+end_src
+
+**** Hook
+     #+begin_src emacs-lisp :tangle no :noweb-ref flycheck-hook
+       (defun ayrc/flycheck-hook ()
+           (flymake-mode -1))
+     #+end_src
+
+** TODO [[https://github.com/jacktasia/dumb-jump][dump-jump]]
+   An Emacs "jump to definition" package for 40+ languages
+
+** TODO [[https://github.com/lassik/emacs-format-all-the-code][format-all-the-code]]
+   Auto-format source code with one command
+
+** XREF
+   Cross-referencing commands
+
+   #+begin_src emacs-lisp :tangle yes :noweb yes
+     <<helm-xref-usepkg>>
+
+     (use-package xref
+         :defines (xref-show-definitions-function)
+         :after (:any company)
+         :defer t
+         :init
+
+         (defun ayrc/setup-xref-hotkeys ()
+             (ayrc/local-set-keys '(("M-,"     . xref-pop-marker-stack)
+                                    ("M-?"     . xref-find-definitions)
+                                    ("C-M-."   . xref-find-apropos))))
+         :config
+         (if (< emacs-major-version 27)
+                 (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
+             (setq xref-show-xrefs-function 'helm-xref-show-xrefs-27
+                   xref-show-definitions-function 'helm-xref-show-defs-27)))
+   #+end_src
+
+*** [[https://github.com/brotzeit/helm-xref][Helm]]
+    #+begin_src emacs-lisp :tangle no :noweb-ref helm-xref-usepkg
+      (use-package helm-xref
+          :straight t
+          :defer t
+          :after (:any xref)
+          :commands (helm-xref-show-xrefs
+                     helm-xref-show-xrefs-27
+                     helm-xref-show-defs-27))
+    #+end_src
+
+** [[http://github.com/joaotavora/yasnippet][Snippets]]
+   #+begin_src emacs-lisp :tangle yes :noweb yes
+     <<snippets-collection>>
+
+     (use-package yasnippet
+         :straight t
+         :after (:any company)
+         :defer t
+         :functions (yas-reload-all)
+         :commands (yas-minor-mode yas-global-mode yas-reload-all)
+         :diminish yas-minor-mode
+         :config
+         (setq yas-snippet-dirs
+               (list (ayrc/expand-config-path "./personal-snippets")))
+         (yasnippet-snippets-initialize)
+
+         (yas-reload-all))
+   #+end_src
+
+*** [[https://github.com/AndreaCrotti/yasnippet-snippets][Ready snippets collection]]
+    A collection of yasnippet snippets for many languages
+
+    #+begin_src emacs-lisp :tangle no :noweb-ref snippets-collection
+      (use-package yasnippet-snippets
+          :straight t
+          :demand t
+          :after (:any yasnippet)
+          :commands (yasnippet-snippets-initialize))
+    #+end_src
+
+** Autocompletion
+*** [[http://company-mode.github.io/][Company]]
+    #+begin_src emacs-lisp :tangle yes :noweb yes
+      (use-package company
+          :straight t
+          :diminish company-mode
+          :defer t
+          :commands (company-mode)
           :bind
-          (:map smart-shift-mode-map
-                ("<C-up>" . smart-shift-up)
-                ("<C-down>" . smart-shift-down)
-                ("<C-left>" . smart-shift-left)
-                ("<C-right>" . smart-shift-right)))
+          (:map company-active-map
+                ("<tab>" . company-complete-selection))
+          :hook (company-mode . ayrc/company-hook)
+          :init
+          <<company-box-usepkg>>
+          <<company-flx-usepkg>>
+          <<company-quickhelp-usepkg>>
+
+          :config
+          (setq company-tooltip-align-annotations t
+                company-idle-delay                0.1
+                company-show-numbers              t
+                company-minimum-prefix-length     1))
     #+end_src
 
-*** [[https://github.com/lewang/ws-butler][Fixing up whitespaces only for touched lines]]
-    Unobtrusively remove trailing whitespace
+**** [[https://www.github.com/expez/company-quickhelp][Documentation]]
+     #+begin_src emacs-lisp :tangle no :noweb-ref company-quickhelp-usepkg
+       (use-package company-quickhelp
+           :straight t
+           :after company
+           :functions (company-quickhelp-manual-begin)
+           :commands (company-quickhelp-local-mode)
+           :bind (:map company-active-map
+                       ("M-h" . #'company-quickhelp-manual-begin)))
+     #+end_src
+
+**** [[https://github.com/PythonNut/company-flx][Fuzzy matching]]
+     #+begin_src emacs-lisp :tangle no :noweb-ref company-flx-usepkg
+       (use-package company-flx
+           :straight t
+           :after (company)
+           :commands (company-flx-mode))
+     #+end_src
+
+**** [[https://github.com/sebastiencs/company-box][Icons]]
+     #+begin_src emacs-lisp :tangle no :noweb-ref company-box-usepkg
+       (use-package company-box
+           :straight t
+           :disabled
+           :after (company)
+           :config
+           (setq company-box-icons-alist company-box-icons-all-the-icons))
+      #+end_src
+
+**** Setup function
+     #+begin_src emacs-lisp :tangle README-loaddefs.el
+       ;;;###autoload
+       (defun ayrc/setup-company (&optional mode-specific-backends)
+           (company-mode 1)
+           (or mode-specific-backends (setq mode-specific-backends '()))
+
+           (let ((backends (list mode-specific-backends
+                                 '(company-files        ;; files & directories
+                                   company-dabbrev-code ;; dynamic code abbreviations
+                                   company-keywords)    ;; keywords
+
+                                 '(company-abbrev       ;; abbreviations
+                                   company-dabbrev))))  ;; dynamic abbreviat
+               (make-local-variable 'company-backends)
+               (setq company-backends (-non-nil backends))))
+     #+end_src
+
+**** Hook
+     #+begin_src emacs-lisp :tangle README-loaddefs.el
+       ;;;###autoload
+       (defun ayrc/company-hook ()
+           ;; (message "BLYAAAAAAAA--- %s" (buffer-name (current-buffer)))
+           (company-flx-mode)
+           ;; (company-box-mode)
+           (company-quickhelp-local-mode))
+     #+end_src
+
+*** Semantic
+    Required for helm-semantic
 
     #+begin_src emacs-lisp :tangle yes
-      (use-package ws-butler
+      (use-package semantic
           :after (:any company)
-          :diminish ws-butler-mode
-          :straight t
-          :commands (ws-butler-mode))
+          :diminish semantic-mode
+          :commands (semantic-mode))
     #+end_src
 
-*** [[https://github.com/Fuco1/smartparens][Automatically pairs braces and quotes]]
-    Minor mode for Emacs that deals with parens pairs and tries to be smart
-    about it
+** [[https://github.com/leoliu/ggtags][GTags]]
+   Emacs frontend to GNU Global source code tagging system
 
-    #+begin_src emacs-lisp :tangle yes
-      (use-package smartparens
+   #+NAME: gtags-system-prerequisites
+   #+CAPTION: System prerequisites for GTags
+   - [[https://www.gnu.org/software/global/][GNU Global]] :: intall it and put [[file:~/.emacs.d/other/etc/gtags.conf][gtags configuration]] into HOME/.globalrc
+                   or gtags.conf into project root
+
+   #+begin_src emacs-lisp :tangle yes :noweb yes
+     (use-package ggtags
+         :straight t
+         :after (:any company)
+         :diminish ggtags-mode
+         :commands (ggtags-mode)
+         :init
+         <<helm-gtags-usepkg>>
+
+         :config
+         (setq ggtags-update-on-save nil)
+         (setq ggtags-use-idutils t)
+         (setq ggtags-sort-by-nearness t)
+         (unbind-key "M-<" ggtags-mode-map)
+         (unbind-key "M->" ggtags-mode-map))
+   #+end_src
+
+*** [[https://github.com/syohex/emacs-helm-gtags][Helm]]
+    #+begin_src emacs-lisp :tangle no :noweb-ref helm-gtags-usepkg
+      (use-package helm-gtags
           :straight t
-          :after (:any company)
-          :functions (sp-pair)
-          :diminish smartparens-mode
-          :commands (smartparens-mode smartparens-strict-mode sp-pair)
-          :bind (:map smartparens-mode-map
-                      ("C-M-f" . sp-forward-sexp)
-                      ("C-M-b" . sp-backward-sexp)
-
-                      ("C-M-n" . sp-next-sexp)
-                      ("C-M-p" . sp-previous-sexp)
-
-                      ("C-M-t" . sp-transpose-sexp)
-                      ("M-k"   . sp-backward-kill-sexp)
-                      ("C-M-w" . sp-copy-sexp)
-                      ("C-M-d" . delete-sexp)
-
-                      ("M-[" . sp-backward-unwrap-sexp)
-                      ("M-]" . sp-unwrap-sexp)
-
-                      ("C-x C-t" . sp-transpose-hybrid-sexp))
+          :after ggtags
+          :commands (helm-gtags-select helm-gtags-find-tag)
           :config
-          (sp-pair "'" "'" :actions nil))
+          (setq helm-gtags-fuzzy-match t)
+          (setq helm-gtags-preselect t)
+          (setq helm-gtags-prefix-key "\C-cg")
+          (setq helm-gtags-path-style 'relative)
+
+          (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+          (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack))
     #+end_src
 
-*** [[https://github.com/Malabarba/aggressive-indent-mode][Aggressive Indent]]
-    Emacs minor mode that keeps your code always indented.
-    More reliable than electric-indent-mode.
+** [[https://github.com/Microsoft/language-server-protocol/][LSP]]
+   A common protocol for language servers
+
+*** [[https://github.com/joaotavora/eglot][Eglot]]
+    A client for Language Server Protocol servers
 
     #+begin_src emacs-lisp :tangle yes :noweb yes
-      (use-package aggressive-indent
+      (use-package eglot
           :straight t
           :after (:any company)
-          :commands (aggressive-indent-mode)
-          :hook (aggressive-indent-mode . ayrc/aggressive-indent-hook)
-          :diminish aggressive-indent-mode
+          :diminish eglot-mode
+          :commands (eglot-mode eglot-ensure ayrc/eglot-hook)
+          :hook (eglot-managed-mode . ayrc/eglot-hook))
+    #+end_src
+
+**** Hook
+     #+begin_src emacs-lisp :tangle README-loaddefs.el
+       (defun ayrc/eglot-hook ()
+           (ayrc/local-set-keys '(("C-c r"   . eglot-rename)
+                                  ("C-c C-r" . eglot-format)
+                                  ("M-."     . eglot-find-implementation)))
+           (ayrc/setup-xref-hotkeys)
+
+           (add-to-list 'eglot-stay-out-of 'company)
+           (ayrc/setup-company '(company-capf :with company-yasnippet)))
+     #+end_src
+
+*** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
+    Emacs client/library for the Language Server Protocol
+
+    #+begin_src emacs-lisp :tangle yes :noweb yes
+      (use-package lsp-mode
+          :straight t
+          :after (:any company)
+          :diminish lsp-mode
+          :commands (lsp-mode lsp-deffered lsp-rename)
+          :hook (lsp-mode . ayrc/lsp-hook)
+          :bind (:map lsp-mode-map
+                      ("C-c h w" . helm-lsp-workspace-symbol))
           :init
-          <<aggressive-indent-hook>>)
+          <<lsp-ui-usepkg>>
+          <<helm-lsp-usepkg>>)
     #+end_src
 
-***** Hook
-      #+begin_src emacs-lisp :tangle no :noweb-ref aggressive-indent-hook
-        (defun ayrc/aggressive-indent-hook ()
-            (electric-indent-local-mode -1))
-      #+end_src
+**** Hook
+     #+begin_src emacs-lisp :tangle README-loaddefs.el
+       (defun ayrc/lsp-hook ()
+           (setq
+            lsp-enable-folding                         t
+            lsp-enable-indentation                     t
+            lsp-enable-file-watchers                   nil
+            lsp-auto-configure                         nil
+            lsp-enable-snippet                         nil
+            lsp-keep-workspace-alive                   nil)
 
-*** Folding
-**** Hideshow                                                                          :interactive:
-     #+begin_src emacs-lisp :tangle yes
-       (use-package hideshow
-           :after (:any company)
-           :diminish hs-minor-mode
-           :commands (hs-minor-mode)
-           :bind
-           (:map hs-minor-mode-map
-                 ("C-c f TAB" . hs-toggle-hiding)
-                 ("C-c f h"   . hs-hide-all)
-                 ("C-c f s"   . hs-show-all))
-           :init
-           (progn
-               ;; For yaml mode and others
-               (defun ayrc/indenation-toggle-fold ()
-                   "Toggle fold all lines larger than indentation on current line"
-                   (interactive)
-                   (let ((col 1))
-                       (save-excursion
-                           (back-to-indentation)
-                           (setq col (+ 1 (current-column)))
-                           (set-selective-display
-                            (if selective-display nil (or col 1)))))))
-           :config
-           (progn
-               (add-to-list 'hs-special-modes-alist
-                            (list 'nxml-mode
-                                  "<!--\\|<[^/>]*[^/]>"
-                                  "-->\\|</[^/>]*[^/]>"
-                                  "<!--"
-                                  'nxml-forward-element
-                                  nil))))
+           (ayrc/local-set-keys '(("C-c r"   . lsp-rename)
+                                  ("C-c C-r" . lsp-format-region)
+                                  ("M-."     . lsp-ui-peek-find-definitions)
+                                  ("M-,"     . xref-pop-marker-stack)
+                                  ("M-?"     . lsp-ui-peek-find-references)
+                                  ("C-M-."   . xref-find-apropos)))
+
+           (flycheck-mode 1)
+           (lsp-flycheck-enable)
+
+           (ayrc/setup-company '(company-capf :with company-yasnippet))
+
+           (lsp-ui-mode   1)
+           (dap-mode      1))
      #+end_src
 
-**** Outline mode                                                                      :interactive:
-     #+begin_src emacs-lisp :tangle yes
-       (use-package outline
-           :after (:any company)
-           :diminish outline-minor-mode
-           :commands (outline-minor-mode)
-           :bind (:map outline-minor-mode-map
-                       ("C-c f TAB" . ayrc/outline-toggle-entry)
-                       ("C-c f h"   . ayrc/outline-hide-all)
-                       ("C-c f s"   . ayrc/outline-show-all))
-           :hook (outline-minor-mode . ayrc/outline-hook)
-           :init
-           (defvar ayrc/outline-toggle-all-flag nil "toggle all flag")
-           (defvar ayrc/cpos_save nil "current cursor position")
-
-           (defun ayrc/outline-hook ()
-               (make-local-variable 'ayrc/outline-toggle-all-flag)
-               (make-local-variable 'ayrc/cpos_save))
-
-           :config
-           (defun ayrc/outline-toggle-entry ()
-               (interactive)
-               "Toggle outline hiding for the entry under the cursor"
-               (if (progn
-                       (setq ayrc/cpos_save (point))
-                       (end-of-line)
-                       (get-char-property (point) 'invisible))
-                       (progn
-                           (outline-show-subtree)
-                           (goto-char ayrc/cpos_save))
-                   (progn
-                       (outline-hide-subtree)
-                       (goto-char ayrc/cpos_save))))
-
-           (defun ayrc/outline-show-all ()
-               (interactive)
-               "Show all outline hidings for the entire file"
-               (setq ayrc/outline-toggle-all-flag nil)
-               (outline-show-all))
-
-           (defun ayrc/outline-hide-all ()
-               (interactive)
-               "Hide all outline hidings for the entire file"
-               (setq ayrc/outline-toggle-all-flag t)
-               (outline-hide-sublevels 1))
-
-           (defun ayrc/outline-toggle-all ()
-               (interactive)
-               "Toggle outline hiding for the entire file"
-               (if ayrc/outline-toggle-all-flag
-                       (ayrc/outline-show-all)
-                   (ayrc/outline-hide-all))))
-     #+end_src
-
-*** Spell checking
-    #+begin_src emacs-lisp :tangle yes
-      (use-package flyspell
-          :defer t
-          :after (:any company))
-    #+end_src
-
-**** TODO Fix spell checking in text modes
-     https://github.com/tmalsburg/guess-language.el
-     http://manuel-uberti.github.io/emacs/2017/02/04/guess-language/
-
-*** Static code analysis
-**** Flymake
-     A universal on-the-fly syntax checker
-
-     #+begin_src emacs-lisp :tangle yes :noweb yes
-       (use-package flymake
-           :defer t
-           :after (:any company)
-           :diminish flymake-mode
-           :commands (flymake-mode))
-     #+end_src
-
-**** [[http://www.flycheck.org][Flycheck]]
-     On-the-fly syntax checking
-
-     #+begin_src emacs-lisp :tangle yes :noweb yes
-       <<helm-flycheck-usepkg>>
-
-       (use-package flycheck
-           :straight t
-           :after (:any company)
-           :diminish flycheck-mode
-           :commands (flycheck-mode)
-           :bind (:map flycheck-mode-map
-                       ("C-c h f" . helm-flycheck))
-           :hook (flycheck-mode . ayrc/flycheck-hook)
-           :init
-           <<flycheck-hook>>
-           :config
-           (setq flycheck-checker-error-threshold    700
-                 flycheck-standard-error-navigation  nil
-                 flycheck-idle-change-delay          0
-                 flycheck-check-syntax-automatically '(save mode-enabled)))
-     #+end_src
-
-***** [[https://github.com/yasuyk/helm-flycheck][Helm]]
-      #+begin_src emacs-lisp :tangle no :noweb-ref helm-flycheck-usepkg
-        (use-package helm-flycheck
-            :straight t
-            :defer t
-            :after (flycheck)
-            :commands (helm-flycheck))
-      #+end_src
-
-***** Hook
-      #+begin_src emacs-lisp :tangle no :noweb-ref flycheck-hook
-        (defun ayrc/flycheck-hook ()
-            (flymake-mode -1))
-      #+end_src
-
-*** TODO [[https://github.com/jacktasia/dumb-jump][dump-jump]]
-    An Emacs "jump to definition" package for 40+ languages
-
-*** TODO [[https://github.com/lassik/emacs-format-all-the-code][format-all-the-code]]
-    Auto-format source code with one command
-
-*** XREF
-    Cross-referencing commands
-
-    #+begin_src emacs-lisp :tangle yes :noweb yes
-      <<helm-xref-usepkg>>
-
-      (use-package xref
-          :defines (xref-show-definitions-function)
-          :after (:any company)
-          :defer t
-          :init
-
-          (defun ayrc/setup-xref-hotkeys ()
-              (ayrc/local-set-keys '(("M-,"     . xref-pop-marker-stack)
-                                     ("M-?"     . xref-find-definitions)
-                                     ("C-M-."   . xref-find-apropos))))
-          :config
-          (if (< emacs-major-version 27)
-                  (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
-              (setq xref-show-xrefs-function 'helm-xref-show-xrefs-27
-                    xref-show-definitions-function 'helm-xref-show-defs-27)))
-    #+end_src
-
-**** [[https://github.com/brotzeit/helm-xref][Helm]]
-     #+begin_src emacs-lisp :tangle no :noweb-ref helm-xref-usepkg
-       (use-package helm-xref
-           :straight t
-           :defer t
-           :after (:any xref)
-           :commands (helm-xref-show-xrefs
-                      helm-xref-show-xrefs-27
-                      helm-xref-show-defs-27))
-     #+end_src
-
-*** [[http://github.com/joaotavora/yasnippet][Snippets]]
-    #+begin_src emacs-lisp :tangle yes :noweb yes
-      <<snippets-collection>>
-
-      (use-package yasnippet
-          :straight t
-          :after (:any company)
-          :defer t
-          :functions (yas-reload-all)
-          :commands (yas-minor-mode yas-global-mode yas-reload-all)
-          :diminish yas-minor-mode
-          :config
-          (setq yas-snippet-dirs
-                (list (ayrc/expand-config-path "./personal-snippets")))
-          (yasnippet-snippets-initialize)
-
-          (yas-reload-all))
-    #+end_src
-
-**** [[https://github.com/AndreaCrotti/yasnippet-snippets][Ready snippets collection]]
-     A collection of yasnippet snippets for many languages
-
-     #+begin_src emacs-lisp :tangle no :noweb-ref snippets-collection
-       (use-package yasnippet-snippets
-           :straight t
-           :demand t
-           :after (:any yasnippet)
-           :commands (yasnippet-snippets-initialize))
-     #+end_src
-
-*** Autocompletion
-**** [[http://company-mode.github.io/][Company]]
-     #+begin_src emacs-lisp :tangle yes :noweb yes
-       (use-package company
-           :straight t
-           :diminish company-mode
-           :defer t
-           :commands (company-mode)
-           :bind
-           (:map company-active-map
-                 ("<tab>" . company-complete-selection))
-           :hook (company-mode . ayrc/company-hook)
-           :init
-           <<company-box-usepkg>>
-           <<company-flx-usepkg>>
-           <<company-quickhelp-usepkg>>
-
-           :config
-           (setq company-tooltip-align-annotations t
-                 company-idle-delay                0.1
-                 company-show-numbers              t
-                 company-minimum-prefix-length     1))
-     #+end_src
-
-***** [[https://www.github.com/expez/company-quickhelp][Documentation]]
-      #+begin_src emacs-lisp :tangle no :noweb-ref company-quickhelp-usepkg
-        (use-package company-quickhelp
-            :straight t
-            :after company
-            :functions (company-quickhelp-manual-begin)
-            :commands (company-quickhelp-local-mode)
-            :bind (:map company-active-map
-                        ("M-h" . #'company-quickhelp-manual-begin)))
-      #+end_src
-
-***** [[https://github.com/PythonNut/company-flx][Fuzzy matching]]
-      #+begin_src emacs-lisp :tangle no :noweb-ref company-flx-usepkg
-        (use-package company-flx
-            :straight t
-            :after (company)
-            :commands (company-flx-mode))
-      #+end_src
-
-***** [[https://github.com/sebastiencs/company-box][Icons]]
-      #+begin_src emacs-lisp :tangle no :noweb-ref company-box-usepkg
-        (use-package company-box
-            :straight t
-            :disabled
-            :after (company)
-            :config
-            (setq company-box-icons-alist company-box-icons-all-the-icons))
-       #+end_src
-
-***** Setup function
-      #+begin_src emacs-lisp :tangle README-loaddefs.el
-        ;;;###autoload
-        (defun ayrc/setup-company (&optional mode-specific-backends)
-            (company-mode 1)
-            (or mode-specific-backends (setq mode-specific-backends '()))
-
-            (let ((backends (list mode-specific-backends
-                                  '(company-files        ;; files & directories
-                                    company-dabbrev-code ;; dynamic code abbreviations
-                                    company-keywords)    ;; keywords
-
-                                  '(company-abbrev       ;; abbreviations
-                                    company-dabbrev))))  ;; dynamic abbreviat
-                (make-local-variable 'company-backends)
-                (setq company-backends (-non-nil backends))))
-      #+end_src
-
-***** Hook
-      #+begin_src emacs-lisp :tangle README-loaddefs.el
-        ;;;###autoload
-        (defun ayrc/company-hook ()
-            ;; (message "BLYAAAAAAAA--- %s" (buffer-name (current-buffer)))
-            (company-flx-mode)
-            ;; (company-box-mode)
-            (company-quickhelp-local-mode))
-      #+end_src
-
-**** Semantic
-     Required for helm-semantic
-
-     #+begin_src emacs-lisp :tangle yes
-       (use-package semantic
-           :after (:any company)
-           :diminish semantic-mode
-           :commands (semantic-mode))
-     #+end_src
-
-*** [[https://github.com/leoliu/ggtags][GTags]]
-    Emacs frontend to GNU Global source code tagging system
-
-    #+NAME: gtags-system-prerequisites
-    #+CAPTION: System prerequisites for GTags
-    - [[https://www.gnu.org/software/global/][GNU Global]] :: intall it and put [[file:~/.emacs.d/other/etc/gtags.conf][gtags configuration]] into HOME/.globalrc
-                    or gtags.conf into project root
-
-    #+begin_src emacs-lisp :tangle yes :noweb yes
-      (use-package ggtags
-          :straight t
-          :after (:any company)
-          :diminish ggtags-mode
-          :commands (ggtags-mode)
-          :init
-          <<helm-gtags-usepkg>>
-
-          :config
-          (setq ggtags-update-on-save nil)
-          (setq ggtags-use-idutils t)
-          (setq ggtags-sort-by-nearness t)
-          (unbind-key "M-<" ggtags-mode-map)
-          (unbind-key "M->" ggtags-mode-map))
-    #+end_src
-
-**** [[https://github.com/syohex/emacs-helm-gtags][Helm]]
-     #+begin_src emacs-lisp :tangle no :noweb-ref helm-gtags-usepkg
-       (use-package helm-gtags
-           :straight t
-           :after ggtags
-           :commands (helm-gtags-select helm-gtags-find-tag)
-           :config
-           (setq helm-gtags-fuzzy-match t)
-           (setq helm-gtags-preselect t)
-           (setq helm-gtags-prefix-key "\C-cg")
-           (setq helm-gtags-path-style 'relative)
-
-           (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
-           (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack))
-     #+end_src
-
-*** [[https://github.com/Microsoft/language-server-protocol/][LSP]]
-    A common protocol for language servers
-
-**** [[https://github.com/joaotavora/eglot][Eglot]]
-     A client for Language Server Protocol servers
-
-     #+begin_src emacs-lisp :tangle yes :noweb yes
-       (use-package eglot
-           :straight t
-           :after (:any company)
-           :diminish eglot-mode
-           :commands (eglot-mode eglot-ensure ayrc/eglot-hook)
-           :hook (eglot-managed-mode . ayrc/eglot-hook))
-     #+end_src
-
-***** Hook
-      #+begin_src emacs-lisp :tangle README-loaddefs.el
-        (defun ayrc/eglot-hook ()
-            (ayrc/local-set-keys '(("C-c r"   . eglot-rename)
-                                   ("C-c C-r" . eglot-format)
-                                   ("M-."     . eglot-find-implementation)))
-            (ayrc/setup-xref-hotkeys)
-
-            (add-to-list 'eglot-stay-out-of 'company)
-            (ayrc/setup-company '(company-capf :with company-yasnippet)))
-      #+end_src
-
-**** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
-     Emacs client/library for the Language Server Protocol
-
-     #+begin_src emacs-lisp :tangle yes :noweb yes
-       (use-package lsp-mode
-           :straight t
-           :after (:any company)
-           :diminish lsp-mode
-           :commands (lsp-mode lsp-deffered lsp-rename)
-           :hook (lsp-mode . ayrc/lsp-hook)
-           :bind (:map lsp-mode-map
-                       ("C-c h w" . helm-lsp-workspace-symbol))
-           :init
-           <<lsp-ui-usepkg>>
-           <<helm-lsp-usepkg>>)
-     #+end_src
-
-***** Hook
-      #+begin_src emacs-lisp :tangle README-loaddefs.el
-        (defun ayrc/lsp-hook ()
-            (setq
-             lsp-enable-folding                         t
-             lsp-enable-indentation                     t
-             lsp-enable-file-watchers                   nil
-             lsp-auto-configure                         nil
-             lsp-enable-snippet                         nil
-             lsp-keep-workspace-alive                   nil)
-
-            (ayrc/local-set-keys '(("C-c r"   . lsp-rename)
-                                   ("C-c C-r" . lsp-format-region)
-                                   ("M-."     . lsp-ui-peek-find-definitions)
-                                   ("M-,"     . xref-pop-marker-stack)
-                                   ("M-?"     . lsp-ui-peek-find-references)
-                                   ("C-M-."   . xref-find-apropos)))
-
-            (flycheck-mode 1)
-            (lsp-flycheck-enable)
-
-            (ayrc/setup-company '(company-capf :with company-yasnippet))
-
-            (lsp-ui-mode   1)
-            (dap-mode      1))
-      #+end_src
-
-***** [[https://github.com/yyoncho/helm-lsp][Helm]]
-      #+begin_src emacs-lisp :tangle no :noweb-ref helm-lsp-usepkg
-        (use-package helm-lsp
-            :straight t
-            :defer t
-            :after (lsp-mode)
-            :commands (helm-lsp-workspace-symbol))
-      #+end_src
-
-***** [[https://github.com/emacs-lsp/lsp-ui][UI modules]]
-      #+begin_src emacs-lisp :tangle no :noweb-ref lsp-ui-usepkg
-        (use-package lsp-ui
-            :straight t
-            :defer t
-            :after (lsp-mode)
-            :defines (lsp-ui-flycheck-enable)
-            :commands (lsp-ui-mode)
-            :config
-            (setq lsp-ui-peek-enable           nil
-                  lsp-ui-sideline-enable       nil
-                  lsp-ui-imenu-enable          t
-                  lsp-ui-doc-enable            t
-                  lsp-ui-flycheck-enable       t
-                  lsp-ui-doc-include-signature nil
-                  lsp-ui-sideline-show-symbol  nil))
-      #+end_src
-
-*** Debugging
-**** [[https://github.com/yyoncho/dap-mode][DAP]]
-     Debug Adapter Protocol mode
-
-     #+begin_src emacs-lisp :tangle yes
-       (use-package dap-mode
+**** [[https://github.com/yyoncho/helm-lsp][Helm]]
+     #+begin_src emacs-lisp :tangle no :noweb-ref helm-lsp-usepkg
+       (use-package helm-lsp
            :straight t
            :defer t
            :after (lsp-mode)
-           :diminish dap-mode
-           :defines (dap-lldb-debug-program)
-           :commands (dap-register-debug-template)
-           :hook (dap-mode . ayrc/dap-hook)
-           :init
-           (defun ayrc/dap-hook ()
-               (setq dap-lldb-debug-program '("/usr/bin/lldb-vscode"))
-               (add-hook 'dap-stopped-hook
-                         (lambda (_debug_session) (call-interactively #'dap-hydra)))
-
-               ;; use tooltips for mouse hover
-               ;; if it is not enabled `dap-mode' will use the minibuffer.
-               (tooltip-mode 1)
-
-               (dap-ui-mode 1)
-
-               ;; enables mouse hover support
-               (dap-tooltip-mode 1))
-
-           :config
-           (defun ayrc/dap-remove-nth-first-templates (count)
-               "For removing useless dap templates after loading of
-                   language specific dap parts"
-               (setq dap-debug-template-configurations
-                     (progn
-                         (let ((rest-of-debug-templates
-                                (nthcdr
-                                 count
-                                 dap-debug-template-configurations)))
-                             (if (listp rest-of-debug-templates)
-                                     '()
-                                 rest-of-debug-templates))))))
+           :commands (helm-lsp-workspace-symbol))
      #+end_src
+
+**** [[https://github.com/emacs-lsp/lsp-ui][UI modules]]
+     #+begin_src emacs-lisp :tangle no :noweb-ref lsp-ui-usepkg
+       (use-package lsp-ui
+           :straight t
+           :defer t
+           :after (lsp-mode)
+           :defines (lsp-ui-flycheck-enable)
+           :commands (lsp-ui-mode)
+           :config
+           (setq lsp-ui-peek-enable           nil
+                 lsp-ui-sideline-enable       nil
+                 lsp-ui-imenu-enable          t
+                 lsp-ui-doc-enable            t
+                 lsp-ui-flycheck-enable       t
+                 lsp-ui-doc-include-signature nil
+                 lsp-ui-sideline-show-symbol  nil))
+     #+end_src
+
+** Debugging
+*** [[https://github.com/yyoncho/dap-mode][DAP]]
+    Debug Adapter Protocol mode
+
+    #+begin_src emacs-lisp :tangle yes
+      (use-package dap-mode
+          :straight t
+          :defer t
+          :after (lsp-mode)
+          :diminish dap-mode
+          :defines (dap-lldb-debug-program)
+          :commands (dap-register-debug-template)
+          :hook (dap-mode . ayrc/dap-hook)
+          :init
+          (defun ayrc/dap-hook ()
+              (setq dap-lldb-debug-program '("/usr/bin/lldb-vscode"))
+              (add-hook 'dap-stopped-hook
+                        (lambda (_debug_session) (call-interactively #'dap-hydra)))
+
+              ;; use tooltips for mouse hover
+              ;; if it is not enabled `dap-mode' will use the minibuffer.
+              (tooltip-mode 1)
+
+              (dap-ui-mode 1)
+
+              ;; enables mouse hover support
+              (dap-tooltip-mode 1))
+
+          :config
+          (defun ayrc/dap-remove-nth-first-templates (count)
+              "For removing useless dap templates after loading of
+                  language specific dap parts"
+              (setq dap-debug-template-configurations
+                    (progn
+                        (let ((rest-of-debug-templates
+                               (nthcdr
+                                count
+                                dap-debug-template-configurations)))
+                            (if (listp rest-of-debug-templates)
+                                    '()
+                                rest-of-debug-templates))))))
+    #+end_src
 
 * Helpful functions
 ** Reload configuration                                                                :interactive:
@@ -1709,7 +1709,7 @@ Editor settings
               (smartparens-mode          1)
               (semantic-mode             1)
               (yas-minor-mode            1)
-              (ayrc/setup-company)
+              (ayrc/setup-company '(company-yasnippet))
 
               (org-bullets-mode))
 
@@ -1771,6 +1771,11 @@ Editor settings
 * Clients
 ** TODO [[https://github.com/rejeep/prodigy.el][Prodigy]]
 ** TODO Gnus or mu4e
+** Eshell
+   #+begin_src emacs-lisp :tangle yes :noweb yes
+
+   #+end_src
+
 ** VCS
 *** [[https://github.com/magit/magit][Git]]                                                                             :global_hotkeys:
      #+begin_src emacs-lisp :tangle yes
@@ -1906,7 +1911,6 @@ Editor settings
            (ws-butler-mode            1)
            (smart-shift-mode          1)
            (smartparens-mode          1)
-           (semantic-mode             1)
            (yas-minor-mode            1)
            (abbrev-mode               1)
 
@@ -1951,6 +1955,7 @@ Editor settings
        (defun ayrc/emacs-lisp-hook ()
            (ayrc/lisp-hook)
 
+           (semantic-mode 1)
            (hs-minor-mode t)
            (elisp-slime-nav-mode)
 
@@ -1960,6 +1965,7 @@ Editor settings
        (defun ayrc/eval-expression-minibuffer-setup-hook ()
            (ayrc/lisp-hook)
 
+           (semantic-mode 1)
            (elisp-slime-nav-mode)
 
            (ayrc/setup-company '(company-elisp :with company-yasnippet)))
@@ -1976,8 +1982,10 @@ Editor settings
        (use-package geiser
            :straight t
            :after (:any company)
-           :custom (geiser-active-implementations '(racket guile))
-           :commands (geiser-mode))
+           :commands (geiser-mode)
+           :custom
+           (geiser-active-implementations '(guile racket))
+           (geiser-repl-query-on-exit-p   t))
      #+end_src
 
 **** Hook
