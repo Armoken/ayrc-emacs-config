@@ -912,7 +912,8 @@ Editor settings
          :straight t
          :after (:any company)
          :defer t
-         :bind ("C-c s" . #'scratch))
+         :bind (("C-c s c" . #'scratch)
+                ("C-c s l" . (lambda () (interactive) (scratch #'emacs-lisp-mode)))))
    #+end_src
 
 ** TODO [[https://github.com/nex3/perspective-el][perspective-el]]
