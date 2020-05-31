@@ -764,7 +764,8 @@ Editor settings
          :straight t
          :after (:any company)
          :diminish undo-tree-mode
-         :bind (("C-x u" . undo-tree-visualize))
+         :bind (("C-x u" . undo-tree-visualize)
+                ("C-."   . undo-tree-undo))
          :init
          (global-undo-tree-mode))
    #+end_src
@@ -916,6 +917,16 @@ Editor settings
 
 ** TODO [[https://github.com/nex3/perspective-el][perspective-el]]
 ** TODO [[https://github.com/manateelazycat/emacs-application-framework][Emacs Application Framework]]
+
+** Keep the same hotkeys in other keyboard layout                                          :hotkeys:
+   #+begin_src emacs-lisp :tangle yes
+     (use-package reverse-im
+         :straight t
+         :custom
+         (reverse-im-input-methods '("russian-computer"))
+         :config
+         (reverse-im-mode t))
+   #+end_src
 
 ** Compilation                                                                             :hotkeys:
    #+begin_src emacs-lisp :tangle yes
