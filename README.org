@@ -1647,6 +1647,15 @@ Editor settings
                      (cdr kc)))))
    #+end_src
 
+** Get occurencies of non-ascii characters                                             :interactive:
+   #+begin_src emacs-lisp :tangle README-loaddefs.el
+     ;;;###autoload
+     (defun ayrc/occur-non-ascii ()
+         "Find any non-ascii characters in the current buffer."
+         (interactive)
+         (occur "[^[:ascii:]]"))
+   #+END_SRC
+
 ** Functions for making text pretty                                                    :interactive:
    #+begin_src emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
