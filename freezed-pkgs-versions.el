@@ -64,6 +64,7 @@
  ("helm-projectile" . "5328b74dddcee8d1913803ca8167868831a07463")
  ("helm-rg" . "785a80fe5cc87e27c5ea3d00a70049028d9e2847")
  ("helm-xref" . "6b4a8bd91f5eaf82f51bd31b03f6587387fe6983")
+ ("hl-todo" . "3bba4591c54951d2abab113ec5e58a6319808ca9")
  ("ht.el" . "fff8c43f0e03d5b98deb9f988522b839ce2ca253")
  ("hungry-delete" . "4a341cfa3a19185c5ecb687970e299082e1144e3")
  ("hydra" . "87873d788891029d9e44fa5458321d6a05849b94")

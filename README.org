@@ -1154,6 +1154,22 @@ Editor settings
                   (ayrc/outline-hide-all))))
     #+end_src
 
+** Highlight TODO
+    #+begin_src emacs-lisp :tangle yes
+      (use-package hl-todo
+          :after (:any company)
+          :straight t
+          :diminish hl-todo-mode
+          :commands (hl-todo-mode)
+          :config
+          (setq hl-todo-keyword-faces
+                '(("TODO"   . "#FF0000")
+                  ("FIXME"  . "#FF0000")
+                  ("DEBUG"  . "#A020F0")
+                  ("GOTCHA" . "#FF4500")
+                  ("STUB"   . "#1E90FF"))))
+    #+end_src
+
 ** Spell checking
    #+begin_src emacs-lisp :tangle yes
      (use-package flyspell
@@ -1934,6 +1950,7 @@ Editor settings
            (smartparens-mode          1)
            (yas-minor-mode            1)
            (abbrev-mode               1)
+           (hl-todo-mode              1)
 
            (flycheck-mode             1)
 
@@ -2068,6 +2085,7 @@ Editor settings
           (yas-minor-mode            1)
           (hs-minor-mode             1)
           (hungry-delete-mode        1)
+          (hl-todo-mode              1)
 
           ;; Setup minor mods if any component need it
           (let ((conf-variables-for-cc (list ayrc/cc-eldoc-plugin
@@ -2629,11 +2647,11 @@ Editor settings
           (yas-minor-mode             1)
           (smartparens-mode           1)
           (smart-shift-mode           1)
+          (hl-todo-mode               1)
 
           (require 'lsp-pyls)
           (require 'dap-python)
           (lsp-deferred))
-
     #+end_src
 
 ** [[https://github.com/Wilfred/pip-requirements.el][Pip requirments]]
@@ -2656,7 +2674,8 @@ Editor settings
           (ws-butler-mode            1)
           (smartparens-mode          1)
           (semantic-mode             1)
-          (yas-minor-mode            1))
+          (yas-minor-mode            1)
+          (hl-todo-mode              1))
     #+end_src
 
 ** TeX/LaTeX
@@ -2791,6 +2810,7 @@ Editor settings
             (abbrev-mode               1)
             (semantic-mode             1)
             (yas-minor-mode            1)
+            (hl-todo-mode              1)
 
             (hs-minor-mode             1)
             (flycheck-mode             1)
@@ -2929,6 +2949,7 @@ Editor settings
           (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
+          (hl-todo-mode              1)
 
           (hs-minor-mode             1)
           (flycheck-mode             1)
@@ -2959,6 +2980,7 @@ Editor settings
             (semantic-mode             1)
             (abbrev-mode               1)
             (yas-minor-mode            1)
+            (hl-todo-mode              1)
 
             (ayrc/setup-company))
       #+end_src
@@ -2993,6 +3015,7 @@ Editor settings
           (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
+          (hl-todo-mode              1)
 
           (ayrc/setup-company)
           (company-nginx-keywords))
@@ -3029,6 +3052,7 @@ Editor settings
           (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
+          (hl-todo-mode              1)
 
           (ayrc/setup-company))
     #+end_src
@@ -3036,8 +3060,8 @@ Editor settings
 ** [[https://github.com/emacs-mirror/emacs/blob/master/lisp/textmodes/conf-mode.el][Conf]]
    #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package conf-mode
-         :mode (("\\.toml\\'" . conf-toml-mode)
-                ("\\.ini\\'" . conf-windows-mode))
+         :mode (("\\.toml$" . conf-toml-mode)
+                ("\\.ini$"  . conf-windows-mode))
          :hook ((conf-toml-mode-hook    . ayrc/conf-hook)
                 (conf-windows-mode-hook . ayrc/conf-hook)))
    #+end_src
@@ -3054,6 +3078,7 @@ Editor settings
           (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
+          (hl-todo-mode              1)
 
           (ayrc/setup-company))
     #+end_src
@@ -3089,6 +3114,7 @@ Editor settings
           (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
+          (hl-todo-mode              1)
 
           (ayrc/setup-company)
           (flycheck-plantuml-setup)
@@ -3117,6 +3143,7 @@ Editor settings
           (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
+          (hl-todo-mode              1)
 
           (ayrc/setup-company))
     #+end_src
@@ -3157,6 +3184,7 @@ Editor settings
           (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
+          (hl-todo-mode              1)
 
           (ayrc/setup-company)
           (hs-minor-mode             1)
@@ -3192,6 +3220,7 @@ Editor settings
           (abbrev-mode                1)
           (yas-minor-mode             1)
           (highlight-indentation-mode 1)
+          (hl-todo-mode               1)
 
           (outline-minor-mode)
           (setq outline-regexp
@@ -3232,6 +3261,7 @@ Editor settings
           (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
+          (hl-todo-mode              1)
 
           (hs-minor-mode             1)
 
@@ -3259,6 +3289,7 @@ Editor settings
           (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
+          (hl-todo-mode              1)
 
           (ayrc/setup-company))
     #+end_src
@@ -3283,6 +3314,7 @@ Editor settings
           (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
+          (hl-todo-mode              1)
 
           (ayrc/setup-company))
     #+end_src
@@ -3349,6 +3381,7 @@ Editor settings
           (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
+          (hl-todo-mode              1)
 
           (ayrc/setup-company)
 
@@ -3390,6 +3423,7 @@ Editor settings
           (abbrev-mode               1)
           (semantic-mode             1)
           (yas-minor-mode            1)
+          (hl-todo-mode              1)
 
           (ayrc/setup-company '(company-capf :with company-yasnippet)))
     #+end_src
@@ -3428,6 +3462,7 @@ Editor settings
           (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
+          (hl-todo-mode              1)
 
           (ayrc/setup-company '(company-cmake :with company-yasnippet))
 
@@ -3461,6 +3496,7 @@ Editor settings
           (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
+          (hl-todo-mode              1)
 
           (ayrc/setup-company '(company-cmake :with company-yasnippet))
 
