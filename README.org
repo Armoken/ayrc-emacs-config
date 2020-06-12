@@ -676,9 +676,7 @@ Editor settings
      (use-package helm
          :straight t
          :diminish helm-mode
-         :defines (helm-M-x-fuzzy-match
-                   helm-mode-fuzzy-match
-                   helm-imenu-fuzzy-match
+         :defines (helm-imenu-fuzzy-match
                    helm-apropos-fuzzy-match
                    helm-recentf-fuzzy-match
                    helm-semantic-fuzzy-match
@@ -715,39 +713,44 @@ Editor settings
 
          (helm-mode 1)
 
+         (add-to-list 'completion-styles `,(if (version< emacs-version "27") 'helm-flex 'flex) t)
+         (setq x-wait-for-event-timeout nil)
+
          :config
-         (setq helm-M-x-fuzzy-match                  t
-               helm-completion-style                 'helm-fuzzy
-               helm-imenu-fuzzy-match                t
-               helm-locate-fuzzy-match               t
-               helm-apropos-fuzzy-match              t
-               helm-recentf-fuzzy-match              t
-               helm-semantic-fuzzy-match             t
-               helm-lisp-fuzzy-completion            t
-               helm-buffers-fuzzy-matching           t
-               helm-ff-search-library-in-sexp        t
-               helm-ff-file-name-history-use-recentf t
-               helm-completion-in-region-fuzzy-match t
+         (setq  helm-completion-style                 'emacs
+                helm-imenu-fuzzy-match                t
+                helm-locate-fuzzy-match               t
+                helm-apropos-fuzzy-match              t
+                helm-recentf-fuzzy-match              t
+                helm-semantic-fuzzy-match             t
+                helm-lisp-fuzzy-completion            t
+                helm-buffers-fuzzy-matching           t
+                helm-ff-search-library-in-sexp        t
+                helm-ff-file-name-history-use-recentf t
+                helm-completion-in-region-fuzzy-match t
 
-               ;; Open helm buffer inside current window, not occupy whole
-               ;; other window
-               helm-split-window-inside-p           t
+                ;; Open helm buffer inside current window, not occupy whole
+                ;; other window
+                helm-split-window-inside-p           t
 
-               ;; Move to end or beginning of source when reaching top or
-               ;; bottom of source.
-               helm-move-to-line-cycle-in-source     nil
+                ;; Move to end or beginning of source when reaching top or
+                ;; bottom of source.
+                helm-move-to-line-cycle-in-source     nil
 
-               ;; Scroll 8 lines other window using M-<next>/M-<prior>
-               helm-scroll-amount                    8
+                ;; Scroll 8 lines other window using M-<next>/M-<prior>
+                helm-scroll-amount                    8
 
-               helm-autoresize-max-height            50
-               helm-autoresize-min-height            10
+                helm-autoresize-max-height            50
+                helm-autoresize-min-height            10
 
 
-               helm-ff-file-name-history-use-recentf t)
+                helm-ff-file-name-history-use-recentf t)
 
          ;; Autoresize helm minibufer
          (helm-autoresize-mode t))
+
+
+
    #+end_src
 
 *** [[https://github.com/cosmicexplorer/helm-rg][Ripgrep]]
