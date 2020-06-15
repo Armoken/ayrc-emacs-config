@@ -33,8 +33,6 @@ Editor settings
          ;; Disable cursor blink
          (blink-cursor-mode 0)
 
-         (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
-
          ;; Name of current buffer in window title
          (setq frame-title-format "GNU Emacs: %b")
 
