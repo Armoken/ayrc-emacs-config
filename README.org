@@ -2689,7 +2689,8 @@ Editor settings
            :defines (TeX-auto-save
                      TeX-parse-self
                      TeX-PDF-mode)
-           :mode ("\\.tex\\'" . latex-mode)
+           :mode (("\\.tex\\'"  . latex-mode)
+                  ("\\.def\\'" . latex-mode))
            :commands (latex-mode
                       LaTeX-mode
                       plain-tex-mode
