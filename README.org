@@ -603,7 +603,7 @@ Editor settings
                      ("C-c p F" . helm-projectile-find-file-in-known-projects)
                      ("C-c p g" . helm-projectile-find-file-dwim)
                      ("C-c p d" . helm-projectile-find-dir)
-                     ("C-c p e" . helm-projectile-recentf)
+                     ("C-c p e" . helm-projectile-ag)
                      ("C-c p a" . helm-projectile-find-other-file)
                      ("C-c p b" . helm-projectile-switch-to-buffer))
          :init
@@ -638,6 +638,7 @@ Editor settings
 
           :init
           <<projectile-helm-rg>>
+          <<projectile-helm-ag>>
 
           (defun ayrc/helm-projectile-grep-or-rg ()
               "Uses helm-projectile-grep, if ag doesn't present"
@@ -658,6 +659,20 @@ Editor settings
                  ("M-b" . nil)))
 
      #+end_src
+
+**** [[https://github.com/emacsorphanage/helm-ag][helm-ag]]
+     Helm interface to ag. Will be used for single purpose: replace symbol in project
+
+     #+BEGIN_SRC  emacs-lisp :tangle no :noweb-ref projectile-helm-ag
+       (use-package helm-ag
+           :straight t
+           :commands (helm-projectile-ag)
+           :init
+           (setq
+            helm-ag-fuzzy-match t))
+#+END_SRC
+
+
 
 ** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                 :hotkeys:ui:
    A tree plugin like NerdTree for Vim
@@ -712,6 +727,7 @@ Editor settings
 
          :init
          <<helm-rg>>
+         <<helm-ag>>
 
          (helm-mode 1)
 
@@ -754,15 +770,6 @@ Editor settings
 
 
    #+end_src
-
-*** [[https://github.com/cosmicexplorer/helm-rg][Ripgrep]]
-    A helm interface to ripgrep
-
-    #+begin_src emacs-lisp :tangle no :noweb-ref helm-rg
-      (use-package helm-rg
-          :straight t
-          :commands (helm-rg))
-    #+end_src
 
 ** [[http://www.dr-qubit.org/undo-tree/undo-tree.el][Undo tree]]                        :hotkeys:ui:
    Treat undo history as a tree
