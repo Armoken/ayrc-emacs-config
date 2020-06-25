@@ -652,7 +652,11 @@ Editor settings
      #+begin_src emacs-lisp :tangle no :noweb-ref projectile-helm-rg
        (use-package helm-rg
            :straight t
-           :commands (helm-projectile-rg))
+           :commands (helm-projectile-rg)
+           :bind
+           (:map helm-rg-map
+                 ("M-b" . nil)))
+
      #+end_src
 
 ** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                 :hotkeys:ui:
