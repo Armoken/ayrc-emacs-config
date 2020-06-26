@@ -2081,7 +2081,7 @@ Editor settings
 
 *** CC configuration
     #+begin_src emacs-lisp :tangle README-loaddefs.el
-      ;;;###autoload
+        ;;;###autoload
       (defun ayrc/cc-hook ()
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
@@ -2092,8 +2092,10 @@ Editor settings
           (semantic-mode             1)
           (yas-minor-mode            1)
           (hs-minor-mode             1)
-          (hungry-delete-mode        1)
           (hl-todo-mode              1)
+
+          ;; Uncomfortable
+          ;; (hungry-delete-mode       -1)
 
           ;; Setup minor mods if any component need it
           (let ((conf-variables-for-cc (list ayrc/cc-eldoc-plugin
