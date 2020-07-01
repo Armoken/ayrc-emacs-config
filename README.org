@@ -1480,16 +1480,14 @@ Editor settings
           :hook (lsp-mode . ayrc/lsp-hook)
           :bind (:map lsp-mode-map
                       ("C-c h w" . helm-lsp-workspace-symbol))
+          :custom
+          (lsp-enable-folding                         t)
+          (lsp-enable-indentation                     t)
+          (lsp-enable-file-watchers                   nil)
+          (lsp-auto-configure                         nil)
+          (lsp-enable-snippet                         nil)
+          (lsp-keep-workspace-alive                   nil)
           :init
-
-          (setq
-           lsp-enable-folding                         t
-           lsp-enable-indentation                     t
-           lsp-enable-file-watchers                   nil
-           lsp-auto-configure                         nil
-           lsp-enable-snippet                         nil
-           lsp-keep-workspace-alive                   nil)
-
           <<lsp-ui-usepkg>>
           <<helm-lsp-usepkg>>)
     #+end_src
