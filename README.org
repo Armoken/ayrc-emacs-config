@@ -1,5 +1,6 @@
 #+TITLE: README
 #+OPTIONS: \n:t
+#+STARTUP: logdone overview
 
 Editor settings
 
@@ -647,6 +648,7 @@ Editor settings
                   (helm-projectile-grep))))
     #+end_src
 
+**** TODO Create pull-request to make [[https://github.com/bbatsov/helm-projectile/issues/104][useless entries]] optional
 **** [[https://github.com/cosmicexplorer/helm-rg][Ripgrep]]
      A helm interface to ripgrep
 
@@ -671,8 +673,6 @@ Editor settings
            (setq
             helm-ag-fuzzy-match t))
 #+END_SRC
-
-
 
 ** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                 :hotkeys:ui:
    A tree plugin like NerdTree for Vim
@@ -1773,6 +1773,7 @@ Editor settings
           :config
           (setq
            org-log-done 'time
+           org-startup-folded 'fold
            org-src-tab-acts-natively t
            org-tags-column -100
 
@@ -1783,6 +1784,17 @@ Editor settings
     #+end_src
 
 ** TODO Support of encrypted containers
+** TODO [[https://github.com/org-roam/org-roam][org-roam]]
+** TODO [[https://github.com/org-roam/org-roam-server][org-roam-server]]
+** TODO [[https://github.com/org-roam/org-roam-bibtex][org-roam-bibtex]]
+** TODO [[https://github.com/jkitchin/org-ref][org-ref]]
+** TODO [[https://github.com/IvanMalison/org-projectile][org-projectile]]
+** TODO [[https://github.com/alphapapa/org-super-agenda][org-super-agenda]]
+** TODO [[https://github.com/alphapapa/org-sidebar][org-sidebar]]
+** TODO [[https://github.com/Chobbes/org-chef][org-chef]]
+** TODO [[https://github.com/alphapapa/org-ql][org-ql]]
+** TODO [[https://github.com/mtekman/org-treescope.el][org-treescope]]
+** TODO [[https://github.com/bastibe/org-journal][org-journal]]
 ** [[https://github.com/emacsorphanage/org-bullets][Bullets]]
    Show bullets in org-mode as UTF-8 characters
 
