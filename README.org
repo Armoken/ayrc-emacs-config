@@ -1548,7 +1548,8 @@ Editor settings
                  lsp-ui-doc-enable            nil
                  lsp-ui-flycheck-enable       t
                  lsp-ui-doc-include-signature nil
-                 lsp-ui-sideline-show-symbol  nil))
+                 lsp-ui-sideline-show-symbol  nil
+                 lsp-ui-peek-fontify          'always))
      #+end_src
 
 ** Debugging
