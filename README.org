@@ -1218,10 +1218,14 @@ Editor settings
           :init
           <<flycheck-hook>>
           :config
-          (setq flycheck-checker-error-threshold    700
+          (setq flycheck-checker-error-threshold    1000
                 flycheck-standard-error-navigation  nil
-                flycheck-idle-change-delay          0
-                flycheck-check-syntax-automatically '(save mode-enabled)))
+                flycheck-idle-change-delay          0.01
+                flycheck-check-syntax-automatically '(save
+                                                      mode-enabled
+                                                      idle-buffer-switch
+                                                      idle-change)))
+
     #+end_src
 
 **** [[https://github.com/yasuyk/helm-flycheck][Helm]]
@@ -1495,7 +1499,14 @@ Editor settings
 **** Hook
      #+begin_src emacs-lisp :tangle README-loaddefs.el
        (defun ayrc/lsp-hook ()
-
+           (setq
+            lsp-enable-folding                         t
+            lsp-enable-indentation                     t
+            lsp-flycheck-live-reporting                t
+            lsp-enable-file-watchers                   nil
+            lsp-auto-configure                         nil
+            lsp-enable-snippet                         nil
+            lsp-keep-workspace-alive                   nil)
 
            (ayrc/local-set-keys '(("C-c r"   . lsp-rename)
                                   ("C-c C-r" . lsp-format-region)
@@ -1534,7 +1545,7 @@ Editor settings
            (setq lsp-ui-peek-enable           nil
                  lsp-ui-sideline-enable       nil
                  lsp-ui-imenu-enable          t
-                 lsp-ui-doc-enable            t
+                 lsp-ui-doc-enable            nil
                  lsp-ui-flycheck-enable       t
                  lsp-ui-doc-include-signature nil
                  lsp-ui-sideline-show-symbol  nil))
