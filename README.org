@@ -3188,28 +3188,13 @@ Editor settings
     #+end_src
 
 ** JSON
-    #+NAME: json-system-prerequisites
-    #+CAPTION: System prerequisites for json packages
-    - [[https://github.com/dmeranda/demjson][demjson]] :: Python module for JSON data encoding, including jsonlint
-
    #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package json-mode
          :mode (("\\.json\\'" . json-mode))
          :hook (json-mode . ayrc/json-hook)
          :bind (:map json-mode-map
-                     ("C-c C-r" . json-pretty-print))
-         :init
-         <<flycheck-demjsonlint-usepkg>>)
+                     ("C-c C-r" . json-pretty-print)))
    #+end_src
-
-*** Flycheck
-    #+begin_src emacs-lisp :tangle no :noweb-ref flycheck-demjsonlint-usepkg
-      (use-package flycheck-demjsonlint
-          :straight t
-          :defer t
-          :after json-mode
-          :after (json-mode flycheck))
-    #+end_src
 
 *** Hook
     #+begin_src emacs-lisp :tangle README-loaddefs.el
@@ -3399,6 +3384,8 @@ Editor settings
           :commands (markdown-preview-mode
                      markdown-preview-open-browser
                      markdown-preview-cleanup)
+          :defines (markdown-preview-stylesheets
+                    markdown-preview-javascript)
           :config
           (add-to-list 'markdown-preview-stylesheets
                        "https://raw.githubusercontent.com/richleland/pygments-css/master/emacs.css")
