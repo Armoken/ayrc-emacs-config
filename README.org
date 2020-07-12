@@ -1750,23 +1750,19 @@ Editor settings
           :hook (org-mode . ayrc/orgmode-hook)
           :bind (:map org-mode-map
                       ("C-c M-l" . org-cliplink)
-                      ("C-c h i" . helm-org-rifle-current-buffer))
+                      ("C-c a"   . org-agenda)
+                      ("C-c h i" . helm-org-ql)
+                      ("C-c h o" . helm-org-rifle-current-buffer))
           :init
           <<org-bullets-usepkg>>
           <<org-present-usepkg>>
           <<org-cliplink-usepkg>>
-          <<helm-org-rifle>>
-
-          (defun ayrc/orgmode-hook ()
-              (display-line-numbers-mode 1)
-              (visual-line-mode          1)
-              (ws-butler-mode            1)
-              (smartparens-mode          1)
-              (semantic-mode             1)
-              (yas-minor-mode            1)
-              (ayrc/setup-company '(company-yasnippet))
-
-              (org-bullets-mode))
+          <<helm-org-usepkg>>
+          <<helm-org-rifle-usepkg>>
+          <<org-ql-usepkg>>
+          <<org-super-agenda-usepkg>>
+          <<org-roam-usepkg>>
+          <<org-roam-server-usepkg>>
 
           :config
           (setq
@@ -1782,66 +1778,192 @@ Editor settings
     #+end_src
 
 ** TODO Support of encrypted containers
-** TODO [[https://github.com/org-roam/org-roam][org-roam]]
-** TODO [[https://github.com/org-roam/org-roam-server][org-roam-server]]
-** TODO [[https://github.com/org-roam/org-roam-bibtex][org-roam-bibtex]]
-** TODO [[https://github.com/jkitchin/org-ref][org-ref]]
 ** TODO [[https://github.com/IvanMalison/org-projectile][org-projectile]]
-** TODO [[https://github.com/alphapapa/org-super-agenda][org-super-agenda]]
 ** TODO [[https://github.com/alphapapa/org-sidebar][org-sidebar]]
 ** TODO [[https://github.com/Chobbes/org-chef][org-chef]]
-** TODO [[https://github.com/alphapapa/org-ql][org-ql]]
 ** TODO [[https://github.com/mtekman/org-treescope.el][org-treescope]]
 ** TODO [[https://github.com/bastibe/org-journal][org-journal]]
-** [[https://github.com/emacsorphanage/org-bullets][Bullets]]
+** [[https://github.com/emacsorphanage/org-bullets][bullets]]
    Show bullets in org-mode as UTF-8 characters
 
    #+begin_src emacs-lisp :tangle no :noweb-ref org-bullets-usepkg
      (use-package org-bullets
          :straight t
-         :defer t
          :after org
          :commands (org-bullets-mode))
    #+end_src
 
-** [[https://github.com/rlister/org-present][Present]]
+** [[https://github.com/rlister/org-present][present]]
    Minimalist presentation minor-mode for Emacs org-mode
 
    #+begin_src emacs-lisp :tangle no :noweb-ref org-present-usepkg
      (use-package org-present
          :straight t
-         :defer t
          :after org
          :commands (org-present))
    #+end_src
 
-** [[http://github.com/rexim/org-cliplink][Cliplink]]
+** [[http://github.com/rexim/org-cliplink][cliplink]]
    Insert org-mode links from the clipboard
 
    #+begin_src emacs-lisp :tangle no :noweb-ref org-cliplink-usepkg
      (use-package org-cliplink
          :straight t
-         :defer t
          :after org
          :commands (org-cliplink))
    #+end_src
 
-** [[https://github.com/alphapapa/org-rifle][Helm]]
-   #+begin_src emacs-lisp :tangle no :noweb-ref helm-org-rifle
+** [[https://github.com/alphapapa/org-rifle][helm-org-rifle]]
+   #+begin_src emacs-lisp :tangle no :noweb-ref helm-org-rifle-usepkg
      (use-package helm-org-rifle
          :straight t
-         :defer t
          :after org
          :commands (helm-org-rifle-current-buffer))
    #+end_src
 
+** [[https://github.com/emacs-helm/helm-org][helm-org]]
+   #+begin_src emacs-lisp :tangle no :noweb-ref helm-org-usepkg
+     (use-package helm-org
+         :straight t
+         :after org)
+   #+end_src
+
+** [[https://github.com/alphapapa/org-ql][org-ql]]
+   #+begin_src emacs-lisp :tangle no :noweb-ref org-ql-usepkg
+     (use-package org-ql
+         :straight t
+         :after org
+         :config
+         (require 'helm-org-ql)
+         (require 'org-ql-search))
+   #+end_src
+
+** [[https://github.com/alphapapa/org-super-agenda][org-super-agenda]]
+   #+begin_src emacs-lisp :tangle no :noweb-ref org-super-agenda-usepkg
+     (use-package org-super-agenda
+         :straight t
+         :after org)
+   #+end_src
+** [[https://github.com/org-roam/org-roam][org-roam]]
+   #+begin_src emacs-lisp :tangle no :noweb-ref org-roam-usepkg
+     (use-package org-roam
+         :straight t
+         :defer t
+         :after org
+         :bind (:map org-mode-map
+                     (("C-c n i" . org-roam-insert))
+                     (("C-c n I" . org-roam-insert-immediate))
+                     :map org-roam-mode-map
+                     (("C-c n l" . org-roam)
+                      ("C-c n f" . org-roam-find-file)
+                      ("C-c n g" . org-roam-graph))))
+   #+end_src
+
+** [[https://github.com/org-roam/org-roam-server][org-roam-server]]
+   #+begin_src emacs-lisp :tangle no :noweb-ref org-roam-server-usepkg
+     ;; Workaround from: https://github.com/raxod502/straight.el/issues/265
+     (straight-use-package
+      `(simple-httpd :type git
+                     :host github
+                     :repo "skeeto/emacs-web-server"
+                     :local-repo "simple-httpd"))
+
+     ;; Workaround until recipe appear on Melpa
+     (straight-use-package
+      `(org-roam-server :type git
+                        :host github
+                        :files ("assets" "index.html" :defaults)
+                        :repo "org-roam/org-roam-server"))
+
+     (use-package org-roam-server
+         :straight t
+         :defer t
+         :after org
+         :config
+         (setq org-roam-server-host "127.0.0.1"
+               org-roam-server-port 8080
+               org-roam-server-export-inline-images t
+               org-roam-server-authenticate nil
+               org-roam-server-network-poll t
+               org-roam-server-network-arrows nil
+               org-roam-server-network-label-truncate t
+               org-roam-server-network-label-truncate-length 60
+               org-roam-server-network-label-wrap-length 20))
+   #+end_src
+
+** Hook
+     #+begin_src emacs-lisp :tangle README-loaddefs.el
+       ;;;###autoload
+       (defun ayrc/orgmode-hook ()
+           (display-line-numbers-mode 1)
+           (visual-line-mode          1)
+           (ws-butler-mode            1)
+           (smartparens-mode          1)
+           (semantic-mode             1)
+           (yas-minor-mode            1)
+           (ayrc/setup-company '(company-yasnippet))
+
+           (org-bullets-mode)
+           (org-roam-mode)
+           (org-super-agenda-mode))
+     #+end_src
+
 * Clients
 ** TODO [[https://github.com/rejeep/prodigy.el][Prodigy]]
 ** TODO Gnus or mu4e
-** Eshell
-   #+begin_src emacs-lisp :tangle yes :noweb yes
+** Terminal
+*** term.el
+    #+BEGIN_SRC emacs-lisp :tangle yes :noweb tes
+      (use-package term
+          :defines (term-raw-map)
+          :config
+          (defconst ayrc/term-function-key-alist '((f1  . "\e[OP")
+                                                   (f2  . "\e[OQ")
+                                                   (f3  . "\e[OR")
+                                                   (f4  . "\e[OS")
+                                                   (f5  . "\e[15~")
+                                                   (f6  . "\e[17~")
+                                                   (f7  . "\e[18~")
+                                                   (f8  . "\e[19~")
+                                                   (f9  . "\e[20~")
+                                                   (f10 . "\e[21~")
+                                                   (f11 . "\e[23~")
+                                                   (f12 . "\e[24~")
+                                                   (f13 . "\e[1;2P")
+                                                   (f14 . "\e[1;2Q")
+                                                   (f15 . "\e[1;2R")
+                                                   (f16 . "\e[1;2S")
+                                                   (f17 . "\e[15;2~")
+                                                   (f18 . "\e[17;2~")
+                                                   (f19 . "\e[18;2~")
+                                                   (f20 . "\e[19;2~")
+                                                   (f21 . "\e[20;2~")
+                                                   (f22 . "\e[21;2~")
+                                                   (f23 . "\e[23;2~")
+                                                   (f24 . "\e[24;2~")))
 
-   #+end_src
+          ;; (let ((lexical-binding t))
+          ;;     (define-key term-raw-map
+          ;;         (read-kbd-macro (format "<%s>" 'f10))
+
+          ;;         (let ((code            "\e[21~"))
+          ;;             (lambda () (interactive) (term-send-raw-string code)))))
+
+          ;; (dolist (spec ayrc/term-function-key-alist)
+          ;;     (define-key term-raw-map
+          ;;         (read-kbd-macro (format "<%s>" (car spec)))
+
+          ;;         (let* ((lexical-binding t)
+          ;;                (code            (cdr spec)))
+          ;;             (lambda () (interactive) (term-send-raw-string (cdr spec))))))
+          )
+   #+END_SRC
+
+*** eshell
+    #+begin_src emacs-lisp :tangle yes :noweb yes
+      (use-package eshell
+          :bind (("C-c e" . eshell)))
+    #+end_src
 
 ** VCS
 *** [[https://github.com/magit/magit][Git]]                                                                             :global_hotkeys:

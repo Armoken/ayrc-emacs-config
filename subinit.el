@@ -90,6 +90,7 @@
     (gcmh-mode 1))
 
 (use-package org
+    :straight t
     :defer t
     :defines (org-id-track-globally)
     :commands (org-babel-tangle-file)
