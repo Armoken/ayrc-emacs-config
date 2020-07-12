@@ -1896,7 +1896,12 @@ Editor settings
                      magit-set-upstream-on-push 'askifnotset)))
 	  #+end_src
 
-** Dired
+*** [[https://bitbucket.org/agriggio/ahg/src/master/][Mercurial]]
+     #+begin_src emacs-lisp :tangle yes
+       (use-package ahg
+           :straight t)
+     #+end_src
+** Dired                                                                            :global_hotkeys:
    #+begin_src emacs-lisp :tangle yes
      (use-package dired
          :defer t
@@ -1911,7 +1916,7 @@ Editor settings
              (setq dired-dwim-target t)))
    #+end_src
 
-** [[https://github.com/Silex/docker.el][Docker]]
+** [[https://github.com/Silex/docker.el][Docker]]                                                                           :global_hotkeys:
    #+begin_src emacs-lisp :tangle yes
      (use-package docker
          :straight t
