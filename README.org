@@ -4,6 +4,11 @@
 
 Editor settings
 
+* How-To get config working
+** Windows
+   As Admin, run secpol.msc and grant your account <<Create Symbolic Link>>
+   permissions.
+
 * Global configuration
 ** Lexical binding
    #+begin_src emacs-lisp :tangle yes
