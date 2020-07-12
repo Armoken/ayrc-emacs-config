@@ -1492,6 +1492,7 @@ Editor settings
           :custom
           (lsp-enable-folding                         t)
           (lsp-enable-indentation                     t)
+          (lsp-flycheck-live-reporting                t)
           (lsp-enable-file-watchers                   nil)
           (lsp-auto-configure                         nil)
           (lsp-enable-snippet                         nil)
@@ -1504,15 +1505,6 @@ Editor settings
 **** Hook
      #+begin_src emacs-lisp :tangle README-loaddefs.el
        (defun ayrc/lsp-hook ()
-           (setq
-            lsp-enable-folding                         t
-            lsp-enable-indentation                     t
-            lsp-flycheck-live-reporting                t
-            lsp-enable-file-watchers                   nil
-            lsp-auto-configure                         nil
-            lsp-enable-snippet                         nil
-            lsp-keep-workspace-alive                   nil)
-
            (ayrc/local-set-keys '(("C-c r"   . lsp-rename)
                                   ("C-c C-r" . lsp-format-region)
                                   ("M-."     . lsp-ui-peek-find-definitions)
