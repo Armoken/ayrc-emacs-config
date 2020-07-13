@@ -3487,8 +3487,6 @@ Editor settings
           :after cmake-mode
           :defer t
           :commands (cmake-font-lock-setup)
-          :init
-          (remove-hook 'cmake-mode-hook #'cmake-font-lock-activate)
           :config
           (defun ayrc/cmake-font-lock-activate ()
               "Activate advanced CMake colorization.
@@ -3517,7 +3515,8 @@ Editor settings
           (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
-          (hl-todo-mode              1)
+          ;; Conflicts with cmake-font-lock mode
+          ;; (hl-todo-mode              1)
 
           (ayrc/setup-company '(company-cmake :with company-yasnippet))
 
