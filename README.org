@@ -737,7 +737,9 @@ Editor settings
          (helm-mode 1)
 
          (add-to-list 'completion-styles `,(if (version< emacs-version "27") 'helm-flex 'flex) t)
-         (setq x-wait-for-event-timeout nil)
+         
+         (when (not (eq system-type 'windows-nt))
+             (setq x-wait-for-event-timeout nil))
 
          :config
          (setq  helm-completion-style                 'emacs
@@ -1290,7 +1292,8 @@ Editor settings
 
 ** [[http://github.com/joaotavora/yasnippet][Snippets]]
    #+begin_src emacs-lisp :tangle yes :noweb yes
-     <<snippets-collection>>
+     (when (not (eq system-type 'windows-nt))
+         <<snippets-collection>>)
 
      (use-package yasnippet
          :straight t
