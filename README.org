@@ -1305,7 +1305,8 @@ Editor settings
          :config
          (setq yas-snippet-dirs
                (list (ayrc/expand-config-path "./personal-snippets")))
-         (yasnippet-snippets-initialize)
+         (when (not (eq system-type 'windows-nt))
+             (yasnippet-snippets-initialize))
 
          (yas-reload-all))
    #+end_src
