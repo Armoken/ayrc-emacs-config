@@ -1915,59 +1915,11 @@ Editor settings
 * Clients
 ** TODO [[https://github.com/rejeep/prodigy.el][Prodigy]]
 ** TODO Gnus or mu4e
-** Terminal
-*** term.el
-    #+BEGIN_SRC emacs-lisp :tangle yes :noweb tes
-      (use-package term
-          :defines (term-raw-map)
-          :config
-          (defconst ayrc/term-function-key-alist '((f1  . "\e[OP")
-                                                   (f2  . "\e[OQ")
-                                                   (f3  . "\e[OR")
-                                                   (f4  . "\e[OS")
-                                                   (f5  . "\e[15~")
-                                                   (f6  . "\e[17~")
-                                                   (f7  . "\e[18~")
-                                                   (f8  . "\e[19~")
-                                                   (f9  . "\e[20~")
-                                                   (f10 . "\e[21~")
-                                                   (f11 . "\e[23~")
-                                                   (f12 . "\e[24~")
-                                                   (f13 . "\e[1;2P")
-                                                   (f14 . "\e[1;2Q")
-                                                   (f15 . "\e[1;2R")
-                                                   (f16 . "\e[1;2S")
-                                                   (f17 . "\e[15;2~")
-                                                   (f18 . "\e[17;2~")
-                                                   (f19 . "\e[18;2~")
-                                                   (f20 . "\e[19;2~")
-                                                   (f21 . "\e[20;2~")
-                                                   (f22 . "\e[21;2~")
-                                                   (f23 . "\e[23;2~")
-                                                   (f24 . "\e[24;2~")))
-
-          ;; (let ((lexical-binding t))
-          ;;     (define-key term-raw-map
-          ;;         (read-kbd-macro (format "<%s>" 'f10))
-
-          ;;         (let ((code            "\e[21~"))
-          ;;             (lambda () (interactive) (term-send-raw-string code)))))
-
-          ;; (dolist (spec ayrc/term-function-key-alist)
-          ;;     (define-key term-raw-map
-          ;;         (read-kbd-macro (format "<%s>" (car spec)))
-
-          ;;         (let* ((lexical-binding t)
-          ;;                (code            (cdr spec)))
-          ;;             (lambda () (interactive) (term-send-raw-string (cdr spec))))))
-          )
-   #+END_SRC
-
-*** eshell
-    #+begin_src emacs-lisp :tangle yes :noweb yes
-      (use-package eshell
-          :bind (("C-c e" . eshell)))
-    #+end_src
+** Eshell
+   #+begin_src emacs-lisp :tangle yes :noweb yes
+     (use-package eshell
+         :bind (("C-c e" . eshell)))
+   #+end_src
 
 ** VCS
 *** [[https://github.com/magit/magit][Git]]                                                                             :global_hotkeys:
