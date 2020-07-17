@@ -1753,10 +1753,18 @@ Editor settings
           :commands (org-mode)
           :hook (org-mode . ayrc/orgmode-hook)
           :bind (:map org-mode-map
-                      ("C-c M-l" . org-cliplink)
-                      ("C-c a"   . org-agenda)
-                      ("C-c h i" . helm-org-ql)
-                      ("C-c h o" . helm-org-rifle-current-buffer))
+                 ("C-c M-l" . org-cliplink)
+                 ("C-c a"   . org-agenda)
+                 ("C-c n a" . orb-note-actions)
+                 ("C-c h q" . helm-org-ql)
+                 ("C-c h i" . helm-org-rifle-current-buffer)
+
+                 ("C-c n i" . org-roam-insert)
+                 ("C-c n I" . org-roam-insert-immediate)
+                 :map org-roam-mode-map
+                 ("C-c n l" . org-roam)
+                 ("C-c n f" . org-roam-find-file)
+                 ("C-c n g" . org-roam-graph))
           :init
           <<org-bullets-usepkg>>
           <<org-present-usepkg>>
@@ -1765,28 +1773,26 @@ Editor settings
           <<helm-org-rifle-usepkg>>
           <<org-ql-usepkg>>
           <<org-super-agenda-usepkg>>
+          <<org-chef-usepkg>>
+          <<org-journal-usepkg>>
+          <<org-ref-usepkg>>
           <<org-roam-usepkg>>
-          <<org-roam-server-usepkg>>
 
-          :config
-          (setq
-           org-log-done 'time
-           org-startup-folded 'fold
-           org-src-tab-acts-natively t
-           org-tags-column -100
-
-           org-todo-keywords '((sequence "TODO" "CURRENT" "|" "DONE" "CANCELED"))
-           org-todo-keyword-faces '(("CURRENT" . "yellow")
-                                    ("CANCELED" . (:foreground "RoyalBlue3"
-                                                               :weight bold)))))
+          :custom
+          (org-log-done              'time)
+          (org-tags-column           -100)
+          (org-startup-folded        'fold)
+          (org-src-tab-acts-natively t)
+          (org-todo-keywords         '((sequence
+                                        "TODO" "CURRENT"
+                                        "|"
+                                        "DONE" "CANCELED")))
+          (org-todo-keyword-faces    '(("CURRENT"  . "yellow")
+                                       ("CANCELED" . (:foreground "RoyalBlue3"
+                                                      :weight bold)))))
     #+end_src
 
 ** TODO Support of encrypted containers
-** TODO [[https://github.com/IvanMalison/org-projectile][org-projectile]]
-** TODO [[https://github.com/alphapapa/org-sidebar][org-sidebar]]
-** TODO [[https://github.com/Chobbes/org-chef][org-chef]]
-** TODO [[https://github.com/mtekman/org-treescope.el][org-treescope]]
-** TODO [[https://github.com/bastibe/org-journal][org-journal]]
 ** [[https://github.com/emacsorphanage/org-bullets][bullets]]
    Show bullets in org-mode as UTF-8 characters
 
@@ -1798,7 +1804,7 @@ Editor settings
    #+end_src
 
 ** [[https://github.com/rlister/org-present][present]]
-   Minimalist presentation minor-mode for Emacs org-mode
+   Minimalist presentation minor-mode for Emacs org-mode.
 
    #+begin_src emacs-lisp :tangle no :noweb-ref org-present-usepkg
      (use-package org-present
@@ -1808,7 +1814,7 @@ Editor settings
    #+end_src
 
 ** [[http://github.com/rexim/org-cliplink][cliplink]]
-   Insert org-mode links from the clipboard
+   Insert org-mode links from the clipboard.
 
    #+begin_src emacs-lisp :tangle no :noweb-ref org-cliplink-usepkg
      (use-package org-cliplink
@@ -1818,6 +1824,10 @@ Editor settings
    #+end_src
 
 ** [[https://github.com/alphapapa/org-rifle][helm-org-rifle]]
+   This is my rifle. There are many like it, but this one is mine. My rifle
+   is my best friend. It is my life. I must master it as I must master my
+   life.
+
    #+begin_src emacs-lisp :tangle no :noweb-ref helm-org-rifle-usepkg
      (use-package helm-org-rifle
          :straight t
@@ -1826,6 +1836,8 @@ Editor settings
    #+end_src
 
 ** [[https://github.com/emacs-helm/helm-org][helm-org]]
+   Helm for org headlines and keywords completion.
+
    #+begin_src emacs-lisp :tangle no :noweb-ref helm-org-usepkg
      (use-package helm-org
          :straight t
@@ -1833,6 +1845,9 @@ Editor settings
    #+end_src
 
 ** [[https://github.com/alphapapa/org-ql][org-ql]]
+   This package provides a query language for Org files. It offers two
+   syntax styles: Lisp-like sexps and search engine-like keywords.
+
    #+begin_src emacs-lisp :tangle no :noweb-ref org-ql-usepkg
      (use-package org-ql
          :straight t
@@ -1843,57 +1858,100 @@ Editor settings
    #+end_src
 
 ** [[https://github.com/alphapapa/org-super-agenda][org-super-agenda]]
+   This package lets you “supercharge” your Org daily/weekly agenda. The
+   idea is to group items into sections, rather than having them all in one
+   big list.
+
    #+begin_src emacs-lisp :tangle no :noweb-ref org-super-agenda-usepkg
      (use-package org-super-agenda
          :straight t
          :after org)
    #+end_src
+
+** [[https://github.com/Chobbes/org-chef][org-chef]]
+   Package for managing recipes in org-mode. One of the main features is
+   that it can automatically extract recipes from websites like
+   allrecipes.com.
+
+   #+begin_src emacs-lisp :tangle no :noweb-ref org-chef-usepkg
+     (use-package org-chef
+         :straight t
+         :after org)
+   #+end_src
+
+** [[https://github.com/bastibe/org-journal][org-journal]]
+   Functions to maintain a simple personal diary / journal using in Emacs.
+
+   #+begin_src emacs-lisp :tangle no :noweb-ref org-journal-usepkg
+     (use-package org-journal
+         :straight t
+         :after org)
+   #+end_src
+
+** [[https://github.com/jkitchin/org-ref][org-ref]]
+   org-mode modules for citations, cross-references, bibliographies in
+   org-mode and useful bibtex tools to go with it.
+
+   #+begin_src emacs-lisp :tangle no :noweb-ref org-ref-usepkg
+     (use-package org-ref
+         :straight t
+         :after org)
+   #+end_src
+
 ** [[https://github.com/org-roam/org-roam][org-roam]]
-   #+begin_src emacs-lisp :tangle no :noweb-ref org-roam-usepkg
+    Rudimentary Roam replica with Org-mode.
+
+   #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref org-roam-usepkg
      (use-package org-roam
          :straight t
-         :defer t
-         :after org
-         :bind (:map org-mode-map
-                     (("C-c n i" . org-roam-insert))
-                     (("C-c n I" . org-roam-insert-immediate))
-                     :map org-roam-mode-map
-                     (("C-c n l" . org-roam)
-                      ("C-c n f" . org-roam-find-file)
-                      ("C-c n g" . org-roam-graph))))
+         :defines (org-roam-mode-map)
+         :functions (org-roam-mode)
+         :init
+         <<org-roam-server-usepkg>>
+         <<org-roam-bibtex-usepkg>>)
    #+end_src
 
-** [[https://github.com/org-roam/org-roam-server][org-roam-server]]
-   #+begin_src emacs-lisp :tangle no :noweb-ref org-roam-server-usepkg
-     ;; Workaround from: https://github.com/raxod502/straight.el/issues/265
-     (straight-use-package
-      `(simple-httpd :type git
-                     :host github
-                     :repo "skeeto/emacs-web-server"
-                     :local-repo "simple-httpd"))
+*** [[https://github.com/org-roam/org-roam-server][org-roam-server]]
+     A Web Application to Visualize the Org-Roam Database.
 
-     ;; Workaround until recipe appear on Melpa
-     (straight-use-package
-      `(org-roam-server :type git
-                        :host github
-                        :files ("assets" "index.html" :defaults)
-                        :repo "org-roam/org-roam-server"))
+    #+begin_src emacs-lisp :tangle no :noweb-ref org-roam-server-usepkg
+      ;; Workaround from: https://github.com/raxod502/straight.el/issues/265
+      (straight-use-package
+       `(simple-httpd :type git
+                      :host github
+                      :repo "skeeto/emacs-web-server"
+                      :local-repo "simple-httpd"))
 
-     (use-package org-roam-server
-         :straight t
-         :defer t
-         :after org
-         :config
-         (setq org-roam-server-host "127.0.0.1"
-               org-roam-server-port 8080
-               org-roam-server-export-inline-images t
-               org-roam-server-authenticate nil
-               org-roam-server-network-poll t
-               org-roam-server-network-arrows nil
-               org-roam-server-network-label-truncate t
-               org-roam-server-network-label-truncate-length 60
-               org-roam-server-network-label-wrap-length 20))
-   #+end_src
+      ;; Workaround until recipe appear on Melpa
+      (straight-use-package
+       `(org-roam-server :type git
+                         :host github
+                         :files ("assets" "index.html" :defaults)
+                         :repo "org-roam/org-roam-server"))
+
+      (use-package org-roam-server
+          :straight t
+          :custom
+          (org-roam-server-host                          "127.0.0.1")
+          (org-roam-server-port                          8080)
+          (org-roam-server-export-inline-images          t)
+          (org-roam-server-authenticate                  nil)
+          (org-roam-server-network-poll                  t)
+          (org-roam-server-network-arrows                nil)
+          (org-roam-server-network-label-truncate        t)
+          (org-roam-server-network-label-truncate-length 60)
+          (org-roam-server-network-label-wrap-length     20))
+    #+end_src
+
+*** [[https://github.com/org-roam/org-roam-bibtex][org-roam-bibtex]]
+    Connector between Org-roam, BibTeX-completion, and Org-ref.
+
+    #+begin_src emacs-lisp :tangle no :noweb-ref org-roam-bibtex-usepkg
+      (use-package org-roam-bibtex
+          :straight t
+          :commands (orb-note-actions
+                     org-roam-bibtex-mode))
+    #+end_src
 
 ** Hook
      #+begin_src emacs-lisp :tangle README-loaddefs.el
@@ -1905,11 +1963,12 @@ Editor settings
            (smartparens-mode          1)
            (semantic-mode             1)
            (yas-minor-mode            1)
-           (ayrc/setup-company '(company-yasnippet))
+           (ayrc/setup-company        '(company-yasnippet))
 
-           (org-bullets-mode)
-           (org-roam-mode)
-           (org-super-agenda-mode))
+           (org-bullets-mode          1)
+           (org-super-agenda-mode     1)
+           (org-roam-mode             1)
+           (org-roam-bibtex-mode      1))
      #+end_src
 
 * Clients
