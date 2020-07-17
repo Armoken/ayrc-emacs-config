@@ -2059,15 +2059,16 @@ Editor settings
    #+begin_src emacs-lisp :tangle yes
      (use-package dired
          :defer t
-         :config
-         (progn
-             (setq dired-recursive-deletes 'top) ;; for deleting of empty dir
-             (setq dired-recursive-deletes 'always)
-             (setq dired-recursive-copies 'always)
+         :custom
+         ;; for deleting of empty dir
+         (dired-recursive-deletes 'top)
 
-             ;; if there is a dired buffer displayed in the next window, use its
-             ;; current subdir, instead of the current subdir of this dired buffe
-             (setq dired-dwim-target t)))
+         (dired-recursive-deletes 'always)
+         (dired-recursive-copies  'always)
+
+         ;; if there is a dired buffer displayed in the next window, use its
+         ;; current subdir, instead of the current subdir of this dired buffe
+         (dired-dwim-target       t))
    #+end_src
 
 ** [[https://github.com/Silex/docker.el][Docker]]                                                                           :global_hotkeys:
