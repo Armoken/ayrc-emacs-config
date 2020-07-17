@@ -1980,6 +1980,23 @@ Editor settings
          :bind (("C-c e" . eshell)))
    #+end_src
 
+** [[http://joostkremers.github.io/ebib/][BibTex/BibLatex]]
+   #+begin_src emacs-lisp :tangle yes :noweb yes
+     (use-package ebib
+         :straight t
+         :bind (("C-c b" . ebib))
+         :init
+         <<helm-bibtex-usepkg>>)
+   #+end_src
+
+*** [[https://github.com/tmalsburg/helm-bibtex][Helm]]
+    #+begin_src emacs-lisp :tangle no :noweb-ref helm-bibtex-usepkg
+      (use-package helm-bibtex
+          :straight t
+          :after (:any ebib org tex-mode)
+          :commands (helm-bibtex))
+    #+end_src
+
 ** VCS
 *** [[https://github.com/magit/magit][Git]]                                                                             :global_hotkeys:
      #+begin_src emacs-lisp :tangle yes
