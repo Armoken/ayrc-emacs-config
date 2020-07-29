@@ -2118,11 +2118,12 @@ Editor settings
 ** Lisp dialects
    #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package lisp-mode
-         :mode (("\\.el\\'"   .  emacs-lisp-mode)
-                ("\\.rkt\\'"   . scheme-mode)
-                ("\\.ss\\'"    . scheme-mode)
-                ("\\.scm\\'"   . scheme-mode)
-                ("\\.sch\\'"   . scheme-mode))
+         :mode (("\\.el\\'"   . emacs-lisp-mode)
+                ("bookmarks$" . emacs-lisp-mode)
+                ("\\.rkt\\'"  . scheme-mode)
+                ("\\.ss\\'"   . scheme-mode)
+                ("\\.scm\\'"  . scheme-mode)
+                ("\\.sch\\'"  . scheme-mode))
          :defines (calculate-lisp-indent-last-sexp)
          :hook ((eval-expression-minibuffer-setup
                  . ayrc/eval-expression-minibuffer-setup-hook)
