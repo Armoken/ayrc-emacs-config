@@ -752,6 +752,9 @@ Editor settings
              (setq x-wait-for-event-timeout nil))
 
          :config
+         ;; To prevent "Symbol’s value as variable is void: tramp-methods"
+         (require 'tramp)
+
          (setq  helm-completion-style                 'emacs
                 helm-imenu-fuzzy-match                t
                 helm-locate-fuzzy-match               t
