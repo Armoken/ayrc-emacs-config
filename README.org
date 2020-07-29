@@ -3531,7 +3531,7 @@ Editor settings
     #+end_src
 
 ** XML
-   #+begin_src emacs-lisp :tangle no :noweb no
+   #+begin_src emacs-lisp :tangle yes :noweb no
      (use-package nxml-mode
          :commands (nxml-mode)
          :mode (("\\.xml$"   . nxml-mode)
