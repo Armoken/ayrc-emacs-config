@@ -3530,7 +3530,7 @@ Editor settings
    #+begin_src emacs-lisp :tangle no :noweb no
      (use-package nxml-mode
          :commands (nxml-mode)
-         :mode ("\\.\\(xml\\|axml\\|xsl|xaml\\)$" . nxml-mode)
+         :mode ("\\.\\(xml\\|axml\\|xsl|pom|xaml\\)$" . nxml-mode)
          :hook (nxml-mode . ayrc/nxml-hook))
    #+end_src
 
