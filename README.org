@@ -1304,9 +1304,6 @@ Editor settings
 
 ** [[http://github.com/joaotavora/yasnippet][Snippets]]
    #+begin_src emacs-lisp :tangle yes :noweb yes
-     (when (not (eq system-type 'windows-nt))
-         <<snippets-collection>>)
-
      (use-package yasnippet
          :straight t
          :after (:any company)
@@ -1314,6 +1311,9 @@ Editor settings
          :functions (yas-reload-all)
          :commands (yas-minor-mode yas-global-mode yas-reload-all)
          :diminish yas-minor-mode
+         :init
+         (when (not (eq system-type 'windows-nt))
+             <<snippets-collection>>)
          :config
          (setq yas-snippet-dirs
                (list (ayrc/expand-config-path "./personal-snippets")))
@@ -3534,13 +3534,12 @@ Editor settings
    #+begin_src emacs-lisp :tangle no :noweb no
      (use-package nxml-mode
          :commands (nxml-mode)
-         :mode (("\\.xml'"   . nxml-mode)
-                ("\\.axml'$" . nxml-mode)
-                ("\\.xsl'$"  . nxml-mode)
-                ("\\.pom'$"  . nxml-mode)
-                ("\\.xaml'$" . nxml-mode))
+         :mode (("\\.xml$"   . nxml-mode)
+                ("\\.axml$" . nxml-mode)
+                ("\\.xsl$"  . nxml-mode)
+                ("\\.pom$"  . nxml-mode)
+                ("\\.xaml$" . nxml-mode))
          :hook (nxml-mode . ayrc/nxml-hook))
-
    #+end_src
 
 *** Hook
