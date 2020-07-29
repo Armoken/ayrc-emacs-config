@@ -65,15 +65,15 @@ Editor settings
           :straight spacemacs-theme
           :demand t
           :custom-face
-          (org-link    ((nil :height 1.2)))
-          (org-level-1 ((nil :height 1.2)))
-          (org-level-2 ((nil :height 1.2)))
-          (org-level-3 ((nil :height 1.2)))
-          (org-level-4 ((nil :height 1.2)))
-          (org-level-5 ((nil :height 1.2)))
-          (org-level-6 ((nil :height 1.2)))
-          (org-level-7 ((nil :height 1.2)))
-          (org-level-8 ((nil :height 1.2)))
+          (org-link    ((nil :height 1.0)))
+          (org-level-1 ((nil :height 1.0)))
+          (org-level-2 ((nil :height 1.0)))
+          (org-level-3 ((nil :height 1.0)))
+          (org-level-4 ((nil :height 1.0)))
+          (org-level-5 ((nil :height 1.0)))
+          (org-level-6 ((nil :height 1.0)))
+          (org-level-7 ((nil :height 1.0)))
+          (org-level-8 ((nil :height 1.0)))
 
           (show-paren-match ((t (:background "purple4"))))
           (show-paren-mismatch
@@ -525,7 +525,7 @@ Editor settings
                 show-paren-style 'expression))
     #+end_src
 
-** [[https://github.com/domtronn/all-the-icons.el][Icons]]                                      :ui:
+** [[https://github.com/domtronn/all-the-icons.el][Icons]]                                                                                        :ui:
    A library for inserting Developer icons
 
    #+begin_src emacs-lisp :tangle yes
@@ -558,7 +558,7 @@ Editor settings
          (size-indication-mode nil)
 
          :config
-         (setq display-line-numbers-width-start 5))
+         (setq display-line-numbers-width-start 6))
    #+end_src
 
 ** Eldoc                                                                                        :ui:
@@ -569,7 +569,7 @@ Editor settings
          (global-eldoc-mode -1))
    #+end_src
 
-** [[https://github.com/emacs-dashboard/emacs-dashboard][Dashboard]]                            :ui:
+** [[https://github.com/emacs-dashboard/emacs-dashboard][Dashboard]]                                                                                    :ui:
    #+begin_src emacs-lisp :tangle yes
      (use-package dashboard
          :straight t
@@ -590,41 +590,43 @@ Editor settings
                                              (projects . 5))))
    #+end_src
 
-** [[https://github.com/bbatsov/projectile][Project managment]]                         :hotkeys:ui:
+** [[https://github.com/bbatsov/projectile][Project managment]]                                                                    :hotkeys:ui:
    #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package projectile
          :straight t
          :delight '(:eval (format "[P<%s>]" (projectile-project-name)))
          :bind (:map projectile-mode-map
-                     ("<f9>"    . projectile-compile-project)
-                     ("C-x p o" . projectile-switch-open-project)
-                     ("C-x p s" . projectile-switch-project)
-                     ("C-c p i" . projectile-invalidate-cache)
-                     ("C-c p z" . projectile-cache-current-file)
+                ("<f9>"    . projectile-compile-project)
+                ("C-x p o" . projectile-switch-open-project)
+                ("C-x p s" . projectile-switch-project)
+                ("C-c p i" . projectile-invalidate-cache)
+                ("C-c p z" . projectile-cache-current-file)
 
-                     ("C-c p s" . ayrc/helm-projectile-grep-or-rg)
-                     ("C-c p h" . helm-projectile)
-                     ("C-c p p" . helm-projectile-switch-project)
-                     ("C-c p f" . helm-projectile-find-file)
-                     ("C-c p F" . helm-projectile-find-file-in-known-projects)
-                     ("C-c p g" . helm-projectile-find-file-dwim)
-                     ("C-c p d" . helm-projectile-find-dir)
-                     ("C-c p e" . helm-projectile-ag)
-                     ("C-c p a" . helm-projectile-find-other-file)
-                     ("C-c p b" . helm-projectile-switch-to-buffer))
+                ("C-c p s" . ayrc/helm-projectile-grep-or-rg)
+                ("C-c p h" . helm-projectile)
+                ("C-c p p" . helm-projectile-switch-project)
+                ("C-c p f" . helm-projectile-find-file)
+                ("C-c p F" . helm-projectile-find-file-in-known-projects)
+                ("C-c p g" . helm-projectile-find-file-dwim)
+                ("C-c p d" . helm-projectile-find-dir)
+                ("C-c p e" . helm-projectile-ag)
+                ("C-c p a" . helm-projectile-find-other-file)
+                ("C-c p b" . helm-projectile-switch-to-buffer))
          :init
          <<helm-projectile>>
          (projectile-mode 1)
 
+         :custom
+         (projectile-completion-system                     'helm)
+         (projectile-switch-project-action                 'helm-projectile)
+         (projectile-enable-caching                        t)
          :config
-         (setq projectile-completion-system                     'helm
-               projectile-switch-project-action                 'helm-projectile
-               projectile-enable-caching                        t
-               projectile-project-root-files-top-down-recurring (append '("compile_commands.json" ".cquery" ".ccls" ".clangd")
+         (setq projectile-project-root-files-top-down-recurring (append '("compile_commands.json" ".cquery" ".ccls" ".clangd")
                                                                         projectile-project-root-files-top-down-recurring)
-               projectile-known-projects-file (expand-file-name
-                                               "known-projects.el"
-                                               ayrc/path-to-session-configs-dir)))
+
+               projectile-known-projects-file                   (expand-file-name
+                                                                 "known-projects.el"
+                                                                 ayrc/path-to-session-configs-dir)))
    #+end_src
 
 *** [[https://github.com/bbatsov/helm-projectile][Helm]]                            :interactive:ui:
@@ -661,25 +663,33 @@ Editor settings
        (use-package helm-rg
            :straight t
            :commands (helm-projectile-rg)
-           :bind
-           (:map helm-rg-map
-                 ("M-b" . nil)))
-
+           :bind (:map helm-rg-map
+                  ("M-b" . nil)))
      #+end_src
 
 **** [[https://github.com/emacsorphanage/helm-ag][helm-ag]]
      Helm interface to ag. Will be used for single purpose: replace symbol in project
 
-     #+BEGIN_SRC  emacs-lisp :tangle no :noweb-ref projectile-helm-ag
+     #+begin_src  emacs-lisp :tangle no :noweb-ref projectile-helm-ag
        (use-package helm-ag
            :straight t
            :commands (helm-projectile-ag)
-           :init
-           (setq
-            helm-ag-fuzzy-match t))
-#+END_SRC
+           :custom
+           (helm-ag-fuzzy-match t))
+     #+end_src
 
-** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                 :hotkeys:ui:
+*** TODO [[https://github.com/Bad-ptr/persp-mode.el][persp-mode.el]]
+    Package provides multiple named workspaces (or "perspectives") in Emacs,
+    similar to multiple desktops in window managers like Awesome and XMonad,
+    and Spaces on the Mac.
+
+    #+begin_src emacs-lisp :tangle no
+      (use-package persp-mode
+          :straight t)
+    #+end_src
+
+**** TODO [[https://github.com/Bad-ptr/persp-mode-projectile-bridge.el][Projectile bridge]]
+** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                                                              :hotkeys:ui:
    A tree plugin like NerdTree for Vim
 
    #+begin_src emacs-lisp :tangle yes
@@ -691,7 +701,7 @@ Editor settings
          (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
    #+end_src
 
-** [[https://emacs-helm.github.io/helm/][Helm]]                                         :hotkeys:ui:
+** [[https://emacs-helm.github.io/helm/][Helm]]                                                                                 :hotkeys:ui:
    Incremental and narrowing framework
 
    #+begin_src emacs-lisp :tangle yes :noweb yes
@@ -737,7 +747,7 @@ Editor settings
          (helm-mode 1)
 
          (add-to-list 'completion-styles `,(if (version< emacs-version "27") 'helm-flex 'flex) t)
-         
+
          (when (not (eq system-type 'windows-nt))
              (setq x-wait-for-event-timeout nil))
 
@@ -778,7 +788,7 @@ Editor settings
 
    #+end_src
 
-** [[http://www.dr-qubit.org/undo-tree/undo-tree.el][Undo tree]]                        :hotkeys:ui:
+** [[http://www.dr-qubit.org/undo-tree/undo-tree.el][Undo tree]]                                                                            :hotkeys:ui:
    Treat undo history as a tree
 
    #+begin_src emacs-lisp :tangle yes
@@ -792,7 +802,7 @@ Editor settings
          (global-undo-tree-mode))
    #+end_src
 
-** [[https://github.com/syohex/emacs-anzu][Display in the modeline search information]] :hotkeys:ui:
+** [[https://github.com/syohex/emacs-anzu][Display in the modeline search information]]                                           :hotkeys:ui:
    Show number of matches in mode-line while searching
 
    #+begin_src emacs-lisp :tangle yes
@@ -809,7 +819,7 @@ Editor settings
                 ([remap isearch-query-replace-regexp] . #'anzu-isearch-query-replace-regexp)))
    #+end_src
 
-** [[https://github.com/abo-abo/hydra][Hydra]]                                          :hotkeys:ui:
+** [[https://github.com/abo-abo/hydra][Hydra]]                                                                                :hotkeys:ui:
    Make bindings that stick around
 
    #+begin_src emacs-lisp :tangle yes
@@ -899,7 +909,7 @@ Editor settings
     (global-set-key (kbd "<f5>") (lambda () (interactive) (revert-buffer)))
   #+end_src
 
-** [[https://github.com/abo-abo/avy][Jump to things in Emacs tree-style]]                  :hotkeys:
+** [[https://github.com/abo-abo/avy][Jump to things in Emacs tree-style]]                                                      :hotkeys:
    Jump to arbitrary positions in visible text and select text quickly
 
    #+begin_src emacs-lisp :tangle yes
@@ -919,7 +929,7 @@ Editor settings
          (setq avy-case-fold-search nil))
    #+end_src
 
-** [[https://github.com/magnars/expand-region.el][Expand region]]                          :hotkeys:
+** [[https://github.com/magnars/expand-region.el][Expand region]]                                                                           :hotkeys:
    #+begin_src emacs-lisp :tangle yes
      (use-package expand-region
        :straight t
@@ -928,7 +938,7 @@ Editor settings
        :bind ("C-=" . er/expand-region))
    #+end_src
 
-** [[https://github.com/ieure/scratch-el][Scratch buffer]]                                 :hotkeys:
+** [[https://github.com/ieure/scratch-el][Scratch buffer]]                                                                          :hotkeys:
    #+begin_src emacs-lisp :tangle yes
      (use-package scratch
          :straight t
@@ -938,9 +948,8 @@ Editor settings
                 ("C-c s l" . (lambda () (interactive) (scratch #'emacs-lisp-mode)))))
    #+end_src
 
-** TODO [[https://github.com/nex3/perspective-el][perspective-el]]
+** TODO Support of encrypted containers
 ** TODO [[https://github.com/manateelazycat/emacs-application-framework][Emacs Application Framework]]
-
 ** Keep the same hotkeys in other keyboard layout                                          :hotkeys:
    #+begin_src emacs-lisp :tangle yes
      (use-package reverse-im
@@ -966,7 +975,7 @@ Editor settings
    #+end_src
 
 * Non global minor modes
-** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]         :ui:
+** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]                                                                        :ui:
    Minor modes for highlighting indentation
 
    #+begin_src emacs-lisp :tangle yes
@@ -980,7 +989,7 @@ Editor settings
          (highlight-indentation-current-column (("#c3b3b3"))))
    #+end_src
 
-** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                 :ui:
+** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                                                                      :ui:
    This package provides the `adaptive-wrap-prefix-mode' minor mode which sets
    the wrap-prefix property on the fly so that single-long-line paragraphs get
    word-wrapped in a way similar to what you'd get with M-q using
@@ -998,7 +1007,7 @@ Editor settings
              (setq-default adaptive-wrap-extra-indent 2)))
    #+end_src
 
-** [[https://github.com/nflath/hungry-delete][Hungry delete]]                              :hotkeys:
+** [[https://github.com/nflath/hungry-delete][Hungry delete]]                                                                           :hotkeys:
    #+begin_src emacs-lisp :tangle yes
      (use-package hungry-delete
          :straight t
@@ -3658,7 +3667,7 @@ Editor settings
                 (makefile-mode          . ayrc/make-hook)))
    #+end_src
 
-*** [[https://github.com/nverno/company-makefile][Company]]                                                                               :disabled:
+*** [[https://github.com/nverno/company-makefile][Company]]                               :disabled:
     Package is not ready yet.
 
     #+begin_src emacs-lisp :tangle no :noweb-ref make-company-completion
