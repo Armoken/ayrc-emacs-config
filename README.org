@@ -1801,7 +1801,26 @@ Editor settings
                                                       :weight bold)))))
     #+end_src
 
-** TODO Support of encrypted containers
+** .dir-locals.el for Org root dir
+   #+begin_src emacs-lisp :tangle no
+     ((nil
+       . ((eval
+           . (let* ((notes-dir (let ((d (dir-locals-find-file ".")))
+                                   (if (stringp d) d (car d))))
+                    (roam-dir (concat notes-dir "Zettelkasten")))
+                 (make-directory roam-dir t)
+
+                 (setq org-roam-directory   (concat roam-dir "/Files")
+                       org-roam-find-index  (concat roam-dir "/Index.org")
+                       org-roam-db-location roam-dir)
+
+                 (add-hook 'org-mode-hook #'org-roam-mode        nil t)
+                 (add-hook 'org-mode-hook #'org-roam-bibtex-mode nil t)
+
+
+                 (setq org-agenda-files (list (concat notes-dir "ToDo.org"))))))))
+   #+end_src
+
 ** [[https://github.com/emacsorphanage/org-bullets][bullets]]
    Show bullets in org-mode as UTF-8 characters
 
@@ -1917,7 +1936,10 @@ Editor settings
          :functions (org-roam-mode)
          :init
          <<org-roam-server-usepkg>>
-         <<org-roam-bibtex-usepkg>>)
+         <<org-roam-bibtex-usepkg>>
+         :custom
+         (org-roam-completion-system 'helm)
+         (org-roam-tag-sources       '(prop last-directory)))
    #+end_src
 
 *** [[https://github.com/org-roam/org-roam-server][org-roam-server]]
@@ -1975,9 +1997,7 @@ Editor settings
            (ayrc/setup-company        '(company-yasnippet))
 
            (org-bullets-mode          1)
-           (org-super-agenda-mode     1)
-           (org-roam-mode             1)
-           (org-roam-bibtex-mode      1))
+           (org-super-agenda-mode     1))
      #+end_src
 
 * Clients
@@ -2349,7 +2369,7 @@ Editor settings
 
 *** CC configuration
     #+begin_src emacs-lisp :tangle README-loaddefs.el
-        ;;;###autoload
+      ;;;###autoload
       (defun ayrc/cc-hook ()
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
