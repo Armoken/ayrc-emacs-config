@@ -2065,9 +2065,10 @@ Editor settings
            :straight t)
      #+end_src
 ** Dired                                                                            :global_hotkeys:
-   #+begin_src emacs-lisp :tangle yes
+   #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package dired
          :defer t
+         :hook (dired-mode . ayrc/dired-hook)
          :custom
          ;; for deleting of empty dir
          (dired-recursive-deletes 'top)
@@ -2077,8 +2078,54 @@ Editor settings
 
          ;; if there is a dired buffer displayed in the next window, use its
          ;; current subdir, instead of the current subdir of this dired buffe
-         (dired-dwim-target       t))
+         (dired-dwim-target       t)
+         (dired-k-style           'git)
+         :init
+         <<all-the-icons-dired-usepkg>>
+         <<dired-k-usepkg>>
+
+         :config
+         (add-hook 'dired-initial-position-hook 'dired-k))
    #+end_src
+
+*** [[https://github.com/jtbm37/all-the-icons-dired][All the Icons]]
+    Adds dired support to all-the-icons.
+
+    #+NAME: all-the-icons-dired-usepkg
+    #+begin_src emacs-lisp :tangle no
+      (use-package all-the-icons-dired
+          :after dired
+          :straight t
+          :commands (all-the-icons-dired-mode))
+    #+end_src
+
+*** [[https://github.com/emacsorphanage/dired-k][Dired-K]]
+    Highlighting dired buffer like k (ZSH plugin)
+
+    #+begin_src emacs-lisp :tangle no :noweb-ref dired-k-usepkg
+      (use-package dired-k
+          :after dired
+          :straight t
+          :commands (dired-k))
+    #+end_src
+
+*** Kill all buffers                                                                   :interactive:
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
+      ;;;###autoload
+      (defun ayrc/kill-dired-buffers ()
+          (interactive)
+          (mapc (lambda (buffer)
+                    (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
+                        (kill-buffer buffer)))
+                (buffer-list)))
+    #+end_src
+
+*** Hook
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
+      ;;;###autoload
+      (defun ayrc/dired-hook ()
+          (all-the-icons-dired-mode))
+    #+end_src
 
 ** [[https://github.com/Silex/docker.el][Docker]]                                                                           :global_hotkeys:
    #+begin_src emacs-lisp :tangle yes
