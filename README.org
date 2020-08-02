@@ -3763,6 +3763,11 @@ Editor settings
 
 ** Bitbake
    #+begin_src emacs-lisp :tangle yes :noweb no
+     (straight-use-package
+      `(mmm-mode :type git
+                 :host github
+                 :repo "purcell/mmm-mode"))
+
      (use-package bitbake
          :straight t
          :mode (("\\.bb$" . bitbake-mode)
