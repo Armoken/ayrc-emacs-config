@@ -38,6 +38,7 @@
         straight-check-for-modifications        '()
         straight-base-dir                       ayrc/path-to-non-config-files-dir
         straight-profiles                       '((nil . "../../../freezed-pkgs-versions.el"))
+        straight-built-in-pseudo-packages       '(emacs nadvice python)
 
         ;; Turn off warnings
         ad-redefinition-action                  'accept))
