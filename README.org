@@ -577,17 +577,18 @@ Editor settings
          :init
          (dashboard-setup-startup-hook)
 
-         :config
-         (setq initial-buffer-choice       (lambda ()  (get-buffer "*dashboard*"))
-               dashboard-set-footer        nil
-               dashboard-center-content    t
-               dashboard-show-shortcuts    t
-               dashboard-set-file-icons    t
-               dashboard-set-heading-icons t
-               dashboard-banner-logo-title "Welcome to Emacs"
-               dashboard-items             '((recents  . 5)
-                                             (bookmarks . 5)
-                                             (projects . 5))))
+         :custom
+         (initial-buffer-choice       (lambda ()  (get-buffer "*dashboard*")))
+         (dashboard-set-footer        nil)
+         (dashboard-startup-banner    nil)
+         (dashboard-center-content    t)
+         (dashboard-show-shortcuts    t)
+         (dashboard-set-file-icons    t)
+         (dashboard-set-heading-icons t)
+         (dashboard-banner-logo-title "Welcome to Emacs")
+         (dashboard-items             '((recents  . 5)
+                                        (bookmarks . 5)
+                                        (projects . 5))))
    #+end_src
 
 ** [[https://github.com/bbatsov/projectile][Project managment]]                                                                    :hotkeys:ui:
