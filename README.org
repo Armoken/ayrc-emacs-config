@@ -690,17 +690,45 @@ Editor settings
     #+end_src
 
 **** TODO [[https://github.com/Bad-ptr/persp-mode-projectile-bridge.el][Projectile bridge]]
-** [[https://github.com/jaypei/emacs-neotree][NeoTree]]                                                                              :hotkeys:ui:
-   A tree plugin like NerdTree for Vim
+** [[https://github.com/Alexander-Miller/treemacs][treemacs]]                                                                             :hotkeys:ui:
+   Treemacs is a file and project explorer similar to NeoTree or vim’s
+   NerdTree, but largely inspired by the Project Explorer in Eclipse. It
+   shows the file system outlines of your projects in a simple tree layout
+   allowing quick navigation and exploration, while also possessing basic
+   file management utilities.
 
-   #+begin_src emacs-lisp :tangle yes
-     (use-package neotree
+   #+begin_src emacs-lisp :tangle no :noweb yes
+     (use-package treemacs
          :straight t
-         :bind ("<f1>" . neotree-toggle)
+         :bind ("<f1>" . #'treemacs)
+         :init
+         <<treemacs-all-the-icons>>
+         <<treemacs-projectile-usepkg>>
+
          :config
-         (setq neo-window-width 40)
-         (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
+         (setq treemacs-width 40)
+
+         (require 'treemacs-all-the-icons)
+         (treemacs-load-theme "all-the-icons")
+
+         (treemacs-follow-mode 1))
    #+end_src
+
+*** Projectile
+    #+NAME: treemacs-projectile-usepkg
+    #+begin_src emacs-lisp :tangle no
+      (use-package treemacs-projectile
+          :after treemacs projectile
+          :straight t)
+    #+end_src
+
+*** All The Icons
+    #+NAME: treemacs-all-the-icons-usepkgp
+    #+begin_src emacs-lisp :tangle no
+      (use-package treemacs-all-the-icons
+          :after treemacs
+          :straight t)
+    #+end_src
 
 ** [[https://emacs-helm.github.io/helm/][Helm]]                                                                                 :hotkeys:ui:
    Incremental and narrowing framework
@@ -951,6 +979,9 @@ Editor settings
          :bind (("C-c s c" . #'scratch)
                 ("C-c s l" . (lambda () (interactive) (scratch #'emacs-lisp-mode)))))
    #+end_src
+
+** TODO [[https://github.com/manateelazycat/sdcv][sdcv]]
+   Emacs interface for sdcv (Stardict console version)
 
 ** TODO Support of encrypted containers
 ** TODO [[https://github.com/manateelazycat/emacs-application-framework][Emacs Application Framework]]
