@@ -1470,30 +1470,6 @@ Editor settings
 ** [[https://github.com/Microsoft/language-server-protocol/][LSP]]
    A common protocol for language servers
 
-*** [[https://github.com/joaotavora/eglot][Eglot]]
-    A client for Language Server Protocol servers
-
-    #+begin_src emacs-lisp :tangle yes :noweb yes
-      (use-package eglot
-          :straight t
-          :after (:any company)
-          :diminish eglot-mode
-          :commands (eglot-mode eglot-ensure ayrc/eglot-hook)
-          :hook (eglot-managed-mode . ayrc/eglot-hook))
-    #+end_src
-
-**** Hook
-     #+begin_src emacs-lisp :tangle README-loaddefs.el
-       (defun ayrc/eglot-hook ()
-           (ayrc/local-set-keys '(("C-c r"   . eglot-rename)
-                                  ("C-c C-r" . eglot-format)
-                                  ("M-."     . eglot-find-implementation)))
-           (ayrc/setup-xref-hotkeys)
-
-           (add-to-list 'eglot-stay-out-of 'company)
-           (ayrc/setup-company '(company-capf :with company-yasnippet)))
-     #+end_src
-
 *** [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
     Emacs client/library for the Language Server Protocol
 
