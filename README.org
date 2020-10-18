@@ -9,6 +9,36 @@ Editor settings
    As Admin, run secpol.msc and grant your account <<Create Symbolic Link>>
    permissions.
 
+* Information for config developers
+** Default minor-modes list for almost all major-modes
+   text-mode-hook and prog-mode-hook hooks are flexible enough due to some
+   modes which can break work of some modes listed here.
+
+   #+begin_src emacs-lisp
+     (display-line-numbers-mode  1)
+     (highlight-indentation-mode 1)
+     (visual-line-mode           1)
+     (ws-butler-mode             1)
+     (hs-minor-mode              1)
+     (smart-shift-mode           1)
+     (smartparens-mode           1)
+     (semantic-mode              1)
+     (abbrev-mode                1)
+     (yas-minor-mode             1)
+     (hl-todo-mode               1)
+
+     (ayrc/setup-company)
+   #+end_src
+
+   If you found that some mode break editor functionality you must disable
+   it and put comment about this breakage.
+
+** Useful links
+*** [[https://github.com/alphapapa/emacs-package-dev-handbook][An Emacs package development handbook]]
+    So this is intended to be a place to collect and organize information
+    related to Emacs package development. Built with Emacs, by Emacs package
+    developers, for Emacs package developers.
+
 * Global configuration
 ** Lexical binding
    #+begin_src emacs-lisp :tangle yes
