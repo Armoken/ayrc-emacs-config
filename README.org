@@ -1676,6 +1676,21 @@ Editor settings
      (global-set-key (kbd "C-c o") #'ayrc/open-with)
    #+end_src
 
+** Indent defun                                                                :hotkeys:interactive:
+   #+begin_src emacs-lisp :tangle README-loaddefs.el
+     ;;;###autoload
+     (defun ayrc/indent-defun ()
+         "Indent the current defun."
+         (interactive)
+         (save-excursion
+             (mark-defun)
+             (indent-region (region-beginning) (region-end))))
+   #+end_src
+
+   #+begin_src emacs-lisp :tangle yes
+     (global-set-key (kbd "C-M-z") #'ayrc/indent-defun)
+   #+end_src
+
 ** Reload configuration                                                                :interactive:
    #+begin_src emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
