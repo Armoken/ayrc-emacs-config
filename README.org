@@ -1010,7 +1010,8 @@ Editor settings
          :after (:any company)
          :defer t
          :bind (("C-c s c" . #'scratch)
-                ("C-c s l" . (lambda () (interactive) (scratch #'emacs-lisp-mode)))))
+                ("C-c s l" . (lambda () (interactive) (scratch #'emacs-lisp-mode)))
+                ("C-c s t" . (lambda () (interactive) (scratch #'text-mode)))))
    #+end_src
 
 ** TODO [[https://github.com/manateelazycat/sdcv][sdcv]]
