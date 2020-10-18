@@ -3388,6 +3388,33 @@ Editor settings
           (ayrc/setup-company '(company-shell company-yasnippet)))
     #+end_src
 
+** TODO [[https://github.com/jschaf/powershell.el][Powershell]]
+** Bat
+   #+begin_src emacs-lisp :tangle yes
+     (use-package bat-mode
+         :mode ("\.bat$" . bat-mode)
+         :hook (bat-mode . ayrc/bat-hook))
+   #+end_src
+
+*** Hook
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
+      ;;;###autoload
+      (defun ayrc/bat-hook ()
+          (display-line-numbers-mode  1)
+          (highlight-indentation-mode 1)
+          (visual-line-mode           1)
+          (ws-butler-mode             1)
+          (hs-minor-mode              1)
+          (abbrev-mode                1)
+          (semantic-mode              1)
+          (yas-minor-mode             1)
+          (smartparens-mode           1)
+          (smart-shift-mode           1)
+          (hl-todo-mode               1)
+
+          (ayrc/setup-company))
+    #+end_src
+
 ** Virtualization
 *** Containers
 **** [[https://github.com/spotify/dockerfile-mode][Docker]]
