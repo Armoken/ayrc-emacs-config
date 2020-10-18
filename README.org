@@ -374,7 +374,9 @@ Editor settings
      (use-package abbrev
          :defer t
          :commands (abbrev-mode)
-         :diminish abbrev-mode)
+         :diminish abbrev-mode
+         :custom
+         (save-abbrevs 'silently))
    #+end_src
 
 ** Visual line mode
