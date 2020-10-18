@@ -2150,6 +2150,12 @@ Editor settings
          <<dired-k-usepkg>>
 
          :config
+         ;; Enable extra Dired functionality
+         (require 'dired-x)
+
+         ;; Auto-refresh dired on file change
+         (add-hook 'dired-mode-hook 'auto-revert-mode)
+
          (add-hook 'dired-initial-position-hook 'dired-k))
    #+end_src
 
