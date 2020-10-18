@@ -3296,6 +3296,45 @@ Editor settings
               (add-hook 'haskell-mode-hook 'haskell-hook)))
     #+end_src
 
+** Perl
+   #+begin_src emacs-lisp :tangle yes
+     (use-package cperl-mode
+         :mode ("\.pl$" . cperl-mode)
+         :hook (cperl-mode . ayrc/perl-hook)
+         :custom
+         (cperl-indent-level                         4)
+         (cperl-continued-statement-offset           4)
+         (cperl-close-paren-offset                   -4)
+         (cperl-label-offset                         -4)
+         (cperl-comment-column                       40)
+         (cperl-highlight-variables-indiscriminately t)
+         (cperl-indent-parens-as-block               t)
+         (cperl-tab-always-indent                    nil)
+         (cperl-font-lock                            t)
+
+         :config
+         (cperl-set-style "PerlStyle"))
+   #+end_src
+
+*** Hook
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
+      ;;;###autoload
+      (defun ayrc/perl-hook ()
+          (display-line-numbers-mode  1)
+          (highlight-indentation-mode 1)
+          (visual-line-mode           1)
+          (ws-butler-mode             1)
+          (hs-minor-mode              1)
+          (abbrev-mode                1)
+          (semantic-mode              1)
+          (yas-minor-mode             1)
+          (smartparens-mode           1)
+          (smart-shift-mode           1)
+          (hl-todo-mode               1)
+
+          (ayrc/setup-company))
+    #+end_src
+
 ** VHDL
    VHDL mode for Emacs
 
