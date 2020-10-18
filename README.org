@@ -402,7 +402,7 @@ Editor settings
 ** Indents
    #+begin_src emacs-lisp :tangle yes
      (setq-default tab-width 4)
-     (setq-default pc-basic-offset 4)
+     (setq-default c-basic-offset 4)
      (setq-default standart-indent 4)
      (setq-default indent-tabs-mode nil)
    #+end_src
@@ -1013,6 +1013,8 @@ Editor settings
                 ("C-c s l" . (lambda () (interactive) (scratch #'emacs-lisp-mode)))
                 ("C-c s t" . (lambda () (interactive) (scratch #'text-mode)))))
    #+end_src
+
+** TODO uniquify.el
 
 ** TODO [[https://github.com/manateelazycat/sdcv][sdcv]]
    Emacs interface for sdcv (Stardict console version)
@@ -2106,6 +2108,7 @@ Editor settings
                      org-roam-bibtex-mode))
     #+end_src
 
+** TODO [[https://github.com/Kungsgeten/org-brain][org-brain]]
 ** Hook
      #+begin_src emacs-lisp :tangle README-loaddefs.el
        ;;;###autoload
@@ -2902,7 +2905,7 @@ Editor settings
                 ("\\.py\\'"  . python-mode))
          :hook (python-mode . ayrc/python-hook)
          :bind (:map python-mode-map
-                     ("C-c i" . run-python))
+                ("C-c i" . run-python))
          :init
          <<venv-support-packages>>
          <<sphinx-doc-usepkg>>
