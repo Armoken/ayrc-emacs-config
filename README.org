@@ -22,7 +22,6 @@ Editor settings
      (hs-minor-mode              1)
      (smart-shift-mode           1)
      (smartparens-mode           1)
-     (semantic-mode              1)
      (abbrev-mode                1)
      (yas-minor-mode             1)
      (hl-todo-mode               1)
@@ -783,7 +782,6 @@ Editor settings
           ("C-c h /"   . helm-find)
           ("C-c h h"   . helm-info)
           ("C-c h o"   . helm-occur)
-          ("C-c h c"   . helm-semantic)
           ("C-c h i"   . helm-imenu)
           ("C-c h s"   . helm-rg)
 
@@ -1498,16 +1496,6 @@ Editor settings
            (company-quickhelp-local-mode))
      #+end_src
 
-*** Semantic
-    Required for helm-semantic
-
-    #+begin_src emacs-lisp :tangle yes
-      (use-package semantic
-          :after (:any company)
-          :diminish semantic-mode
-          :commands (semantic-mode))
-    #+end_src
-
 ** [[https://github.com/leoliu/ggtags][GTags]]
    Emacs frontend to GNU Global source code tagging system
 
@@ -2133,7 +2121,6 @@ Editor settings
            (visual-line-mode          1)
            (ws-butler-mode            1)
            (smartparens-mode          1)
-           (semantic-mode             1)
            (yas-minor-mode            1)
            (ayrc/setup-company        '(company-yasnippet))
 
@@ -2484,7 +2471,6 @@ Editor settings
        (defun ayrc/emacs-lisp-hook ()
            (ayrc/lisp-hook)
 
-           (semantic-mode 1)
            (hs-minor-mode t)
            (elisp-slime-nav-mode)
 
@@ -2494,7 +2480,6 @@ Editor settings
        (defun ayrc/eval-expression-minibuffer-setup-hook ()
            (ayrc/lisp-hook)
 
-           (semantic-mode 1)
            (elisp-slime-nav-mode)
 
            (ayrc/setup-company '(company-elisp :with company-yasnippet)))
@@ -2572,7 +2557,6 @@ Editor settings
           (smart-shift-mode          1)
           (smartparens-mode          1)
           (abbrev-mode               1)
-          (semantic-mode             1)
           (yas-minor-mode            1)
           (hs-minor-mode             1)
           (hl-todo-mode              1)
@@ -3136,7 +3120,6 @@ Editor settings
           (ws-butler-mode             1)
           (hs-minor-mode              1)
           (abbrev-mode                1)
-          (semantic-mode              1)
           (yas-minor-mode             1)
           (smartparens-mode           1)
           (smart-shift-mode           1)
@@ -3166,7 +3149,6 @@ Editor settings
           (visual-line-mode          1)
           (ws-butler-mode            1)
           (smartparens-mode          1)
-          (semantic-mode             1)
           (yas-minor-mode            1)
           (hl-todo-mode              1))
     #+end_src
@@ -3302,7 +3284,6 @@ Editor settings
             (smart-shift-mode          1)
             (smartparens-mode          1)
             (abbrev-mode               1)
-            (semantic-mode             1)
             (yas-minor-mode            1)
             (hl-todo-mode              1)
 
@@ -3385,7 +3366,6 @@ Editor settings
                               ("C-c R" . hindent-reformat-buffer)))
 
               (defun haskell-hook ()
-                  (semantic-mode)
                   (flycheck-mode)
                   (smart-shift-mode          1)
                   (abbrev-mode               1)
@@ -3428,7 +3408,6 @@ Editor settings
           (ws-butler-mode             1)
           (hs-minor-mode              1)
           (abbrev-mode                1)
-          (semantic-mode              1)
           (yas-minor-mode             1)
           (smartparens-mode           1)
           (smart-shift-mode           1)
@@ -3479,7 +3458,6 @@ Editor settings
           (ws-butler-mode            1)
           (smart-shift-mode          1)
           (smartparens-mode          1)
-          (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
           (hl-todo-mode              1)
@@ -3508,7 +3486,6 @@ Editor settings
           (ws-butler-mode             1)
           (hs-minor-mode              1)
           (abbrev-mode                1)
-          (semantic-mode              1)
           (yas-minor-mode             1)
           (smartparens-mode           1)
           (smart-shift-mode           1)
@@ -3537,7 +3514,6 @@ Editor settings
             (ws-butler-mode            1)
             (smart-shift-mode          1)
             (smartparens-mode          1)
-            (semantic-mode             1)
             (abbrev-mode               1)
             (yas-minor-mode            1)
             (hl-todo-mode              1)
@@ -3572,7 +3548,6 @@ Editor settings
           (ws-butler-mode            1)
           (smart-shift-mode          1)
           (smartparens-mode          1)
-          (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
           (hl-todo-mode              1)
@@ -3609,7 +3584,6 @@ Editor settings
           (ws-butler-mode            1)
           (smart-shift-mode          1)
           (smartparens-mode          1)
-          (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
           (hl-todo-mode              1)
@@ -3636,7 +3610,6 @@ Editor settings
           (ws-butler-mode            1)
           (smart-shift-mode          1)
           (smartparens-mode          1)
-          (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
           (hl-todo-mode              1)
@@ -3672,7 +3645,6 @@ Editor settings
           (ws-butler-mode            1)
           (smart-shift-mode          1)
           (smartparens-mode          1)
-          (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
           (hl-todo-mode              1)
@@ -3701,7 +3673,6 @@ Editor settings
           (ws-butler-mode            1)
           (smart-shift-mode          1)
           (smartparens-mode          1)
-          (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
           (hl-todo-mode              1)
@@ -3727,7 +3698,6 @@ Editor settings
           (ws-butler-mode            1)
           (smart-shift-mode          1)
           (smartparens-mode          1)
-          (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
           (hl-todo-mode              1)
@@ -3762,7 +3732,6 @@ Editor settings
           (ws-butler-mode             1)
           (smart-shift-mode           1)
           (smartparens-mode           1)
-          (semantic-mode              1)
           (abbrev-mode                1)
           (yas-minor-mode             1)
           (highlight-indentation-mode 1)
@@ -3808,7 +3777,6 @@ Editor settings
           (ws-butler-mode            1)
           (smart-shift-mode          1)
           (smartparens-mode          1)
-          (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
           (hl-todo-mode              1)
@@ -3836,7 +3804,6 @@ Editor settings
           (ws-butler-mode            1)
           (smart-shift-mode          1)
           (smartparens-mode          1)
-          (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
           (hl-todo-mode              1)
@@ -3861,7 +3828,6 @@ Editor settings
           (ws-butler-mode            1)
           (smart-shift-mode          1)
           (smartparens-mode          1)
-          (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
           (hl-todo-mode              1)
@@ -3930,7 +3896,6 @@ Editor settings
           (ws-butler-mode            1)
           (smart-shift-mode          1)
           (smartparens-mode          1)
-          (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
           (hl-todo-mode              1)
@@ -3973,7 +3938,6 @@ Editor settings
           (smart-shift-mode          1)
           (smartparens-mode          1)
           (abbrev-mode               1)
-          (semantic-mode             1)
           (yas-minor-mode            1)
           (hl-todo-mode              1)
 
@@ -4027,7 +3991,6 @@ Editor settings
           (ws-butler-mode            1)
           (smart-shift-mode          1)
           (smartparens-mode          1)
-          (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
           ;; Conflicts with cmake-font-lock mode
@@ -4066,7 +4029,6 @@ Editor settings
           (ws-butler-mode            1)
           (smart-shift-mode          1)
           (smartparens-mode          1)
-          (semantic-mode             1)
           (abbrev-mode               1)
           (yas-minor-mode            1)
           (hl-todo-mode              1)
