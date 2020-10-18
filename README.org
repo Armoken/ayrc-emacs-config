@@ -1003,6 +1003,21 @@ Editor settings
        :bind ("C-=" . er/expand-region))
    #+end_src
 
+** [[https://github.com/cofi/evil-numbers][evil-numbers]]                                                                            :hotkeys:
+   Increment and decrement numbers in Emacs.
+
+   #+begin_src emacs-lisp :tangle yes
+     (use-package evil-numbers
+         :straight t
+         :after (:any company)
+         :bind (("C-c +" . #'evil-numbers/inc-at-pt)
+                ("C-c -" . #'evil-numbers/dec-at-pt)
+
+                :map org-mode-map
+                ("C-c +" . #'evil-numbers/inc-at-pt)
+                ("C-c -" . #'evil-numbers/dec-at-pt)))
+   #+end_src
+
 ** [[https://github.com/ieure/scratch-el][Scratch buffer]]                                                                          :hotkeys:
    #+begin_src emacs-lisp :tangle yes
      (use-package scratch
@@ -1046,7 +1061,7 @@ Editor settings
    #+end_src
 
 * Non global minor modes
-** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]                                                                        :ui:
+** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]         :ui:
    Minor modes for highlighting indentation
 
    #+begin_src emacs-lisp :tangle yes
@@ -1060,7 +1075,7 @@ Editor settings
          (highlight-indentation-current-column (("#c3b3b3"))))
    #+end_src
 
-** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                                                                      :ui:
+** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                 :ui:
    This package provides the `adaptive-wrap-prefix-mode' minor mode which sets
    the wrap-prefix property on the fly so that single-long-line paragraphs get
    word-wrapped in a way similar to what you'd get with M-q using
@@ -1078,7 +1093,7 @@ Editor settings
              (setq-default adaptive-wrap-extra-indent 2)))
    #+end_src
 
-** [[https://github.com/nflath/hungry-delete][Hungry delete]]                                                                           :hotkeys:
+** [[https://github.com/nflath/hungry-delete][Hungry delete]]                              :hotkeys:
    #+begin_src emacs-lisp :tangle yes
      (use-package hungry-delete
          :straight t
@@ -1886,18 +1901,19 @@ Editor settings
           :commands (org-mode)
           :hook (org-mode . ayrc/orgmode-hook)
           :bind (:map org-mode-map
-                 ("C-c M-l" . org-cliplink)
-                 ("C-c a"   . org-agenda)
-                 ("C-c n a" . orb-note-actions)
-                 ("C-c h q" . helm-org-ql)
-                 ("C-c h i" . helm-org-rifle-current-buffer)
+                 ("C-c M-l" . #'org-cliplink)
+                 ("C-c a"   . #'org-agenda)
+                 ("C-c n a" . #'orb-note-actions)
+                 ("C-c h q" . #'helm-org-ql)
+                 ("C-c h i" . #'helm-org-rifle-current-buffer)
 
-                 ("C-c n i" . org-roam-insert)
-                 ("C-c n I" . org-roam-insert-immediate)
+                 ("C-c n i" . #'org-roam-insert)
+                 ("C-c n I" . #'org-roam-insert-immediate)
+
                  :map org-roam-mode-map
-                 ("C-c n l" . org-roam)
-                 ("C-c n f" . org-roam-find-file)
-                 ("C-c n g" . org-roam-graph))
+                 ("C-c n l" . #'org-roam)
+                 ("C-c n f" . #'org-roam-find-file)
+                 ("C-c n g" . #'org-roam-graph))
           :init
           <<org-bullets-usepkg>>
           <<org-present-usepkg>>
@@ -2152,7 +2168,7 @@ Editor settings
     #+end_src
 
 ** VCS
-*** [[https://github.com/magit/magit][Git]]                                                                             :global_hotkeys:
+*** [[https://github.com/magit/magit][Git]]                                         :global_hotkeys:
      #+begin_src emacs-lisp :tangle yes
        (use-package magit
            :straight t
@@ -2278,7 +2294,7 @@ Editor settings
           (all-the-icons-dired-mode))
     #+end_src
 
-** [[https://github.com/Silex/docker.el][Docker]]                                                                           :global_hotkeys:
+** [[https://github.com/Silex/docker.el][Docker]]                                   :global_hotkeys:
    #+begin_src emacs-lisp :tangle yes
      (use-package docker
          :straight t
