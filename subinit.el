@@ -34,7 +34,9 @@
         straight-cache-autoloads                t
         straight-enable-use-package-integration t
         straight-use-package-by-default         nil
-        straight-check-for-modifications        '(find-at-startup)
+        straight-check-for-modifications        (if (executable-find "watchexec")
+                                                    '(watch-files)
+                                                    '(find-at-startup))
         straight-base-dir                       ayrc/path-to-non-config-files-dir
         straight-profiles                       '((nil . "../../../freezed-pkgs-versions.el"))
         straight-built-in-pseudo-packages       '(emacs nadvice python)
