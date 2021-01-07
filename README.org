@@ -2927,7 +2927,7 @@ Editor settings
      #+NAME: python-system-prerequisites
      #+CAPTION: System prerequisites for python packages
      - [[https://www.python.org/][Python]] :: The Python programming language
-     - [[https://github.com/pyenv/pyenv][Pyenv]] :: [[https://github.com/pyenv/pyenv-installer][pyenv-installer]] and take a look at [[https://github.com/pyenv/pyenv/wiki/Common-build-problems][common build problems]]
+     - [[https://github.com/pyenv/pyenv][Pyenv]]  :: [[https://github.com/pyenv/pyenv-installer][pyenv-installer]] and take a look at [[https://github.com/pyenv/pyenv/wiki/Common-build-problems][common build problems]]
      - [[https://github.com/pypa/pipenv][Pipenv]] :: Python Development Workflow for Humans
      - [[https://python-poetry.org/][Poetry]] :: Python dependency management and packaging made easy
 
@@ -4000,6 +4000,38 @@ Editor settings
           (flycheck-mode             1)
 
           (ayrc/cmake-font-lock-activate))
+    #+end_src
+
+** [[https://github.com/NixOS/nix-mode][Nix]]
+   #+begin_src emacs-lisp :tangle yes :noweb yes
+     (use-package nix-mode
+         :straight t
+         :mode (("\\.nix\\'" . nix-mode))
+         :hook (nix-mode . ayrc/nix-hook))
+   #+end_src
+
+*** Hook
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
+      ;;;###autoload
+      (defun ayrc/nix-hook ()
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (ws-butler-mode            1)
+          (smart-shift-mode          1)
+          (smartparens-mode          1)
+          (abbrev-mode               1)
+          (yas-minor-mode            1)
+          (hl-todo-mode              1)
+
+          (hs-minor-mode             1)
+          (flycheck-mode             1)
+
+          (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
+          (lsp-register-client
+           (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
+                            :major-modes '(nix-mode)
+                            :server-id 'nix))
+          (lsp-deferred))
     #+end_src
 
 ** Bitbake
