@@ -34,8 +34,7 @@
         straight-cache-autoloads                t
         straight-enable-use-package-integration t
         straight-use-package-by-default         nil
-        straight-recipe-repositories            '(org-elpa melpa gnu-elpa-mirror emacsmirror-mirror)
-        straight-check-for-modifications        '()
+        straight-check-for-modifications        '(find-at-startup)
         straight-base-dir                       ayrc/path-to-non-config-files-dir
         straight-profiles                       '((nil . "../../../freezed-pkgs-versions.el"))
         straight-built-in-pseudo-packages       '(emacs nadvice python)

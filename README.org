@@ -1892,7 +1892,6 @@ Editor settings
                  ("C-c M-l" . #'org-cliplink)
                  ("C-c a"   . #'org-agenda)
                  ("C-c n a" . #'orb-note-actions)
-                 ("C-c h q" . #'helm-org-ql)
                  ("C-c h i" . #'helm-org-rifle-current-buffer)
 
                  ("C-c n i" . #'org-roam-insert)
@@ -2009,7 +2008,6 @@ Editor settings
          :straight t
          :after org
          :config
-         (require 'helm-org-ql)
          (require 'org-ql-search))
    #+end_src
 
