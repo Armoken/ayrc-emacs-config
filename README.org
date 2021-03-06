@@ -3587,7 +3587,9 @@ Editor settings
       (use-package company-nginx
           :straight t
           :defer t
-          :after (nginx-mode))
+          :after (nginx-mode)
+          :commands (company-nginx-keywords)
+          :functions (company-nginx-keywords))
     #+end_src
 
 *** Hook
