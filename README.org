@@ -622,7 +622,7 @@ Editor settings
                                         (projects . 5))))
    #+end_src
 
-** [[https://github.com/bbatsov/projectile][Project managment]]                                                                    :hotkeys:ui:
+** [[https://github.com/bbatsov/projectile][Project managment]]                                                                                        :hotkeys:ui:
    #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package projectile
          :straight t
@@ -644,8 +644,10 @@ Editor settings
                 ("C-c p e" . helm-projectile-ag)
                 ("C-c p a" . helm-projectile-find-other-file)
                 ("C-c p b" . helm-projectile-switch-to-buffer))
-         :init
+         :preface
          <<helm-projectile>>
+
+         :init
          (projectile-mode 1)
 
          :custom
@@ -661,21 +663,10 @@ Editor settings
                                                                  ayrc/path-to-session-configs-dir)))
    #+end_src
 
-*** [[https://github.com/bbatsov/helm-projectile][Helm]]                            :interactive:ui:
+*** [[https://github.com/bbatsov/helm-projectile][Helm]]                                                :interactive:ui:
     #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref helm-projectile
       (use-package helm-projectile
           :straight t
-          :defer t
-          :commands (helm-projectile
-                     helm-projectile-switch-project
-                     helm-projectile-find-file
-                     helm-projectile-find-file-in-known-projects
-                     helm-projectile-find-file-dwim
-                     helm-projectile-find-dir
-                     helm-projectile-recentf
-                     helm-projectile-find-other-file
-                     helm-projectile-switch-to-buffer)
-
           :init
           <<projectile-helm-rg>>
           <<projectile-helm-ag>>
@@ -1549,9 +1540,10 @@ Editor settings
           :after (:any company)
           :diminish lsp-mode
           :commands (lsp-mode lsp-deffered lsp-rename)
+          :functions (lsp-flycheck-enable)
           :hook (lsp-mode . ayrc/lsp-hook)
           :bind (:map lsp-mode-map
-                      ("C-c h w" . helm-lsp-workspace-symbol))
+                 ("C-c h w" . helm-lsp-workspace-symbol))
           :custom
           (lsp-enable-folding                         t)
           (lsp-enable-indentation                     t)
@@ -1576,7 +1568,6 @@ Editor settings
                                   ("C-M-."   . xref-find-apropos)))
 
            (flycheck-mode 1)
-           (lsp-flycheck-enable)
 
            (ayrc/setup-company '(company-capf :with company-yasnippet))
 
