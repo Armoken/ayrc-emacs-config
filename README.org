@@ -1866,7 +1866,7 @@ Editor settings
          (occur "[^[:ascii:]]"))
    #+END_SRC
 
-** Functions for making text pretty                                                    :interactive:
+** Functions for making text pretty                                                                        :interactive:
    #+begin_src emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/tabify-buffer ()
@@ -1929,7 +1929,6 @@ Editor settings
           <<org-bullets-usepkg>>
           <<org-present-usepkg>>
           <<org-cliplink-usepkg>>
-          <<helm-org-usepkg>>
           <<helm-org-rifle-usepkg>>
           <<org-ql-usepkg>>
           <<org-super-agenda-usepkg>>
@@ -1937,19 +1936,24 @@ Editor settings
           <<org-journal-usepkg>>
           <<org-ref-usepkg>>
           <<org-roam-usepkg>>
+          <<org-edna-usepkg>>
 
           :custom
-          (org-log-done              'time)
-          (org-tags-column           -100)
-          (org-startup-folded        'fold)
-          (org-src-tab-acts-natively t)
-          (org-todo-keywords         '((sequence
-                                        "TODO" "CURRENT"
-                                        "|"
-                                        "DONE" "CANCELED")))
-          (org-todo-keyword-faces    '(("CURRENT"  . "yellow")
-                                       ("CANCELED" . (:foreground "RoyalBlue3"
-                                                      :weight bold)))))
+          (org-log-done                                   'time)
+          (org-startup-folded                             'fold)
+          (org-tags-column                                -120)
+          (org-src-tab-acts-natively                      t)
+          (org-todo-keywords                              '((sequence
+                                                             "TODO(t)" "CURRENT" "WAITING(w)"
+                                                             "|"
+                                                             "DONE(d!)" "CANCELED(c@)")))
+          (org-todo-keyword-faces                         '(("CURRENT"  . "yellow")
+                                                            ("WAITING"  . (:foreground "turquoise2"
+                                                                           :weight bold))
+                                                            ("CANCELED" . (:foreground "RoyalBlue3"
+                                                                           :weight bold))))
+          (org-stuck-projects                             '("+PROJECT/-DONE" ("CURRENT") nil ""))
+          (org-agenda-custom-commands                     '(("p" tags "project-DONE" nil))))
     #+end_src
 
 ** .dir-locals.el for Org root dir
@@ -1961,15 +1965,37 @@ Editor settings
                     (roam-dir (concat notes-dir "Zettelkasten")))
                  (make-directory roam-dir t)
 
-                 (setq org-roam-directory   (concat roam-dir "/Files")
-                       org-roam-find-index  (concat roam-dir "/Index.org")
-                       org-roam-db-location roam-dir)
+                 (setq org-indent-indentation-per-level               1
+                       org-adapt-indentation                          nil
+
+                       org-roam-directory                             (concat roam-dir "/Files")
+                       org-roam-find-index                            (concat roam-dir "/Index.org")
+                       org-roam-db-location                           roam-dir
+                       org-archive-location                           "Archives/%s_archive::")
 
                  (add-hook 'org-mode-hook #'org-roam-mode        nil t)
                  (add-hook 'org-mode-hook #'org-roam-bibtex-mode nil t)
 
 
                  (setq org-agenda-files (list (concat notes-dir "ToDo.org"))))))))
+   #+end_src
+
+** Function for marking headings as projects
+   #+begin_src emacs-lisp :tangle no :noweb-ref org-mark-as-project
+     (defun ayrc/mark-as-project ()
+                     "This function makes sure that the current heading has
+                      (1) the tag :project:
+                      (2) has property COOKIE_DATA set to \"todo recursive\"
+                      (3) a leading progress indicator"
+                     (interactive)
+                     (org-toggle-tag "project" 'on)
+                     (org-set-property "COOKIE_DATA" "todo recursive")
+                     (org-back-to-heading t)
+                     (let* ((title (nth 4 (org-heading-components)))
+                            (keyword (nth 2 (org-heading-components))))
+                         (when (not (string-prefix-p "[" title))
+                             (forward-whitespace (if (bound-and-true-p keyword) 2 1))
+                             (insert "[/] "))))
    #+end_src
 
 ** [[https://github.com/emacsorphanage/org-bullets][bullets]]
@@ -2012,15 +2038,6 @@ Editor settings
          :straight t
          :after org
          :commands (helm-org-rifle-current-buffer))
-   #+end_src
-
-** [[https://github.com/emacs-helm/helm-org][helm-org]]
-   Helm for org headlines and keywords completion.
-
-   #+begin_src emacs-lisp :tangle no :noweb-ref helm-org-usepkg
-     (use-package helm-org
-         :straight t
-         :after org)
    #+end_src
 
 ** [[https://github.com/alphapapa/org-ql][org-ql]]
@@ -2134,7 +2151,18 @@ Editor settings
                      org-roam-bibtex-mode))
     #+end_src
 
-** TODO [[https://github.com/Kungsgeten/org-brain][org-brain]]
+** [[http://www.nongnu.org/org-edna-el/][org-edna]]
+    Extensible Dependencies 'N' Actions
+
+   #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref org-edna-usepkg
+     (use-package org-edna
+         :straight t
+         :after org)
+   #+end_src
+
+** TODO Archive settings
+   Integrate [[https://gist.github.com/edgimar/072d99d8650abe81a9fe7c8687c0c993/470f5f01ef408957f36772368b8adba07c439b05][archiving with ancestors]].
+
 ** Hook
      #+begin_src emacs-lisp :tangle README-loaddefs.el
        ;;;###autoload
@@ -2147,7 +2175,8 @@ Editor settings
            (ayrc/setup-company        '(company-yasnippet))
 
            (org-bullets-mode          1)
-           (org-super-agenda-mode     1))
+           (org-super-agenda-mode     1)
+           (org-edna-mode             1))
      #+end_src
 
 * Clients
