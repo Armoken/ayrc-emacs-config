@@ -29,3 +29,10 @@
     (defvar ayrc/cc-syntax-check-plugin                  "ccls")
     (defvar ayrc/cc-autocompletion-plugin                "ccls")
   #+END_SRC
+
+* Allow eval in .dir-locals.el
+  It can be dangerous, but I know what I do.
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (setq enable-local-eval t)
+  #+END_SRC
