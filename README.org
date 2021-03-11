@@ -617,9 +617,9 @@ Editor settings
          (dashboard-set-file-icons    t)
          (dashboard-set-heading-icons t)
          (dashboard-banner-logo-title "Welcome to Emacs")
-         (dashboard-items             '((recents  . 5)
-                                        (bookmarks . 5)
-                                        (projects . 5))))
+         (dashboard-items             '((recents   . 5)
+                                        (bookmarks . 10)
+                                        (projects  . 5))))
    #+end_src
 
 ** [[https://github.com/bbatsov/projectile][Project managment]]                                                                                        :hotkeys:ui:
