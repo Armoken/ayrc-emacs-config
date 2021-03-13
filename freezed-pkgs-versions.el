@@ -31,7 +31,7 @@
  ("docker-tramp.el" . "8e2b671eff7a81af43b76d9dfcf94ddaa8333a23")
  ("docker.el" . "3773112eea3fc99704b5ca50c1e9a3db2cb8e4f3")
  ("dockerfile-mode" . "58b7380189de21496235382900838aa0db2dcf92")
- ("doom-modeline" . "49816da1a6c05e6215ec3c8aac6c5eabeb47e74c")
+ ("doom-modeline" . "0c2f2f0aa2911880b20b2a7e9a5ba20f19be7e24")
  ("ebib" . "ff62296e8a66b035a2248b94ff53b81ac74042c9")
  ("editorconfig-emacs" . "d73333c224de783e42acd225a20330a667fe5191")
  ("el-get" . "84dd1837f9ac80a329ab0c2de6859777f445f8ff")
