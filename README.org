@@ -1007,7 +1007,6 @@ Editor settings
    #+end_src
 
 ** TODO uniquify.el
-
 ** TODO Support of encrypted containers
 ** [[https://github.com/manateelazycat/emacs-application-framework][Emacs Application Framework]]
   #+begin_src emacs-lisp :tangle yes :noweb yes
@@ -1813,16 +1812,16 @@ Editor settings
    #+begin_src emacs-lisp :tangle README-loaddefs.el
      ;;;###autoload
      (defun ayrc/sudo-edit (&optional arg)
-       "Edit currently visited file as root.
+         "Edit currently visited file as root.
 
      With a prefix ARG prompt for a file to visit.
      Will also prompt for a file to visit if current
      buffer is not visiting a file."
-       (interactive "P")
-       (if (or arg (not buffer-file-name))
-           (find-file (concat "/sudo:root@localhost:"
-                              (ido-read-file-name "Find file(as root): ")))
-         (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+         (interactive "P")
+         (if (or arg (not buffer-file-name))
+                 (find-file (concat "/sudo:root@localhost:"
+                                    (ido-read-file-name "Find file(as root): ")))
+             (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
    #+end_src
 
@@ -2005,16 +2004,15 @@ Editor settings
                            (setq org-indent-indentation-per-level               1
                                  org-adapt-indentation                          nil
 
-                                 org-roam-db-update-method                      'immediate
                                  org-roam-directory                             (concat roam-dir "/Files")
                                  org-roam-index-file                            (concat roam-dir "/Index.org")
                                  org-roam-db-location                           (concat roam-dir "/org-roam-db.sqlite3"))
 
                            (make-directory org-roam-directory t)))))
 
-       (org-mode . ((org-roam-mode        . t)
-                    (org-roam-bibtex-mode . t)
-                    (org-roam-server-mode . t))))
+       (org-mode . ((mode . org-roam)
+                    (mode . org-roam-bibtex)
+                    (mode . org-roam-server))))
     #+end_src
 
 ** Function for marking headings as projects
@@ -2147,8 +2145,11 @@ Editor settings
          (add-to-list 'safe-local-variable-values '(org-roam-mode . t))
 
          :custom
-         (org-roam-completion-system 'helm)
-         (org-roam-tag-sources       '(prop last-directory)))
+         (org-roam-completion-system      'helm)
+         (org-roam-tag-sources            '(prop last-directory))
+
+         (org-roam-db-update-method       'immediate)
+         (org-roam-db-update-idle-seconds 1))
    #+end_src
 
 *** [[https://github.com/org-roam/org-roam-server][org-roam-server]]
