@@ -4169,3 +4169,28 @@ Editor settings
           (hs-minor-mode             1)
           (flycheck-mode             1))
     #+end_src
+
+** Device Tree
+   #+begin_src emacs-lisp :tangle yes :noweb no
+     (use-package dts-mode
+         :straight t
+         :mode (("\\.dts$" . dts-mode)
+                ("\\.dtsi$" . dts-mode))
+         :hook (dts-mode . ayrc/dts-hook))
+   #+end_src
+
+*** Hook
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
+      ;;;###autoload
+      (defun ayrc/dts-hook ()
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (ws-butler-mode            1)
+          (smart-shift-mode          1)
+          (smartparens-mode          1)
+          (abbrev-mode               1)
+          (yas-minor-mode            1)
+          (hl-todo-mode              1)
+
+          (ayrc/setup-company))
+    #+end_src
