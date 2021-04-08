@@ -1987,7 +1987,7 @@ Editor settings
 *** For org root dir
     #+begin_src emacs-lisp :tangle no
       ((nil . ((eval
-                . (let* ((notes-dir    (locate-dominating-file (buffer-file-name) ".dir-locals.el"))
+                . (let* ((notes-dir    (locate-dominating-file default-directory ".dir-locals.el"))
                          (archives-dir (concat notes-dir ayrc/org-archives-dir)))
                       (setq org-indent-indentation-per-level               1
                             org-adapt-indentation                          nil
@@ -2001,7 +2001,7 @@ Editor settings
 *** For org-roam root dir
     #+begin_src emacs-lisp :tangle no
       ((nil      . ((eval
-                     . (let* ((roam-dir (locate-dominating-file (buffer-file-name) ".dir-locals.el")))
+                     . (let* ((roam-dir (locate-dominating-file default-directory ".dir-locals.el")))
                            (setq org-indent-indentation-per-level               1
                                  org-adapt-indentation                          nil
 
