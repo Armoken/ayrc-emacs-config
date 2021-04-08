@@ -1983,6 +1983,7 @@ Editor settings
     #+end_src
 
 ** .dir-locals.el
+   Put these snippets to .dir-locals.el file for each case
 *** For org root dir
     #+begin_src emacs-lisp :tangle no
       ((nil . ((eval
@@ -2004,7 +2005,7 @@ Editor settings
                            (setq org-indent-indentation-per-level               1
                                  org-adapt-indentation                          nil
 
-                                 org-roam-directory                             (concat roam-dir ayrc/org-roam-dir)
+                                 org-roam-directory                             (concat roam-dir ayrc/org-roam-notes-dir)
                                  org-roam-index-file                            (concat roam-dir ayrc/org-roam-index-file)
                                  org-roam-db-location                           (concat roam-dir "/org-roam-db.sqlite3"))
 

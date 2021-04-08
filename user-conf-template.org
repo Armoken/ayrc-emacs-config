@@ -41,6 +41,6 @@
   #+BEGIN_SRC emacs-lisp :tangle yes
     (defvar ayrc/org-archives-dir "/Archives")
     (defvar ayrc/org-agenda-file "ToDo.org")
-    (defvar ayrc/org-roam-dir "/Files")
+    (defvar ayrc/org-roam-notes-dir "/Files")
     (defvar ayrc/org-roam-index-file "/Index.org")
   #+END_SRC
