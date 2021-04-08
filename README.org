@@ -1987,11 +1987,11 @@ Editor settings
     #+begin_src emacs-lisp :tangle no
       ((nil . ((eval
                 . (let* ((notes-dir    (locate-dominating-file (buffer-file-name) ".dir-locals.el"))
-                         (archives-dir (concat notes-dir "/Archives")))
+                         (archives-dir (concat notes-dir ayrc/org-archives-dir)))
                       (setq org-indent-indentation-per-level               1
                             org-adapt-indentation                          nil
 
-                            org-agenda-files                               (list (concat notes-dir "ToDo.org"))
+                            org-agenda-files                               (list (concat notes-dir ayrc/org-agenda-file))
                             org-archive-location                           (concat archives-dir "/%s_archive::"))
 
                       (make-directory archives-dir t))))))
@@ -2004,8 +2004,8 @@ Editor settings
                            (setq org-indent-indentation-per-level               1
                                  org-adapt-indentation                          nil
 
-                                 org-roam-directory                             (concat roam-dir "/Files")
-                                 org-roam-index-file                            (concat roam-dir "/Index.org")
+                                 org-roam-directory                             (concat roam-dir ayrc/org-roam-dir)
+                                 org-roam-index-file                            (concat roam-dir ayrc/org-roam-index-file)
                                  org-roam-db-location                           (concat roam-dir "/org-roam-db.sqlite3"))
 
                            (make-directory org-roam-directory t)))))
