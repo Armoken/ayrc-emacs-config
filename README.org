@@ -1694,7 +1694,7 @@ Editor settings
    #+end_src
 
    #+begin_src emacs-lisp :tangle yes
-     (global-set-key (kbd "C-c o") #'ayrc/open-with)
+     (global-set-key (kbd "C-c o w") #'ayrc/open-with)
    #+end_src
 
 ** Indent defun                                                                                    :hotkeys:interactive:
@@ -1943,6 +1943,8 @@ Editor settings
                  ("C-c n a" . #'orb-note-actions)
                  ("C-c h i" . #'helm-org-rifle-current-buffer)
 
+                 ("C-c s y" . #'org-download-screenshot)
+
                  ("C-c n i" . #'org-roam-insert)
                  ("C-c n I" . #'org-roam-insert-immediate)
 
@@ -1962,6 +1964,7 @@ Editor settings
           <<org-ref-usepkg>>
           <<org-roam-usepkg>>
           <<org-edna-usepkg>>
+          <<org-download-usepkg>>
 
           :custom
           (org-log-done                                   'time)
@@ -2207,6 +2210,21 @@ Editor settings
      (use-package org-edna
          :straight t
          :after org)
+   #+end_src
+
+** [[https://github.com/abo-abo/org-download][org-download]]
+   This extension facilitates moving screenshots to emacs.
+   #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref org-download-usepkg
+     (use-package org-download
+         :straight t
+         :after org
+         :commands (org-download-screenshot)
+         :custom
+         (org-download-method 'directory)
+         (org-download-image-dir "images")
+         (org-download-heading-lvl nil)
+         (org-download-timestamp "%Y%m%d-%H%M%S_")
+         (org-download-screenshot-method "xclip -selection clipboard -t image/png -o > %s"))
    #+end_src
 
 ** Hook
