@@ -1006,6 +1006,14 @@ Editor settings
                 ("C-c s t" . (lambda () (interactive) (scratch #'text-mode)))))
    #+end_src
 
+** UUID generator
+  #+begin_src emacs-lisp :tangle yes
+    (use-package uuidgen
+        :straight t
+        :after (:any company)
+        :bind (("C-c u" . (lambda () (interactive) (uuidgen 'time-based)))))
+  #+end_src
+
 ** TODO uniquify.el
 ** TODO Support of encrypted containers
 ** [[https://github.com/manateelazycat/emacs-application-framework][Emacs Application Framework]]

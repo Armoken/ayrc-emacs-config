@@ -158,6 +158,7 @@
  ("ts.el" . "b7ca357a0ed57694e0b25ec1b1ca12e24a4ce541")
  ("undo-tree" . "e326c6135e62f5fe8536528d3acd5e798f847407")
  ("use-package" . "365c73d2618dd0040a32c2601c5456ab5495b812")
+ ("uuidgen-el" . "b50e6fef2de4199a8f207b46588c2cb3890ddd85")
  ("with-editor" . "6735180e73e787b79535c245b162249b70dbf841")
  ("ws-butler" . "e3a38d93e01014cd47bf5af4924459bd145fd7c4")
  ("xclip" . "ef2ad92f3157d40b6d12c7e8485d633eaae7fc45")
