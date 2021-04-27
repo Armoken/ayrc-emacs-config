@@ -107,6 +107,7 @@
  ("nix-mode" . "53ea839a52335d089699d3530bae8ea5914cdbb6")
  ("no-littering" . "96ed5b8ecad8bcdcd212aacd9957276be3cf128e")
  ("org" . "5b5c420da5298f6526b77c409a5ef67e63741bad")
+ ("org-brain" . "e9b9b3e5bb3c63cecb1367df49205c346d9c050a")
  ("org-bullets" . "767f55feb58b840a5a04eabfc3fbbf0d257c4792")
  ("org-chef" . "5b461ed7d458cdcbff0af5013fbdbe88cbfb13a4")
  ("org-cliplink" . "13e0940b65d22bec34e2de4bc8cba1412a7abfbc")

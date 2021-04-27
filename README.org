@@ -1031,9 +1031,9 @@ Editor settings
     (use-package eaf
         :straight t
         :defer t
-        :commands (eaf-browser-enable-adblocker
-                   eaf-browser-keybinding
-                   eaf-open-browser)
+        :defines (eaf-browser-enable-adblocker
+                  eaf-browser-keybinding
+                  eaf-open-browser)
         :functions (eaf-setq
                     eaf-bind-key)
         :init
@@ -1973,6 +1973,7 @@ Editor settings
           <<org-roam-usepkg>>
           <<org-edna-usepkg>>
           <<org-download-usepkg>>
+          <<org-brain-usepkg>>
 
           :custom
           (org-log-done                                   'time)
@@ -2004,6 +2005,10 @@ Editor settings
                             org-adapt-indentation                          nil
 
                             org-agenda-files                               (list (concat notes-dir ayrc/org-agenda-file))
+
+                            org-id-locations-file                          (concat notes-dir ".org-id-locations")
+                            org-brain-path                                 notes-dir
+
                             org-archive-location                           (concat archives-dir "/%s_archive::"))
 
                       (make-directory archives-dir t))))))
@@ -2212,7 +2217,7 @@ Editor settings
     #+end_src
 
 ** [[http://www.nongnu.org/org-edna-el/][org-edna]]
-    Extensible Dependencies 'N' Actions
+   Extensible Dependencies 'N' Actions
 
    #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref org-edna-usepkg
      (use-package org-edna
@@ -2233,6 +2238,28 @@ Editor settings
          (org-download-heading-lvl nil)
          (org-download-timestamp "%Y%m%d-%H%M%S_")
          (org-download-screenshot-method "xclip -selection clipboard -t image/png -o > %s"))
+
+** [[https://github.com/Kungsgeten/org-brain][org-brain]]
+   Org-mode wiki + concept-mapping
+
+   #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref org-brain-usepkg
+     (use-package org-brain
+         :straight t
+         :after org
+         :functions (org-brain-ensure-ids-in-buffer)
+         :commands (org-brain-ensure-ids-in-buffer)
+
+         :custom
+         (org-id-track-globally nil)
+
+         (org-brain-visualize-default-choices 'all)
+
+         (org-brain-title-max-length          30)
+         (org-brain-include-file-entries      nil)
+         (org-brain-file-entries-use-title    nil)
+
+         :config
+         (bind-key "C-c b" 'org-brain-prefix-map org-mode-map))
    #+end_src
 
 ** Hook
@@ -2248,7 +2275,9 @@ Editor settings
 
            (org-bullets-mode          1)
            (org-super-agenda-mode     1)
-           (org-edna-mode             1))
+           (org-edna-mode             1)
+
+           (add-hook 'before-save-hook #'org-brain-ensure-ids-in-buffer nil t))
      #+end_src
 
 * Clients
