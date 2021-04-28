@@ -2225,6 +2225,7 @@ Editor settings
 
 ** [[https://github.com/abo-abo/org-download][org-download]]
    This extension facilitates moving screenshots to emacs.
+
    #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref org-download-usepkg
      (use-package org-download
          :straight t
@@ -2236,6 +2237,7 @@ Editor settings
          (org-download-heading-lvl nil)
          (org-download-timestamp "%Y%m%d-%H%M%S_")
          (org-download-screenshot-method "xclip -selection clipboard -t image/png -o > %s"))
+   #+end_src
 
 ** [[https://github.com/Kungsgeten/org-brain][org-brain]]
    Org-mode wiki + concept-mapping
