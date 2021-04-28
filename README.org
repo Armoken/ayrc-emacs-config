@@ -1994,21 +1994,19 @@ Editor settings
           (org-agenda-custom-commands                     '(("p" tags "project-DONE" nil))))
     #+end_src
 
-** .dir-locals.el
-   Put these snippets to .dir-locals.el file for each case
+** .dir-locals.el example files
 *** For org root dir
     #+begin_src emacs-lisp :tangle no
       ((nil . ((eval
                 . (let* ((notes-dir    (locate-dominating-file default-directory ".dir-locals.el"))
-                         (archives-dir (concat notes-dir ayrc/org-archives-dir)))
+                         (archives-dir (concat notes-dir "/Archives")))
                       (setq org-indent-indentation-per-level               1
                             org-adapt-indentation                          nil
-
-                            org-agenda-files                               (list (concat notes-dir ayrc/org-agenda-file))
 
                             org-id-locations-file                          (concat notes-dir ".org-id-locations")
                             org-brain-path                                 notes-dir
 
+                            org-agenda-files                               (list (concat notes-dir "ToDo.org"))
                             org-archive-location                           (concat archives-dir "/%s_archive::"))
 
                       (make-directory archives-dir t))))))
@@ -2021,8 +2019,8 @@ Editor settings
                            (setq org-indent-indentation-per-level               1
                                  org-adapt-indentation                          nil
 
-                                 org-roam-directory                             (concat roam-dir ayrc/org-roam-notes-dir)
-                                 org-roam-index-file                            (concat roam-dir ayrc/org-roam-index-file)
+                                 org-roam-directory                             (concat roam-dir "/Files")
+                                 org-roam-index-file                            (concat roam-dir "/Index.org")
                                  org-roam-db-location                           (concat roam-dir "/org-roam-db.sqlite3"))
 
                            (make-directory org-roam-directory t)))))
