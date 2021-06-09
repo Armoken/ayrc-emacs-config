@@ -2276,8 +2276,7 @@ Editor settings
            (org-bullets-mode          1)
            (org-super-agenda-mode     1)
            (org-edna-mode             1)
-
-           (add-hook 'before-save-hook #'org-brain-ensure-ids-in-buffer nil t))
+           )
      #+end_src
 
 * Clients
