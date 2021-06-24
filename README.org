@@ -349,6 +349,7 @@ Editor settings
          :after (:any python)
          :commands (exec-path-from-shell-initialize
                     exec-path-from-shell-copy-env)
+         :defines (exec-path-from-shell-check-startup-files)
          :config
          (setq exec-path-from-shell-check-startup-files nil)
 
@@ -1081,6 +1082,14 @@ Editor settings
                 ;; Errors switching
                 ("<f7>" . 'next-error)
                 ("<f8>" . 'previous-error)))
+   #+end_src
+
+** [[https://github.com/purcell/envrc][Buffer-local direnv integration for Emacs]]
+   #+begin_src emacs-lisp :tangle yes :noweb yes
+     (use-package envrc
+         :straight t
+         :commands (envrc-mode)
+         :diminish envrc-mode)
    #+end_src
 
 * Non global minor modes
@@ -1989,9 +1998,7 @@ Editor settings
                                                             ("WAITING"  . (:foreground "turquoise2"
                                                                            :weight bold))
                                                             ("CANCELED" . (:foreground "RoyalBlue3"
-                                                                           :weight bold))))
-          (org-stuck-projects                             '("+PROJECT/-DONE" ("CURRENT") nil ""))
-          (org-agenda-custom-commands                     '(("p" tags "project-DONE" nil))))
+                                                                           :weight bold)))))
     #+end_src
 
 ** .dir-locals.el example files
@@ -2250,22 +2257,20 @@ Editor settings
          :commands (org-brain-ensure-ids-in-buffer)
 
          :custom
-         (org-id-track-globally nil)
+         (org-id-track-globally t)
 
          (org-brain-visualize-default-choices 'all)
 
          (org-brain-title-max-length          30)
          (org-brain-include-file-entries      nil)
-         (org-brain-file-entries-use-title    nil)
-
-         :config
-         (bind-key "C-c b" 'org-brain-prefix-map org-mode-map))
+         (org-brain-file-entries-use-title    nil))
    #+end_src
 
 ** Hook
      #+begin_src emacs-lisp :tangle README-loaddefs.el
        ;;;###autoload
        (defun ayrc/orgmode-hook ()
+           (envrc-mode                1)
            (display-line-numbers-mode 1)
            (visual-line-mode          1)
            (ws-butler-mode            1)
@@ -2284,7 +2289,9 @@ Editor settings
 ** Eshell
    #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package eshell
-         :bind (("C-c e" . eshell)))
+         :bind (("C-c e" . eshell))
+         :config
+         (add-hook 'eshell-mode-hook 'envrc-modep))
    #+end_src
 
 ** [[http://joostkremers.github.io/ebib/][BibTex/BibLatex]]
@@ -2312,7 +2319,8 @@ Editor settings
            :defines (magit-default-tracking-name-function
                      magit-status-buffer-switch-function
                      magit-save-some-buffers
-                     magit-set-upstream-on-push)
+                     magit-set-upstream-on-push
+                     magit-diff-refine-hunk)
            :commands (magit-get-top-dir)
            :bind (("C-x g" . magit-status))
            :hook (git-commit-mode-hook . magit-commit-mode-init)
@@ -2337,6 +2345,8 @@ Editor settings
                        (open-line 1))))
            :config
            (progn
+               (add-hook 'magit-mode-hook 'envrc-mode)
+
                ;; restore previously hidden windows
                (defadvice magit-quit-window (around magit-restore-screen activate)
                    (let ((current-mode major-mode))
@@ -2385,6 +2395,8 @@ Editor settings
          :config
          ;; Enable extra Dired functionality
          (require 'dired-x)
+
+         (add-hook 'dired-mode-hook 'envrc-mode)
 
          ;; Auto-refresh dired on file change
          (add-hook 'dired-mode-hook 'auto-revert-mode)
@@ -2572,6 +2584,7 @@ Editor settings
      #+begin_src emacs-lisp :tangle README-loaddefs.el
        ;;;###autoload
        (defun ayrc/lisp-hook ()
+           (envrc-mode                1)
            (display-line-numbers-mode 1)
            (visual-line-mode          1)
 
@@ -2701,6 +2714,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/cc-hook ()
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -3263,6 +3277,7 @@ Editor settings
       ;;;###autoload
       (defun ayrc/python-hook ()
           (exec-path-from-shell-initialize)
+          (envrc-mode                 1)
 
           (display-line-numbers-mode  1)
           (highlight-indentation-mode 1)
@@ -3295,6 +3310,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/pip-hook ()
+          (envrc-mode               1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -3424,6 +3440,7 @@ Editor settings
 
             <<latex-separated-preview-setup>>
 
+            (envrc-mode                1)
             (display-line-numbers-mode 1)
             (visual-line-mode          1)
 
@@ -3513,9 +3530,10 @@ Editor settings
                   :straight t
                   :commands (hindent-mode)
                   :bind (:map hindent-mode-map
-                              ("C-c R" . hindent-reformat-buffer)))
+                         ("C-c R" . hindent-reformat-buffer)))
 
               (defun haskell-hook ()
+                  (envrc-mode                1)
                   (flycheck-mode)
                   (smart-shift-mode          1)
                   (abbrev-mode               1)
@@ -3533,6 +3551,7 @@ Editor settings
      (use-package cperl-mode
          :mode ("\.pl$" . cperl-mode)
          :hook (cperl-mode . ayrc/perl-hook)
+         :functions (cperl-set-style)
          :custom
          (cperl-indent-level                         4)
          (cperl-continued-statement-offset           4)
@@ -3552,6 +3571,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/perl-hook ()
+          (envrc-mode                 1)
           (display-line-numbers-mode  1)
           (highlight-indentation-mode 1)
           (visual-line-mode           1)
@@ -3603,6 +3623,7 @@ Editor settings
       (defun ayrc/shell-hook()
           (setq indent-tabs-mode t)
 
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -3632,6 +3653,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/bat-hook ()
+          (envrc-mode                 1)
           (display-line-numbers-mode  1)
           (highlight-indentation-mode 1)
           (visual-line-mode           1)
@@ -3661,6 +3683,7 @@ Editor settings
       #+begin_src emacs-lisp :tangle README-loaddefs.el
         ;;;###autoload
         (defun ayrc/dockerfile-hook ()
+            (envrc-mode                1)
             (display-line-numbers-mode 1)
             (visual-line-mode          1)
             (ws-butler-mode            1)
@@ -3697,6 +3720,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/nginx-hook ()
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -3733,6 +3757,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/systemd-hook ()
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -3759,6 +3784,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/conf-hook ()
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -3794,6 +3820,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/plantuml-hook ()
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -3822,6 +3849,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/dotenv-hook ()
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -3847,6 +3875,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/json-hook ()
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -3881,6 +3910,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/yaml-hook ()
+          (envrc-mode                 1)
           (display-line-numbers-mode  1)
           (visual-line-mode           1)
           (ws-butler-mode             1)
@@ -3926,6 +3956,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/nxml-hook ()
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -3953,6 +3984,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/jinja2-hook ()
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -3977,6 +4009,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/rst-hook ()
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -4045,6 +4078,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/markdown-hook ()
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -4086,6 +4120,7 @@ Editor settings
       (defun ayrc/make-hook ()
           (setq indent-tabs-mode t)
 
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -4140,6 +4175,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/cmake-hook ()
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -4170,6 +4206,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/nix-hook ()
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -4210,6 +4247,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/bitbake-hook ()
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
@@ -4238,6 +4276,7 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/dts-hook ()
+          (envrc-mode                1)
           (display-line-numbers-mode 1)
           (visual-line-mode          1)
           (ws-butler-mode            1)
