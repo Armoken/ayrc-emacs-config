@@ -134,13 +134,13 @@
 
     (ayrc/load-file path-to-main-file ayrc/path-to-build-dir))
 
-;; Load main config and custom.el
+;;;;; README.org loading ;;;;;
 (eval-when-compile
     (require 'autoload))
 (defvar ayrc/conf-name     "README.org")
 (defvar ayrc/conf-filename (ayrc/expand-config-path ayrc/conf-name))
 (defvar ayrc/conf-changed  nil)
-(let* ((config-in-build-dir               (expand-file-name ayrc/conf-name ayrc/path-to-build-dir))
+(let* ((config-in-build-dir            (expand-file-name ayrc/conf-name ayrc/path-to-build-dir))
 
           (main-exported-filename         (concat (file-name-base ayrc/conf-name) ".el"))
           (path-to-main-file              (expand-file-name main-exported-filename ayrc/path-to-build-dir))
@@ -171,63 +171,68 @@
         ;; build directory.
         (copy-file ayrc/conf-filename config-in-build-dir)
 
-        ;; Tangle file
+        ;; Tangle README.org file
         (dolist (output-filename
                     (org-babel-tangle-file config-in-build-dir))
             (message "EXPORTED %s" output-filename))
 
+        ;; Create autoloads files from autoloadables (README-loaddefs.el)
         (unless (featurep 'autoload)
             (require 'autoload))
-        (let* ((generated-autoload-file path-to-autoloads)
-                  (section-text            nil))
-            ;; Copy only section text
-            (let ((autoloads-buffer (get-buffer-create "*autoloads-creation*"))
-                     ;; (autoload-modified-buffers nil)
-                     )
-                (autoload-generate-file-autoloads path-to-autoloadables autoloads-buffer)
-                (with-current-buffer autoloads-buffer
-                    (goto-char (point-min))
+        (if (version< emacs-version "28.0.0")
+            (let* ((generated-autoload-file path-to-autoloads)
+                      (section-text            nil))
+                ;; Copy only section text
+                (let ((autoloads-buffer (get-buffer-create "*autoloads-creation*")))
+                    (autoload-generate-file-autoloads path-to-autoloadables autoloads-buffer)
 
-                    (let ((section-start (search-forward generate-autoload-section-header))
-                             (section-end   (search-forward generate-autoload-section-trailer)))
-                        (setq section-text (buffer-substring section-start
-                                               section-end)))
+                    (with-current-buffer autoloads-buffer
+                        (goto-char (point-min))
 
-                    (set-buffer-modified-p nil))
-                (kill-buffer autoloads-buffer))
+                        (let ((section-start (search-forward generate-autoload-section-header))
+                                 (section-end   (search-forward generate-autoload-section-trailer)))
+                            (setq section-text (buffer-substring section-start
+                                                   section-end)))
 
-            ;; Use full autoload rubric with copied section text
-            (let ((autoloads-buffer (get-buffer-create "*autoloads-creation*")))
-                (with-current-buffer autoloads-buffer
-                    (insert (autoload-rubric generated-autoload-file
-                                "package"))
+                        (set-buffer-modified-p nil))
+                    (kill-buffer autoloads-buffer))
 
-                    (goto-char (point-min))
-                    (search-forward ";; Local Variables:")
+                ;; Use full autoload rubric with copied section text
+                (let ((autoloads-buffer (get-buffer-create "*autoloads-creation*")))
+                    (with-current-buffer autoloads-buffer
+                        (insert (autoload-rubric generated-autoload-file
+                                    "package"))
 
-                    (insert section-text)
-                    (write-file generated-autoload-file))
-                (kill-buffer autoloads-buffer))
+                        (goto-char (point-min))
+                        (search-forward ";; Local Variables:")
 
-            (setq is-autoloads-updated t)))
+                        (insert section-text)
+                        (write-file generated-autoload-file))
+                    (kill-buffer autoloads-buffer)))
+            (make-directory-autoloads ayrc/path-to-build-dir path-to-autoloads))
+        (setq is-autoloads-updated t))
 
+    (when (not (version< emacs-version "28.0.0"))
+       (add-to-list 'load-path ayrc/path-to-build-dir))
     (load-file path-to-autoloads)
 
+    ;; Load and compile README.el
     (let ((use-package-always-demand is-autoloads-updated))
         (ayrc/load-file path-to-main-file ayrc/path-to-build-dir))
 
+    ;; Compile autoloadables if it required
     (when is-autoloads-updated
         (ayrc/byte-compile-file path-to-autoloadables
             path-to-compiled-autoloadables)))
 
-
-;; Load custom.el
+;;;;; custom.el loading ;;;;;
 (setq custom-file (expand-file-name "custom.el"
                       ayrc/path-to-session-configs-dir))
+;; Delete custom.el if it outdated
 (when (or (ayrc/is-processing-required ayrc/conf-filename custom-file)
           (ayrc/is-processing-required ayrc/user-conf-filename custom-file))
     (delete-file custom-file))
-
+;; Load custom.el
 (if (file-exists-p custom-file)
     (ayrc/load-file custom-file ayrc/path-to-build-dir))
 

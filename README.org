@@ -317,6 +317,7 @@ Editor settings
      (use-package bookmark
          :config
          (setq bookmark-save-flag    1
+               bookmark-fontify      nil
                bookmark-default-file (expand-file-name
                                       "bookmarks"
                                       ayrc/path-to-session-configs-dir)))
@@ -1019,7 +1020,7 @@ Editor settings
 ** TODO Support of encrypted containers
 ** [[https://github.com/manateelazycat/emacs-application-framework][Emacs Application Framework]]
   #+begin_src emacs-lisp :tangle yes :noweb yes
-    (straight-use-package
+    (straight-use-package-lazy
      `(eaf :type git
            :host github
            :repo "manateelazycat/emacs-application-framework"
@@ -1032,6 +1033,7 @@ Editor settings
     (use-package eaf
         :straight t
         :defer t
+        :after org
         :defines (eaf-browser-enable-adblocker
                   eaf-browser-keybinding
                   eaf-open-browser)
@@ -1421,7 +1423,6 @@ Editor settings
    #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package yasnippet
          :straight t
-         :after (:any company)
          :defer t
          :functions (yas-reload-all)
          :commands (yas-minor-mode yas-global-mode yas-reload-all)
@@ -1433,7 +1434,7 @@ Editor settings
          (setq yas-snippet-dirs
                (list (ayrc/expand-config-path "./personal-snippets")))
          (when (not (eq system-type 'windows-nt))
-             (yasnippet-snippets-initialize))
+             (push yasnippet-snippets-dir yas-snippet-dirs))
 
          (yas-reload-all))
    #+end_src
@@ -1444,7 +1445,6 @@ Editor settings
     #+begin_src emacs-lisp :tangle no :noweb-ref snippets-collection
       (use-package yasnippet-snippets
           :straight t
-          :after (:any yasnippet)
           :commands (yasnippet-snippets-initialize))
     #+end_src
 
@@ -1702,8 +1702,8 @@ Editor settings
                          (dired-get-file-for-visit)
                      buffer-file-name))
                 (open (pcase system-type
-                          (`darwin "open")
-                          ((or `gnu `gnu/linux `gnu/kfreebsd) "xdg-open")))
+                          ('darwin "open")
+                          ((or 'gnu 'gnu/linux 'gnu/kfreebsd) "xdg-open")))
                 (program (if (or arg (not open))
                                  (read-shell-command "Open current file with: ")
                              open)))

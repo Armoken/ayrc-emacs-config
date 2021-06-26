@@ -75,3 +75,5 @@ user-conf.org
 .dap-breakpoints
 .lsp-session*
 
+# Native compilation
+eln-cache/

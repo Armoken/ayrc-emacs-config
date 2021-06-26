@@ -20,26 +20,32 @@ FRAME: screen area that contains one or more Emacs windows"
 ;; resize the frame).
 (setq frame-inhibit-implied-resize t)
 
+;; Stop showing native compilation warnings
+(setq
+    native-comp-async-report-warnings-errors nil
+    warning-minimum-level                    :error
+    warning-minimum-log-level                :error)
+
 
 ;;; Load other parts of configuration
 (defun ayrc/expand-config-path (path)
     "Expand passed path relative to the EMACS user directory.
 `PATH' - passed path"
     (expand-file-name
-     path user-emacs-directory))
+        path user-emacs-directory))
 
 (defun ayrc/get-file-age (path-to-file)
     "Get age of file to which PATH-TO-FILE pointing."
     (float-time
-     (time-subtract
-      (current-time)
-      (nth 5 (or (file-attributes (file-truename path-to-file))
-                 (file-attributes path-to-file))))))
+        (time-subtract
+            (current-time)
+            (nth 5 (or (file-attributes (file-truename path-to-file))
+                       (file-attributes path-to-file))))))
 
 (defun ayrc/is-source-file-changed (path-to-src path-to-result)
     "Check if the source (PATH-TO-SRC) of result (PATH-TO-RESULT) changed."
     (> (ayrc/get-file-age path-to-result)
-       (ayrc/get-file-age path-to-src)))
+        (ayrc/get-file-age path-to-src)))
 
 (defun ayrc/is-processing-required (path-to-src path-to-result)
     "Check is need processing of source file for creating result file.
@@ -57,22 +63,22 @@ PATH-TO-COMPILED-FILE - output file"
         (byte-compile-file path-to-src-file)))
 
 (defun ayrc/load-file (path-to-file
-                       path-to-build-dir
-                       &optional compile-only)
+                          path-to-build-dir
+                          &optional compile-only)
     "Load Emacs Lisp source code in the PATH-TO-FILE.
 Save byte-compiled version to PATH-TO-BUILD-DIR.  Its function used instead of
 original `load-file' because of `load-file' doesn't compiles code.  Load file
 if COMPILE-ONLY nil"
     (let* ((file-name             (file-name-nondirectory path-to-file))
-           (base-file-name        (file-name-base file-name))
-           (path-to-compiled-file (concat path-to-build-dir
-                                          base-file-name
-                                          ".elc")))
+              (base-file-name        (file-name-base file-name))
+              (path-to-compiled-file (concat path-to-build-dir
+                                         base-file-name
+                                         ".elc")))
         (unless compile-only
             (load-file path-to-file))
 
         (when (ayrc/is-processing-required path-to-file
-                                           path-to-compiled-file)
+                  path-to-compiled-file)
             (ayrc/byte-compile-file path-to-file path-to-compiled-file))))
 
 
@@ -86,26 +92,26 @@ if COMPILE-ONLY nil"
 
 (defvar ayrc/path-to-session-cache-dir
     (expand-file-name "session-caches/"
-                      ayrc/path-to-non-config-files-dir))
+        ayrc/path-to-non-config-files-dir))
 (make-directory ayrc/path-to-session-cache-dir t)
 
 (defvar ayrc/path-to-session-configs-dir
     (expand-file-name "session-configs/"
-                      ayrc/path-to-non-config-files-dir))
+        ayrc/path-to-non-config-files-dir))
 (make-directory ayrc/path-to-session-configs-dir t)
 
 
 ;;; Load subinit.el
 (defvar ayrc/path-to-subinit (ayrc/expand-config-path "subinit.el"))
 (defvar ayrc/path-to-compiled-subinit (expand-file-name "subinit.elc"
-                                                        ayrc/path-to-build-dir))
+                                          ayrc/path-to-build-dir))
 
 (if (ayrc/is-processing-required ayrc/path-to-subinit
-                                 ayrc/path-to-compiled-subinit)
-        (progn
-            (load-file ayrc/path-to-subinit)
-            (ayrc/byte-compile-file ayrc/path-to-subinit
-                                    ayrc/path-to-compiled-subinit))
+        ayrc/path-to-compiled-subinit)
+    (progn
+        (load-file ayrc/path-to-subinit)
+        (ayrc/byte-compile-file ayrc/path-to-subinit
+            ayrc/path-to-compiled-subinit))
     (load-file ayrc/path-to-compiled-subinit))
 
 
@@ -113,7 +119,7 @@ if COMPILE-ONLY nil"
 (defvar ayrc/path-to-init (ayrc/expand-config-path "init.el"))
 (defvar ayrc/path-to-compiled-init (ayrc/expand-config-path "init.elc"))
 (when (ayrc/is-processing-required ayrc/path-to-init
-                                   ayrc/path-to-compiled-init)
+          ayrc/path-to-compiled-init)
     (byte-compile-file ayrc/path-to-init))
 
 (provide 'init)
