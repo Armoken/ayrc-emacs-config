@@ -2004,15 +2004,69 @@ Editor settings
 *** For org root dir
     #+begin_src emacs-lisp :tangle no
       ((nil . ((eval
-                . (let* ((notes-dir    (locate-dominating-file default-directory ".dir-locals.el"))
-                         (archives-dir (concat notes-dir "/Archives")))
+                . (let* ((notes-dir        (locate-dominating-file (buffer-file-name) ".dir-locals.el"))
+                         (archives-dir     (concat notes-dir "/Archives"))
+                         (zettelkasten-dir (concat notes-dir "/Zettelkasten")))
                       (setq org-indent-indentation-per-level               1
                             org-adapt-indentation                          nil
 
                             org-id-locations-file                          (concat notes-dir ".org-id-locations")
-                            org-brain-path                                 notes-dir
 
-                            org-agenda-files                               (list (concat notes-dir "ToDo.org"))
+                            calendar-week-start-day                        1 ;; Monday
+                            org-agenda-files                               (directory-files-recursively
+                                                                            zettelkasten-dir
+                                                                            ".*\.org")
+                            org-agenda-prefix-format                       '((agenda . " %i %?-12t% s")
+                                                                             (todo   . " %i")
+                                                                             (tags   . " %i")
+                                                                             (search . " %i"))
+                            org-stuck-projects                             '("+PROJECT/-DONE" ("CURRENT") nil "")
+                            org-super-agenda-groups                        '((:name "Projects"
+                                                                              :tag "project")
+                                                                             (:name "Meta projects"
+                                                                              :tag "metaproject")
+                                                                             (:name "Ordinary tasks"
+                                                                              :and (:not (:tag "project")
+                                                                                    :not (:tag "metaproject")))
+                                                                             (:name "Periodical"
+                                                                              :tag "periodical")
+                                                                             (:name "Nonperiodical"
+                                                                              :not (:tag "periodical")))
+                            org-agenda-custom-commands                     '(("o" "Soon tasks and projects"
+                                                                              ((org-ql-block '(tags-local "soon")
+                                                                                             ((org-ql-block-header "Soon tasks and projects"))
+                                                                                             :group)))
+
+                                                                             ("h" "Things to buy"
+                                                                              ((org-ql-block '(and
+                                                                                               (tags "shopping")
+                                                                                               (todo "TODO" "CURRENT" "WAITING"))
+                                                                                             ((org-ql-block-header "Things to buy"))
+                                                                                             :group)))
+
+                                                                             ("p" . "Project queries")
+                                                                             ("pt" "Unfinished projects"
+                                                                              ((org-ql-block '(and
+                                                                                               (tags-local "project")
+                                                                                               (todo "TODO" "CURRENT" "WAITING"))
+                                                                                             ((org-ql-block-header "Unfinished projects"))
+                                                                                             :group)))
+                                                                             ("po" "Projects to do in the nearest feature"
+                                                                              ((org-ql-block '(and
+                                                                                               (tags-local "project")
+                                                                                               (tags-local "soon")
+                                                                                               (todo "TODO" "CURRENT" "WAITING"))
+                                                                                             ((org-ql-block-header "Projects to do in the nearest feature"))
+                                                                                             :group)))
+                                                                             ("pa" "All projects"
+                                                                              ((org-ql-block '(tags-local "project")
+                                                                                             ((org-ql-block-header "All projects"))
+                                                                                             :group)))
+
+                                                                             ("r" . "Reading")
+                                                                             ("ra" "Articles" tags-todo "+reading+articles" nil)
+                                                                             ("rb" "Books"    tags-todo "+reading+books"    nil))
+
                             org-archive-location                           (concat archives-dir "/%s_archive::"))
 
                       (make-directory archives-dir t))))))
@@ -2021,13 +2075,35 @@ Editor settings
 *** For org-roam root dir
     #+begin_src emacs-lisp :tangle no
       ((nil      . ((eval
-                     . (let* ((roam-dir (locate-dominating-file default-directory ".dir-locals.el")))
+                     . (let* ((roam-dir (locate-dominating-file (buffer-file-name) ".dir-locals.el")))
                            (setq org-indent-indentation-per-level               1
                                  org-adapt-indentation                          nil
 
                                  org-roam-directory                             (concat roam-dir "/Files")
                                  org-roam-index-file                            (concat roam-dir "/Index.org")
-                                 org-roam-db-location                           (concat roam-dir "/org-roam-db.sqlite3"))
+                                 org-roam-db-location                           (concat roam-dir "/org-roam-db.sqlite3")
+                                 org-roam-capture-templates
+                                 '(("d" "default" plain #'org-roam-capture--get-point
+                                    "%?"
+                                    :file-name "%<%Y%m%d%H%M%S>-${slug}"
+                                    :head "#+title: ${title}
+      ,#+roam_tags:
+      ,#+FILETAGS:
+      "
+                                    :unnarrowed t)
+
+                                   ("r" "default-with-reading" plain #'org-roam-capture--get-point
+                                    "%?
+      ,* Reading                                                                                                      :reading:
+      ,** Articles                                                                                                   :articles:
+      ,** Books                                                                                                         :books:
+      "
+                                    :file-name "%<%Y%m%d%H%M%S>-${slug}"
+                                    :head "#+title: ${title}
+      ,#+roam_tags:
+      ,#+FILETAGS:
+      "
+                                    :unnarrowed t)))
 
                            (make-directory org-roam-directory t)))))
 
@@ -2440,8 +2516,9 @@ Editor settings
 ** Lisp dialects
    #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package lisp-mode
-         :mode (("\\.el\\'"   . emacs-lisp-mode)
-                ("bookmarks$" . emacs-lisp-mode)
+         :mode (("\\.el\\'"        . emacs-lisp-mode)
+                ("bookmarks$"      . emacs-lisp-mode)
+                (".dir-locals.el$" . emacs-lisp-mode)
                 ("\\.rkt\\'"  . scheme-mode)
                 ("\\.ss\\'"   . scheme-mode)
                 ("\\.scm\\'"  . scheme-mode)
