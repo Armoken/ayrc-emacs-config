@@ -101,6 +101,7 @@
     ("markdown-mode-plus" . "37ec17ff5b6220105417944b97baa46ac982ed75")
     ("markdown-preview-mode" . "dde87b96de9e81dd01d174da67ef68687b3a5eb5")
     ("math-symbol-lists" . "590d9f09f8ad9aab747b97f077396a2035dcf50f")
+    ("matlab-mode" . "c25894b91225ccdf0044f04020adf97cb41e73e4")
     ("melpa" . "6e0f64b768c13fb873dc1dcb849770b7b401603d")
     ("modern-cpp-font-lock" . "43c6b68ff58fccdf9deef11674a172e4eaa8455c")
     ("nginx-mode" . "6e9d96f58eddd69f62f7fd443d9b9753e16e0e96")

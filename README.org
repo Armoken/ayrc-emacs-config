@@ -3673,7 +3673,35 @@ Editor settings
           (ayrc/setup-company '(company-shell company-yasnippet)))
     #+end_src
 
-** TODO Matlab
+** Matlab
+   #+begin_src emacs-lisp :tangle yes :noweb no
+     (use-package matlab
+         :straight matlab-mode
+         :mode ("\\.m$" . matlab-mode)
+         :hook (matlab-mode . ayrc/matlab-hook)
+         :custom
+         (matlab-indent-level    2)
+         (matlab-indent-function t)
+         (matlab-shell-command   "matlab"))
+   #+end_src
+
+*** Hook
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
+      ;;;###autoload
+      (defun ayrc/matlab-hook ()
+          (envrc-mode                1)
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (ws-butler-mode            1)
+          (smart-shift-mode          1)
+          (smartparens-mode          1)
+          (abbrev-mode               1)
+          (yas-minor-mode            1)
+          (hl-todo-mode              1)
+
+          (ayrc/setup-company))
+    #+end_src
+
 ** TCL
    #+begin_src emacs-lisp :tangle yes :noweb no
      (use-package tcl
