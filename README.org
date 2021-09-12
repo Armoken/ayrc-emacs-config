@@ -1978,7 +1978,7 @@ Editor settings
 
           :custom
           (org-log-done                                   'time)
-          (org-startup-folded                             'fold)
+          (org-startup-folded                             't)
           (org-tags-column                                -120)
           (org-capture-bookmark                           nil)
           (org-src-tab-acts-natively                      t)
