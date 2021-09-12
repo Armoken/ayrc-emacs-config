@@ -3674,7 +3674,33 @@ Editor settings
     #+end_src
 
 ** TODO Matlab
-** TODO TCL
+** TCL
+   #+begin_src emacs-lisp :tangle yes :noweb no
+     (use-package tcl
+         :mode (("\\.tcl$" . tcl-mode)
+                ("\\.pt$" . tcl-mode))
+         :hook (tcl-mode . ayrc/tcl-hook)
+         :custom
+         (tcl-indent-level 2))
+   #+end_src
+
+*** Hook
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
+      ;;;###autoload
+      (defun ayrc/tcl-hook ()
+          (envrc-mode                1)
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (ws-butler-mode            1)
+          (smart-shift-mode          1)
+          (smartparens-mode          1)
+          (abbrev-mode               1)
+          (yas-minor-mode            1)
+          (hl-todo-mode              1)
+
+          (ayrc/setup-company))
+    #+end_src
+
 ** TODO [[https://github.com/jschaf/powershell.el][Powershell]]
 ** Bat
    #+begin_src emacs-lisp :tangle yes
