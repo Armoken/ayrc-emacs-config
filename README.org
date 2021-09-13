@@ -3729,7 +3729,40 @@ Editor settings
           (ayrc/setup-company))
     #+end_src
 
-** TODO [[https://github.com/jschaf/powershell.el][Powershell]]
+** [[https://github.com/jschaf/powershell.el][Powershell]]
+   #+begin_src emacs-lisp :tangle yes :noweb yes
+     (use-package powershell
+         :straight t
+         :mode (("\\.ps1\\'"  . powershell-mode)
+                ("\\.psc1\\'" . powershell-mode))
+         :hook (powershell-mode . ayrc/powershell-hook)
+         :custom
+         (powershell-indent              4)
+         (powershell-continuation-indent 2))
+   #+end_src
+
+*** Hook
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
+      ;;;###autoload
+      (defun ayrc/powershell-hook()
+          (setq indent-tabs-mode t)
+
+          (envrc-mode                1)
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (ws-butler-mode            1)
+          (smart-shift-mode          1)
+          (smartparens-mode          1)
+          (abbrev-mode               1)
+          (yas-minor-mode            1)
+          (hl-todo-mode              1)
+
+          (hs-minor-mode             1)
+          (flycheck-mode             1)
+
+          (ayrc/setup-company))
+    #+end_src
+
 ** Bat
    #+begin_src emacs-lisp :tangle yes
      (use-package bat-mode

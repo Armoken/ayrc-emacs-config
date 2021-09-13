@@ -136,6 +136,7 @@
     ("posframe" . "c91d4d53fa479ceb604071008ce0a901770eff57")
     ("projectile" . "4e6f66c329e57d66269b4bd3fc02518eb0c677bc")
     ("pyenv-mode" . "b818901b8eac0e260ced66a6a5acabdbf6f5ba99")
+    ("powershell" . "d1b3f95669343399f199f291ef76c09a0ede5e60")
     ("pythonic" . "fe75bc17baae314bf8f5e0b12aad3fccfc6c5397")
     ("pyvenv" . "31ea715f2164dd611e7fc77b26390ef3ca93509b")
     ("queue" . "130c2d656cd5d7376552272fab9e50a7c37d0c4a")
