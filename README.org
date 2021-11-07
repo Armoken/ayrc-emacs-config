@@ -1982,6 +1982,7 @@ Editor settings
           (org-tags-column                                -120)
           (org-capture-bookmark                           nil)
           (org-src-tab-acts-natively                      t)
+          (org-list-allow-alphabetical                    t)
           (org-todo-keywords                              '((sequence
                                                              "TODO(t)" "CURRENT" "WAITING(w)"
                                                              "|"
