@@ -1023,19 +1023,19 @@ Editor settings
     (straight-use-package-lazy
      `(eaf :type git
            :host github
-           :repo "manateelazycat/emacs-application-framework"
+           :repo "Ygenks/emacs-application-framework"
+           :branch "bugfix/archlinux-aur-helper"
            :files ("*.el" "*.py" "*.js" "*.html" "*.json" "core" "app" "node_modules")
            :build t
            :pre-build ,(pcase system-type
-                          ('gnu/linux '("npm" "install"))
-                          (_          '("node" "./install-eaf-win32.js")))))
+                           ('gnu/linux '("./install-eaf.py" "--install-core-deps"))
+                           (_          '("node" "./install-eaf-win32.js")))))
 
     (use-package eaf
         :straight t
         :defer t
         :after org
         :defines (eaf-browser-enable-adblocker
-                  eaf-browser-keybinding
                   eaf-open-browser)
         :functions (eaf-setq
                     eaf-bind-key)
@@ -1058,8 +1058,7 @@ Editor settings
         (eaf-config-location                 (concat ayrc/path-to-session-cache-dir "/eaf"))
 
         :config
-        (eaf-setq eaf-browser-enable-adblocker "true")
-        (eaf-bind-key nil "M-q" eaf-browser-keybinding))
+        (eaf-setq eaf-browser-enable-adblocker "true"))
   #+end_src
 
 ** Keep the same hotkeys in other keyboard layout                                                              :hotkeys:
@@ -2109,7 +2108,8 @@ Editor settings
 
        (org-mode . ((mode . org-roam)
                     (mode . org-roam-bibtex)
-                    (mode . org-roam-server))))
+                    ;; (mode . org-roam-server)
+                    )))
     #+end_src
 
 ** Function for marking headings as projects
@@ -2234,7 +2234,7 @@ Editor settings
          :defines (org-roam-mode-map)
          :functions (org-roam-mode)
          :init
-         <<org-roam-server-usepkg>>
+         ;; <<org-roam-server-usepkg>>
          <<org-roam-bibtex-usepkg>>
 
          (require 'org-roam-protocol)
@@ -2249,40 +2249,40 @@ Editor settings
          (org-roam-db-update-idle-seconds 1))
    #+end_src
 
-*** [[https://github.com/org-roam/org-roam-server][org-roam-server]]
-     A Web Application to Visualize the Org-Roam Database.
+# *** [[https://github.com/org-roam/org-roam-server][org-roam-server]]
+#      A Web Application to Visualize the Org-Roam Database.
 
-    #+begin_src emacs-lisp :tangle no :noweb-ref org-roam-server-usepkg
-      ;; Workaround from: https://github.com/raxod502/straight.el/issues/265
-      (straight-use-package
-       `(simple-httpd :type git
-                      :host github
-                      :repo "skeeto/emacs-web-server"
-                      :local-repo "simple-httpd"))
+#     #+begin_src emacs-lisp :tangle no :noweb-ref org-roam-server-usepkg
+#       ;; Workaround from: https://github.com/raxod502/straight.el/issues/265
+#       (straight-use-package
+#        `(simple-httpd :type git
+#                       :host github
+#                       :repo "skeeto/emacs-web-server"
+#                       :local-repo "simple-httpd"))
 
-      ;; Workaround until recipe appear on Melpa
-      (straight-use-package
-       `(org-roam-server :type git
-                         :host github
-                         :files ("assets" "index.html" :defaults)
-                         :repo "org-roam/org-roam-server"))
+#       ;; Workaround until recipe appear on Melpa
+#       (straight-use-package
+#        `(org-roam-server :type git
+#                          :host github
+#                          :files ("assets" "index.html" :defaults)
+#                          :repo "org-roam/org-roam-server"))
 
-      (use-package org-roam-server
-          :straight t
-          :init
-          (add-to-list 'safe-local-variable-values '(org-roam-server-mode . t))
+#       (use-package org-roam-server
+#           :straight t
+#           :init
+#           (add-to-list 'safe-local-variable-values '(org-roam-server-mode . t))
 
-          :custom
-          (org-roam-server-host                          "127.0.0.1")
-          (org-roam-server-port                          8080)
-          (org-roam-server-export-inline-images          t)
-          (org-roam-server-authenticate                  nil)
-          (org-roam-server-network-poll                  t)
-          (org-roam-server-network-arrows                nil)
-          (org-roam-server-network-label-truncate        t)
-          (org-roam-server-network-label-truncate-length 60)
-          (org-roam-server-network-label-wrap-length     20))
-    #+end_src
+#           :custom
+#           (org-roam-server-host                          "127.0.0.1")
+#           (org-roam-server-port                          8080)
+#           (org-roam-server-export-inline-images          t)
+#           (org-roam-server-authenticate                  nil)
+#           (org-roam-server-network-poll                  t)
+#           (org-roam-server-network-arrows                nil)
+#           (org-roam-server-network-label-truncate        t)
+#           (org-roam-server-network-label-truncate-length 60)
+#           (org-roam-server-network-label-wrap-length     20))
+#     #+end_src
 
 *** [[https://github.com/org-roam/org-roam-bibtex][org-roam-bibtex]]
     Connector between Org-roam, BibTeX-completion, and Org-ref.
@@ -3764,6 +3764,12 @@ Editor settings
 
 *** [[https://github.com/stardiviner/company-nginx][Autocompletion]]
     #+begin_src emacs-lisp :tangle no :noweb-ref company-nginx-usepkg
+      (straight-use-package
+       `(company-nginx :type git
+                       :host github
+                       :files (:defaults)
+                       :repo "Ygenks/company-nginx"))
+
       (use-package company-nginx
           :straight t
           :defer t
