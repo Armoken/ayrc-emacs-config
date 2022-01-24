@@ -1023,18 +1023,18 @@ Editor settings
     (straight-use-package-lazy
      `(eaf :type git
            :host github
-           :repo "Ygenks/emacs-application-framework"
-           :branch "bugfix/archlinux-aur-helper"
+           :repo "emacs-eaf/emacs-application-framework"
            :files ("*.el" "*.py" "*.js" "*.html" "*.json" "core" "app" "node_modules")
            :build t
            :pre-build ,(pcase system-type
-                           ('gnu/linux '("./install-eaf.py" "--install-core-deps"))
+                           ('gnu/linux '(("./install-eaf.py" "--install-core-deps") ("./install-eaf.py" "--install" "browser")))
                            (_          '("node" "./install-eaf-win32.js")))))
 
     (use-package eaf
         :straight t
         :defer t
         :after org
+        :load-path "~/.emacs.d/site-lisp/emacs-application-framework/"
         :defines (eaf-browser-enable-adblocker
                   eaf-open-browser)
         :functions (eaf-setq
@@ -1058,6 +1058,7 @@ Editor settings
         (eaf-config-location                 (concat ayrc/path-to-session-cache-dir "/eaf"))
 
         :config
+        (require 'eaf-browser)
         (eaf-setq eaf-browser-enable-adblocker "true"))
   #+end_src
 
@@ -1959,15 +1960,8 @@ Editor settings
                  ("C-c n a" . #'orb-note-actions)
                  ("C-c h i" . #'helm-org-rifle-current-buffer)
 
-                 ("C-c s y" . #'org-download-screenshot)
+                 ("C-c s y" . #'org-download-screenshot))
 
-                 ("C-c n i" . #'org-roam-insert)
-                 ("C-c n I" . #'org-roam-insert-immediate)
-
-                 :map org-roam-mode-map
-                 ("C-c n l" . #'org-roam)
-                 ("C-c n f" . #'org-roam-find-file)
-                 ("C-c n g" . #'org-roam-graph))
           :init
           <<org-bullets-usepkg>>
           <<org-present-usepkg>>
@@ -2078,9 +2072,9 @@ Editor settings
                            (setq org-indent-indentation-per-level               1
                                  org-adapt-indentation                          nil
 
-                                 org-roam-directory                             (concat roam-dir "/Files")
-                                 org-roam-index-file                            (concat roam-dir "/Index.org")
-                                 org-roam-db-location                           (concat roam-dir "/org-roam-db.sqlite3")
+                                 org-roam-directory                             (concat roam-dir "Files")
+                                 org-roam-index-file                            (concat roam-dir "Index.org")
+                                 org-roam-db-location                           (concat roam-dir "org-roam.db")
                                  org-roam-capture-templates
                                  '(("d" "default" plain #'org-roam-capture--get-point
                                     "%?"
@@ -2104,12 +2098,12 @@ Editor settings
       "
                                     :unnarrowed t)))
 
-                           (make-directory org-roam-directory t)))))
+                           (make-directory org-roam-directory t)
+                           ))))
 
-       (org-mode . ((mode . org-roam)
-                    (mode . org-roam-bibtex)
-                    ;; (mode . org-roam-server)
-                    )))
+       (org-mode . ((mode . org-roam-db-autosync)
+                    (mode . org-roam-bibtex))
+                 ))
     #+end_src
 
 ** Function for marking headings as projects
@@ -2231,58 +2225,42 @@ Editor settings
    #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref org-roam-usepkg
      (use-package org-roam
          :straight t
-         :defines (org-roam-mode-map)
-         :functions (org-roam-mode)
+         :bind (("C-c n i" . org-roam-node-insert)
+                ("C-c n l" . org-roam-buffer-toggle)
+                ("C-c n f" . org-roam-node-find)
+                ("C-c n g" . org-roam-graph)
+                ("C-c n c" . org-roam-capture))
          :init
-         ;; <<org-roam-server-usepkg>>
+         <<org-roam-ui-usepkg>>
          <<org-roam-bibtex-usepkg>>
 
          (require 'org-roam-protocol)
 
-         (add-to-list 'safe-local-variable-values '(org-roam-mode . t))
+         (add-to-list 'safe-local-variable-values '(org-roam-db-autosync-mode . t))
 
          :custom
          (org-roam-completion-system      'helm)
-         (org-roam-tag-sources            '(prop last-directory))
-
-         (org-roam-db-update-method       'immediate)
-         (org-roam-db-update-idle-seconds 1))
+         (org-roam-tag-sources            '(prop last-directory)))
    #+end_src
 
-# *** [[https://github.com/org-roam/org-roam-server][org-roam-server]]
-#      A Web Application to Visualize the Org-Roam Database.
+*** [[https://github.com/org-roam/org-roam-ui][org-roam-ui]]
+    #+begin_src emacs-lisp :tangle no :noweb-ref org-roam-ui-usepkg
+      ;; Dependency of org-roam-ui
+      (straight-use-package
+       `(simple-httpd :type git
+                      :host github
+                      :repo "skeeto/emacs-web-server"
+                      :local-repo "simple-httpd"))
 
-#     #+begin_src emacs-lisp :tangle no :noweb-ref org-roam-server-usepkg
-#       ;; Workaround from: https://github.com/raxod502/straight.el/issues/265
-#       (straight-use-package
-#        `(simple-httpd :type git
-#                       :host github
-#                       :repo "skeeto/emacs-web-server"
-#                       :local-repo "simple-httpd"))
-
-#       ;; Workaround until recipe appear on Melpa
-#       (straight-use-package
-#        `(org-roam-server :type git
-#                          :host github
-#                          :files ("assets" "index.html" :defaults)
-#                          :repo "org-roam/org-roam-server"))
-
-#       (use-package org-roam-server
-#           :straight t
-#           :init
-#           (add-to-list 'safe-local-variable-values '(org-roam-server-mode . t))
-
-#           :custom
-#           (org-roam-server-host                          "127.0.0.1")
-#           (org-roam-server-port                          8080)
-#           (org-roam-server-export-inline-images          t)
-#           (org-roam-server-authenticate                  nil)
-#           (org-roam-server-network-poll                  t)
-#           (org-roam-server-network-arrows                nil)
-#           (org-roam-server-network-label-truncate        t)
-#           (org-roam-server-network-label-truncate-length 60)
-#           (org-roam-server-network-label-wrap-length     20))
-#     #+end_src
+      (use-package org-roam-ui
+          :straight t
+          :after org
+          :config
+          (setq org-roam-ui-sync-theme t
+                org-roam-ui-follow nil
+                org-roam-ui-update-on-save t
+                org-roam-ui-open-on-start t))
+    #+end_src
 
 *** [[https://github.com/org-roam/org-roam-bibtex][org-roam-bibtex]]
     Connector between Org-roam, BibTeX-completion, and Org-ref.
