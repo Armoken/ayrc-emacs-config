@@ -2078,30 +2078,27 @@ Editor settings
                                  org-roam-index-file                            (concat roam-dir "Index.org")
                                  org-roam-db-location                           (concat roam-dir "org-roam.db")
                                  org-roam-capture-templates
-                                 '(("d" "default" plain #'org-roam-capture--get-point
-                                    "%?"
-                                    :file-name "%<%Y%m%d%H%M%S>-${slug}"
-                                    :head "#+title: ${title}
-      ,#+roam_tags:
+                                 '(("d" "default" plain "%?"
+                                    :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                                                       "#+title: ${title}
+      ,#+filetags:
       ,#+FILETAGS:
-      "
+      ")
                                     :unnarrowed t)
 
-                                   ("r" "default-with-reading" plain #'org-roam-capture--get-point
-                                    "%?
+                                   ("r" "default-with-reading" plain "%?
       ,* Reading                                                                                                      :reading:
       ,** Articles                                                                                                   :articles:
       ,** Books                                                                                                         :books:
       "
-                                    :file-name "%<%Y%m%d%H%M%S>-${slug}"
-                                    :head "#+title: ${title}
-      ,#+roam_tags:
+                                    :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                                                       "#+title: ${title}
+      ,#+filetags:
       ,#+FILETAGS:
-      "
+      ")
                                     :unnarrowed t)))
 
-                           (make-directory org-roam-directory t)
-                           ))))
+                           (make-directory org-roam-directory t)))))
 
        (org-mode . ((mode . org-roam-db-autosync)
                     (mode . org-roam-bibtex))
