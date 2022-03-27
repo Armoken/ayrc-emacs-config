@@ -2239,6 +2239,9 @@ Editor settings
 
          (add-to-list 'safe-local-variable-values '(org-roam-db-autosync-mode . t))
 
+         ;; Increase to allow to run org-roam-migration-wizard without errors.
+         (setq max-specpdl-size 10000)
+
          :custom
          (org-roam-completion-system      'helm)
          (org-roam-tag-sources            '(prop last-directory)))
