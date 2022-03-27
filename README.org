@@ -2005,6 +2005,7 @@ Editor settings
                             org-adapt-indentation                          nil
 
                             org-id-locations-file                          (concat notes-dir ".org-id-locations")
+                            org-id-track-globally                          t
 
                             calendar-week-start-day                        1 ;; Monday
                             org-agenda-files                               (directory-files-recursively
