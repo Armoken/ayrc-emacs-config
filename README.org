@@ -1688,6 +1688,40 @@ Editor settings
                                 rest-of-debug-templates))))))
     #+end_src
 
+** [[https://emacs-tree-sitter.github.io/][Tree-sitter]]
+  Incremental parsing system
+
+  #+begin_src emacs-lisp :tangle yes :noweb yes
+    (use-package tree-sitter
+        :straight t
+        :after (:any company)
+        :diminish tree-sitter-hl-mode
+        :commands (tree-sitter-hl-mode)
+        :init
+        <<helm-tree-sitter-usepkg>>
+        <<tree-sitter-langs-usepkg>>
+        :config
+        (require 'tree-sitter-langs)
+        (global-tree-sitter-mode))
+  #+end_src
+
+**** [[https://github.com/yyoncho/helm-lsp][Helm]]
+     #+begin_src emacs-lisp :tangle no :noweb-ref helm-tree-sitter-usepkg
+       (use-package helm-tree-sitter
+           :straight t
+           :defer t
+           :after (tree-sitter)
+           :commands (helm-tree-sitter-or-imenu))
+     #+end_src
+
+**** [[https://github.com/emacs-tree-sitter/tree-sitter-langs][Langs bundle]]
+     #+begin_src emacs-lisp :tangle no :noweb-ref tree-sitter-langs-usepkg
+       (use-package tree-sitter-langs
+           :straight t
+           :defer t
+           :after (tree-sitter))
+     #+end_src
+
 * Helpful functions
 ** Open current file in default external program                                                   :hotkeys:interactive:
    #+begin_src emacs-lisp :tangle README-loaddefs.el
