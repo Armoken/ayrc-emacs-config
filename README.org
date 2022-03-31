@@ -1079,13 +1079,20 @@ Editor settings
      (use-package compile
          :defer t
          :after (:any company)
-         :bind (
-                ;; Press to compile
+         :bind (;; Press to compile
                 ("<f9>" . 'compile)
 
                 ;; Errors switching
                 ("<f7>" . 'next-error)
-                ("<f8>" . 'previous-error)))
+                ("<f8>" . 'previous-error))
+
+         :config
+         (require 'ansi-color)
+         (defun colorize-compilation-buffer ()
+             (toggle-read-only)
+             (ansi-color-apply-on-region compilation-filter-start (point))
+             (toggle-read-only))
+         (add-hook 'compilation-filter-hook 'colorize-compilation-buffer))
    #+end_src
 
 ** [[https://github.com/purcell/envrc][Buffer-local direnv integration for Emacs]]
