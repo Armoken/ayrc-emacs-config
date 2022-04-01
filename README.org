@@ -657,8 +657,10 @@ Editor settings
          (projectile-switch-project-action                 'helm-projectile)
          (projectile-enable-caching                        t)
          :config
-         (setq projectile-project-root-files-top-down-recurring (append '("compile_commands.json" ".cquery" ".ccls" ".clangd")
-                                                                        projectile-project-root-files-top-down-recurring)
+         (setq projectile-project-root-files-bottom-up (append '(".dir-locals.el"
+                                                                 ".projectile"
+                                                                 ".project")
+                                                               projectile-project-root-files-bottom-up)
 
                projectile-known-projects-file                   (expand-file-name
                                                                  "known-projects.el"
