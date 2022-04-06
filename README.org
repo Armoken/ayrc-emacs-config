@@ -3373,7 +3373,7 @@ Editor settings
           (smart-shift-mode           1)
           (hl-todo-mode               1)
 
-          (require 'lsp-pyls)
+          (require 'lsp-pylsp)
           (require 'dap-python)
           (lsp-deferred))
     #+end_src
