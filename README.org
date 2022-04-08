@@ -2449,11 +2449,6 @@ Editor settings
                      magit-set-upstream-on-push 'askifnotset)))
 	  #+end_src
 
-*** [[https://bitbucket.org/agriggio/ahg/src/master/][Mercurial]]
-     #+begin_src emacs-lisp :tangle yes
-       (use-package ahg
-           :straight t)
-     #+end_src
 ** Dired                                                                                                :global_hotkeys:
    #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package dired
