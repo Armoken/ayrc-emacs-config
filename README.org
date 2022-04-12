@@ -1604,6 +1604,7 @@ Editor settings
           (lsp-auto-configure                         nil)
           (lsp-enable-snippet                         nil)
           (lsp-keep-workspace-alive                   nil)
+          (lsp-lens-enable nil)
           :init
           <<lsp-ui-usepkg>>
           <<helm-lsp-usepkg>>)
