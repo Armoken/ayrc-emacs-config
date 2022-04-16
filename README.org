@@ -4521,3 +4521,27 @@ Editor settings
 
           (ayrc/setup-company))
     #+end_src
+** Rust
+   #+begin_src emacs-lisp :tangle yes :noweb no
+     (use-package rustic
+         :straight t
+         :hook (rustic-mode . ayrc/rust-hook)
+         :config
+         (setq rustic-format-on-save nil))
+   #+end_src
+
+*** Hook
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
+      ;;;###autoload
+      (defun ayrc/rust-hook ()
+          (envrc-mode                1)
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (ws-butler-mode            1)
+          (smart-shift-mode          1)
+          (smartparens-mode          1)
+          (abbrev-mode               1)
+          (yas-minor-mode            1)
+          (hs-minor-mode             1)
+          (hl-todo-mode              1))
+    #+end_src
