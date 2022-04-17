@@ -1993,6 +1993,55 @@ Editor settings
          nil)
    #+end_src
 
+* Ledger
+  #+begin_src emacs-lisp :tangle yes :noweb yes
+    (use-package ledger-mode
+        :straight t
+        :mode   (("\\.ledger\\'" . ledger-mode))
+        :hook   (ledger-mode . ayrc/ledger-hook)
+        :init
+        <<company-ledger-usepkg>>
+        <<flycheck-ledger-usepkg>>
+        :config)
+  #+end_src
+
+** [[https://github.com/debanjum/company-ledger][Autocompletion]]
+    #+begin_src emacs-lisp :tangle no :noweb-ref company-ledger-usepkg
+      (use-package company-ledger
+          :straight  t
+          :after     (ledger-mode)
+          :commands  (company-ledger)
+          :functions (company-ledger))
+    #+end_src
+
+** [[https://github.com/purcell/flycheck-ledger][Flycheck]]
+    #+begin_src emacs-lisp :tangle no :noweb-ref flycheck-ledger-usepkg
+      (use-package flycheck-ledger
+          :straight t
+          :defer t
+          :after ledger-mode)
+    #+end_src
+
+** Hook
+    #+begin_src emacs-lisp :tangle README-loaddefs.el
+      ;;;###autoload
+      (defun ayrc/ledger-hook ()
+          (envrc-mode                1)
+          (display-line-numbers-mode 1)
+          (visual-line-mode          1)
+          (ws-butler-mode            1)
+          (smart-shift-mode          1)
+          (smartparens-mode          1)
+          (abbrev-mode               1)
+          (yas-minor-mode            1)
+          (hl-todo-mode              1)
+
+          (ayrc/setup-company '(company-ledger :with company-yasnippet))
+
+          (require 'flycheck-ledger)
+          (ledger-flymake-enable))
+    #+end_src
+
 * Org-mode
     #+begin_src emacs-lisp :tangle yes :noweb yes
       (use-package org
