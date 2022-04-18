@@ -1605,6 +1605,8 @@ Editor settings
           (lsp-enable-snippet                         nil)
           (lsp-keep-workspace-alive                   nil)
           (lsp-lens-enable nil)
+          (read-process-output-max (* 1024 1024))
+
           :init
           <<lsp-ui-usepkg>>
           <<helm-lsp-usepkg>>)
@@ -4543,5 +4545,9 @@ Editor settings
           (abbrev-mode               1)
           (yas-minor-mode            1)
           (hs-minor-mode             1)
-          (hl-todo-mode              1))
+          (hl-todo-mode              1)
+          ;; Disable due to lack of performance
+          ;; https://github.com/brotzeit/rustic/issues/107
+          (adaptive-wrap-prefix-mode -1)
+          )
     #+end_src
