@@ -8,6 +8,11 @@
 (if (get-buffer "*scratch*")
     (kill-buffer "*scratch*"))
 
+;; Set UTF-8 as default encoding
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-language-environment 'utf-8)
+(set-selection-coding-system 'utf-8)
 
 ;; Hack from 'https://github.com/a13/fnhh' to increase startup speed
 (defvar ayrc/fnhh-handler-alist nil

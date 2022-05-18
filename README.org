@@ -346,6 +346,7 @@ Editor settings
 
    #+begin_src emacs-lisp :tangle yes
      (use-package exec-path-from-shell
+         :if (eq system-type 'gnu/linux)
          :straight t
          :after (:any python)
          :commands (exec-path-from-shell-initialize
@@ -1030,7 +1031,8 @@ Editor settings
            :build t
            :pre-build ,(pcase system-type
                            ('gnu/linux '(("./install-eaf.py" "--ignore-core-deps" "--ignore-sys-deps" "--ignore-py-deps" "--install-all-apps")))
-                           (_          '(("./install-eaf.py" "--ignore-core-deps" "--ignore-sys-deps" "--ignore-py-deps" "--install-all-apps"))))))
+                           (_          '(;; ("python" "./install-eaf.py" "--ignore-core-deps" "--ignore-sys-deps" "--ignore-py-deps" "--install-all-apps")
+                                         )))))
 
     (use-package eaf
         :straight t
@@ -1060,10 +1062,11 @@ Editor settings
         :init
 
         :config
-        (require 'eaf-browser)
-        (require 'eaf-org-previewer)
-        (require 'eaf-markdown-previewer)
-        (eaf-setq eaf-browser-enable-adblocker "true"))
+        (when (eq system-type 'gnu/linux)
+            (require 'eaf-browser)
+            (require 'eaf-org-previewer)
+            (require 'eaf-markdown-previewer)
+            (eaf-setq eaf-browser-enable-adblocker "true")))
   #+end_src
 
 ** Keep the same hotkeys in other keyboard layout                                                              :hotkeys:
@@ -1360,7 +1363,7 @@ Editor settings
           :diminish flycheck-mode
           :commands (flycheck-mode)
           :bind (:map flycheck-mode-map
-                      ("C-c h f" . helm-flycheck))
+                 ("C-c h f" . helm-flycheck))
           :hook (flycheck-mode . ayrc/flycheck-hook)
           :init
           <<flycheck-hook>>
@@ -1371,8 +1374,10 @@ Editor settings
                 flycheck-check-syntax-automatically '(save
                                                       mode-enabled
                                                       idle-buffer-switch
-                                                      idle-change)))
+                                                      idle-change))
 
+          (when (eq system-type 'windows-nt)
+              (setq-default flycheck-disabled-checkers '(python-pycompile))))
     #+end_src
 
 **** [[https://github.com/yasuyk/helm-flycheck][Helm]]
@@ -1455,6 +1460,7 @@ Editor settings
 
     #+begin_src emacs-lisp :tangle no :noweb-ref snippets-collection
       (use-package yasnippet-snippets
+          :if (not (eq system-type 'windows-nt))
           :straight t
           :commands (yasnippet-snippets-initialize))
     #+end_src
@@ -3373,6 +3379,7 @@ Editor settings
 **** [[https://github.com/pythonic-emacs/pyenv-mode][Pyenv]]
      #+begin_src emacs-lisp :tangle no :noweb-ref pyenv-mode-usepkg
        (use-package pyenv-mode
+           :if (eq system-type 'gnu/linux)
            :straight t
            :defer t
            :after python
@@ -3405,7 +3412,9 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/python-hook ()
-          (exec-path-from-shell-initialize)
+          (when (eq system-type 'gnu/linux)
+              (exec-path-from-shell-initialize))
+
           (envrc-mode                 1)
 
           (display-line-numbers-mode  1)
@@ -3466,7 +3475,9 @@ Editor settings
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
       (defun ayrc/cython-hook ()
-          (exec-path-from-shell-initialize)
+          (when (eq system-type 'gnu/linux)
+              (exec-path-from-shell-initialize))
+
           (envrc-mode                 1)
 
           (display-line-numbers-mode  1)
