@@ -1671,7 +1671,6 @@ Editor settings
           :hook (dap-mode . ayrc/dap-hook)
           :init
           (defun ayrc/dap-hook ()
-              (setq dap-lldb-debug-program '("/usr/bin/lldb-vscode"))
               (add-hook 'dap-stopped-hook
                         (lambda (_debug_session) (call-interactively #'dap-hydra)))
 
