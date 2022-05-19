@@ -956,6 +956,11 @@ Editor settings
     (global-set-key (kbd "<f5>") (lambda () (interactive) (revert-buffer)))
   #+end_src
 
+** Disable foreground                                                                                          :hotkeys:
+  #+begin_src emacs-lisp :tangle yes
+    (global-unset-key (kbd "C-z"))
+  #+end_src
+
 ** [[https://github.com/abo-abo/avy][Jump to things in Emacs tree-style]]                                                                          :hotkeys:
    Jump to arbitrary positions in visible text and select text quickly
 
