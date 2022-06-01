@@ -2053,7 +2053,7 @@ Editor settings
     #+end_src
 
 * Org-mode
-    #+begin_src emacs-lisp :tangle yes :noweb yes
+  #+begin_src emacs-lisp :tangle yes :noweb yes
       (use-package org
           :defer t
           :commands (org-mode)
@@ -2096,117 +2096,684 @@ Editor settings
                                                                            :weight bold))
                                                             ("CANCELED" . (:foreground "RoyalBlue3"
                                                                            :weight bold)))))
-    #+end_src
+  #+end_src
 
-** .dir-locals.el example files
-*** For org root dir
+** .dir-locals.el example file
     #+begin_src emacs-lisp :tangle no
-      ((nil . ((eval
-                . (let* ((notes-dir        (locate-dominating-file (buffer-file-name) ".dir-locals.el"))
-                         (archives-dir     (concat notes-dir "/Archives"))
-                         (zettelkasten-dir (concat notes-dir "/Zettelkasten")))
-                      (setq org-indent-indentation-per-level               1
-                            org-adapt-indentation                          nil
+    ((nil . ((eval
+              . (let* ((notes-dir        (locate-dominating-file default-directory dir-locals-file))
+                       (archives-dir     (concat notes-dir "Archives"))
+                       (roam-dir         (concat notes-dir "Zettelkasten")))
+                    (setq fill-column                       100
+                          org-indent-indentation-per-level  1
+                          org-adapt-indentation             nil
+                          calendar-week-start-day           1 ;; Monday
 
-                            org-id-locations-file                          (concat notes-dir ".org-id-locations")
-                            org-id-track-globally                          t
+                          org-id-locations-file             (concat notes-dir ".org-id-locations")
+                          org-id-track-globally             t
+                          org-return-follows-link           t
+                          org-support-shift-select          t
 
-                            calendar-week-start-day                        1 ;; Monday
-                            org-agenda-files                               (directory-files-recursively
-                                                                            zettelkasten-dir
-                                                                            ".*\.org")
-                            org-agenda-prefix-format                       '((agenda . " %i %?-12t% s")
-                                                                             (todo   . " %i")
-                                                                             (tags   . " %i")
-                                                                             (search . " %i"))
-                            org-stuck-projects                             '("+PROJECT/-DONE" ("CURRENT") nil "")
-                            org-super-agenda-groups                        '((:name "Projects"
-                                                                              :tag "project")
-                                                                             (:name "Meta projects"
-                                                                              :tag "metaproject")
-                                                                             (:name "Ordinary tasks"
-                                                                              :and (:not (:tag "project")
-                                                                                    :not (:tag "metaproject")))
-                                                                             (:name "Periodical"
-                                                                              :tag "periodical")
-                                                                             (:name "Nonperiodical"
-                                                                              :not (:tag "periodical")))
-                            org-agenda-custom-commands                     '(("o" "Soon tasks and projects"
-                                                                              ((org-ql-block '(tags-local "soon")
-                                                                                             ((org-ql-block-header "Soon tasks and projects"))
-                                                                                             :group)))
+                          org-stuck-projects                '("+PROJECT/-DONE" ("CURRENT") nil "")
+                          org-agenda-prefix-format          '((agenda . " %i %?-12t% s")
+                                                              (todo   . " %i")
+                                                              (tags   . " %i")
+                                                              (search . " %i"))
+                          org-super-agenda-groups           '((:name "Lifestyle"
+                                                               :tag "lifestyle")
+                                                              (:name "Courses"
+                                                               :tag "courses")
+                                                              (:name "Reading"
+                                                               :tag "reading")
+                                                              (:name "Periodical"
+                                                               :tag "periodical")
+                                                              (:name "Projects"
+                                                               :auto-category t
+                                                               :and (:tag "project"
+                                                                     :not (:tag "courses")
+                                                                     :not (:tag "reading")
+                                                                     :not (:tag "periodical")
+                                                                     :not (:tag "lifestyle")))
+                                                              (:name "Meta projects"
+                                                               :auto-category t
+                                                               :and (:tag "metaproject"
+                                                                     :not (:tag "courses")
+                                                                     :not (:tag "reading")
+                                                                     :not (:tag "periodical")
+                                                                     :not (:tag "lifestyle")))
+                                                              (:name "Ordinary tasks"
+                                                               :and (:not (:tag "project")
+                                                                     :not (:tag "metaproject")
+                                                                     :not (:tag "courses")
+                                                                     :not (:tag "periodical")
+                                                                     :not (:tag "lifestyle"))))
+                          org-ql-views                      '(("(-2) Unordered tasks and projects"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (not (tags-local "now"))
+                                                                           (not (tags-local "ordered"))
+                                                                           (not (tags "films"))
+                                                                           (not (tags "games"))
+                                                                           (not (tags "music"))
+                                                                           (not (tags "periodical"))
+                                                                           (not (tags "work"))
+                                                                           (not (tags-inherited "reading"))
+                                                                           (not (tags-inherited "noagenda"))
+                                                                           (not (tags-local "unordered"))
+                                                                           (todo))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "(-2) Unordered tasks and projects")
+                                                              ("(-1) Waiting tasks and projects"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (not (tags "work"))
+                                                                           (not (tags-inherited "noagenda"))
+                                                                           (todo "WAITING"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "(-1) Unordered tasks and projects")
+                                                              ("(0) Now tasks and projects"
+                                                               :buffers-files org-agenda-files
+                                                               :query (tags-local "now")
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Now tasks and projects")
+                                                              ("(1) Tasks and projects of first order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "1"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of first order")
+                                                              ("(2) Tasks and projects of second order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "2"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of second order")
+                                                              ("(3) Tasks and projects of third order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "3"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of third order")
+                                                              ("(4) Tasks and projects of fourth order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "4"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of fourth order")
+                                                              ("(5) Tasks and projects of first fifth"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "5"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of fifth order")
+                                                              ("(6) Tasks and projects of sixth order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "6"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of sixth order")
+                                                              ("(7) Tasks and projects of seventh order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "7"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of seventh order")
+                                                              ("(8) Tasks and projects of eighth order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "8"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of eighth order")
+                                                              ("(9) Tasks and projects of ninth order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "9"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of ninth order")
+                                                              ("(10) Tasks and projects of tenth order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "10"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of tenth order")
+                                                              ("(11) Tasks and projects of eleventh order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "11"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of eleventh order")
+                                                              ("(12) Tasks and projects of twelfth order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "12"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of twelfth order")
+                                                              ("(13) Tasks and projects of thirteenth order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "13"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of thirteenth order")
+                                                              ("(14) Tasks and projects of fourteenth order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "14"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of fourteenth order")
+                                                              ("(15) Tasks and projects of fifteenth order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "15"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of fifteenth order")
+                                                              ("(16) Tasks and projects of sixteenth order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "16"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of sixteenth order")
+                                                              ("(17) Tasks and projects of seventeenth order"
+                                                               :buffers-files org-agenda-files
+                                                               :query (and (tags-local "ordered")
+                                                                           (tags-local "17"))
+                                                               :super-groups org-super-agenda-groups
+                                                               :title "Tasks and projects of seventeenth order"))
+                          org-agenda-custom-commands        '(("o" . "Ordered tasks and projects")
+                                                              ("oa" . "Ordered tasks and projects")
+                                                              ("oan" "Now tasks and projects"
+                                                               ((org-ql-block '(tags-local "now")
+                                                                              ((org-ql-block-header "Soon tasks and projects"))
+                                                                              :group)))
+                                                              ("oa1" "Tasks and projects of first order"
+                                                               ((org-ql-block '(and (tags-local "ordered")
+                                                                                    (tags-local "1"))
+                                                                              ((org-ql-block-header "Tasks and projects of first order"))
+                                                                              :group)))
+                                                              ("oa2" "Tasks and projects of second order"
+                                                               ((org-ql-block '(and (tags-local "ordered")
+                                                                                    (tags-local "2"))
+                                                                              ((org-ql-block-header "Tasks and projects of second order"))
+                                                                              :group)))
+                                                              ("oa3" "Tasks and projects of third order"
+                                                               ((org-ql-block '(and (tags-local "ordered")
+                                                                                    (tags-local "3"))
+                                                                              ((org-ql-block-header "Tasks and projects of third order"))
+                                                                              :group)))
+                                                              ("oa4" "Tasks and projects of fourth order"
+                                                               ((org-ql-block '(and (tags-local "ordered")
+                                                                                    (tags-local "4"))
+                                                                              ((org-ql-block-header "Tasks and projects of fourth order"))
+                                                                              :group)))
+                                                              ("oa5" "Tasks and projects of fifth order"
+                                                               ((org-ql-block '(and (tags-local "ordered")
+                                                                                    (tags-local "5"))
+                                                                              ((org-ql-block-header "Tasks and projects of fifth order"))
+                                                                              :group)))
+                                                              ("oa6" "Tasks and projects of sixth order"
+                                                               ((org-ql-block '(and (tags-local "ordered")
+                                                                                    (tags-local "6"))
+                                                                              ((org-ql-block-header "Tasks and projects of sixth order"))
+                                                                              :group)))
+                                                              ("oa7" "Tasks and projects of seventh order"
+                                                               ((org-ql-block '(and (tags-local "ordered")
+                                                                                    (tags-local "7"))
+                                                                              ((org-ql-block-header "Tasks and projects of seventh order"))
+                                                                              :group)))
+                                                              ("oa8" "Tasks and projects of eighth order"
+                                                               ((org-ql-block '(and (tags-local "ordered")
+                                                                                    (tags-local "8"))
+                                                                              ((org-ql-block-header "Tasks and projects of eighth order"))
+                                                                              :group)))
+                                                              ("oa9" "Tasks and projects of ninth order"
+                                                               ((org-ql-block '(and (tags-local "ordered")
+                                                                                    (tags-local "9"))
+                                                                              ((org-ql-block-header "Tasks and projects of ninth order"))
+                                                                              :group)))
+                                                              ("oau" . "Unordered soon tasks and projects")
+                                                              ("oaua" "Unordered soon tasks and projects (ALL EXCEPT READING)"
+                                                               ((org-ql-block '(and (not (tags-local "ordered"))
+                                                                                    (not (tags-local "reading"))
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Not soon tasks and projects (READING)"))
+                                                                              :group)))
+                                                              ("oaur" "Unordered soon tasks and projects (READING)"
+                                                               ((org-ql-block '(and (not (tags-local "ordered"))
+                                                                                    (tags-local "reading")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Not soon tasks and projects (READING)"))
+                                                                              :group)))
 
-                                                                             ("h" "Things to buy"
-                                                                              ((org-ql-block '(and
-                                                                                               (tags "shopping")
-                                                                                               (todo "TODO" "CURRENT" "WAITING"))
-                                                                                             ((org-ql-block-header "Things to buy"))
-                                                                                             :group)))
+                                                              ("op" . "Ordered projects")
+                                                              ("opn" "Now projects"
+                                                               ((org-ql-block '(and (tags-local "project")
+                                                                                    (not (tags-local "now")))
+                                                                              ((org-ql-block-header "Now projects"))
+                                                                              :group)))
+                                                              ("op1" "Projects to do in the nearest feature, first of all"
+                                                               ((org-ql-block '(and (tags-local "project")
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "1")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Projects to do in the nearest feature, first of all"))
+                                                                              :group)))
+                                                              ("op2" "Projects to do in the nearest feature, secondarily"
+                                                               ((org-ql-block '(and (tags-local "project")
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "2")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Projects to do in the nearest feature, secondarily"))
+                                                                              :group)))
+                                                              ("op3" "Projects to do in the nearest feature, in the third place"
+                                                               ((org-ql-block '(and (tags-local "project")
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "3")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Projects to do in the nearest feature, in the third place"))
+                                                                              :group)))
+                                                              ("op4" "Projects to do in the nearest feature, fourth"
+                                                               ((org-ql-block '(and (tags-local "project")
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "4")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Projects to do in the nearest feature, fourth"))
+                                                                              :group)))
 
-                                                                             ("p" . "Project queries")
-                                                                             ("pt" "Unfinished projects"
-                                                                              ((org-ql-block '(and
-                                                                                               (tags-local "project")
-                                                                                               (todo "TODO" "CURRENT" "WAITING"))
-                                                                                             ((org-ql-block-header "Unfinished projects"))
-                                                                                             :group)))
-                                                                             ("po" "Projects to do in the nearest feature"
-                                                                              ((org-ql-block '(and
-                                                                                               (tags-local "project")
-                                                                                               (tags-local "soon")
-                                                                                               (todo "TODO" "CURRENT" "WAITING"))
-                                                                                             ((org-ql-block-header "Projects to do in the nearest feature"))
-                                                                                             :group)))
-                                                                             ("pa" "All projects"
-                                                                              ((org-ql-block '(tags-local "project")
-                                                                                             ((org-ql-block-header "All projects"))
-                                                                                             :group)))
+                                                              ("ot" . "Ordered tasks")
+                                                              ("otn" "Tasks now"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "now"))
+                                                                              ((org-ql-block-header "Tasks now"))
+                                                                              :group)))
+                                                              ("ot1" "Tasks to do in the nearest feature, first of all"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "1")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, first of all"))
+                                                                              :group)))
+                                                              ("ot2" "Tasks to do in the nearest feature, secondarily"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "2")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, secondarily"))
+                                                                              :group)))
+                                                              ("ot3" "Tasks to do in the nearest feature, in the third place"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "3")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, in the third place"))
+                                                                              :group)))
+                                                              ("ot4" "Tasks to do in the nearest feature, fourth"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "4")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, fourth"))
+                                                                              :group)))
+                                                              ("ot5" "Tasks to do in the nearest feature, fifth"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "5")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, fifth"))
+                                                                              :group)))
+                                                              ("ot6" "Tasks to do in the nearest feature, sixth"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "6")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, sixth"))
+                                                                              :group)))
+                                                              ("ot7" "Tasks to do in the nearest feature, seventh"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "7")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, seventh"))
+                                                                              :group)))
+                                                              ("ot8" "Tasks to do in the nearest feature, eighth"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "8")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, eighth"))
+                                                                              :group)))
+                                                              ("ot9" "Tasks to do in the nearest feature, ninth"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "9")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, ninth"))
+                                                                              :group)))
 
-                                                                             ("r" . "Reading")
-                                                                             ("ra" "Articles" tags-todo "+reading+articles" nil)
-                                                                             ("rb" "Books"    tags-todo "+reading+books"    nil))
+                                                              ("u" . "Unordered tasks or projects")
+                                                              ("ua" "Unordered tasks and projects (without films, games, music, periodical, work, and reading)"
+                                                               ((org-ql-block '(and (not (tags-local "now"))
+                                                                                    (not (tags-local "ordered"))
+                                                                                    (not (tags "films"))
+                                                                                    (not (tags "games"))
+                                                                                    (not (tags "music"))
+                                                                                    (not (tags "periodical"))
+                                                                                    (not (tags "work"))
+                                                                                    (not (tags-inherited "reading"))
+                                                                                    (not (tags-inherited "noagenda"))
+                                                                                    (not (tags-local "unordered"))
+                                                                                    (not (todo "WAITING"))
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Unordered tasks and projects (without films, games, music, periodical, work, and reading)"))
+                                                                              :group)))
+                                                              ("up" "Unordered projects (without films, games, music, periodical, work, and reading)"
+                                                               ((org-ql-block '(and (tags-local "project")
+                                                                                    (not (tags-local "now"))
+                                                                                    (not (tags-local "ordered"))
+                                                                                    (not (tags "films"))
+                                                                                    (not (tags "games"))
+                                                                                    (not (tags "music"))
+                                                                                    (not (tags "periodical"))
+                                                                                    (not (tags "work"))
+                                                                                    (not (tags-inherited "reading"))
+                                                                                    (not (tags-inherited "noagenda"))
+                                                                                    (not (tags-local "unordered"))
+                                                                                    (not (todo "WAITING"))
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Unordered projects (without films, games, music, periodical, work, and reading)"))
+                                                                              :group)))
+                                                              ("ut" "Unordered tasks (without films, games, music, periodical, work, and reading)"
+                                                               ((org-ql-block '(and (not (tags-inherited "project"))
+                                                                                    (not (tags-local "now"))
+                                                                                    (not (tags-local "ordered"))
+                                                                                    (not (tags "films"))
+                                                                                    (not (tags "games"))
+                                                                                    (not (tags "music"))
+                                                                                    (not (tags "periodical"))
+                                                                                    (not (tags "work"))
+                                                                                    (not (tags-inherited "reading"))
+                                                                                    (not (tags-inherited "noagenda"))
+                                                                                    (not (tags-local "unordered"))
+                                                                                    (not (todo "WAITING"))
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Unordered tasks (without films, games, music, periodical, work, and reading)"))
+                                                                              :group)))
 
-                            org-archive-location                           (concat archives-dir "/%s_archive::"))
 
-                      (make-directory archives-dir t))))))
-    #+end_src
+                                                              ("h" "Things to buy"
+                                                               ((org-ql-block '(and (tags "shopping")
+                                                                                    (todo)
+                                                                                    ;; Condition to remove shopping inner tasks from shopping list
+                                                                                    (parent (not (todo))))
+                                                                              ((org-ql-block-header "Things to buy"))
+                                                                              :group)))
 
-*** For org-roam root dir
-    #+begin_src emacs-lisp :tangle no
-      ((nil      . ((eval
-                     . (let* ((roam-dir (locate-dominating-file (buffer-file-name) ".dir-locals.el")))
-                           (setq org-indent-indentation-per-level               1
-                                 org-adapt-indentation                          nil
+                                                              ;; Projects
+                                                              ("p" . "Projects")
+                                                              ("pa" "All projects"
+                                                               ((org-ql-block '(and (tags-local "project")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "All projects"))
+                                                                              :group)))
+                                                              ("pd" "Done or cancelled projects"
+                                                               ((org-ql-block '(and (tags-local "project")
+                                                                                    (done))
+                                                                              ((org-ql-block-header "Done or cancelled projects"))
+                                                                              :group)))
+                                                              ("pu" "Unordered projects"
+                                                               ((org-ql-block '(and (tags-local "project")
+                                                                                    (not (tags-local "now"))
+                                                                                    (not (tags-local "ordered")))
+                                                                              ((org-ql-block-header "Unordered projects"))
+                                                                              :group)))
 
-                                 org-roam-directory                             (concat roam-dir "Files")
-                                 org-roam-index-file                            (concat roam-dir "Index.org")
-                                 org-roam-db-location                           (concat roam-dir "org-roam.db")
-                                 org-roam-capture-templates
-                                 '(("d" "default" plain "%?"
-                                    :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-                                                       "#+title: ${title}
-      ,#+filetags:
-      ,#+FILETAGS:
-      ")
-                                    :unnarrowed t)
+                                                              ("po" . "Ordered projects")
+                                                              ("pon" "Now projects"
+                                                               ((org-ql-block '(and (tags-local "project")
+                                                                                    (not (tags-local "now")))
+                                                                              ((org-ql-block-header "Now projects"))
+                                                                              :group)))
+                                                              ("po1" "Projects to do in the nearest feature, first of all"
+                                                               ((org-ql-block '(and
+                                                                                (tags-local "project")
+                                                                                (tags-local "ordered")
+                                                                                (tags-local "1")
+                                                                                (todo))
+                                                                              ((org-ql-block-header "Projects to do in the nearest feature, first of all"))
+                                                                              :group)))
+                                                              ("po2" "Projects to do in the nearest feature, secondarily"
+                                                               ((org-ql-block '(and
+                                                                                (tags-local "project")
+                                                                                (tags-local "ordered")
+                                                                                (tags-local "2")
+                                                                                (todo))
+                                                                              ((org-ql-block-header "Projects to do in the nearest feature, secondarily"))
+                                                                              :group)))
+                                                              ("po3" "Projects to do in the nearest feature, in the third place"
+                                                               ((org-ql-block '(and
+                                                                                (tags-local "project")
+                                                                                (tags-local "ordered")
+                                                                                (tags-local "3")
+                                                                                (todo))
+                                                                              ((org-ql-block-header "Projects to do in the nearest feature, in the third place"))
+                                                                              :group)))
+                                                              ("po4" "Projects to do in the nearest feature, fourth"
+                                                               ((org-ql-block '(and
+                                                                                (tags-local "project")
+                                                                                (tags-local "ordered")
+                                                                                (tags-local "4")
+                                                                                (todo))
+                                                                              ((org-ql-block-header "Projects to do in the nearest feature, fourth"))
+                                                                              :group)))
+                                                              ("po5" "Projects to do in the nearest feature, fifth"
+                                                               ((org-ql-block '(and
+                                                                                (tags-local "project")
+                                                                                (tags-local "ordered")
+                                                                                (tags-local "5")
+                                                                                (todo))
+                                                                              ((org-ql-block-header "Projects to do in the nearest feature, fifth"))
+                                                                              :group)))
+                                                              ("po6" "Projects to do in the nearest feature, sixth"
+                                                               ((org-ql-block '(and
+                                                                                (tags-local "project")
+                                                                                (tags-local "ordered")
+                                                                                (tags-local "6")
+                                                                                (todo))
+                                                                              ((org-ql-block-header "Projects to do in the nearest feature, sixth"))
+                                                                              :group)))
+                                                              ("po7" "Projects to do in the nearest feature, seventh"
+                                                               ((org-ql-block '(and
+                                                                                (tags-local "project")
+                                                                                (tags-local "ordered")
+                                                                                (tags-local "7")
+                                                                                (todo))
+                                                                              ((org-ql-block-header "Projects to do in the nearest feature, seventh"))
+                                                                              :group)))
+                                                              ("po8" "Projects to do in the nearest feature, eighth"
+                                                               ((org-ql-block '(and
+                                                                                (tags-local "project")
+                                                                                (tags-local "ordered")
+                                                                                (tags-local "8")
+                                                                                (todo))
+                                                                              ((org-ql-block-header "Projects to do in the nearest feature, eighth"))
+                                                                              :group)))
+                                                              ("po9" "Projects to do in the nearest feature, ninth"
+                                                               ((org-ql-block '(and
+                                                                                (tags-local "project")
+                                                                                (tags-local "ordered")
+                                                                                (tags-local "9")
+                                                                                (todo))
+                                                                              ((org-ql-block-header "Projects to do in the nearest feature, ninth"))
+                                                                              :group)))
 
-                                   ("r" "default-with-reading" plain "%?
-      ,* Reading                                                                                                      :reading:
-      ,** Articles                                                                                                   :articles:
-      ,** Books                                                                                                         :books:
-      "
-                                    :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-                                                       "#+title: ${title}
-      ,#+filetags:
-      ,#+FILETAGS:
-      ")
-                                    :unnarrowed t)))
+                                                              ;; Tasks
+                                                              ("t" . "Tasks")
+                                                              ("ta" "All tasks except reading"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (todo)
+                                                                                    (not (tags-inherited "reading")))
+                                                                              ((org-ql-block-header "All tasks except reading"))
+                                                                              :group)))
+                                                              ("tr" "All reading tasks"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (todo)
+                                                                                    (tags-inherited "reading"))
+                                                                              ((org-ql-block-header "All reading tasks"))
+                                                                              :group)))
+                                                              ("td" "Done or cancelled tasks"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (done))
+                                                                              ((org-ql-block-header "Done or cancelled tasks"))
+                                                                              :group)))
+                                                              ("tu" "Unordered projects"
+                                                               ((org-ql-block '(and (tags-local "project")
+                                                                                    (not (tags-local "now"))
+                                                                                    (not (tags-local "ordered")))
+                                                                              ((org-ql-block-header "Unordered projects"))
+                                                                              :group)))
 
-                           (make-directory org-roam-directory t)))))
+                                                              ("to" . "Ordered tasks")
+                                                              ("ton" "Tasks now"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "now"))
+                                                                              ((org-ql-block-header "Tasks now"))
+                                                                              :group)))
+                                                              ("to1" "Tasks to do in the nearest feature, first of all"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "1")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, first of all"))
+                                                                              :group)))
+                                                              ("to2" "Tasks to do in the nearest feature, secondarily"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "2")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, secondarily"))
+                                                                              :group)))
+                                                              ("to3" "Tasks to do in the nearest feature, in the third place"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "3")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, in the third place"))
+                                                                              :group)))
+                                                              ("to4" "Tasks to do in the nearest feature, fourth"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "4")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, fourth"))
+                                                                              :group)))
+                                                              ("to5" "Tasks to do in the nearest feature, fifth"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "5")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, fifth"))
+                                                                              :group)))
+                                                              ("to6" "Tasks to do in the nearest feature, sixth"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "6")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, sixth"))
+                                                                              :group)))
+                                                              ("to7" "Tasks to do in the nearest feature, seventh"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "7")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, seventh"))
+                                                                              :group)))
+                                                              ("to8" "Tasks to do in the nearest feature, eighth"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "8")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, eighth"))
+                                                                              :group)))
+                                                              ("to9" "Tasks to do in the nearest feature, ninth"
+                                                               ((org-ql-block '(and (not (tags-local "project"))
+                                                                                    (tags-local "ordered")
+                                                                                    (tags-local "9")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Tasks to do in the nearest feature, ninth"))
+                                                                              :group)))
 
-       (org-mode . ((mode . org-roam-db-autosync)
-                    (mode . org-roam-bibtex))
-                 ))
+                                                              ("w" "Waiting tasks and projects"
+                                                               ((org-ql-block '(todo "WAITING")
+                                                                              ((org-ql-block-header "Waiting tasks and projects"))
+                                                                              :group)))
+
+
+                                                              ("r" . "Reading")
+                                                              ("ra" . "Articles")
+                                                              ("raa" "All articles"
+                                                               ((org-ql-block '(and (tags-inherited "reading")
+                                                                                    (tags-inherited "articles"))
+                                                                              ((org-ql-block-header "All articles"))
+                                                                              :group)))
+                                                              ("rar" "Read articles"
+                                                               ((org-ql-block '(and (tags-inherited "reading")
+                                                                                    (tags-inherited "articles")
+                                                                                    (done))
+                                                                              ((org-ql-block-header "Read articles"))
+                                                                              :group)))
+                                                              ("ran" "Not read articles"
+                                                               ((org-ql-block '(and (tags-inherited "reading")
+                                                                                    (tags-inherited "articles")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Not read articles"))
+                                                                              :group)))
+
+                                                              ("rb" . "Books")
+                                                              ("rba" "All books"
+                                                               ((org-ql-block '(and (tags-inherited "reading")
+                                                                                    (tags-inherited "books"))
+                                                                              ((org-ql-block-header "All books"))
+                                                                              :group)))
+                                                              ("rbr" "Read books"
+                                                               ((org-ql-block '(and (tags-inherited "reading")
+                                                                                    (tags-inherited "books")
+                                                                                    (done))
+                                                                              ((org-ql-block-header "Read books"))
+                                                                              :group)))
+                                                              ("rbn" "Not read books"
+                                                               ((org-ql-block '(and (tags-inherited "reading")
+                                                                                    (tags-inherited "books")
+                                                                                    (todo))
+                                                                              ((org-ql-block-header "Not read books"))
+                                                                              :group))))
+
+                          org-roam-capture-templates       '(("d" "default" plain "%?"
+                                                              :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                                                                                 "#+title: ${title}
+    ,#+filetags:
+    ")
+                                                              :unnarrowed t)
+
+                                                             ("r" "default-with-reading" plain "%?
+    ,* Reading                                                                                                      :reading:
+    ,** Articles                                                                                                   :articles:
+    ,** Books                                                                                                         :books:
+    "
+                                                              :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                                                                                 "#+title: ${title}
+    ,#+filetags:
+    ")
+                                                              :unnarrowed t))
+
+                          org-archive-location             (concat archives-dir "/%s_archive::")
+
+                          org-agenda-files                 (directory-files-recursively roam-dir ".*\.org")
+                          org-roam-directory               (concat roam-dir "/Files")
+                          org-roam-index-file              (concat roam-dir "/Index.org")
+                          org-roam-db-location             (concat roam-dir "/org-roam.db")
+                          org-roam-ui-open-on-start        nil)
+
+                    (make-directory archives-dir t)
+                    (make-directory org-roam-directory t)))))
+     (org-mode . ((mode . org-roam-db-autosync)
+                  (mode . org-roam-bibtex)
+                  (mode . display-fill-column-indicator))))
     #+end_src
 
 ** Function for marking headings as projects
