@@ -2054,48 +2054,49 @@ Editor settings
 
 * Org-mode
   #+begin_src emacs-lisp :tangle yes :noweb yes
-      (use-package org
-          :defer t
-          :commands (org-mode)
-          :hook (org-mode . ayrc/orgmode-hook)
-          :bind (:map org-mode-map
-                 ("C-c M-l" . #'org-cliplink)
-                 ("C-c a"   . #'org-agenda)
-                 ("C-c n a" . #'orb-note-actions)
-                 ("C-c h i" . #'helm-org-rifle-current-buffer)
+    (use-package org
+        :defer t
+        :commands (org-mode)
+        :hook (org-mode . ayrc/orgmode-hook)
+        :bind (:map org-mode-map
+               ("C-c M-l" . #'org-cliplink)
+               ("C-c a"   . #'org-agenda)
+               ("C-c n a" . #'orb-note-actions)
+               ("C-c h i" . #'helm-org-rifle-current-buffer)
 
-                 ("C-c s y" . #'org-download-screenshot))
+               ("C-c s y" . #'org-download-screenshot))
 
-          :init
-          <<org-bullets-usepkg>>
-          <<org-present-usepkg>>
-          <<org-cliplink-usepkg>>
-          <<helm-org-rifle-usepkg>>
-          <<org-ql-usepkg>>
-          <<org-super-agenda-usepkg>>
-          <<org-chef-usepkg>>
-          <<org-journal-usepkg>>
-          <<org-ref-usepkg>>
-          <<org-roam-usepkg>>
-          <<org-edna-usepkg>>
-          <<org-download-usepkg>>
+        :init
+        <<org-bullets-usepkg>>
+        <<org-present-usepkg>>
+        <<org-cliplink-usepkg>>
+        <<helm-org-rifle-usepkg>>
+        <<org-ql-usepkg>>
+        <<org-super-agenda-usepkg>>
+        <<org-chef-usepkg>>
+        <<org-journal-usepkg>>
+        <<org-ref-usepkg>>
+        <<org-roam-usepkg>>
+        <<org-edna-usepkg>>
+        <<org-download-usepkg>>
+        <<org-board-usepkg>>
 
-          :custom
-          (org-log-done                                   'time)
-          (org-startup-folded                             't)
-          (org-tags-column                                -120)
-          (org-capture-bookmark                           nil)
-          (org-src-tab-acts-natively                      t)
-          (org-list-allow-alphabetical                    t)
-          (org-todo-keywords                              '((sequence
-                                                             "TODO(t)" "CURRENT" "WAITING(w)"
-                                                             "|"
-                                                             "DONE(d!)" "CANCELED(c@)")))
-          (org-todo-keyword-faces                         '(("CURRENT"  . "yellow")
-                                                            ("WAITING"  . (:foreground "turquoise2"
-                                                                           :weight bold))
-                                                            ("CANCELED" . (:foreground "RoyalBlue3"
-                                                                           :weight bold)))))
+        :custom
+        (org-log-done                                   'time)
+        (org-startup-folded                             't)
+        (org-tags-column                                -120)
+        (org-capture-bookmark                           nil)
+        (org-src-tab-acts-natively                      t)
+        (org-list-allow-alphabetical                    t)
+        (org-todo-keywords                              '((sequence
+                                                           "TODO(t)" "CURRENT" "WAITING(w)"
+                                                           "|"
+                                                           "DONE(d!)" "CANCELED(c@)")))
+        (org-todo-keyword-faces                         '(("CURRENT"  . "yellow")
+                                                          ("WAITING"  . (:foreground "turquoise2"
+                                                                         :weight bold))
+                                                          ("CANCELED" . (:foreground "RoyalBlue3"
+                                                                         :weight bold)))))
   #+end_src
 
 ** .dir-locals.el example file
@@ -2975,6 +2976,17 @@ Editor settings
          (org-download-heading-lvl nil)
          (org-download-timestamp "%Y%m%d-%H%M%S_")
          (org-download-screenshot-method "xclip -selection clipboard -t image/png -o > %s"))
+   #+end_src
+
+** [[https://github.com/charlesroelli/org-board][org-board]]
+   Org mode's web archiver.
+
+   #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref org-board-usepkg
+     (use-package org-board
+         :straight t
+         :after org
+         :commands (org-board-archive
+                    org-board-archive-dry-run))
    #+end_src
 
 ** Hook
