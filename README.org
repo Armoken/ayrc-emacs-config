@@ -2080,6 +2080,7 @@ Editor settings
         <<org-edna-usepkg>>
         <<org-download-usepkg>>
         <<org-board-usepkg>>
+        <<org-anki-usepkg>>
 
         :custom
         (org-log-done                                   'time)
@@ -2987,6 +2988,21 @@ Editor settings
          :after org
          :commands (org-board-archive
                     org-board-archive-dry-run))
+   #+end_src
+
+** [[https://github.com/eyeinsky/org-anki][org-anki]]
+   Sync org notes to Anki via AnkiConnect
+
+   #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref org-anki-usepkg
+     (use-package org-anki
+         :straight t
+         :after org
+         :commands (org-anki-sync-entry
+                    org-anki-update-all
+                    org-anki-sync-all
+                    org-anki-delete-entry
+                    org-anki-browse-entry
+                    org-anki-delete-all))
    #+end_src
 
 ** Hook
