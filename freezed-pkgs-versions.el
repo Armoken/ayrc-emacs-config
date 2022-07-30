@@ -160,6 +160,7 @@
  ("pyvenv" . "31ea715f2164dd611e7fc77b26390ef3ca93509b")
  ("queue" . "130c2d656cd5d7376552272fab9e50a7c37d0c4a")
  ("rainbow-delimiters" . "a32b39bdfe6c61c322c37226d66e1b6d4f107ed0")
+ ("rainbow-mode" . "55a8c15782197cd9db8950d2f5ed1b9caca08dae")
  ("reverse-im.el" . "50b8376f152916bc200635a112db9439bc3cc9b5")
  ("rust-mode" . "0df2f22479b98f76d97de90e1c390ff1b0902a46")
  ("rustic" . "10fbcb08ce2243f90d97d0a5c930a37ea389c68b")

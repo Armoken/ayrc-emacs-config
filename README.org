@@ -1324,6 +1324,15 @@ Editor settings
                   (ayrc/outline-hide-all))))
     #+end_src
 
+** Rainbow mode
+  Colorize color names in buffers
+    #+begin_src emacs-lisp :tangle yes
+      (use-package rainbow-mode
+          :straight t
+          :diminish rainbow-mode
+          :commands (rainbow-mode))
+    #+end_src
+
 ** Highlight TODO
     #+begin_src emacs-lisp :tangle yes
       (use-package hl-todo
