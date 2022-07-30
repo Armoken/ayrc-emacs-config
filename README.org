@@ -612,7 +612,7 @@ Editor settings
          (dashboard-setup-startup-hook)
 
          :custom
-         (initial-buffer-choice       (lambda ()  (get-buffer "*dashboard*")))
+         (initial-buffer-choice       (lambda ()  (get-buffer-create "*dashboard*")))
          (dashboard-set-footer        nil)
          (dashboard-startup-banner    nil)
          (dashboard-center-content    t)
