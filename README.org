@@ -3817,6 +3817,7 @@ Editor settings
          :init
          <<venv-support-packages>>
          <<sphinx-doc-usepkg>>
+         <<lsp-pyright-usepkg>>
 
          :config
          <<python-install-pkgs>>
@@ -4017,6 +4018,13 @@ Editor settings
            :after python)
      #+end_src
 
+*** Language servers
+**** [[https://github.com/microsoft/pyright][Pyright]]
+   #+begin_src emacs-lisp :tangle no :noweb-ref lsp-pyright-usepkg
+     (use-package lsp-pyright
+         :straight t)
+   #+end_src
+
 *** Hook
     #+begin_src emacs-lisp :tangle README-loaddefs.el
       ;;;###autoload
@@ -4037,8 +4045,15 @@ Editor settings
           (smart-shift-mode           1)
           (hl-todo-mode               1)
 
-          (require 'lsp-pylsp)
+          ;; Select LSP language server
+          (cond
+           ((string-equal ayrc/python-lsp-server "pylsp")   (require 'lsp-pylsp))
+           ((string-equal ayrc/python-lsp-server "pyright") (require 'lsp-pyright))
+           (t   (require 'lsp-pylsp)))
+
+          ;; Enable debugging support
           (require 'dap-python)
+
           (lsp-deferred))
     #+end_src
 

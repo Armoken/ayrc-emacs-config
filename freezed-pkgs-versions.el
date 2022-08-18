@@ -105,6 +105,7 @@
  ("levenshtein" . "070925197ebf6b704e6e00c4f2d2ec783f3df38c")
  ("lisp-extra-font-lock" . "4605eccbe1a7fcbd3cacf5b71249435413b4db4f")
  ("lsp-mode" . "a39a35be9e01fe86cf250cd2a6c7920aaa463aea")
+ ("lsp-pyright" . "c745228f39fdb35372b29b909f25fa6c98dc7c88")
  ("lsp-treemacs" . "72d367757a89453a712f6ba1df9b6e789ece2bbd")
  ("lsp-ui" . "96b1ecbfbf87a775f05b5f0b55253376a3bd61e7")
  ("lua-mode" . "5a9bee8d5fc978dc64fcb677167417010321ba65")
