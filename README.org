@@ -2072,7 +2072,9 @@ Editor settings
                ("C-c a"   . #'org-agenda)
                ("C-c n a" . #'orb-note-actions)
                ("C-c h i" . #'helm-org-rifle-current-buffer)
-
+               ("C-c &"   . #'org-mark-ring-goto)
+               ("M-."     . #'org-open-at-point)
+               ("M-,"     . #'org-mark-ring-goto)
                ("C-c s y" . #'org-download-screenshot))
 
         :init
@@ -3028,8 +3030,7 @@ Editor settings
 
            (org-bullets-mode          1)
            (org-super-agenda-mode     1)
-           (org-edna-mode             1)
-           )
+           (org-edna-mode             1))
      #+end_src
 
 * Clients
