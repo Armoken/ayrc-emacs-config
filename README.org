@@ -1007,6 +1007,11 @@ Editor settings
 
 ** [[https://github.com/ieure/scratch-el][Scratch buffer]]                                                                                              :hotkeys:
    #+begin_src emacs-lisp :tangle yes
+     (straight-use-package
+      `(scratch :type git
+                :host nil
+                :repo "https://codeberg.org/emacs-weirdware/scratch"))
+
      (use-package scratch
          :straight t
          :after (:any company)
