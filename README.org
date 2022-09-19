@@ -4762,6 +4762,7 @@ Editor settings
 ** JSON
    #+begin_src emacs-lisp :tangle yes :noweb yes
      (use-package json-mode
+         :straight t
          :mode (("\\.json\\'" . json-mode))
          :hook (json-mode . ayrc/json-hook)
          :bind (:map json-mode-map
