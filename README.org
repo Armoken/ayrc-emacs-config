@@ -256,8 +256,8 @@ Editor settings
                (mouse-face 'mode-line-highlight)
                (local-map  mode-line-column-line-number-mode-map))
             (concat
-             (doom-modeline-spc)
-             (doom-modeline-spc)
+             doom-modeline-spc
+             doom-modeline-spc
 
              (propertize (format-mode-line
                           (concat "%l/"
@@ -270,7 +270,7 @@ Editor settings
 
              (when doom-modeline-percent-position
                  (concat
-                  (doom-modeline-spc)
+                  doom-modeline-spc
                   (propertize (format-mode-line '("" doom-modeline-percent-position "%%"))
                               'face face
                               'help-echo "Buffer percentage"
@@ -280,7 +280,7 @@ Editor settings
              (when (or line-number-mode
                        column-number-mode
                        doom-modeline-percent-position)
-                 (doom-modeline-spc)))))
+                 doom-modeline-spc))))
      #+end_src
 
 **** Custom modeline setup
