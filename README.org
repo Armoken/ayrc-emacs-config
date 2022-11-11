@@ -1118,6 +1118,11 @@ Editor settings
          :diminish envrc-mode)
    #+end_src
 
+** Ediff configuration                                                                                              :ui:
+  #+begin_src emacs-lisp :tangle yes
+    (setq ediff-window-setup-function 'ediff-setup-windows-plain
+          ediff-split-window-function 'split-window-horizontally)
+  #+end_src
 * Non global minor modes
 ** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]                                                                                            :ui:
    Minor modes for highlighting indentation
