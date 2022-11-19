@@ -2823,6 +2823,28 @@ Editor settings
                              (insert "[/] "))))
    #+end_src
 
+** Function to fold some blocks in current buffer
+   #+begin_src emacs-lisp :tangle README-loaddefs.el
+     ;;;###autoload
+     (defun ayrc/individual-visibility-source-blocks ()
+         "Fold some blocks in the current buffer."
+         (interactive)
+         (org-show-block-all)
+         (org-block-map
+          (lambda ()
+              (let ((case-fold-search t))
+                  (when (and
+                         (save-excursion
+                             (beginning-of-line 1)
+                             (looking-at org-block-regexp))
+                         (cl-assoc
+                          ':hidden
+                          (cl-third
+                           (org-babel-get-src-block-info))))
+                      (org-hide-block-toggle))))))
+
+   #+end_src
+
 ** [[https://github.com/emacsorphanage/org-bullets][bullets]]
    Show bullets in org-mode as UTF-8 characters
 
@@ -3046,7 +3068,9 @@ Editor settings
 
            (org-bullets-mode          1)
            (org-super-agenda-mode     1)
-           (org-edna-mode             1))
+           (org-edna-mode             1)
+
+           (ayrc/individual-visibility-source-blocks))
      #+end_src
 
 * Clients
