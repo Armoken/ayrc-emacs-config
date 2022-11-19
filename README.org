@@ -810,6 +810,7 @@ Editor settings
                 helm-ff-search-library-in-sexp        t
                 helm-ff-file-name-history-use-recentf t
                 helm-completion-in-region-fuzzy-match t
+                history-delete-duplicates             t
 
                 ;; Open helm buffer inside current window, not occupy whole
                 ;; other window
