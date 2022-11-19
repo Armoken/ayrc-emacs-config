@@ -1033,7 +1033,7 @@ Editor settings
 ** TODO uniquify.el
 ** TODO Support of encrypted containers
 ** [[https://github.com/manateelazycat/emacs-application-framework][Emacs Application Framework]]
-  #+begin_src emacs-lisp :tangle yes :noweb yes
+  #+begin_src emacs-lisp :tangle no :noweb yes
     (straight-use-package-lazy
      `(eaf :type git
            :host github
