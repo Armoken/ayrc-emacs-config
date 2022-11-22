@@ -1030,7 +1030,27 @@ Editor settings
         :bind (("C-c u" . (lambda () (interactive) (uuidgen 'time-based)))))
   #+end_src
 
-** TODO uniquify.el
+** Uniquify buffer names                                                                                            :ui:
+The library uniquify overrides Emacs default mechanism for making buffer names
+unique (using suffixes like <2>, <3> etc.) with a more sensible behaviour which
+use parts of the file names to make the buffer names distinguishable.
+
+For instance, buffers visiting "/u/mernst/tmp/Makefile" and "/usr/projects/zaphod/Makefile"
+would be named "Makefile|tmp" and "Makefile|zaphod", respectively (instead
+of "Makefile" and "Makefile<2>").
+
+#+begin_src emacs-lisp :tangle yes
+  (use-package uniquify
+      :defer t
+      :after (:any dashboard)
+
+      :custom
+      (uniquify-buffer-name-style 'post-forward-angle-brackets)
+
+      :config
+      (require 'uniquify))
+#+end_src
+
 ** TODO Support of encrypted containers
 ** [[https://github.com/manateelazycat/emacs-application-framework][Emacs Application Framework]]
   #+begin_src emacs-lisp :tangle no :noweb yes
