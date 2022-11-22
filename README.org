@@ -1420,8 +1420,14 @@ Editor settings
            (flymake-mode -1))
      #+end_src
 
-** TODO [[https://github.com/lassik/emacs-format-all-the-code][format-all-the-code]]
-   Auto-format source code with one command
+** [[https://github.com/lassik/emacs-format-all-the-code][format-all-the-code]]
+Auto-format source code with one command
+
+#+begin_src emacs-lisp :tangle yes :noweb yes
+  (use-package format-all
+      :straight t
+      :after (:any company))
+#+end_src
 
 ** XREF                                                                                                        :hotkeys:
    Cross-referencing commands
