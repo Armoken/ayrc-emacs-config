@@ -1420,13 +1420,10 @@ Editor settings
            (flymake-mode -1))
      #+end_src
 
-** TODO [[https://github.com/jacktasia/dumb-jump][dump-jump]]
-   An Emacs "jump to definition" package for 40+ languages
-
 ** TODO [[https://github.com/lassik/emacs-format-all-the-code][format-all-the-code]]
    Auto-format source code with one command
 
-** XREF
+** XREF                                                                                                        :hotkeys:
    Cross-referencing commands
 
    #+begin_src emacs-lisp :tangle yes :noweb yes
@@ -1459,6 +1456,25 @@ Editor settings
                      helm-xref-show-xrefs-27
                      helm-xref-show-defs-27))
     #+end_src
+
+** [[https://github.com/jacktasia/dumb-jump][dump-jump]]                                                                                                   :hotkeys:
+An Emacs "jump to definition" package for 40+ languages
+
+#+begin_src emacs-lisp :tangle yes :noweb yes
+  (use-package dumb-jump
+      :straight t
+      :after (:any company)
+      :custom
+      (dumb-jump-prefer-searcher 'rg))
+#+end_src
+
+*** Setup function
+#+begin_src emacs-lisp :tangle README-loaddefs.el
+  (defun ayrc/dumb-jump-setup ()
+      (interactive)
+      "Setup dumb jump in current buffer"
+      (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+#+end_src
 
 ** [[http://github.com/joaotavora/yasnippet][Snippets]]
    #+begin_src emacs-lisp :tangle yes :noweb yes

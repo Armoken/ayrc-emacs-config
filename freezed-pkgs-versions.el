@@ -38,6 +38,7 @@
  ("dockerfile-mode" . "52c6c00da1d31c0b6c29c74335b3af63ed6bf06c")
  ("doom-modeline" . "b5be27bd98eda9a39c6e106d00e98ae4d21d05fa")
  ("dts-mode" . "32517e7eeeccc785b7c669fd5e93c5df45597ef1")
+ ("dumb-jump" . "0a783d1db610ff1dc4e1b7869589cff16ff92f7a")
  ("editorconfig-emacs" . "1f6f16c24fd0030322d59c2853067a6dccc9e736")
  ("el-get" . "9a4ab9cc8ae4a9b9a4b232788039cc679a4ba249")
  ("elisp-slime-nav" . "8588d80d414aee1fafce5b9da0e913612ee0bcdd")
