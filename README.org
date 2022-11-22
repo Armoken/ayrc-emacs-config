@@ -1692,6 +1692,15 @@ Editor settings
                  lsp-ui-peek-fontify          'always))
      #+end_src
 
+** [[https://github.com/wolray/symbol-overlay][Highlight selected symbol]]                                                                                        :ui:
+#+begin_src emacs-lisp :tangle yes :noweb yes
+  (use-package symbol-overlay
+      :straight t
+      :after (:any company)
+      :diminish symbol-overylay-mode
+      :commands (symbol-overylay-mode))
+#+end_src
+
 ** Debugging
 *** [[https://github.com/yyoncho/dap-mode][DAP]]
     Debug Adapter Protocol mode
