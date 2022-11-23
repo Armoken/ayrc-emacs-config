@@ -2128,6 +2128,44 @@ An Emacs "jump to definition" package for 40+ languages
           (ledger-flymake-enable))
     #+end_src
 
+* BibTex
+  Major mode for editing and validating BibTeX files.
+
+  #+begin_src emacs-lisp :tangle yes :noweb yes
+    (use-package bibtex
+        :custom
+        (bibtex-autokey-year-length          4)
+        (bibtex-autokey-name-year-separator  "-")
+        (bibtex-autokey-year-title-separator "-")
+        (bibtex-autokey-titleword-separator  "-")
+        (bibtex-autokey-titlewords           2)
+        (bibtex-autokey-titlewords-stretch   1)
+        (bibtex-autokey-titleword-length     5)
+        :init
+        <<ebib-usepkg>>
+        <<helm-bibtex-usepkg>>)
+  #+end_src
+
+** [[http://joostkremers.github.io/ebib/][Ebib]]
+  Ebib is a program for managing BibTeX and biblatex databases that runs inside
+  Emacs. It allows you to manage bibliography files without having to edit the
+  raw .bib files.
+  #+begin_src emacs-lisp :tangle no :noweb-rew ebib-usepkg
+    (use-package ebib
+        :straight t
+        :bind (("C-c b" . ebib)))
+  #+end_src
+
+** [[https://github.com/tmalsburg/helm-bibtex][Helm]]
+  Search and manage bibliographies in Emacs.
+
+  #+begin_src emacs-lisp :tangle no :noweb-ref helm-bibtex-usepkg
+    (use-package helm-bibtex
+        :straight t
+        :after (:any ebib org tex-mode)
+        :commands (helm-bibtex))
+  #+end_src
+
 * Org-mode
   #+begin_src emacs-lisp :tangle yes :noweb yes
     (use-package org
@@ -2988,7 +3026,11 @@ An Emacs "jump to definition" package for 40+ languages
    #+begin_src emacs-lisp :tangle no :noweb-ref org-ref-usepkg
      (use-package org-ref
          :straight t
-         :after org)
+         :after org
+         :custom
+         ;; Use org-cite links instead of org-ref
+         (org-ref-insert-cite-function (lambda ()
+                                           (org-cite-insert nil))))
    #+end_src
 
 ** [[https://github.com/org-roam/org-roam][org-roam]]
@@ -3133,23 +3175,6 @@ An Emacs "jump to definition" package for 40+ languages
          :config
          (add-hook 'eshell-mode-hook 'envrc-modep))
    #+end_src
-
-** [[http://joostkremers.github.io/ebib/][BibTex/BibLatex]]
-   #+begin_src emacs-lisp :tangle yes :noweb yes
-     (use-package ebib
-         :straight t
-         :bind (("C-c b" . ebib))
-         :init
-         <<helm-bibtex-usepkg>>)
-   #+end_src
-
-*** [[https://github.com/tmalsburg/helm-bibtex][Helm]]
-    #+begin_src emacs-lisp :tangle no :noweb-ref helm-bibtex-usepkg
-      (use-package helm-bibtex
-          :straight t
-          :after (:any ebib org tex-mode)
-          :commands (helm-bibtex))
-    #+end_src
 
 ** VCS
 *** [[https://github.com/magit/magit][Git]]                                                                                                 :global_hotkeys:
