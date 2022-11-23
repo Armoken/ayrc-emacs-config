@@ -4437,6 +4437,38 @@ An Emacs "jump to definition" package for 40+ languages
               (add-hook 'haskell-mode-hook 'haskell-hook)))
     #+end_src
 
+** [[https://github.com/emacs-csharp/csharp-mode][C#]]
+C# mode for Emacs
+
+#+begin_src emacs-lisp :tangle yes :noweb yes
+  (use-package csharp-mode
+      :straight t
+      :mode (("\\.cs\\'" . csharp-mode))
+      :hook (csharp-mode . ayrc/csharp-hook)
+      :functions (assess-face-at=))
+#+end_src
+
+*** Hook
+#+begin_src emacs-lisp :tangle README-loaddefs.el
+  ;;;###autoload
+  (defun ayrc/csharp-hook ()
+      (envrc-mode                 1)
+
+      (display-line-numbers-mode  1)
+      (highlight-indentation-mode 1)
+      (visual-line-mode          -1)
+      (ws-butler-mode             1)
+      (hs-minor-mode              1)
+      (abbrev-mode                1)
+      (yas-minor-mode             1)
+      (smartparens-mode           1)
+      (smart-shift-mode           1)
+      (hl-todo-mode               1)
+
+      (ayrc/dumb-jump-setup)
+      (ayrc/setup-company '(company-yasnippet)))
+#+end_src
+
 ** Perl
    #+begin_src emacs-lisp :tangle yes
      (use-package cperl-mode

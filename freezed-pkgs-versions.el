@@ -27,6 +27,7 @@
  ("company-quickhelp" . "6660a1b380b9599af9ef1cc617168db83f24b9b7")
  ("company-shell" . "024c2172a0cc8f1b35f173e42fff5f2d938920fc")
  ("compat" . "056e3ccffc716990dcb7b33273453d5fce0402de")
+ ("csharp-mode" . "33a74ff25610153d7e262a1d4c6bb5f3d95be493")
  ("cython" . "31b41b3ad45e061be7d1c63624727c8abf1d605c")
  ("dap-mode" . "0f7692568a7374ae121f55e19b0806fb97530a6e")
  ("dash.el" . "0ac1ecf6b56eb67bb81a3cf70f8d4354b5782341")
