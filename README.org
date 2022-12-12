@@ -529,7 +529,7 @@ applications follow this convention, but Emacs does not.
       :after (pixel-scroll)
       :custom-face
       (golden-ratio-scroll-highlight-line-face
-       ((t (:background "#3c394a" :foreground "#5b576e"))))
+        ((t (:background "#3c394a" :foreground "#5b576e"))))
       :commands (golden-ratio-scroll-screen-down
                  golden-ratio-scroll-screen-up))
 #+end_src
@@ -1153,8 +1153,8 @@ Minor modes for highlighting indentation
       :diminish highlight-indentation-mode
       :commands (highlight-indentation-mode)
       :custom-face
-      (highlight-indentation                (("#e3e3d3")))
-      (highlight-indentation-current-column (("#c3b3b3"))))
+      (highlight-indentation                ((t (:background "#e3e3d3"))))
+      (highlight-indentation-current-column ((t (:background "#c3b3b3")))))
 #+end_src
 
 ** [[http://elpa.gnu.org/packages/adaptive-wrap.html][Automatic line wrapping]]                                                                                          :ui:
