@@ -826,6 +826,7 @@ Incremental and narrowing framework
              helm-autoresize-max-height            50
              helm-autoresize-min-height            10
 
+             helm-buffer-max-length                50
 
              helm-ff-file-name-history-use-recentf t)
 
