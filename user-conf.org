@@ -1,0 +1,57 @@
+* Lexical casting
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    ;; -*- lexical-binding: t; -*-
+  #+END_SRC
+
+* Font
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'default-frame-alist '(font . "Hack-14"))
+  #+END_SRC
+
+* Double buffering
+  Attention! May cause flickering!
+
+  #+begin_src  emacs-lisp :tangle yes
+    (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
+  #+end_src
+
+* User personal info
+  #+BEGIN_SRC emacs-lisp :tangle yes
+  (setq user-full-name "VitaliLiashchuk")
+  (setq user-mail-address "Vitali.Liashchuk@gmail.com")
+  #+END_SRC
+
+* C/C++
+  Select "irony", "ccls", "gtags" for some editor part.
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (defvar ayrc/cc-eldoc-plugin                         "ccls")
+    (defvar ayrc/cc-syntax-check-plugin                  "ccls")
+    (defvar ayrc/cc-autocompletion-plugin                "ccls")
+  #+END_SRC
+
+* Allow eval in .dir-locals.el
+  It can be dangerous, but I know what I do.
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (setq enable-local-eval t)
+  #+END_SRC
+* Python
+  Select "pylsp" or "pyright" server for editing Python code.
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (defvar ayrc/python-lsp-server "pylsp")
+  #+END_SRC
+* VEL custom configuration
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (global-set-key (kbd "<f11>") 'dap-debug-last)
+    (global-set-key (kbd "s-b") 'dap-breakpoint-toggle)
+    (global-set-key (kbd "s-/") 'comment-line)
+    (global-set-key (kbd "s-<up>") 'helm-projectile-find-other-file)
+    (global-set-key (kbd "s-<down>") 'helm-projectile-find-other-file)
+    (setq projectile-project-compilation-cmd "cmake --build Src/usdk/projects/Darwin --target UnitTests -j16")
+    (add-hook 'before-save-hook #'+format/buffer nil t)
+    (setq magit-refresh-status-buffer nil)
+    (setq lsp-clangd-binary-path "/opt/homebrew/opt/llvm/bin/clangd")
+    (setq lsp-clients-clangd-args '("--compile-commands-dir=/Users/vel/coding/advertyclient/Src/usdk/projects/Darwin/" "--clang-tidy"))
+  #+END_SRC
