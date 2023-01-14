@@ -1189,16 +1189,17 @@ adaptive-fill-mode, but without actually changing the buffer's text.
 Smart shift text left/right.
 
 #+begin_src emacs-lisp :tangle yes
-  (use-package smart-shift
-      :straight t
-      :after (:any company)
-      :diminish smart-shift-mode
-      :bind
-      (:map smart-shift-mode-map
-            ("<C-up>" . smart-shift-up)
-            ("<C-down>" . smart-shift-down)
-            ("<C-left>" . smart-shift-left)
-            ("<C-right>" . smart-shift-right)))
+    (use-package smart-shift
+	:straight t
+	:after (:any company)
+	:diminish smart-shift-mode
+	:bind
+	;; (:map smart-shift-mode-map
+	      ;; ("<C-up>" . smart-shift-up)
+	      ;; ("<C-down>" . smart-shift-down)
+	      ;; ("<C-left>" . smart-shift-left)
+	      ;; ("<C-right>" . smart-shift-right))
+	)
 #+end_src
 
 ** [[https://github.com/lewang/ws-butler][Fixing up whitespaces only for touched lines]]
@@ -1698,7 +1699,7 @@ Emacs client/library for the Language Server Protocol
                              ("M-?"     . lsp-ui-peek-find-references)
                              ("C-M-."   . xref-find-apropos)))
 
-      (flycheck-mode       1)
+      (flycheck-mode       0)
       (lsp-ui-mode         1)
       (lsp-completion-mode 1)
       (dap-mode            1))
@@ -3862,19 +3863,28 @@ Emacs client for ccls, a C/C++ language server
 
 ***** Debug support
 #+begin_src emacs-lisp :tangle no :noweb-ref ccls-debug-support
-  (require 'dap-lldb)
+    (require 'dap-lldb)
   (ayrc/dap-remove-nth-first-templates 1)
 
-  (dap-register-debug-template
-   "AYRC Initial Configuration of LLDB::Run"
-   (list :type "lldb"
-         :cwd "absolute path to working directory"
-         :request "launch"
-         :program "absolute path to executable"
-         :args (list
-                "--first_flag"
-                "--second_flag" "third_argumnt")
-         :name "LLDB::Run"))
+    (dap-register-debug-template
+     "USDK Integration Tests: LLDB::Run"
+     (list :type "lldb-vscode"
+           :cwd "/Users/vel/coding/advertyclient"
+           :request "launch"
+           :program "/Users/vel/coding/advertyclient/Src/usdk/projects/Darwin/tests/integration_tests/IntegrationTests.app/Contents/MacOS/IntegrationTests"
+           :args (list "[NetworkTests]")
+           :name "LLDB::Run"))
+
+    (dap-register-debug-template
+     "USDK Unit tests: LLDB::Run"
+     (list :type "lldb-vscode"
+           :cwd "/Users/vel/coding/advertyclient"
+           :request "launch"
+           :program "/Users/vel/coding/advertyclient/Src/usdk/projects/Darwin/tests/unit_tests/UnitTests"
+       ;;               :args (list
+       ;;                      "--first_flag"
+       ;;                      "--second_flag" "third_argumnt")
+           :name "LLDB::Run"))
 #+end_src
 
 **** [[https://github.com/atilaneves/cmake-ide][CMake IDE]]
