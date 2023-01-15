@@ -50,8 +50,10 @@
     (global-set-key (kbd "s-<up>") 'helm-projectile-find-other-file)
     (global-set-key (kbd "s-<down>") 'helm-projectile-find-other-file)
     (setq projectile-project-compilation-cmd "cmake --build Src/usdk/projects/Darwin --target UnitTests -j16")
-    (add-hook 'before-save-hook #'+format/buffer nil t)
     (setq magit-refresh-status-buffer nil)
     (setq lsp-clangd-binary-path "/opt/homebrew/opt/llvm/bin/clangd")
     (setq lsp-clients-clangd-args '("--compile-commands-dir=/Users/vel/coding/advertyclient/Src/usdk/projects/Darwin/" "--clang-tidy"))
+    (setq lsp-treemacs-sync-mode 1)
+    (add-hook 'format-all-mode-hook 'format-all-ensure-formatter)
+    (add-hook 'prog-mode-hook 'format-all-mode)
   #+END_SRC
