@@ -3559,6 +3559,7 @@ Such as parentheses, brackets or braces according to their depth
       <<irony-usepkg>>
       <<gtags-usepkg>>
       <<ccls-usepkg>>
+      <<clangd-setup>>
       <<cmake-ide-usepkg>>
       <<modern-cpp-font-lock-usepkg>>
 
@@ -3605,25 +3606,30 @@ Such as parentheses, brackets or braces according to their depth
           (if (member "gtags" conf-variables-for-cc)
                   (ayrc/gtags-setup))
           (if (member "ccls" conf-variables-for-cc)
-                  (ayrc/ccls-setup)))
+                  (ayrc/ccls-setup))
+          (if (member "clangd" conf-variables-for-cc)
+                  (ayrc/clangd-setup)))
 
       ;; Autocompletion setup
       (funcall (pcase ayrc/cc-autocompletion-plugin
                    ("irony"  'ayrc/irony-autocompletion-setup)
                    ("gtags"  'ayrc/gtags-autocompletion-setup)
-                   ("ccls"   'ayrc/ccls-autocompletion-setup)))
+                   ("ccls"   'ayrc/ccls-autocompletion-setup)
+                   ("clangd" 'ayrc/clangd-autocompletion-setup)))
 
       ;; Syntax check setup
       (funcall (pcase ayrc/cc-syntax-check-plugin
                    ("irony"  'ayrc/irony-syntax-check-setup)
                    ("gtags"  'ayrc/gtags-syntax-check-setup)
-                   ("ccls"   'ayrc/ccls-syntax-check-setup)))
+                   ("ccls"   'ayrc/ccls-syntax-check-setup)
+                   ("clangd" 'ayrc/clangd-syntax-check-setup)))
 
       ;; Eldoc setup
       (funcall (pcase ayrc/cc-eldoc-plugin
                    ("irony"  'ayrc/irony-eldoc-setup)
                    ("gtags"  'ayrc/gtags-eldoc-setup)
-                   ("ccls"   'ayrc/ccls-eldoc-setup))))
+                   ("ccls"   'ayrc/ccls-eldoc-setup)
+                   ("clangd" 'ayrc/clangd-eldoc-setup))))
 #+end_src
 
 **** [[https://github.com/sonatard/clang-format][Clang Format]]
@@ -3876,6 +3882,41 @@ Emacs client for ccls, a C/C++ language server
                 "--first_flag"
                 "--second_flag" "third_argumnt")
          :name "LLDB::Run"))
+#+end_src
+
+**** [[https://clangd.llvm.org/][clangd]]
+clangd is a language server that can work with many editors via a plugin.
+
+#+NAME: clangd-system-prerequisites
+#+CAPTION: System prerequisites for clangd packages
+- [[https://clangd.llvm.org/][clangd]] :: C/C++/ObjC language server supporting cross references,
+            hierarchies, completion and semantic highlighting
+
+#+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref clangd-setup
+  <<clangd-autocompletion-config>>
+  <<clangd-syntax-analytics-config>>
+  <<clangd-eldoc-config>>
+
+  (defun ayrc/clangd-setup ()
+      (setq lsp-clangd-binary-path (executable-find "clangd"))
+
+      (lsp-deferred))
+#+end_src
+
+***** Autocompletion
+#+begin_src emacs-lisp :tangle no :noweb-ref clangd-autocompletion-config
+  (defun ayrc/clangd-autocompletion-setup ())
+#+end_src
+
+***** Syntax analytics
+#+begin_src emacs-lisp :tangle no :noweb-ref clangd-syntax-analytics-config
+  (defun ayrc/clangd-syntax-check-setup ())
+#+end_src
+
+***** Eldoc
+#+begin_src emacs-lisp :tangle no :noweb-ref clangd-eldoc-config
+  (defun ayrc/clangd-eldoc-setup ()
+     (eldoc-mode 1))
 #+end_src
 
 **** [[https://github.com/atilaneves/cmake-ide][CMake IDE]]
