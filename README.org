@@ -1659,32 +1659,27 @@ A common protocol for language servers
 Emacs client/library for the Language Server Protocol
 
 #+begin_src emacs-lisp :tangle yes :noweb yes
-    (setenv "LSP_USE_PLISTS" "true")
+  (setenv "LSP_USE_PLISTS" "true")
 
-    (use-package lsp-mode
-        :straight t
-        :after (:any company)
-        :diminish lsp-mode
-        :commands (lsp-mode lsp-deffered lsp-rename)
-        :functions (lsp-flycheck-enable)
-        :hook (lsp-mode . ayrc/lsp-hook)
-        :bind (:map lsp-mode-map
-               ("C-c h w" . helm-lsp-workspace-symbol))
-        :custom
-        (lsp-enable-folding                         t)
-        (lsp-enable-indentation                     t)
-        (lsp-flycheck-live-reporting                t)
-        (lsp-enable-file-watchers                   nil)
-        (lsp-auto-configure                         nil)
-        (lsp-enable-snippet                         nil)
-        (lsp-keep-workspace-alive                   nil)
-        (lsp-use-plists t)
-        (lsp-lens-enable nil)
-        (read-process-output-max (* 1024 1024))
+  (use-package lsp-mode
+      :straight t
+      :after (:any company)
+      :diminish lsp-mode
+      :commands (lsp-mode lsp-deffered lsp-rename)
+      :functions (lsp-flycheck-enable)
+      :hook (lsp-mode . ayrc/lsp-hook)
+      :bind (:map lsp-mode-map
+             ("C-c h w" . helm-lsp-workspace-symbol))
+      :custom
+      (lsp-auto-configure                         t)
+      (lsp-enable-snippet                         nil)
+      (lsp-keep-workspace-alive                   nil)
+      (lsp-use-plists                             t)
+      (read-process-output-max                    (* 1024 1024))
 
-        :init
-        <<lsp-ui-usepkg>>
-        <<helm-lsp-usepkg>>)
+      :init
+      <<lsp-ui-usepkg>>
+      <<helm-lsp-usepkg>>)
 
   (setenv "LSP_USE_PLISTS" "false")
 #+end_src
