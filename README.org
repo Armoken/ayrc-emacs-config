@@ -826,6 +826,7 @@ Incremental and narrowing framework
              helm-autoresize-max-height            50
              helm-autoresize-min-height            10
 
+             helm-buffer-max-length                50
 
              helm-ff-file-name-history-use-recentf t)
 
@@ -1659,32 +1660,27 @@ A common protocol for language servers
 Emacs client/library for the Language Server Protocol
 
 #+begin_src emacs-lisp :tangle yes :noweb yes
-    (setenv "LSP_USE_PLISTS" "true")
+  (setenv "LSP_USE_PLISTS" "true")
 
-    (use-package lsp-mode
-        :straight t
-        :after (:any company)
-        :diminish lsp-mode
-        :commands (lsp-mode lsp-deffered lsp-rename)
-        :functions (lsp-flycheck-enable)
-        :hook (lsp-mode . ayrc/lsp-hook)
-        :bind (:map lsp-mode-map
-               ("C-c h w" . helm-lsp-workspace-symbol))
-        :custom
-        (lsp-enable-folding                         t)
-        (lsp-enable-indentation                     t)
-        (lsp-flycheck-live-reporting                t)
-        (lsp-enable-file-watchers                   nil)
-        (lsp-auto-configure                         nil)
-        (lsp-enable-snippet                         nil)
-        (lsp-keep-workspace-alive                   nil)
-        (lsp-use-plists t)
-        (lsp-lens-enable nil)
-        (read-process-output-max (* 1024 1024))
+  (use-package lsp-mode
+      :straight t
+      :after (:any company)
+      :diminish lsp-mode
+      :commands (lsp-mode lsp-deffered lsp-rename)
+      :functions (lsp-flycheck-enable)
+      :hook (lsp-mode . ayrc/lsp-hook)
+      :bind (:map lsp-mode-map
+             ("C-c h w" . helm-lsp-workspace-symbol))
+      :custom
+      (lsp-auto-configure                         t)
+      (lsp-enable-snippet                         nil)
+      (lsp-keep-workspace-alive                   nil)
+      (lsp-use-plists                             t)
+      (read-process-output-max                    (* 1024 1024))
 
-        :init
-        <<lsp-ui-usepkg>>
-        <<helm-lsp-usepkg>>)
+      :init
+      <<lsp-ui-usepkg>>
+      <<helm-lsp-usepkg>>)
 
   (setenv "LSP_USE_PLISTS" "false")
 #+end_src
@@ -3559,6 +3555,7 @@ Such as parentheses, brackets or braces according to their depth
       <<irony-usepkg>>
       <<gtags-usepkg>>
       <<ccls-usepkg>>
+      <<clangd-setup>>
       <<cmake-ide-usepkg>>
       <<modern-cpp-font-lock-usepkg>>
 
@@ -3605,25 +3602,30 @@ Such as parentheses, brackets or braces according to their depth
           (if (member "gtags" conf-variables-for-cc)
                   (ayrc/gtags-setup))
           (if (member "ccls" conf-variables-for-cc)
-                  (ayrc/ccls-setup)))
+                  (ayrc/ccls-setup))
+          (if (member "clangd" conf-variables-for-cc)
+                  (ayrc/clangd-setup)))
 
       ;; Autocompletion setup
       (funcall (pcase ayrc/cc-autocompletion-plugin
                    ("irony"  'ayrc/irony-autocompletion-setup)
                    ("gtags"  'ayrc/gtags-autocompletion-setup)
-                   ("ccls"   'ayrc/ccls-autocompletion-setup)))
+                   ("ccls"   'ayrc/ccls-autocompletion-setup)
+                   ("clangd" 'ayrc/clangd-autocompletion-setup)))
 
       ;; Syntax check setup
       (funcall (pcase ayrc/cc-syntax-check-plugin
                    ("irony"  'ayrc/irony-syntax-check-setup)
                    ("gtags"  'ayrc/gtags-syntax-check-setup)
-                   ("ccls"   'ayrc/ccls-syntax-check-setup)))
+                   ("ccls"   'ayrc/ccls-syntax-check-setup)
+                   ("clangd" 'ayrc/clangd-syntax-check-setup)))
 
       ;; Eldoc setup
       (funcall (pcase ayrc/cc-eldoc-plugin
                    ("irony"  'ayrc/irony-eldoc-setup)
                    ("gtags"  'ayrc/gtags-eldoc-setup)
-                   ("ccls"   'ayrc/ccls-eldoc-setup))))
+                   ("ccls"   'ayrc/ccls-eldoc-setup)
+                   ("clangd" 'ayrc/clangd-eldoc-setup))))
 #+end_src
 
 **** [[https://github.com/sonatard/clang-format][Clang Format]]
@@ -3885,6 +3887,41 @@ Emacs client for ccls, a C/C++ language server
        ;;                      "--first_flag"
        ;;                      "--second_flag" "third_argumnt")
            :name "LLDB::Run"))
+#+end_src
+
+**** [[https://clangd.llvm.org/][clangd]]
+clangd is a language server that can work with many editors via a plugin.
+
+#+NAME: clangd-system-prerequisites
+#+CAPTION: System prerequisites for clangd packages
+- [[https://clangd.llvm.org/][clangd]] :: C/C++/ObjC language server supporting cross references,
+            hierarchies, completion and semantic highlighting
+
+#+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref clangd-setup
+  <<clangd-autocompletion-config>>
+  <<clangd-syntax-analytics-config>>
+  <<clangd-eldoc-config>>
+
+  (defun ayrc/clangd-setup ()
+      (setq lsp-clangd-binary-path (executable-find "clangd"))
+
+      (lsp-deferred))
+#+end_src
+
+***** Autocompletion
+#+begin_src emacs-lisp :tangle no :noweb-ref clangd-autocompletion-config
+  (defun ayrc/clangd-autocompletion-setup ())
+#+end_src
+
+***** Syntax analytics
+#+begin_src emacs-lisp :tangle no :noweb-ref clangd-syntax-analytics-config
+  (defun ayrc/clangd-syntax-check-setup ())
+#+end_src
+
+***** Eldoc
+#+begin_src emacs-lisp :tangle no :noweb-ref clangd-eldoc-config
+  (defun ayrc/clangd-eldoc-setup ()
+     (eldoc-mode 1))
 #+end_src
 
 **** [[https://github.com/atilaneves/cmake-ide][CMake IDE]]
