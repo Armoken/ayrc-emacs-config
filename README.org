@@ -1694,6 +1694,7 @@ Emacs client/library for the Language Server Protocol
   (defun ayrc/lsp-hook ()
       (ayrc/local-set-keys '(("C-c r"   . lsp-rename)
                              ("C-c C-r" . lsp-format-region)
+                             ("C-M-\\"  . lsp-format-region)
                              ("M-."     . lsp-ui-peek-find-definitions)
                              ("M-,"     . xref-pop-marker-stack)
                              ("M-?"     . lsp-ui-peek-find-references)
