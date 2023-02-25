@@ -2238,7 +2238,7 @@ Search and manage bibliographies in Emacs.
                                                                (todo   . " %i")
                                                                (tags   . " %i")
                                                                (search . " %i"))
-                        org-super-agenda-groups              '((:name "Lifestyle"
+                        org-ql-views-super-agenda-groups              '((:name "Lifestyle"
                                                                 :tag "lifestyle")
                                                                (:name "Courses"
                                                                 :tag "courses")
@@ -2279,121 +2279,121 @@ Search and manage bibliographies in Emacs.
                                                                             (not (tags-inherited "noagenda"))
                                                                             (not (tags-local "unordered"))
                                                                             (todo))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "(-2) Unordered tasks and projects")
                                                                ("(-1) Waiting tasks and projects"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (not (tags "work"))
                                                                             (not (tags-inherited "noagenda"))
                                                                             (todo "WAITING"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "(-1) Unordered tasks and projects")
                                                                ("(0) Now tasks and projects"
                                                                 :buffers-files org-agenda-files
                                                                 :query (tags-local "now")
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Now tasks and projects")
                                                                ("(1) Tasks and projects of first order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "1"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of first order")
                                                                ("(2) Tasks and projects of second order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "2"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of second order")
                                                                ("(3) Tasks and projects of third order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "3"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of third order")
                                                                ("(4) Tasks and projects of fourth order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "4"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of fourth order")
                                                                ("(5) Tasks and projects of first fifth"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "5"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of fifth order")
                                                                ("(6) Tasks and projects of sixth order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "6"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of sixth order")
                                                                ("(7) Tasks and projects of seventh order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "7"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of seventh order")
                                                                ("(8) Tasks and projects of eighth order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "8"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of eighth order")
                                                                ("(9) Tasks and projects of ninth order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "9"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of ninth order")
                                                                ("(10) Tasks and projects of tenth order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "10"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of tenth order")
                                                                ("(11) Tasks and projects of eleventh order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "11"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of eleventh order")
                                                                ("(12) Tasks and projects of twelfth order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "12"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of twelfth order")
                                                                ("(13) Tasks and projects of thirteenth order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "13"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of thirteenth order")
                                                                ("(14) Tasks and projects of fourteenth order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "14"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of fourteenth order")
                                                                ("(15) Tasks and projects of fifteenth order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "15"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of fifteenth order")
                                                                ("(16) Tasks and projects of sixteenth order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "16"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of sixteenth order")
                                                                ("(17) Tasks and projects of seventeenth order"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (tags-local "ordered")
                                                                             (tags-local "17"))
-                                                                :super-groups org-super-agenda-groups
+                                                                :super-groups org-ql-views-super-agenda-groups
                                                                 :title "Tasks and projects of seventeenth order"))
                         org-agenda-custom-commands           '(("o" . "Ordered tasks and projects")
                                                                ("oa" . "Ordered tasks and projects")
@@ -3169,7 +3169,6 @@ Sync org notes to Anki via AnkiConnect
       (ayrc/setup-company        '(company-yasnippet))
 
       (org-bullets-mode          1)
-      (org-super-agenda-mode     1)
       (org-edna-mode             1)
 
       (ayrc/individual-visibility-source-blocks))
