@@ -627,7 +627,10 @@ A library for inserting Developer icons
       (dashboard-setup-startup-hook)
 
       :custom
-      (initial-buffer-choice       (lambda ()  (get-buffer-create "*dashboard*")))
+      (initial-buffer-choice       (lambda ()
+                                       (get-buffer-create "*dashboard*")
+                                       ;; Fix icons showing if the server used
+                                       (dashboard-refresh-buffer)))
       (dashboard-set-footer        nil)
       (dashboard-startup-banner    nil)
       (dashboard-center-content    t)
