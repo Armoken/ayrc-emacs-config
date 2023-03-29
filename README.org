@@ -2206,6 +2206,7 @@ Search and manage bibliographies in Emacs.
       <<org-chef-usepkg>>
       <<org-journal-usepkg>>
       <<org-ref-usepkg>>
+      <<org-babel-ledger>>
       <<org-roam-usepkg>>
       <<org-edna-usepkg>>
       <<org-download-usepkg>>
@@ -2227,7 +2228,9 @@ Search and manage bibliographies in Emacs.
                                                         ("WAITING"  . (:foreground "turquoise2"
                                                                        :weight bold))
                                                         ("CANCELED" . (:foreground "RoyalBlue3"
-                                                                       :weight bold)))))
+                                                                       :weight bold))))
+      (org-babel-load-languages                       '((emacs-lisp . t)
+                                                        (ledger     . t))))
 #+end_src
 
 ** .dir-locals.el example file
@@ -3055,6 +3058,17 @@ org-mode and useful bibtex tools to go with it.
       ;; Use org-cite links instead of org-ref
       (org-ref-insert-cite-function (lambda ()
                                         (org-cite-insert nil))))
+#+end_src
+
+** Org-babel ledger
+Org-Babel support for evaluating ledger entries.
+
+#+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref org-babel-ledger
+  (use-package ob-ledger
+      :defer t
+      :ensure nil
+      :straight nil
+      :load-path "contrib/ob-ledger")
 #+end_src
 
 ** [[https://github.com/org-roam/org-roam][org-roam]]
