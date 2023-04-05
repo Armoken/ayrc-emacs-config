@@ -2214,7 +2214,7 @@ Search and manage bibliographies in Emacs.
       <<org-edna-usepkg>>
       <<org-download-usepkg>>
       <<org-board-usepkg>>
-      <<org-anki-usepkg>>
+      <<anki-editor-usepkg>>
 
       :custom
       (org-log-done                                   'time)
@@ -2252,7 +2252,8 @@ Search and manage bibliographies in Emacs.
                         org-return-follows-link              t
                         org-support-shift-select             t
                         org-format-latex-options             (plist-put org-format-latex-options :scale 1.5)
-                        org-anki-ankiconnnect-listen-address "http://127.0.0.1:8765"
+                        anki-editor-api-host                 "127.0.0.1"
+                        anki-editor-api-port                 "8765"
 
                         org-stuck-projects                   '("+PROJECT/-DONE" ("CURRENT") nil "")
                         org-agenda-prefix-format             '((agenda . " %i %?-12t% s")
@@ -2260,33 +2261,33 @@ Search and manage bibliographies in Emacs.
                                                                (tags   . " %i")
                                                                (search . " %i"))
                         org-ql-views-super-agenda-groups              '((:name "Lifestyle"
-                                                                :tag "lifestyle")
-                                                               (:name "Courses"
-                                                                :tag "courses")
-                                                               (:name "Reading"
-                                                                :tag "reading")
-                                                               (:name "Periodical"
-                                                                :tag "periodical")
-                                                               (:name "Projects"
-                                                                :auto-category t
-                                                                :and (:tag "project"
-                                                                      :not (:tag "courses")
-                                                                      :not (:tag "reading")
-                                                                      :not (:tag "periodical")
-                                                                      :not (:tag "lifestyle")))
-                                                               (:name "Meta projects"
-                                                                :auto-category t
-                                                                :and (:tag "metaproject"
-                                                                      :not (:tag "courses")
-                                                                      :not (:tag "reading")
-                                                                      :not (:tag "periodical")
-                                                                      :not (:tag "lifestyle")))
-                                                               (:name "Ordinary tasks"
-                                                                :and (:not (:tag "project")
-                                                                      :not (:tag "metaproject")
-                                                                      :not (:tag "courses")
-                                                                      :not (:tag "periodical")
-                                                                      :not (:tag "lifestyle"))))
+                                                                         :tag "lifestyle")
+                                                                        (:name "Courses"
+                                                                         :tag "courses")
+                                                                        (:name "Reading"
+                                                                         :tag "reading")
+                                                                        (:name "Periodical"
+                                                                         :tag "periodical")
+                                                                        (:name "Projects"
+                                                                         :auto-category t
+                                                                         :and (:tag "project"
+                                                                               :not (:tag "courses")
+                                                                               :not (:tag "reading")
+                                                                               :not (:tag "periodical")
+                                                                               :not (:tag "lifestyle")))
+                                                                        (:name "Meta projects"
+                                                                         :auto-category t
+                                                                         :and (:tag "metaproject"
+                                                                               :not (:tag "courses")
+                                                                               :not (:tag "reading")
+                                                                               :not (:tag "periodical")
+                                                                               :not (:tag "lifestyle")))
+                                                                        (:name "Ordinary tasks"
+                                                                         :and (:not (:tag "project")
+                                                                               :not (:tag "metaproject")
+                                                                               :not (:tag "courses")
+                                                                               :not (:tag "periodical")
+                                                                               :not (:tag "lifestyle"))))
                         org-ql-views                         '(("(-2) Unordered tasks and projects"
                                                                 :buffers-files org-agenda-files
                                                                 :query (and (not (tags-local "now"))
@@ -3173,19 +3174,13 @@ Org mode's web archiver.
                  org-board-archive-dry-run))
 #+end_src
 
-** [[https://github.com/eyeinsky/org-anki][org-anki]]
-Sync org notes to Anki via AnkiConnect
+** [[https://github.com/orgtre/anki-editor][anki-editor]]
+Emacs minor mode for making Anki cards with Org Mode.
 
-#+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref org-anki-usepkg
-  (use-package org-anki
-      :straight t
+#+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref anki-editor-usepkg
+  (use-package anki-editor
       :after org
-      :commands (org-anki-sync-entry
-                 org-anki-update-all
-                 org-anki-sync-all
-                 org-anki-delete-entry
-                 org-anki-browse-entry
-                 org-anki-delete-all))
+      :straight (:fork "orgtre"))
 #+end_src
 
 ** Hook
