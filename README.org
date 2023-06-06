@@ -1813,6 +1813,7 @@ Incremental parsing system
       :diminish tree-sitter-hl-mode
       :commands (tree-sitter-hl-mode)
       :init
+      (setq tsc-dyn-get-from '(:compilation))
       <<helm-tree-sitter-usepkg>>
       <<tree-sitter-langs-usepkg>>
       :config
