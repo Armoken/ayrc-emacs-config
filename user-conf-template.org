@@ -8,6 +8,11 @@
     (add-to-list 'default-frame-alist '(font . "Hack-12"))
   #+END_SRC
 
+* Icons
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defvar ayrc/icons-enabled nil)
+#+END_SRC
+
 * Double buffering
   Attention! May cause flickering!
 

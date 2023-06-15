@@ -90,8 +90,8 @@ Also add it to ~/.Xresources to prevent blinking at startup:
 and run xrdb -merge ~/.Xresources
 
 #+begin_src emacs-lisp :tangle yes
-  (use-package spacemacs-common
-      :straight spacemacs-theme
+  (use-package spacemacs-theme
+      :straight t
       :demand t
       :custom-face
       (org-link    ((nil :height 1.0)))
@@ -152,15 +152,15 @@ and run xrdb -merge ~/.Xresources
        ;; Respects `all-the-icons-color-icons'.
        ;; While using the server mode in GUI, should set the value
        ;; explicitly.
-       doom-modeline-icon                     (display-graphic-p)
-       doom-modeline-major-mode-icon          t
-       doom-modeline-major-mode-color-icon    t
-       doom-modeline-buffer-state-icon        t
-       doom-modeline-buffer-modification-icon t
+       doom-modeline-icon                     ayrc/icons-enabled
+       doom-modeline-major-mode-icon          ayrc/icons-enabled
+       doom-modeline-major-mode-color-icon    ayrc/icons-enabled
+       doom-modeline-buffer-state-icon        ayrc/icons-enabled
+       doom-modeline-buffer-modification-icon ayrc/icons-enabled
        ;; Whether display the modal state icon.
        ;; Including `evil', `overwrite', `god', `ryo' and `xah-fly-keys',
        ;; etc.
-       doom-modeline-modal-icon                 t
+       doom-modeline-modal-icon                 ayrc/icons-enabled
        ;; Whether display the perspective name. Non-nil to display in the
        ;; mode-line.
        doom-modeline-persp-name                 t
@@ -169,7 +169,7 @@ and run xrdb -merge ~/.Xresources
        doom-modeline-display-default-persp-name t
        ;; If non nil the perspective name is displayed alongside a folder
        ;; icon.
-       doom-modeline-persp-icon                 t
+       doom-modeline-persp-icon                 ayrc/icons-enabled
        ;; Whether display the `lsp' state. Non-nil to display in the
        ;; mode-line.
        doom-modeline-lsp                        t
@@ -635,8 +635,8 @@ A library for inserting Developer icons
       (dashboard-startup-banner    nil)
       (dashboard-center-content    t)
       (dashboard-show-shortcuts    t)
-      (dashboard-set-file-icons    t)
-      (dashboard-set-heading-icons t)
+      (dashboard-set-file-icons    ayrc/icons-enabled)
+      (dashboard-set-heading-icons ayrc/icons-enabled)
       (dashboard-banner-logo-title "Welcome to Emacs")
       (dashboard-items             '((recents   . 5)
                                      (bookmarks . 10)
