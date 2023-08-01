@@ -862,6 +862,8 @@ Treat undo history as a tree
       :diminish undo-tree-mode
       :bind (("C-x u" . undo-tree-visualize)
              ("C-."   . undo-tree-undo))
+      :custom
+      (undo-tree-history-directory-alist (list (cons "." (concat ayrc/path-to-session-cache-dir "undo"))))
       :init
       (global-undo-tree-mode))
 #+end_src
