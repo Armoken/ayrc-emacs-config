@@ -2230,13 +2230,16 @@ Search and manage bibliographies in Emacs.
       (org-todo-keywords                              '((sequence
                                                          "TODO(t)" "CURRENT" "WAITING(w)"
                                                          "|"
-                                                         "DONE(d!)" "CANCELED(c@)")))
-      (org-todo-keyword-faces                         '(("CURRENT"  . "yellow")
-                                                        ("WAITING"  . (:foreground "turquoise2"
-                                                                       :weight bold))
-                                                        ("CANCELED" . (:foreground "RoyalBlue3"
-                                                                       :weight bold))))
+                                                         "DONE(d!)" "CANCELED(c@)" "SUSPENDED(s@)")))
+      (org-todo-keyword-faces                         '(("CURRENT"   . "yellow")
+                                                        ("WAITING"   . (:foreground "turquoise2"
+                                                                        :weight bold))
+                                                        ("CANCELED"  . (:foreground "RoyalBlue3"
+                                                                        :weight bold))
+                                                        ("SUSPENDED" . (:foreground "magenta3"
+                                                                        :weight bold))))
       (org-babel-load-languages                       '((emacs-lisp . t)
+                                                        (org        . t)
                                                         (ledger     . t))))
 #+end_src
 
