@@ -862,6 +862,8 @@ Treat undo history as a tree
       :diminish undo-tree-mode
       :bind (("C-x u" . undo-tree-visualize)
              ("C-."   . undo-tree-undo))
+      :custom
+      (undo-tree-history-directory-alist (list (cons "." (concat ayrc/path-to-session-cache-dir "undo"))))
       :init
       (global-undo-tree-mode))
 #+end_src
@@ -2198,7 +2200,9 @@ Search and manage bibliographies in Emacs.
              ("C-c &"   . #'org-mark-ring-goto)
              ("M-."     . #'org-open-at-point)
              ("M-,"     . #'org-mark-ring-goto)
-             ("C-c s y" . #'org-download-screenshot))
+             ("C-c s y" . #'org-download-screenshot)
+             ("C-x r p" . #'ayrc/org-capture-at-point)
+             ("C-x r a" . #'org-capture))
 
       :init
       <<org-bullets-usepkg>>
@@ -2227,13 +2231,16 @@ Search and manage bibliographies in Emacs.
       (org-todo-keywords                              '((sequence
                                                          "TODO(t)" "CURRENT" "WAITING(w)"
                                                          "|"
-                                                         "DONE(d!)" "CANCELED(c@)")))
-      (org-todo-keyword-faces                         '(("CURRENT"  . "yellow")
-                                                        ("WAITING"  . (:foreground "turquoise2"
-                                                                       :weight bold))
-                                                        ("CANCELED" . (:foreground "RoyalBlue3"
-                                                                       :weight bold))))
+                                                         "DONE(d!)" "CANCELED(c@)" "SUSPENDED(s@)")))
+      (org-todo-keyword-faces                         '(("CURRENT"   . "yellow")
+                                                        ("WAITING"   . (:foreground "turquoise2"
+                                                                        :weight bold))
+                                                        ("CANCELED"  . (:foreground "RoyalBlue3"
+                                                                        :weight bold))
+                                                        ("SUSPENDED" . (:foreground "magenta3"
+                                                                        :weight bold))))
       (org-babel-load-languages                       '((emacs-lisp . t)
+                                                        (org        . t)
                                                         (ledger     . t))))
 #+end_src
 
@@ -2964,6 +2971,33 @@ Search and manage bibliographies in Emacs.
                        (cl-third
                         (org-babel-get-src-block-info))))
                    (org-hide-block-toggle))))))
+#+end_src
+
+** Function for capture at point
+#+begin_src emacs-lisp :tangle README-loaddefs.el
+  ;;;###autoload
+  (defun ayrc/org-capture-at-point ()
+      "Insert an org capture template at point."
+      (interactive)
+      (org-capture 0))
+#+end_src
+
+** Function to promote subtree to zero
+#+begin_src emacs-lisp :tangle README-loaddefs.el
+  ;;;###autoload
+  (defun sbr/org-promote-subtree-to-zero ()
+      "Promote the entire subtree. If the root heading is at level 1,
+  'promote' it to level 0 by removing the heading."
+      (interactive)
+      (if (= (org-current-level) 1)
+              (progn
+                  (org-mark-subtree)
+                  (org-next-visible-heading 1)
+                  (org-do-promote)
+                  (org-previous-visible-heading 1)
+                  (org-mark-subtree)
+                  (org-toggle-heading))
+          (org-promote-subtree)))
 #+end_src
 
 ** [[https://github.com/emacsorphanage/org-bullets][bullets]]
