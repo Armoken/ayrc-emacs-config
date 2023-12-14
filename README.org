@@ -3935,24 +3935,63 @@ Emacs client for ccls, a C/C++ language server
   (ayrc/dap-remove-nth-first-templates 1)
 
     (dap-register-debug-template
-     "USDK Integration Tests: LLDB::Run"
+     "USDK RenderingTests: LLDB::Run"
      (list :type "lldb-vscode"
            :cwd "/Users/vel/coding/advertyclient"
            :request "launch"
            :program "/Users/vel/coding/advertyclient/Src/usdk/projects/Darwin/tests/integration_tests/IntegrationTests.app/Contents/MacOS/IntegrationTests"
-           :args (list "[NetworkTests]")
+          :args (list "\[RenderingTests\]")
            :name "LLDB::Run"))
 
     (dap-register-debug-template
-     "USDK Unit tests: LLDB::Run"
+     "USDK ReloadTests: LLDB::Run"
+     (list :type "lldb-vscode"
+           :cwd "/Users/vel/coding/advertyclient"
+           :request "launch"
+           :program "/Users/vel/coding/advertyclient/Src/usdk/projects/Darwin/tests/integration_tests/IntegrationTests.app/Contents/MacOS/IntegrationTests"
+          :args (list "ReloadTests")
+           :name "LLDB::Run"))
+
+    (dap-register-debug-template
+     "USDK : LLDB::Run"
+     (list :type "lldb-vscode"
+           :cwd "/Users/vel/coding/advertyclient"
+           :request "launch"
+           :program "/Users/vel/coding/advertyclient/Src/usdk/projects/Darwin/tests/integration_tests/IntegrationTests.app/Contents/MacOS/IntegrationTests"
+          :args (list "NetworkTests")
+           :name "LLDB::Run"))
+
+
+    (dap-register-debug-template
+     "USDK IntegrationTests: LLDB::Run"
+     (list :type "lldb-vscode"
+           :cwd "/Users/vel/coding/advertyclient"
+           :request "launch"
+           :program "/Users/vel/coding/advertyclient/Src/usdk/projects/Darwin/tests/integration_tests/IntegrationTests.app/Contents/MacOS/IntegrationTests"
+           :name "LLDB::Run"))
+
+
+    (dap-register-debug-template
+     "USDK Unit tests VastTrackingTest: LLDB::Run"
      (list :type "lldb-vscode"
            :cwd "/Users/vel/coding/advertyclient"
            :request "launch"
            :program "/Users/vel/coding/advertyclient/Src/usdk/projects/Darwin/tests/unit_tests/UnitTests"
-       ;;               :args (list
-       ;;                      "--first_flag"
-       ;;                      "--second_flag" "third_argumnt")
+          :args (list "VastTrackingTest")
+
+;;           :args (list "--section Failed\ Sign\ In")
            :name "LLDB::Run"))
+
+    (dap-register-debug-template
+     "USDK Unit tests USDK_API_Tests: LLDB::Run"
+     (list :type "lldb-vscode"
+           :cwd "/Users/vel/coding/advertyclient"
+           :request "launch"
+           :program "/Users/vel/coding/advertyclient/Src/usdk/projects/Darwin/tests/unit_tests/UnitTests"
+          :args (list "USDK_API_Tests")
+           :name "LLDB::Run"))
+
+
 #+end_src
 
 **** [[https://clangd.llvm.org/][clangd]]
