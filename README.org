@@ -193,7 +193,7 @@ and run xrdb -merge ~/.Xresources
        doom-modeline-indent-info                  t
 
        ;; If non-nil, only display one number for checker information if applicable.
-       doom-modeline-checker-simple-format        t
+       doom-modeline-check-simple-format        t
 
        ;; The maximum number displayed for notifications.
        doom-modeline-number-limit                99
@@ -318,7 +318,7 @@ and run xrdb -merge ~/.Xresources
                                 process
                                 vcs
                                 lsp
-                                checker
+                                check
                                 )
                               )
 
@@ -632,7 +632,7 @@ A library for inserting Developer icons
                                        ;; Fix icons showing if the server used
                                        (dashboard-refresh-buffer)))
       (dashboard-set-footer        nil)
-      (dashboard-startup-banner    nil)
+      (dashboard-startup-banner    'logo)
       (dashboard-center-content    t)
       (dashboard-show-shortcuts    t)
       (dashboard-set-file-icons    ayrc/icons-enabled)
