@@ -1165,6 +1165,8 @@ of "Makefile" and "Makefile<2>").
 #+begin_src emacs-lisp :tangle yes
   (setq ediff-window-setup-function 'ediff-setup-windows-plain
         ediff-split-window-function 'split-window-horizontally)
+
+  (global-set-key (kbd "C-x e") 'ediff-buffers)
 #+end_src
 
 * Non global minor modes
