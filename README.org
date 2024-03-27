@@ -3259,7 +3259,8 @@ Emacs minor mode for making Anki cards with Org Mode.
                 magit-set-upstream-on-push
                 magit-diff-refine-hunk)
       :commands (magit-get-top-dir)
-      :bind (("C-x g" . magit-status))
+      :bind (("C-x g" . magit-status)
+             ("C-x C-g b" . magit-blame-addition))
       :hook (git-commit-mode-hook . magit-commit-mode-init)
       :init
       (progn
