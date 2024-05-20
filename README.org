@@ -1702,6 +1702,8 @@ Emacs client/library for the Language Server Protocol
       (lsp-keep-workspace-alive                   nil)
       (lsp-use-plists                             t)
       (read-process-output-max                    (* 1024 1024))
+      (lsp-keymap-prefix                          "C-c l")
+
 
       :init
       <<lsp-ui-usepkg>>
@@ -4259,33 +4261,34 @@ Prerequisites:
 *** Hook
 #+begin_src emacs-lisp :tangle README-loaddefs.el
   ;;;###autoload
-   (defun ayrc/python-hook ()
-       (when (eq system-type 'gnu/linux)
-           (exec-path-from-shell-initialize))
+  (defun ayrc/python-hook ()
+      (when (eq system-type 'gnu/linux)
+          (exec-path-from-shell-initialize))
 
-       (envrc-mode                 1)
+      (envrc-mode                 1)
 
-       (display-line-numbers-mode  1)
-       (highlight-indentation-mode 1)
-       (visual-line-mode          -1)
-       (ws-butler-mode             1)
-       (hs-minor-mode              1)
-       (abbrev-mode                1)
-       (yas-minor-mode             1)
-       (smartparens-mode           1)
-       (smart-shift-mode           1)
-       (hl-todo-mode               1)
+      (display-line-numbers-mode  1)
+      (highlight-indentation-mode 1)
+      (visual-line-mode          -1)
+      (ws-butler-mode             1)
+      (hs-minor-mode              1)
+      (abbrev-mode                1)
+      (yas-minor-mode             1)
+      (smartparens-mode           1)
+      (smart-shift-mode           1)
+      (hl-todo-mode               1)
 
-       ;; Select LSP language server
-       (cond
-        ((string-equal ayrc/python-lsp-server "pylsp")   (require 'lsp-pylsp))
-        ((string-equal ayrc/python-lsp-server "pyright") (require 'lsp-pyright))
-        (t   (require 'lsp-pylsp)))
+      ;; Select LSP language server
+      (cond
+       ((string-equal ayrc/python-lsp-server "pylsp")   (require 'lsp-pylsp))
+       ((string-equal ayrc/python-lsp-server "pyright") (require 'lsp-pyright))
+       ((string-equal ayrc/python-lsp-server "ruff") (require 'lsp-ruff))
+       (t   (require 'lsp-pylsp)))
 
-       ;; Enable debugging support
-       (require 'dap-python)
+      ;; Enable debugging support
+      (require 'dap-python)
 
-       (lsp-deferred))
+      (lsp-deferred))
 #+end_src
 
 ** [[https://github.com/Wilfred/pip-requirements.el][Pip requirments]]
