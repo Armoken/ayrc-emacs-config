@@ -1488,7 +1488,7 @@ Cross-referencing commands
       :init
 
       (defun ayrc/setup-xref-hotkeys ()
-          (ayrc/local-set-keys '(("M-,"     . xref-pop-marker-stack)
+          (ayrc/local-set-keys '(("M-,"     . xref-go-back)
                                  ("M-?"     . xref-find-definitions)
                                  ("C-M-."   . xref-find-apropos))))
       :config
@@ -1720,7 +1720,7 @@ Emacs client/library for the Language Server Protocol
                              ("C-c C-r" . lsp-format-region)
                              ("C-M-\\"  . lsp-format-region)
                              ("M-."     . lsp-ui-peek-find-definitions)
-                             ("M-,"     . xref-pop-marker-stack)
+                             ("M-,"     . xref-go-back)
                              ("M-?"     . lsp-ui-peek-find-references)
                              ("C-M-."   . xref-find-apropos)))
 
@@ -1816,15 +1816,17 @@ Incremental parsing system
   (use-package tree-sitter
       :straight t
       :after (:any company)
-      :diminish tree-sitter-hl-mode
-      :commands (tree-sitter-hl-mode)
+      :commands ()
+      :commands (tree-sitter-mode)
       :init
       (setq tsc-dyn-get-from '(:compilation))
       <<helm-tree-sitter-usepkg>>
       <<tree-sitter-langs-usepkg>>
       :config
       (require 'tree-sitter-langs)
-      (global-tree-sitter-mode))
+      (global-tree-sitter-mode t)
+      (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
 #+end_src
 
 **** [[https://github.com/yyoncho/helm-lsp][Helm]]
