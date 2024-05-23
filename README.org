@@ -1169,6 +1169,14 @@ of "Makefile" and "Makefile<2>").
   (global-set-key (kbd "C-x e") 'ediff-buffers)
 #+end_src
 
+** CSV mode
+#+begin_src emacs-lisp :tangle yes :noweb no
+  (use-package csv-mode
+      :straight t
+      :diminish csv-mode
+      :commands (csv-mode))
+#+end_src
+
 * Non global minor modes
 ** [[https://github.com/antonj/Highlight-Indentation-for-Emacs][Highlight indentation]]                                                                                            :ui:
 Minor modes for highlighting indentation
