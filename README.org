@@ -1886,6 +1886,17 @@ Incremental parsing system
       :after (tree-sitter))
 #+end_src
 
+** [[https://github.com/jeffvalk/snap-indent][snap-indent]]
+Simple automatic indentation for Emacs
+
+#+begin_src emacs-lisp :tangle yes :noweb yes
+  (use-package snap-indent
+      :straight t
+      :after (:any company)
+      :custom ((snap-indent-format 'untabify)
+               (snap-indent-on-save 'nil)))
+#+end_src
+
 * Helpful functions
 ** Open current file in default external program                                                   :hotkeys:interactive:
 #+begin_src emacs-lisp :tangle README-loaddefs.el
@@ -2186,6 +2197,7 @@ Incremental parsing system
       (abbrev-mode               1)
       (yas-minor-mode            1)
       (hl-todo-mode              1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company '(company-ledger :with company-yasnippet))
 
@@ -3278,6 +3290,7 @@ Emacs minor mode for making Anki cards with Org Mode.
 
       (org-bullets-mode          1)
       (org-edna-mode             1)
+      (snap-indent-mode          1)
 
       (ayrc/individual-visibility-source-blocks))
 #+end_src
@@ -3598,6 +3611,8 @@ Such as parentheses, brackets or braces according to their depth
       (push '("<=" . ?≤) prettify-symbols-alist)
       (push '("lambda"  . ?λ) prettify-symbols-alist)
 
+      (snap-indent-mode          1)
+
       (add-hook 'write-contents-functions
                 'ayrc/cleanup-buffer-notabs nil t))
 #+end_src
@@ -3709,6 +3724,7 @@ Such as parentheses, brackets or braces according to their depth
       (yas-minor-mode            1)
       (hs-minor-mode             1)
       (hl-todo-mode              1)
+      (snap-indent-mode          1)
 
       ;; Uncomfortable
       ;; (hungry-delete-mode       -1)
@@ -4316,7 +4332,6 @@ Prerequisites:
           (exec-path-from-shell-initialize))
 
       (envrc-mode                 1)
-
       (display-line-numbers-mode  1)
       (highlight-indentation-mode 1)
       (visual-line-mode          -1)
@@ -4327,6 +4342,7 @@ Prerequisites:
       (smartparens-mode           1)
       (smart-shift-mode           1)
       (hl-todo-mode               1)
+      (snap-indent-mode           1)
 
       ;; Select LSP language server
       (cond
@@ -4363,7 +4379,8 @@ Major mode for editing pip requirements files
       (smartparens-mode          1)
       (smart-shift-mode          1)
       (yas-minor-mode            1)
-      (hl-todo-mode              1))
+      (hl-todo-mode              1)
+      (snap-indent-mode          1))
 #+end_src
 
 ** [[https://github.com/cython/cython/blob/master/Tools/cython-mode.el][Cython]]
@@ -4398,6 +4415,8 @@ Cython mode for Emacs
       (smartparens-mode           1)
       (smart-shift-mode           1)
       (hl-todo-mode               1)
+      (hindent-mode               1)
+      (snap-indent-mode           1)
 
       (ayrc/setup-company '(company-yasnippet)))
 #+end_src
@@ -4539,6 +4558,7 @@ company-mode autocompletion for auctex
       (hs-minor-mode             1)
       (flycheck-mode             1)
       (tex-fold-mode             1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company '(company-math-symbols-latex
                             company-latex-commands))
@@ -4659,6 +4679,7 @@ C# mode for Emacs
       (smartparens-mode           1)
       (smart-shift-mode           1)
       (hl-todo-mode               1)
+      (snap-indent-mode          1)
 
       (ayrc/dumb-jump-setup)
       (ayrc/setup-company '(company-yasnippet)))
@@ -4700,6 +4721,7 @@ C# mode for Emacs
       (smartparens-mode           1)
       (smart-shift-mode           1)
       (hl-todo-mode               1)
+      (snap-indent-mode           1)
 
       (ayrc/setup-company))
 #+end_src
@@ -4754,7 +4776,11 @@ VHDL mode for Emacs
       (hs-minor-mode             1)
       (flycheck-mode             1)
 
-      (ayrc/setup-company '(company-shell company-yasnippet)))
+      (snap-indent-mode          1)
+      (setq snap-indent-format 'nil) ;; Remove untabify
+
+      (ayrc/setup-company '(company-shell
+                            company-yasnippet)))
 #+end_src
 
 ** Matlab
@@ -4782,6 +4808,7 @@ VHDL mode for Emacs
       (abbrev-mode               1)
       (yas-minor-mode            1)
       (hl-todo-mode              1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company))
 #+end_src
@@ -4809,6 +4836,7 @@ VHDL mode for Emacs
       (abbrev-mode               1)
       (yas-minor-mode            1)
       (hl-todo-mode              1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company))
 #+end_src
@@ -4843,6 +4871,7 @@ VHDL mode for Emacs
 
       (hs-minor-mode             1)
       (flycheck-mode             1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company))
 #+end_src
@@ -4869,6 +4898,7 @@ VHDL mode for Emacs
       (smartparens-mode           1)
       (smart-shift-mode           1)
       (hl-todo-mode               1)
+      (snap-indent-mode           1)
 
       (ayrc/setup-company))
 #+end_src
@@ -4897,6 +4927,7 @@ VHDL mode for Emacs
       (abbrev-mode               1)
       (yas-minor-mode            1)
       (hl-todo-mode              1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company))
 #+end_src
@@ -4939,6 +4970,7 @@ VHDL mode for Emacs
       (abbrev-mode               1)
       (yas-minor-mode            1)
       (hl-todo-mode              1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company)
       (company-nginx-keywords))
@@ -4976,6 +5008,7 @@ VHDL mode for Emacs
       (abbrev-mode               1)
       (yas-minor-mode            1)
       (hl-todo-mode              1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company))
 #+end_src
@@ -5003,6 +5036,7 @@ VHDL mode for Emacs
       (abbrev-mode               1)
       (yas-minor-mode            1)
       (hl-todo-mode              1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company))
 #+end_src
@@ -5039,6 +5073,7 @@ VHDL mode for Emacs
       (abbrev-mode               1)
       (yas-minor-mode            1)
       (hl-todo-mode              1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company)
       (flycheck-plantuml-setup)
@@ -5068,6 +5103,7 @@ VHDL mode for Emacs
       (abbrev-mode               1)
       (yas-minor-mode            1)
       (hl-todo-mode              1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company))
 #+end_src
@@ -5098,6 +5134,7 @@ VHDL mode for Emacs
 
       (ayrc/setup-company)
       (hs-minor-mode             1)
+      (snap-indent-mode          1)
 
       (setq js-indent-level 4))
 #+end_src
@@ -5131,6 +5168,7 @@ VHDL mode for Emacs
       (yas-minor-mode             1)
       (highlight-indentation-mode 1)
       (hl-todo-mode               1)
+      (snap-indent-mode           1)
 
       (outline-minor-mode)
       (setq outline-regexp
@@ -5178,6 +5216,7 @@ VHDL mode for Emacs
       (hl-todo-mode              1)
 
       (hs-minor-mode             1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company '(company-nxml :with company-yasnippet)))
 #+end_src
@@ -5204,6 +5243,7 @@ VHDL mode for Emacs
       (abbrev-mode               1)
       (yas-minor-mode            1)
       (hl-todo-mode              1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company))
 #+end_src
@@ -5229,6 +5269,7 @@ VHDL mode for Emacs
       (abbrev-mode               1)
       (yas-minor-mode            1)
       (hl-todo-mode              1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company))
 #+end_src
@@ -5298,6 +5339,7 @@ Additional functions for Emacs [markdown-mode]
       (abbrev-mode               1)
       (yas-minor-mode            1)
       (hl-todo-mode              1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company)
 
@@ -5340,6 +5382,9 @@ Package is not ready yet.
       (abbrev-mode               1)
       (yas-minor-mode            1)
       (hl-todo-mode              1)
+
+      (snap-indent-mode          1)
+      (setq snap-indent-format 'nil) ;; Remove untabify
 
       (ayrc/setup-company '(company-capf :with company-yasnippet)))
 #+end_src
@@ -5400,6 +5445,7 @@ Emacs Font-lock rules for CMake
       (ayrc/setup-company '(company-cmake :with company-yasnippet))
 
       (hs-minor-mode             1)
+      (snap-indent-mode          1)
       (flycheck-mode             1)
 
       (ayrc/cmake-font-lock-activate))
@@ -5428,6 +5474,7 @@ Emacs Font-lock rules for CMake
       (hl-todo-mode              1)
 
       (hs-minor-mode             1)
+      (snap-indent-mode          1)
       (flycheck-mode             1)
 
       (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
@@ -5471,7 +5518,8 @@ Emacs Font-lock rules for CMake
       (ayrc/setup-company '(company-cmake :with company-yasnippet))
 
       (hs-minor-mode             1)
-      (flycheck-mode             1))
+      (flycheck-mode             1)
+      (snap-indent-mode          1))
 #+end_src
 
 ** Device Tree
@@ -5496,6 +5544,7 @@ Emacs Font-lock rules for CMake
       (abbrev-mode               1)
       (yas-minor-mode            1)
       (hl-todo-mode              1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company))
 #+end_src
@@ -5523,6 +5572,7 @@ Emacs Font-lock rules for CMake
       (abbrev-mode               1)
       (yas-minor-mode            1)
       (hl-todo-mode              1)
+      (snap-indent-mode          1)
 
       (ayrc/setup-company))
 #+end_src
@@ -5552,5 +5602,7 @@ Emacs Font-lock rules for CMake
       (hl-todo-mode              1)
       ;; Disable due to lack of performance
       ;; https://github.com/brotzeit/rustic/issues/107
-      (adaptive-wrap-prefix-mode -1))
+      (adaptive-wrap-prefix-mode -1)
+
+      (snap-indent-mode          1))
 #+end_src
