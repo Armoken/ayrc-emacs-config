@@ -4568,88 +4568,63 @@ company-mode autocompletion for auctex
 #+end_src
 
 ** Haskell
-*** Prerequisites
-:PROPERTIES:
-:CUSTOM_ID: haskell-prerequisites
-:END:
-
-#+NAME: haskell-prerequisites
-#+CAPTION: Prerequisites for haskell packages
-
-|---------+-----------+------------------------------+---------+----------|
-| Name    | Archlinux | Gentoo                       | Ubuntu  | Optional |
-|---------+-----------+------------------------------+---------+----------|
-| [[https://github.com/DanielG/ghc-mod][ghc-mod]] | ghc-mod   | app-emacs/ghc-mod            | ghc-mod | No       |
-| [[https://github.com/ndmitchell/hlint][hlint]]   | hlint     | dev-haskell/hlint            | hlint   | No       |
-| [[https://github.com/ndmitchell/hoogle][hoogle]]  | hoogle    | dev-haskell/hoogle [haskell] | hoogle  | No       |
-|---------+-----------+------------------------------+---------+----------|
-
-*** Packages
-:PROPERTIES:
-:CUSTOM_ID: haskell-packages
-:END:
-
-#+NAME: haskell-packages
-#+CAPTION: Packages for haskell
-
-|------------------+--------------------------------------------------------------------|
-| Package          | Description                                                        |
-|------------------+--------------------------------------------------------------------|
-| [[https://github.com/haskell/haskell-mode][haskell-mode]]     | Emacs mode for editing, debugging and developing Haskell programs. |
-| [[https://github.com/DanielG/ghc-mod][ghc-mod]]          | Haskell completion and keybindings                                 |
-| [[https://github.com/flycheck/flycheck-haskell][flycheck-haskell]] | Flycheck mode for haskell                                          |
-|------------------+--------------------------------------------------------------------|
-
-*** Haskell
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes :noweb yes
   (use-package haskell-mode
       :straight t
       :defer t
-      :commands haskell-mode
       :mode ("\\.hs\\'" . haskell-mode)
-
+      :hook ((haskell-mode          . ayrc/haskell-hook)
+             (haskell-literate-mode . ayrc/haskell-hook))
+      :commands (haskell-mode haskell-literate-mode)
+      :custom ((haskell-interactive-popup-errors nil)
+               (haskell-process-suggest-remove-import-lines t)
+               (haskell-process-auto-import-loaded-modules t)
+               (haskell-stylish-on-save t))
       :init
-      (progn
-          (setq
-           haskell-interactive-popup-errors nil
-           haskell-process-suggest-remove-import-lines t
-           haskell-process-auto-import-loaded-modules t
-           haskell-stylish-on-save t)
+      <<hindent-usepkg>>
+      <<lsp-haskell-usepkg>>)
+#+end_src
 
-          (use-package company-ghci
-              :straight t
-              :defer t)
 
-          (use-package flycheck-haskell
-              :straight t
-              :after flycheck
-              :init (add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
+*** [[https://github.com/mihaimaruseac/hindent][hindent]]
+#+begin_src emacs-lisp :tangle no :noweb-ref hindent-usepkg
+  (use-package hindent
+      :straight t
+      :defer t
+      :commands (hindent-mode)
+      :bind (:map hindent-mode-map
+             ("C-c R" . hindent-reformat-buffer)))
+#+end_src
 
-          (use-package intero
-              :defer t
-              :straight t
-              :init
-              (progn
-                  (setq intero-extra-ghci-options '("-fno-defer-type-errors"))))
+*** [[https://github.com/emacs-lsp/lsp-haskell][lsp-haskell]]
+#+begin_src emacs-lisp :tangle no :noweb-ref lsp-haskell-usepkg
+  (straight-use-package
+   `(lsp-haskell :type git
+                 :host nil
+                 :repo "https://github.com/emacs-lsp/lsp-haskell.git"))
 
-          (use-package hindent
-              :straight t
-              :commands (hindent-mode)
-              :bind (:map hindent-mode-map
-                     ("C-c R" . hindent-reformat-buffer)))
+  (use-package lsp-haskell
+      :straight t)
+#+end_src
 
-          (defun haskell-hook ()
-              (envrc-mode                1)
-              (flycheck-mode)
-              (smart-shift-mode          1)
-              (abbrev-mode               1)
-              (intero-global-mode)
-              (hindent-mode)
-              (ayrc/setup-company '(company-intero
-                                    company-ghci
-                                    company-yasnippet)))
+*** Hook
+#+begin_src emacs-lisp :tangle README-loaddefs.el
+  (defun ayrc/haskell-hook ()
+      (envrc-mode                 1)
 
-          (add-hook 'haskell-mode-hook 'haskell-hook)))
+      (display-line-numbers-mode  1)
+      (highlight-indentation-mode 1)
+      (visual-line-mode          -1)
+      (ws-butler-mode             1)
+      (hs-minor-mode              1)
+      (abbrev-mode                1)
+      (yas-minor-mode             1)
+      (smartparens-mode           1)
+      (smart-shift-mode           1)
+      (hl-todo-mode               1)
+      (snap-indent-mode           1)
+
+      (lsp-deferred))
 #+end_src
 
 ** [[https://github.com/emacs-csharp/csharp-mode][C#]]
