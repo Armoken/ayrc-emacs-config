@@ -193,7 +193,7 @@ and run xrdb -merge ~/.Xresources
        doom-modeline-indent-info                  t
 
        ;; If non-nil, only display one number for checker information if applicable.
-       doom-modeline-check-simple-format        t
+       doom-modeline-check-simple-format          t
 
        ;; The maximum number displayed for notifications.
        doom-modeline-number-limit                99
