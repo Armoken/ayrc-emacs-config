@@ -3999,6 +3999,15 @@ Emacs client for ccls, a C/C++ language server
            :name "LLDB::Run"))
 
     (dap-register-debug-template
+     "USDK DoubleUSDK_RenderingTests: LLDB::Run"
+     (list :type "lldb-vscode"
+           :cwd "/Users/vel/coding/advertyclient"
+           :request "launch"
+           :program "/Users/vel/coding/advertyclient/Src/usdk/projects/Darwin/tests/integration_tests/IntegrationTests.app/Contents/MacOS/IntegrationTests"
+          :args (list "\[DoubleUSDK_RenderingTests\]")
+           :name "LLDB::Run"))
+
+    (dap-register-debug-template
      "USDK ReloadTests: LLDB::Run"
      (list :type "lldb-vscode"
            :cwd "/Users/vel/coding/advertyclient"
