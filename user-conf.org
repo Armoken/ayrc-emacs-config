@@ -77,6 +77,28 @@
     (add-to-list 'auto-mode-alist '("\\.gradle\\'" . groovy-mode))
     (add-to-list 'auto-mode-alist '("\\.Jenkinsfile\\'" . groovy-mode))
 
+;; Install and configure typescript-mode with straight.el
+(straight-use-package 'typescript-mode)
+
+;; Enable typescript-mode for .ts and .tsx files
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
+
+
+;; Install lsp-mode with straight.el
+(straight-use-package 'lsp-mode)
+
+;; Install typescript-mode if not already installed
+(straight-use-package 'typescript-mode)
+
+;; Enable lsp-mode for TypeScript files
+(add-hook 'typescript-mode-hook #'lsp-deferred)
+
+;; Optional: Configure LSP settings for better TypeScript support
+(with-eval-after-load 'lsp-mode
+  (setq lsp-enable-on-type-formatting nil) ;; Disable on-type formatting if preferred
+  (setq lsp-typescript-auto-rename-imports t) ;; Automatically rename imports on file move/rename
+  (setq lsp-typescript-suggest-complete-function-calls t)) ;; Suggest function call completions
 
         ;;        (setq dap-lldb-debug-program '("/opt/homebrew/opt/llvm/bin/lldb-vscode"))
                ;; (setq mac-command-modifier 'meta)

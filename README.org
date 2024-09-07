@@ -4056,6 +4056,16 @@ Emacs client for ccls, a C/C++ language server
            :name "LLDB::Run"))
 
 
+    (dap-register-debug-template
+     "USDK UnitTests"
+     (list :type "lldb-vscode"
+           :cwd "/Users/vel/coding/advertyclient"
+           :request "launch"
+           :program "/Users/vel/coding/advertyclient/Src/usdk/projects/Darwin/tests/unit_tests/UnitTests"
+           :name "LLDB::Run"))
+
+
+
 #+end_src
 
 **** [[https://clangd.llvm.org/][clangd]]
