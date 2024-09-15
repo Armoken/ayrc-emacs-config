@@ -50,51 +50,53 @@
 * VEL custom configuration
   #+BEGIN_SRC emacs-lisp :tangle yes
 
-        ;; Keybindings
-        (global-set-key (kbd "<f11>") 'dap-debug-last)
-        (global-set-key (kbd "s-b") 'dap-breakpoint-toggle)
-        (global-set-key (kbd "s-/") 'comment-line)
-        (global-set-key (kbd "s-<up>") 'helm-projectile-find-other-file)
-        (global-set-key (kbd "s-<down>") 'helm-projectile-find-other-file)
+    ;; Keybindings
+    (global-set-key (kbd "<f11>") 'dap-debug-last)
+    (global-set-key (kbd "s-b") 'dap-breakpoint-toggle)
+    (global-set-key (kbd "s-/") 'comment-line)
+    (global-set-key (kbd "s-<up>") 'helm-projectile-find-other-file)
+    (global-set-key (kbd "s-<down>") 'helm-projectile-find-other-file)
 
-        ;; Compilation and LSP settings
-        (setq projectile-project-compilation-cmd "cd Src/usdk && invoke build -c \"-GNinja\" -o Darwin")
+    ;; Compilation and LSP settings
+    (setq projectile-project-compilation-cmd "cd Src/usdk && invoke build -c \"-GNinja\" -o Darwin")
 
-        (setq magit-refresh-status-buffer nil)
-        (setq lsp-clangd-binary-path "/opt/homebrew/opt/llvm/bin/clangd")
-        (setq lsp-clients-clangd-args '("--compile-commands-dir=/Users/vel/coding/advertyclient/Src/usdk/projects/Darwin/" "--clang-tidy"))
+    (setq magit-refresh-status-buffer nil)
+    (setq lsp-clangd-binary-path "/opt/homebrew/opt/llvm/bin/clangd")
+    (setq lsp-clients-clangd-args '("--compile-commands-dir=/Users/vel/coding/advertyclient/Src/usdk/projects/Darwin/" "--clang-tidy"))
 
-        (setq lsp-treemacs-sync-mode 1)
-        (add-hook 'format-all-mode-hook 'format-all-ensure-formatter)
-        (add-hook 'cc-mode-hook 'format-all-mode)
-        (setq dap-lldb-debug-program '("/opt/homebrew/opt/llvm/bin/lldb-dap"))
+    (setq lsp-treemacs-sync-mode 1)
+    (add-hook 'format-all-mode-hook 'format-all-ensure-formatter)
+    (add-hook 'cc-mode-hook 'format-all-mode)
+    (setq dap-lldb-debug-program '("/opt/homebrew/opt/llvm/bin/lldb-dap"))
 
-        ;;Groovy
-        (straight-use-package 'groovy-mode)
-        (add-to-list 'auto-mode-alist '("\\.groovy\\'" . groovy-mode))
-        (add-to-list 'auto-mode-alist '("\\.gradle\\'" . groovy-mode))
-        (add-to-list 'auto-mode-alist '("\\.Jenkinsfile\\'" . groovy-mode))
+    ;;Groovy
+    (straight-use-package 'groovy-mode)
+    (add-to-list 'auto-mode-alist '("\\.groovy\\'" . groovy-mode))
+    (add-to-list 'auto-mode-alist '("\\.gradle\\'" . groovy-mode))
+    (add-to-list 'auto-mode-alist '("\\.Jenkinsfile\\'" . groovy-mode))
 
-        ;;Typescript
-        (straight-use-package 'typescript-mode)
-        (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
-        (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
-        (straight-use-package 'lsp-mode)
-        (add-hook 'typescript-mode-hook
-                  (lambda ()
-                    (lsp-deferred)))
+    ;;Typescript
+    (use-package lsp-mode
+        :straight t
+        :hook (typescript-mode . lsp)
+        :config
+      (setq lsp-clients-typescript-server-args '("--stdio")))
 
-        (with-eval-after-load 'lsp-mode
-          (setq lsp-file-watch-ignored
-                (append lsp-file-watch-ignored
-                        '("[/\\\\]\\.git$"
-                          "[/\\\\]node_modules$"
-                          "[/\\\\]tmp$"
-                          "[/\\\\].next$"
-                          ".*\\.tsx?~$")))
-          (setq lsp-language-id-configuration
-                (append '(("\\.ts\\'" . "typescript")
-                          ("\\.tsx\\'" . "typescriptreact"))
-                        lsp-language-id-configuration)))
+     ;; Configure typescript-mode with use-package
+     (use-package typescript-mode
+         :straight t
+         :mode ("\\.ts\\'" . typescript-mode)
+         :hook (typescript-mode . lsp))
 
+    ;; Install and configure lsp-tailwindcss with use-package
+    (use-package lsp-tailwindcss
+        :straight (lsp-tailwindcss :type git :host github :repo "merrickluo/lsp-tailwindcss")
+        :after (lsp-mode typescript-mode)
+        :init
+      (setq lsp-tailwindcss-add-on-mode t)
+      (setq lsp-tailwindcss-major-modes '(html-mode css-mode web-mode typescript-mode typescript-tsx-mode)))
+
+    (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+    (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
+    (add-hook 'typescript-mode-hook #'lsp)
   #+End_SRC
