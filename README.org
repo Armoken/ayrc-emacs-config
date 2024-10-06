@@ -5426,6 +5426,37 @@ Emacs Font-lock rules for CMake
       (ayrc/cmake-font-lock-activate))
 #+end_src
 
+** [[https://github.com/wentasah/meson-mode][Meson]]
+#+begin_src emacs-lisp :tangle yes :noweb yes
+  (use-package meson-mode
+      :straight t
+      :mode (("meson.build$"   . meson-mode)
+             ("meson.options$" . meson-mode))
+      :hook (meson-mode . ayrc/meson-hook))
+#+end_src
+
+*** Hook
+#+begin_src emacs-lisp :tangle README-loaddefs.el
+  ;;;###autoload
+  (defun ayrc/meson-hook ()
+      (envrc-mode                1)
+      (display-line-numbers-mode 1)
+      (visual-line-mode         -1)
+      (ws-butler-mode            1)
+      (smart-shift-mode          1)
+      (smartparens-mode          1)
+      (abbrev-mode               1)
+      (yas-minor-mode            1)
+      (hl-todo-mode              1)
+
+      (ayrc/setup-company)
+
+      (hs-minor-mode             1)
+      (snap-indent-mode          1)
+      (flycheck-mode             1))
+#+end_src
+
+
 ** [[https://github.com/NixOS/nix-mode][Nix]]
 #+begin_src emacs-lisp :tangle yes :noweb yes
   (use-package nix-mode
