@@ -64,7 +64,6 @@
                        :host "localhost:11434"
                        :models '("llama3.1:latest")))
 
-
     (global-set-key (kbd "<f11>") 'dap-debug-last)
     (global-set-key (kbd "s-b") 'dap-breakpoint-toggle)
     (global-set-key (kbd "s-/") 'comment-line)
@@ -94,15 +93,30 @@
         :straight t
         :hook (typescript-mode . lsp)
         :config
-      (setq lsp-clients-typescript-server-args '("--stdio")))
 
-    ;; Configure typescript-mode with use-package
     (use-package typescript-mode
         :straight t
         :mode ("\\.ts\\'" . typescript-mode)
         :hook (typescript-mode . lsp))
 
-    ;; Install and configure lsp-tailwindcss with use-package
+    (defun typescript-run-npm-build ()
+        "Run `npm run build` in TypeScript mode."
+        (interactive)
+        (compile "npm run build"))
+
+    (add-hook 'typescript-mode-hook
+              (lambda ()
+                  (local-set-key (kbd "C-c b") 'typescript-run-npm-build)))
+
+    (use-package add-node-modules-path
+        :straight t
+        :hook (typescript-mode . add-node-modules-path))
+
+    (setq lsp-clients-typescript-server-args '("--stdio"))
+    (setq lsp-clients-typescript-server-install-dir "/Users/vel/coding/gfit/node_modules/typescript/lib")
+    (setq lsp-disabled-clients '(deno-ls))
+    (setq lsp-clients-typescript-server "typescript-language-server --stdio")
+
     (use-package lsp-tailwindcss
         :straight (lsp-tailwindcss :type git :host github :repo "merrickluo/lsp-tailwindcss")
         :after (lsp-mode typescript-mode)
@@ -117,74 +131,29 @@
     (setq backup-directory-alist `((".*" . "~/.emacs.d/backups/")))
     (setq auto-save-file-name-transforms `((".*" "~/.emacs.d/auto-saves/" t)))
     (setq make-backup-files nil)
+    (setq lsp-log-io t)
 
-    (use-package treesit
-        :mode (("\\.tsx\\'" . tsx-ts-mode)
-               ("\\.js\\'"  . typescript-ts-mode)
-               ("\\.mjs\\'" . typescript-ts-mode)
-               ("\\.mts\\'" . typescript-ts-mode)
-               ("\\.cjs\\'" . typescript-ts-mode)
-               ("\\.ts\\'"  . typescript-ts-mode)
-               ("\\.jsx\\'" . tsx-ts-mode)
-               ("\\.json\\'" .  json-ts-mode)
-               ("\\.Dockerfile\\'" . dockerfile-ts-mode)
-               ("\\.prisma\\'" . prisma-ts-mode)
-               ;; More modes defined here...
-               )
-        :preface
-      (defun os/setup-install-grammars ()
-          "Install Tree-sitter grammars if they are absent."
-          (interactive)
-          (dolist (grammar
-                   '((css . ("https://github.com/tree-sitter/tree-sitter-css" "v0.20.0"))
-                     (bash "https://github.com/tree-sitter/tree-sitter-bash")
-                     (html . ("https://github.com/tree-sitter/tree-sitter-html" "v0.20.1"))
-                     (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "v0.21.2" "src"))
-                     (json . ("https://github.com/tree-sitter/tree-sitter-json" "v0.20.2"))
-                     (python . ("https://github.com/tree-sitter/tree-sitter-python" "v0.20.4"))
-                     (go "https://github.com/tree-sitter/tree-sitter-go" "v0.20.0")
-                     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-                     (make "https://github.com/alemuller/tree-sitter-make")
-                     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-                     (cmake "https://github.com/uyha/tree-sitter-cmake")
-                     (c "https://github.com/tree-sitter/tree-sitter-c")
-                     (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-                     (toml "https://github.com/tree-sitter/tree-sitter-toml")
-                     (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "tsx/src"))
-                     (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "typescript/src"))
-                     (yaml . ("https://github.com/ikatyang/tree-sitter-yaml" "v0.5.0"))
-                     (prisma "https://github.com/victorhqc/tree-sitter-prisma")))
-              (add-to-list 'treesit-language-source-alist grammar)
-              ;; Only install `grammar' if we don't already have it
-              ;; installed. However, if you want to *update* a grammar then
-              ;; this obviously prevents that from happening.
-              (unless (treesit-language-available-p (car grammar))
-                  (treesit-install-language-grammar (car grammar)))))
+    (defun tsx-comment-line ()
+        "Toggle comment on current line or region with JSX support."
+        (interactive)
+        (if (or (string-equal (file-name-extension buffer-file-name) "tsx")
+                (derived-mode-p 'typescript-mode))
+                (let* ((start (if (use-region-p) (region-beginning) (line-beginning-position)))
+                       (end (if (use-region-p) (region-end) (line-end-position)))
+                       (in-jsx (save-excursion
+                                   (goto-char start)
+                                   (search-forward-regexp "[<>]" end t))))
+                    (if in-jsx
+                            (progn
+                                (save-excursion
+                                    (goto-char start)
+                                    (insert "{/* ")
+                                    (goto-char (+ end 5))
+                                    (insert " */}")))
+                        (comment-line 1)))
+            (comment-line 1)))
 
-      ;; Optional, but recommended. Tree-sitter enabled major modes are
-      ;; distinct from their ordinary counterparts.
-      ;;
-      ;; You can remap major modes with `major-mode-remap-alist'. Note
-      ;; that this does *not* extend to hooks! Make sure you migrate them
-      ;; also
-      (dolist (mapping
-               '((python-mode . python-ts-mode)
-                 (css-mode . css-ts-mode)
-                 (typescript-mode . typescript-ts-mode)
-                 (js-mode . typescript-ts-mode)
-                 (js2-mode . typescript-ts-mode)
-                 (c-mode . c-ts-mode)
-                 (c++-mode . c++-ts-mode)
-                 (c-or-c++-mode . c-or-c++-ts-mode)
-                 (bash-mode . bash-ts-mode)
-                 (css-mode . css-ts-mode)
-                 (json-mode . json-ts-mode)
-                 (js-json-mode . json-ts-mode)
-                 (sh-mode . bash-ts-mode)
-                 (sh-base-mode . bash-ts-mode)))
-          (add-to-list 'major-mode-remap-alist mapping))
-      :config
-      (os/setup-install-grammars))
-
-
+    (add-hook 'typescript-mode-hook
+              (lambda ()
+                (define-key (current-local-map) (kbd "s-/") 'tsx-comment-line)))
   #+End_SRC
