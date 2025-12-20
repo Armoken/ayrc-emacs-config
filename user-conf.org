@@ -62,7 +62,7 @@
                        :stream t
                        :protocol "http"
                        :host "localhost:11434"
-                       :models '("llama3.1:latest")))
+                       :models '("llama3.2:latest")))
 
     (global-set-key (kbd "<f11>") 'dap-debug-last)
     (global-set-key (kbd "s-b") 'dap-breakpoint-toggle)
@@ -71,16 +71,106 @@
     (global-set-key (kbd "s-<down>") 'helm-projectile-find-other-file)
 
     ;; Compilation and LSP settings
-    (setq projectile-project-compilation-cmd "cd Src/usdk && invoke build -c \"-GNinja\" -o Darwin")
-
+    (setq build-target "Darwin")
+    (setq projectile-project-compilation-cmd (format "cd Src/usdk && invoke build -c \"-GNinja\" -o %s -t AdvertyUnityPlugin_Shared" build-target))
     (setq magit-refresh-status-buffer nil)
     (setq lsp-clangd-binary-path "/opt/homebrew/opt/llvm/bin/clangd")
-    (setq lsp-clients-clangd-args '("--compile-commands-dir=/Users/vel/coding/advertyclient/Src/usdk/projects/Darwin/" "--clang-tidy"))
+    (setq lsp-clients-clangd-args
+          (list (format "--compile-commands-dir=/Users/Shared/coding/advertyclient/Src/usdk/projects/%s/" build-target)
+                "--clang-tidy"))
+    ;; (setq lsp-clients-clangd-args (list (format "--compile-commands-dir=/Users/vel/coding/advertyclient/Src/usdk/projects/Android/") "--clang-tidy"))
+    ;; (setq lsp-clients-clangd-args (list (format "--compile-commands-dir=/Users/vel/coding/relax/build/" build-target) "--clang-tidy"))
 
     (setq lsp-treemacs-sync-mode 1)
     (add-hook 'format-all-mode-hook 'format-all-ensure-formatter)
     (add-hook 'cc-mode-hook 'format-all-mode)
-    (setq dap-lldb-debug-program '("/opt/homebrew/opt/llvm/bin/lldb-dap"))
+    (setq dap-lldb-debug-program '("/Library/Developer/CommandLineTools/usr/bin/lldb-dap"))
+
+    ;; Helper function to strip quotes from input
+    (defun ayrc/strip-quotes (str)
+      "Remove leading and trailing quotes from string if present."
+      (if (and str (not (string= str "")))
+          (let ((stripped (string-trim str)))
+            (if (and (>= (length stripped) 2)
+                     (or (and (eq (aref stripped 0) ?\")
+                              (eq (aref stripped (1- (length stripped))) ?\"))
+                         (and (eq (aref stripped 0) ?')
+                              (eq (aref stripped (1- (length stripped))) ?'))))
+                (substring stripped 1 -1)
+              stripped))
+        str))
+
+    ;; Meta configuration that prompts for test case and subcase
+    (defun AdvertyUnitTests ()
+      "Launch USDK UnitTests with a user-selected test case and optional subcase.
+Can be called interactively via M-x or registered as a DAP template.
+Supports both quoted and unquoted input for test case and subcase."
+      (interactive)
+      (require 'dap-mode)
+      (require 'dap-lldb)
+      (dap-mode 1)  ; Ensure dap-mode is active
+      (let ((test-case (ayrc/strip-quotes (read-string "Enter test case name (or leave empty for all tests): ")))
+            (subcase (ayrc/strip-quotes (read-string "Enter subcase name (or leave empty): ")))
+            (config-base (list :type "lldb-vscode"
+                               :cwd "/Users/Shared/coding/advertyclient"
+                               :request "launch"
+                               :program "/Users/Shared/coding/advertyclient/Src/usdk/projects/Darwin/tests/unit_tests/UnitTests"
+                               :name "LLDB::Run"
+                               :sourceMap (list (cons "/Users/vel/coding/advertyclient" "/Users/Shared/coding/advertyclient"))
+                               :initCommands (list "settings set target.process.stop-on-sharedlibrary-events false"
+                                                   "settings set target.process.thread.step-out-avoid-nodebug true"))))
+        ;; Build args list with test-case and/or subcase if provided
+        (let ((args '()))
+          (when (and test-case (not (string= test-case "")))
+            (push (concat "--test-case=" test-case) args))
+          (when (and subcase (not (string= subcase "")))
+            (push (concat "--subcase=" subcase) args))
+          (let ((config (if args
+                            (append config-base (list :args (nreverse args)))
+                          config-base)))
+            ;; Launch debug session with the configuration
+            (dap-debug config)))))
+
+    ;; Meta configuration for IntegrationTests that prompts for test case and subcase
+    (defun AdvertyIntegrationTests ()
+      "Launch USDK IntegrationTests with a user-selected test case and optional subcase.
+Can be called interactively via M-x or registered as a DAP template.
+Supports both quoted and unquoted input for test case and subcase."
+      (interactive)
+      (require 'dap-mode)
+      (require 'dap-lldb)
+      (dap-mode 1)  ; Ensure dap-mode is active
+      (let ((test-case (ayrc/strip-quotes (read-string "Enter test case name (or leave empty for all tests): ")))
+            (subcase (ayrc/strip-quotes (read-string "Enter subcase name (or leave empty): ")))
+            (config-base (list :type "lldb-vscode"
+                               :cwd "/Users/Shared/coding/advertyclient"
+                               :request "launch"
+                               :program "/Users/Shared/coding/advertyclient/Src/usdk/projects/Darwin/tests/integration_tests/IntegrationTests.app/Contents/MacOS/IntegrationTests"
+                               :name "LLDB::Run"
+                               :sourceMap (list (cons "/Users/vel/coding/advertyclient" "/Users/Shared/coding/advertyclient"))
+                               :initCommands (list "settings set target.process.stop-on-sharedlibrary-events false"
+                                                   "settings set target.process.thread.step-out-avoid-nodebug true"))))
+        ;; Build args list with test-case and/or subcase if provided
+        (let ((args '()))
+          (when (and test-case (not (string= test-case "")))
+            (push (concat "--test-case=" test-case) args))
+          (when (and subcase (not (string= subcase "")))
+            (push (concat "--subcase=" subcase) args))
+          (let ((config (if args
+                            (append config-base (list :args (nreverse args)))
+                          config-base)))
+            ;; Launch debug session with the configuration
+            (dap-debug config)))))
+
+    ;; Register as DAP templates - the functions will be called when templates are selected
+    (with-eval-after-load 'dap-mode
+      (require 'dap-lldb)
+      (dap-register-debug-template
+       "USDK UnitTests: Select Test Case"
+       (lambda () (call-interactively 'AdvertyUnitTests)))
+      (dap-register-debug-template
+       "USDK IntegrationTests: Select Test Case"
+       (lambda () (call-interactively 'AdvertyIntegrationTests))))
 
     ;;Groovy
     (straight-use-package 'groovy-mode)
