@@ -100,25 +100,123 @@
               stripped))
         str))
 
-    ;; Meta configuration that prompts for test case and subcase
+    ;; Doctest helpers: scan current buffer for TEST_CASE/SUBCASE
+    (defconst ayrc/adverty--doctest-case-or-subcase-re
+      "\\_<\\(TEST_CASE\\|SUBCASE\\)\\_>\\s-*(\\s-*\\(\"\\(?:\\\\.\\|[^\"\\\\]\\)*\"\\)"
+      "Regexp matching doctest TEST_CASE/SUBCASE name string literal.")
+
+    (defcustom ayrc/adverty--doctest-scan-time-limit 0.35
+      "Max seconds to spend scanning the current buffer for doctest cases."
+      :type 'number)
+
+    (defcustom ayrc/adverty--doctest-scan-max-matches 5000
+      "Max regexp matches to process when scanning the current buffer."
+      :type 'integer)
+
+    (defun ayrc/adverty--doctest--read-c-string (quoted)
+      "Decode a C-style QUOTED string literal into an Emacs string.
+Falls back to stripping surrounding quotes if decoding fails."
+      (condition-case nil
+          (read quoted)
+        (error (ayrc/strip-quotes quoted))))
+
+    (defun ayrc/adverty--doctest--line-commented-p (pos)
+      "Non-nil if POS is after '//' on its line (simple C++ line comment check)."
+      (save-excursion
+        (goto-char pos)
+        (let ((limit pos))
+          (goto-char (line-beginning-position))
+          (when (search-forward "//" limit t) t))))
+
+    (defun ayrc/adverty--doctest-scan-buffer ()
+      "Return an alist of (TEST-CASE . (SUBCASE...)) found in current buffer.
+
+Best-effort: skips matches that appear after '//' on the same line.
+
+If scanning would take too long, returns nil so callers can fall back to manual input."
+      (save-excursion
+        (goto-char (point-min))
+        (let ((current-test nil)
+              (tbl (make-hash-table :test 'equal))
+              (start (float-time))
+              (matches 0)
+              (timed-out nil))
+          (while (and (not timed-out)
+                      (re-search-forward ayrc/adverty--doctest-case-or-subcase-re nil t))
+            (setq matches (1+ matches))
+            (when (or (> matches ayrc/adverty--doctest-scan-max-matches)
+                      (> (- (float-time) start) ayrc/adverty--doctest-scan-time-limit))
+              (setq timed-out t))
+            (unless timed-out
+              (let ((mb (match-beginning 0)))
+                (unless (ayrc/adverty--doctest--line-commented-p mb)
+                  (let* ((kind (match-string-no-properties 1))
+                         (raw (match-string-no-properties 2))
+                         (name (ayrc/adverty--doctest--read-c-string raw)))
+                    (cond
+                     ((string= kind "TEST_CASE")
+                      (setq current-test name)
+                      (unless (gethash current-test tbl)
+                        (puthash current-test '() tbl)))
+                     ((string= kind "SUBCASE")
+                      (when current-test
+                        (let ((xs (gethash current-test tbl)))
+                          (unless (member name xs)
+                            (puthash current-test (append xs (list name)) tbl)))))))))))
+          (unless timed-out
+            (let (out)
+              (maphash (lambda (k v) (push (cons k v) out)) tbl)
+              ;; Stable-ish ordering: alphabetical by test-case, preserve subcase order.
+              (setq out (sort out (lambda (a b) (string< (car a) (car b)))))
+              out)))))
+
+    (defun ayrc/adverty--doctest-menu-choice ()
+      "Prompt user with a menu of TEST_CASE/SUBCASE found in current buffer.
+Returns a plist (:test-case STRING-OR-NIL :subcase STRING-OR-NIL)."
+      (let* ((cases (ayrc/adverty--doctest-scan-buffer))
+             (choices (list (cons "[ALL] run all tests" (list :test-case nil :subcase nil)))))
+        (when cases
+          (dolist (pair cases)
+            (let ((tc (car pair))
+                  (subs (cdr pair)))
+              (push (cons (format "TEST_CASE: %s" tc)
+                          (list :test-case tc :subcase nil))
+                    choices)
+              (dolist (sc subs)
+                (push (cons (format "TEST_CASE: %s  |  SUBCASE: %s" tc sc)
+                            (list :test-case tc :subcase sc))
+                      choices))))
+          (setq choices (nreverse choices)))
+        (if (null cases)
+            ;; Buffer has no recognizable tests; fall back to manual input.
+            (list :test-case (ayrc/strip-quotes
+                              (read-string "Enter test case name (or leave empty for all tests): "))
+                  :subcase (ayrc/strip-quotes
+                            (read-string "Enter subcase name (or leave empty): ")))
+          (let* ((picked (completing-read "Select doctest: " choices nil t nil nil (caar choices)))
+                 (plist (cdr (assoc picked choices))))
+            plist))))
+
+    ;; Meta configuration that scans buffer and prompts via menu
     (defun AdvertyUnitTests ()
-      "Launch USDK UnitTests with a user-selected test case and optional subcase.
+      "Launch USDK UnitTests with a buffer-scanned doctest selection.
 Can be called interactively via M-x or registered as a DAP template.
-Supports both quoted and unquoted input for test case and subcase."
+Scans current buffer for doctest TEST_CASE/SUBCASE and prompts with a menu."
       (interactive)
       (require 'dap-mode)
       (require 'dap-lldb)
       (dap-mode 1)  ; Ensure dap-mode is active
-      (let ((test-case (ayrc/strip-quotes (read-string "Enter test case name (or leave empty for all tests): ")))
-            (subcase (ayrc/strip-quotes (read-string "Enter subcase name (or leave empty): ")))
-            (config-base (list :type "lldb-vscode"
-                               :cwd "/Users/Shared/coding/advertyclient"
-                               :request "launch"
-                               :program "/Users/Shared/coding/advertyclient/Src/usdk/projects/Darwin/tests/unit_tests/UnitTests"
-                               :name "LLDB::Run"
-                               :sourceMap (list (cons "/Users/vel/coding/advertyclient" "/Users/Shared/coding/advertyclient"))
-                               :initCommands (list "settings set target.process.stop-on-sharedlibrary-events false"
-                                                   "settings set target.process.thread.step-out-avoid-nodebug true"))))
+      (let* ((selection (ayrc/adverty--doctest-menu-choice))
+             (test-case (plist-get selection :test-case))
+             (subcase (plist-get selection :subcase))
+             (config-base (list :type "lldb-vscode"
+                                :cwd "/Users/Shared/coding/advertyclient"
+                                :request "launch"
+                                :program "/Users/Shared/coding/advertyclient/Src/usdk/projects/Darwin/tests/unit_tests/UnitTests"
+                                :name "LLDB::Run"
+                                :sourceMap (list (cons "/Users/vel/coding/advertyclient" "/Users/Shared/coding/advertyclient"))
+                                :initCommands (list "settings set target.process.stop-on-sharedlibrary-events false"
+                                                    "settings set target.process.thread.step-out-avoid-nodebug true"))))
         ;; Build args list with test-case and/or subcase if provided
         (let ((args '()))
           (when (and test-case (not (string= test-case "")))
@@ -131,25 +229,26 @@ Supports both quoted and unquoted input for test case and subcase."
             ;; Launch debug session with the configuration
             (dap-debug config)))))
 
-    ;; Meta configuration for IntegrationTests that prompts for test case and subcase
+    ;; Meta configuration for IntegrationTests that scans buffer and prompts via menu
     (defun AdvertyIntegrationTests ()
-      "Launch USDK IntegrationTests with a user-selected test case and optional subcase.
+      "Launch USDK IntegrationTests with a buffer-scanned doctest selection.
 Can be called interactively via M-x or registered as a DAP template.
-Supports both quoted and unquoted input for test case and subcase."
+Scans current buffer for doctest TEST_CASE/SUBCASE and prompts with a menu."
       (interactive)
       (require 'dap-mode)
       (require 'dap-lldb)
       (dap-mode 1)  ; Ensure dap-mode is active
-      (let ((test-case (ayrc/strip-quotes (read-string "Enter test case name (or leave empty for all tests): ")))
-            (subcase (ayrc/strip-quotes (read-string "Enter subcase name (or leave empty): ")))
-            (config-base (list :type "lldb-vscode"
-                               :cwd "/Users/Shared/coding/advertyclient"
-                               :request "launch"
-                               :program "/Users/Shared/coding/advertyclient/Src/usdk/projects/Darwin/tests/integration_tests/IntegrationTests.app/Contents/MacOS/IntegrationTests"
-                               :name "LLDB::Run"
-                               :sourceMap (list (cons "/Users/vel/coding/advertyclient" "/Users/Shared/coding/advertyclient"))
-                               :initCommands (list "settings set target.process.stop-on-sharedlibrary-events false"
-                                                   "settings set target.process.thread.step-out-avoid-nodebug true"))))
+      (let* ((selection (ayrc/adverty--doctest-menu-choice))
+             (test-case (plist-get selection :test-case))
+             (subcase (plist-get selection :subcase))
+             (config-base (list :type "lldb-vscode"
+                                :cwd "/Users/Shared/coding/advertyclient"
+                                :request "launch"
+                                :program "/Users/Shared/coding/advertyclient/Src/usdk/projects/Darwin/tests/integration_tests/IntegrationTests.app/Contents/MacOS/IntegrationTests"
+                                :name "LLDB::Run"
+                                :sourceMap (list (cons "/Users/vel/coding/advertyclient" "/Users/Shared/coding/advertyclient"))
+                                :initCommands (list "settings set target.process.stop-on-sharedlibrary-events false"
+                                                    "settings set target.process.thread.step-out-avoid-nodebug true"))))
         ;; Build args list with test-case and/or subcase if provided
         (let ((args '()))
           (when (and test-case (not (string= test-case "")))
