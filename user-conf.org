@@ -47,6 +47,95 @@
   #+BEGIN_SRC emacs-lisp :tangle yes
     (defvar ayrc/python-lsp-server "pylsp")
   #+END_SRC
+* Go
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package go-mode
+        :straight t
+        :hook ((go-mode . lsp-deferred)
+               (go-mode . dap-mode)
+               (before-save . gofmt-before-save)))
+
+    (with-eval-after-load 'dap-mode
+      (require 'dap-go)
+      (dap-go-setup)
+      (dap-register-debug-template
+       "Go: exante_client"
+       (list :type "go"
+             :request "launch"
+             :name "Go: exante_client"
+             :mode "debug"
+             :program "/Users/vel/coding/exante_client"
+             :args nil
+             :env nil)))
+  #+END_SRC
+
+* Rust
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    ;; Disable code lens debug button (use F11 for debugging instead)
+    (setq lsp-rust-analyzer-debug-lens-enabled nil)
+
+    ;; Configure rustic
+    (setq rustic-lsp-server 'rust-analyzer)
+
+    ;; CodeLLDB (vadimcn/vscode-lldb) via dap-codelldb — same DAP type as VS Code/Cursor "lldb".
+    ;; This is separate from Apple LLDB DAP (`dap-lldb`, :type "lldb-vscode").
+    (with-eval-after-load 'dap-mode
+      (require 'dap-codelldb)
+      ;; Download adapter once into `dap-codelldb-debug-path` (~/.emacs.d/.cache/dap/vscode/codelldb/…).
+      (unless (file-exists-p dap-codelldb-debug-program)
+        (dap-codelldb-setup))
+
+      ;; Use vterm for the integrated terminal so TUI/alternate-screen apps render correctly.
+      (setq dap-internal-terminal #'dap-internal-terminal-vterm)
+
+      (defun ayrc/cargo-toml-root ()
+        (when-let ((dir (locate-dominating-file default-directory "Cargo.toml")))
+          (expand-file-name dir)))
+
+      (defun ayrc/cargo-package-name-from-toml (root)
+        "Read [package] name from ROOT/Cargo.toml."
+        (with-temp-buffer
+          (insert-file-contents (expand-file-name "Cargo.toml" root))
+          (goto-char (point-min))
+          (when (re-search-forward "^\\[package\\]" nil t)
+            (when (re-search-forward "^name\\s-*=\\s-*\"\\([^\"]+\\)\"" nil t)
+              (match-string-no-properties 1)))))
+
+      (defun ayrc/dap-codelldb--rust-binary-plist ()
+        (let* ((root (or (ayrc/cargo-toml-root)
+                         (user-error "Not under a Cargo.toml tree")))
+               (pkg (or (ayrc/cargo-package-name-from-toml root)
+                        (user-error "Could not read [package] name from Cargo.toml")))
+               (program (expand-file-name (format "target/debug/%s" pkg) root)))
+          ;; Do not use :cargo here: `dap-codelldb''s provider runs (plist-put conf :cargo ""),
+          ;; so CodeLLDB never sees cargo metadata and errors: "program property is required".
+          (list :type "lldb"
+                :request "launch"
+                :name (format "Rust: %s (binary)" pkg)
+                :cwd root
+                :program program
+                :args nil
+                ;; "external" on macOS (see `dap-external-terminal' above); else vterm.
+                :terminal "integrated"
+                :dap-compilation (format "cargo build --bin=%s --package=%s" pkg pkg)
+                :dap-compilation-dir root)))
+
+      ;; `dap-register-debug-template' expects a plist, not a lambda (lambdas are lists;
+      ;; dap-mode prepends :name and corrupts them).  Build entries when `dap-debug' runs:
+      (defun ayrc/dap-codelldb-rust-launch-configurations ()
+        "Return (NAME . PLIST) for CodeLLDB + main binary at `default-directory'."
+        (when (ayrc/cargo-toml-root)
+          (list
+           (cons "Rust: CodeLLDB — debug binary"
+                 (ayrc/dap-codelldb--rust-binary-plist)))))
+
+      (add-to-list 'dap-launch-configuration-providers
+                   #'ayrc/dap-codelldb-rust-launch-configurations))
+
+    (add-hook 'rustic-mode-hook #'dap-mode)
+
+  #+END_SRC
+
 * VEL custom configuration
   #+BEGIN_SRC emacs-lisp :tangle yes
     (straight-use-package 'gptel)
@@ -72,7 +161,7 @@
 
     ;; Compilation and LSP settings
     (setq build-target "Darwin")
-    (setq projectile-project-compilation-cmd (format "cd Src/usdk && invoke build -c \"-GNinja\" -o %s -t AdvertyUnityPlugin_Shared" build-target))
+    (setq projectile-project-compilation-cmd (format "cd Src/usdk && invoke build -c \"-GNinja\" -o %s -t UnitTests" build-target))
     (setq magit-refresh-status-buffer nil)
     (setq lsp-clangd-binary-path "/opt/homebrew/opt/llvm/bin/clangd")
     (setq lsp-clients-clangd-args
@@ -346,4 +435,47 @@ Scans current buffer for doctest TEST_CASE/SUBCASE and prompts with a menu."
     (straight-use-package 'prettier-js)
     (add-hook 'typescript-mode-hook 'prettier-js-mode)
 
-  #+End_SRC
+    ;; VTerm - terminal emulator
+    (use-package vterm
+        :straight t
+        :bind (("C-c t" . vterm)))
+
+  #+END_SRC
+
+* Disable smart-shift
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (with-eval-after-load 'smart-shift
+      (advice-add 'smart-shift-mode :override #'ignore)
+      (global-smart-shift-mode -1))
+  #+END_SRC
+
+* Agent Shell
+  LLM agent interface powered by ACP (Agent Client Protocol)
+  https://github.com/xenodium/agent-shell
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    ;; Add opencode to exec-path
+    (add-to-list 'exec-path "~/.opencode/bin")
+
+    ;; agent-shell dependencies
+    (use-package shell-maker
+        :straight (shell-maker :type git :host github :repo "xenodium/shell-maker"
+                               :files ("shell-maker.el" "markdown-overlays.el")))
+
+    (use-package acp
+        :straight (acp :type git :host github :repo "xenodium/acp.el"))
+
+    ;; agent-shell - LLM agent interface powered by ACP
+    (use-package agent-shell
+        :straight (agent-shell :type git :host github :repo "xenodium/agent-shell")
+        :after (acp shell-maker)
+        :commands (agent-shell
+                   agent-shell-opencode-start-agent)
+        :config
+        ;; OpenCode authentication (uses `opencode auth login` by default)
+        (setq agent-shell-opencode-authentication
+              (agent-shell-opencode-make-authentication :none t))
+        ;; Set OpenCode as the preferred agent
+        (setq agent-shell-preferred-agent-config
+              (agent-shell-opencode-make-agent-config)))
+  #+END_SRC
